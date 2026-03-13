@@ -24,15 +24,8 @@ class AvitoParser(BaseParser):
         vacancies = []
         for card in cards:
             link = card.find("a")
-            title = ""
-            href = ""
-            if link:
-                title = link.get_text(" ", strip=True)
-                if not title:
-                    fallback = link.find(["span", "div"])
-                    title = fallback.get_text(" ", strip=True) if fallback else ""
-                href = link.get("href") or ""
-
+            title = link.get_text(strip=True) if link else ""
+            href = link.get("href") if link else ""
             data_attrs = {k: v for k, v in card.attrs.items() if k.startswith("data-")}
             vacancies.append(
                 {

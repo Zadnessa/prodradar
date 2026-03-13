@@ -1,5 +1,6 @@
 """Парсер вакансий Wildberries."""
 
+from enrichment.grade_guesser import guess_grade_from_title
 from parsers.base import BaseParser
 from parsers.utils import normalize_city
 import config
@@ -27,7 +28,7 @@ class WildberriesParser(BaseParser):
                     "id": vacancy_id,
                     "company": "Wildberries",
                     "title": title,
-                    "grade": None,
+                    "grade": guess_grade_from_title(title),
                     "city": normalize_city(city_mappings, item.get("city_title")),
                     "work_format": work_format,
                     "experience": item.get("experience_type_title") or "Не указан",

@@ -1,7 +1,6 @@
 """Отправка и форматирование сообщений в Telegram."""
 
 import asyncio
-import html
 import logging
 import os
 
@@ -11,43 +10,35 @@ import config
 from delivery.filters import filter_vacancies_for_user
 
 
-def escape_html(text):
+def _escape_markdown(text):
     if text is None:
         return ""
-    return html.escape(str(text), quote=False)
-
-
-def _is_present(value):
-    return value not in (None, "", "Не указан")
+    escaped = str(text)
+    for ch in ["_", "*", "[", "]", "(", ")", "~", "`", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!"]:
+        escaped = escaped.replace(ch, f"\\{ch}")
+    return escaped
 
 
 def format_vacancy_message(vacancy, company_meta):
     emoji = company_meta.get("emoji", "") if company_meta else ""
-    company = escape_html(vacancy.get("company", "Компания"))
+    lines = [f"{emoji} Новая вакансия в {vacancy.get('company', 'Компания')}\n", f"Позиция: {_escape_markdown(vacancy.get('title', ''))}"]
 
-    lines = [
-        f"{emoji} Новая вакансия в {company}",
-        "",
+    fields = [
+        ("Город", vacancy.get("city")),
+        ("Опыт", vacancy.get("experience")),
+        ("Грейд", vacancy.get("grade")),
+        ("Формат", vacancy.get("work_format")),
     ]
-
-    if _is_present(vacancy.get("title")):
-        lines.append(f"<b>Позиция:</b> {escape_html(vacancy.get('title'))}")
-    if _is_present(vacancy.get("city")):
-        lines.append(f"<b>Город:</b> {escape_html(vacancy.get('city'))}")
-    if _is_present(vacancy.get("experience")):
-        lines.append(f"<b>Опыт:</b> {escape_html(vacancy.get('experience'))}")
-    if _is_present(vacancy.get("grade")):
-        lines.append(f"<b>Грейд:</b> {escape_html(vacancy.get('grade'))}")
-    if _is_present(vacancy.get("work_format")):
-        lines.append(f"<b>Формат:</b> {escape_html(vacancy.get('work_format'))}")
+    for label, value in fields:
+        if value and value != "Не указан":
+            lines.append(f"{label}: {_escape_markdown(value)}")
 
     description = vacancy.get("short_description")
-    if config.SHOW_DESCRIPTION and _is_present(description):
-        lines.append(f"<b>Описание:</b> {escape_html(description)}")
+    if config.SHOW_DESCRIPTION and description and description != "Не указан":
+        lines.append(f"Описание: {_escape_markdown(description)}")
 
-    url = escape_html(vacancy.get("url", ""))
-    lines.append("")
-    lines.append(f'<a href="{url}">Посмотреть вакансию</a>')
+    url = vacancy.get("url", "")
+    lines.append(f"[Посмотреть вакансию]({url})")
     return "\n".join(lines)
 
 
@@ -56,7 +47,7 @@ def send_telegram_message(token, chat_id, text):
     payload = {
         "chat_id": chat_id,
         "text": text,
-        "parse_mode": "HTML",
+        "parse_mode": "Markdown",
         "disable_web_page_preview": True,
     }
     response = requests.post(url, json=payload, timeout=20)
@@ -97,4 +88,4 @@ def send_admin_report(total, new_count, sent_count, users_count, parser_errors):
         f"Отправлено: {sent_count} сообщений на {users_count} подписчиков\n"
         f"Ошибки: {errors_text}"
     )
-    send_telegram_message(token, admin_chat_id, escape_html(message))
+    send_telegram_message(token, admin_chat_id, message)

@@ -40,7 +40,7 @@ class SupabaseService:
         self.client.table("vacancies").update({"notified_at": notified_at}).in_("id", vacancy_ids).execute()
 
     def get_unnotified_vacancies(self):
-        result = self.client.table("vacancies").select("*").is_("notified_at", None).eq("is_active", True).execute()
+        result = self.client.table("vacancies").select("*").is_("notified_at", "null").eq("is_active", True).execute()
         return result.data or []
 
     def get_active_users(self, bot_id="main"):

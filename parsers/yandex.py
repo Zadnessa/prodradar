@@ -1,5 +1,6 @@
 """Парсер вакансий Yandex."""
 
+from enrichment.grade_guesser import guess_grade_from_title
 from parsers.base import BaseParser
 import config
 
@@ -22,7 +23,7 @@ class YandexParser(BaseParser):
                     "id": f"ya_{item.get('id')}",
                     "company": "Yandex",
                     "title": title,
-                    "grade": None,
+                    "grade": guess_grade_from_title(title),
                     "city": cities,
                     "work_format": work_modes,
                     "experience": "Не указан",

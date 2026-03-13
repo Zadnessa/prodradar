@@ -1,7 +1,6 @@
 """Точка входа для запуска сбора вакансий через GitHub Actions."""
 
 import asyncio
-import importlib
 import logging
 
 import aiohttp
@@ -10,6 +9,7 @@ import config
 from database.supabase_client import SupabaseService
 from delivery.telegram import deliver_vacancies, send_admin_report
 from enrichment.ai_summary import generate_summary
+from parsers import PARSER_REGISTRY
 
 
 def _normalize_general_city(city_mappings, city):
@@ -36,8 +36,9 @@ async def run():
         for company in companies:
             parser_name = company.get("parser_name")
             try:
-                module = importlib.import_module(f"parsers.{parser_name}")
-                parser_cls = getattr(module, [name for name in dir(module) if name.endswith("Parser")][0])
+                parser_cls = PARSER_REGISTRY.get(parser_name)
+                if not parser_cls:
+                    raise ValueError(f"Парсер {parser_name} не найден в PARSER_REGISTRY")
                 parser = parser_cls()
                 vacancies = await parser.parse(session, existing_ids, city_mappings)
                 if config.TEST_MODE:

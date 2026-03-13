@@ -10,18 +10,19 @@ import config
 from delivery.filters import filter_vacancies_for_user
 
 
-def _escape_markdown(text):
+def _escape_html(text):
     if text is None:
         return ""
     escaped = str(text)
-    for ch in ["_", "*", "[", "]", "(", ")", "~", "`", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!"]:
-        escaped = escaped.replace(ch, f"\\{ch}")
+    escaped = escaped.replace("&", "&amp;")
+    escaped = escaped.replace("<", "&lt;")
+    escaped = escaped.replace(">", "&gt;")
     return escaped
 
 
 def format_vacancy_message(vacancy, company_meta):
     emoji = company_meta.get("emoji", "") if company_meta else ""
-    lines = [f"{emoji} Новая вакансия в {vacancy.get('company', 'Компания')}\n", f"Позиция: {_escape_markdown(vacancy.get('title', ''))}"]
+    lines = [f"{emoji} Новая вакансия в {vacancy.get('company', 'Компания')}\n", f"<b>Позиция:</b> {_escape_html(vacancy.get('title', ''))}"]
 
     fields = [
         ("Город", vacancy.get("city")),
@@ -31,14 +32,14 @@ def format_vacancy_message(vacancy, company_meta):
     ]
     for label, value in fields:
         if value and value != "Не указан":
-            lines.append(f"{label}: {_escape_markdown(value)}")
+            lines.append(f"<b>{label}:</b> {_escape_html(value)}")
 
     description = vacancy.get("short_description")
     if config.SHOW_DESCRIPTION and description and description != "Не указан":
-        lines.append(f"Описание: {_escape_markdown(description)}")
+        lines.append(f"<b>Описание:</b> {_escape_html(description)}")
 
     url = vacancy.get("url", "")
-    lines.append(f"[Посмотреть вакансию]({url})")
+    lines.append(f'<a href="{url}">Посмотреть вакансию</a>')
     return "\n".join(lines)
 
 
@@ -47,7 +48,7 @@ def send_telegram_message(token, chat_id, text):
     payload = {
         "chat_id": chat_id,
         "text": text,
-        "parse_mode": "Markdown",
+        "parse_mode": "HTML",
         "disable_web_page_preview": True,
     }
     response = requests.post(url, json=payload, timeout=20)

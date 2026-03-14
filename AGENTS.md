@@ -28,6 +28,13 @@
 - Нерелевантные вакансии фильтруются по TITLE_STOP_PATTERNS в config.py (подстроковый поиск, регистронезависимый). Фильтрация в main.py до enrichment и сохранения.
 - Lead+ не определяется автоматически из заголовка. Будет реализовано через AI-анализ description.
 - В нормализованных строках experience и grade-диапазонах используется дефис (-), не тире (–).
+- Доставка вакансий per-user через таблицу user_vacancy_delivery. Глобальный notified_at устарел.
+- Telegram API вызовы только через bot/telegram_api.py. Не использовать requests.post к Telegram напрямую.
+- Webhook валидирует X-Telegram-Bot-Api-Secret-Token если задана переменная TELEGRAM_WEBHOOK_SECRET.
+- Webhook обрабатывает message и callback_query.
+- Фильтрация по пользовательским настройкам в delivery/filters.py. Пустой filters = всё.
+- paused=true — пользователь не получает рассылку, остаётся в базе.
+- Вакансии старше VACANCY_TTL_DAYS не учитываются в статистике.
 
 ## Исправленные баги (не повторять)
 

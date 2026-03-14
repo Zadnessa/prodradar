@@ -80,3 +80,12 @@ Enricher должен брать min, не max.
 - WB: skill_level_id был null в тестовой вакансии — может быть заполнен у других.
 - Avito: дефолт grade "Middle" убран, теперь null если нет совпадения (Lead/Senior/Junior из заголовка).
 - Sber/Alfa experience маппинги через config.py (UUID → строка).
+
+---
+
+## 2026-03-14: PR 5a — per-user доставка, фильтры, Telegram API helper
+
+- PR 5a смержен: per-user доставка, фильтры, `telegram_api` helper.
+- Модель доставки: `user_vacancy_delivery` вместо `notified_at`.
+- Структура filters: `{"grades": [], "cities": [], "work_formats": [], "companies": []}`.
+- Логика фильтрации: пустой список = всё, grade-диапазоны по левой части, `Middle+` = `Middle`, `null`/`Не указан` пропускается.

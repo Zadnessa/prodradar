@@ -5,6 +5,7 @@ import os
 SHOW_DESCRIPTION = False
 TEST_MODE = False
 TEST_LIMIT = 3
+VACANCY_TTL_DAYS = 30
 
 TITLE_STOP_PATTERNS = [
     "project manager",

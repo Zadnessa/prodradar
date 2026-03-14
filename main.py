@@ -6,8 +6,10 @@ import logging
 import aiohttp
 
 import config
+from bot.telegram_api import send_message
 from database.supabase_client import SupabaseService
-from delivery.telegram import deliver_vacancies, send_admin_report
+from delivery.filters import filter_vacancies_for_user
+from delivery.telegram import format_vacancy_message, send_admin_report
 from enrichment.ai_summary import generate_summary
 from enrichment.normalizer import grade_from_experience, normalize_experience
 from parsers import PARSER_REGISTRY
@@ -52,7 +54,6 @@ async def run():
                 parser_errors.append(f"{company.get('name')}: {exc}")
                 logging.exception("Ошибка парсера %s", parser_name)
 
-        # Фильтрация нерелевантных вакансий по стоп-словам
         before_filter = len(all_collected)
         all_collected = [
             v for v in all_collected
@@ -81,27 +82,53 @@ async def run():
 
     db.save_vacancies(new_vacancies)
 
-    unnotified = db.get_unnotified_vacancies()
     users = db.get_active_users(bot_id="main")
     companies_map = {c.get("name"): c for c in companies}
 
-    sent_count, failed_users = await deliver_vacancies(unnotified, users, companies_map, bot_id="main")
-    db.mark_vacancies_notified([v["id"] for v in unnotified])
+    sent_count = 0
+    failed_users = []
+    paused_users = 0
+
+    for user in users:
+        if user.get("paused"):
+            paused_users += 1
+            continue
+
+        chat_id = user.get("chat_id")
+        try:
+            undelivered = db.get_undelivered_vacancies(chat_id)
+            filtered_vacancies = filter_vacancies_for_user(undelivered, user.get("filters") or {})
+
+            delivered_ids = []
+            for vacancy in filtered_vacancies:
+                message = format_vacancy_message(vacancy, companies_map.get(vacancy.get("company"), {}))
+                result = send_message(chat_id, message, bot_id=user.get("bot_id") or "main")
+                if result:
+                    delivered_ids.append(vacancy["id"])
+                    sent_count += 1
+                await asyncio.sleep(0.05)
+
+            db.mark_delivered(chat_id, delivered_ids, source="scheduled")
+        except Exception as exc:
+            failed_users.append(f"{chat_id}: {exc}")
+            logging.exception("Ошибка отправки пользователю %s", chat_id)
 
     send_admin_report(
         total=len(all_collected),
         new_count=len(new_vacancies),
         sent_count=sent_count,
         users_count=len(users),
+        paused_count=paused_users,
         parser_errors=parser_errors + failed_users,
     )
 
     logging.info(
-        "Итог: собрано=%s, новые=%s, разослано=%s, подписчики=%s, ошибок=%s",
+        "Итог: собрано=%s, новые=%s, разослано=%s, подписчики=%s, пауза=%s, ошибок=%s",
         len(all_collected),
         len(new_vacancies),
         sent_count,
         len(users),
+        paused_users,
         len(parser_errors) + len(failed_users),
     )
 

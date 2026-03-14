@@ -24,7 +24,19 @@ class TBankParser(BaseParser):
         for item in result.get("payload", {}).get("vacancies", []):
             title = (item.get("title", "") or "").strip()
             tags = item.get("tags") or []
-            grade = tags[0] if tags else None
+            grade_priority = {
+                "Junior": 1,
+                "Middle": 2,
+                "Senior": 3,
+                "Lead": 4,
+            }
+            grade_tags = sorted({tag for tag in tags if tag in grade_priority}, key=lambda x: grade_priority[x])
+            if len(grade_tags) == 1:
+                grade = grade_tags[0]
+            elif len(grade_tags) > 1:
+                grade = f"{grade_tags[0]}–{grade_tags[-1]}"
+            else:
+                grade = None
             city = ", ".join(item.get("cities", [])) or "Не указан"
             short_html = item.get("shortDescription") or ""
             short_description = BeautifulSoup(short_html, "html.parser").get_text(" ", strip=True) or None

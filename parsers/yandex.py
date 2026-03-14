@@ -59,15 +59,22 @@ class YandexParser(BaseParser):
             details = payload.get("vacancy") or payload
 
             if not vacancy.get("grade"):
-                level = (details.get("pro_level_max_display") or "").split(".")[-1].strip().lower()
                 grade_map = {
                     "intern": "Junior",
                     "junior": "Junior",
                     "middle": "Middle",
                     "senior": "Senior",
                 }
-                if level in grade_map:
-                    vacancy["grade"] = grade_map[level]
+                min_level = (details.get("pro_level_min_display") or "").split(".")[-1].strip().lower()
+                max_level = (details.get("pro_level_max_display") or "").split(".")[-1].strip().lower()
+                min_grade = grade_map.get(min_level)
+                max_grade = grade_map.get(max_level)
+
+                if min_grade:
+                    if not max_grade or min_grade == max_grade:
+                        vacancy["grade"] = min_grade
+                    else:
+                        vacancy["grade"] = f"{min_grade}–{max_grade}"
 
             if not vacancy.get("short_description"):
                 parts = [

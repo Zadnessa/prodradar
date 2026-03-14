@@ -32,6 +32,7 @@ async def run():
 
     all_collected = []
     parser_errors = []
+    parsers_by_company = {}
 
     async with aiohttp.ClientSession() as session:
         for company in companies:
@@ -41,6 +42,7 @@ async def run():
                 if not parser_cls:
                     raise ValueError(f"Парсер {parser_name} не найден в PARSER_REGISTRY")
                 parser = parser_cls()
+                parsers_by_company[company.get("name")] = parser
                 vacancies = await parser.parse(session, existing_ids, city_mappings)
                 if config.TEST_MODE:
                     vacancies = vacancies[: config.TEST_LIMIT]
@@ -50,17 +52,24 @@ async def run():
                 parser_errors.append(f"{company.get('name')}: {exc}")
                 logging.exception("Ошибка парсера %s", parser_name)
 
-    new_vacancies = [v for v in all_collected if v["id"] not in existing_ids]
+        new_vacancies = [v for v in all_collected if v["id"] not in existing_ids]
 
-    for vacancy in new_vacancies:
-        if not vacancy.get("short_description"):
-            vacancy["short_description"] = generate_summary(vacancy)
-        vacancy["city"] = _normalize_general_city(city_mappings, vacancy.get("city"))
-        vacancy["experience"] = normalize_experience(vacancy.get("experience"))
-        if not vacancy.get("grade"):
-            vacancy["grade"] = grade_from_title(vacancy.get("title", ""))
-        if not vacancy.get("grade"):
-            vacancy["grade"] = grade_from_experience(vacancy.get("experience", ""))
+        for vacancy in new_vacancies:
+            parser = parsers_by_company.get(vacancy.get("company"))
+            if parser:
+                try:
+                    vacancy = await parser.enrich(session, vacancy)
+                except Exception as exc:
+                    logging.warning("Ошибка enrichment для %s: %s", vacancy.get("id"), exc)
+
+            vacancy["city"] = _normalize_general_city(city_mappings, vacancy.get("city"))
+            vacancy["experience"] = normalize_experience(vacancy.get("experience"))
+            if not vacancy.get("grade"):
+                vacancy["grade"] = grade_from_title(vacancy.get("title", ""))
+            if not vacancy.get("grade"):
+                vacancy["grade"] = grade_from_experience(vacancy.get("experience", ""))
+            if not vacancy.get("short_description"):
+                vacancy["short_description"] = generate_summary(vacancy)
 
     db.save_vacancies(new_vacancies)
 

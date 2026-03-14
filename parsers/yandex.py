@@ -1,5 +1,8 @@
 """Парсер вакансий Yandex."""
 
+import asyncio
+import logging
+
 from parsers.base import BaseParser
 import config
 
@@ -39,3 +42,46 @@ class YandexParser(BaseParser):
             )
 
         return vacancies
+
+    async def enrich(self, session, vacancy):
+        should_sleep = False
+        try:
+            raw_id = (vacancy.get("id") or "").replace("ya_", "", 1)
+            if not raw_id.isdigit():
+                return vacancy
+
+            details_url = f"https://yandex.ru/jobs/api/publications/{raw_id}"
+            should_sleep = True
+            async with session.get(details_url, headers=config.REQUEST_HEADERS) as response:
+                response.raise_for_status()
+                payload = await response.json()
+
+            details = payload.get("vacancy") or payload
+
+            if not vacancy.get("grade"):
+                level = (details.get("pro_level_max_display") or "").split(".")[-1].strip().lower()
+                grade_map = {
+                    "intern": "Junior",
+                    "junior": "Junior",
+                    "middle": "Middle",
+                    "senior": "Senior",
+                }
+                if level in grade_map:
+                    vacancy["grade"] = grade_map[level]
+
+            if not vacancy.get("short_description"):
+                parts = [
+                    details.get("short_summary"),
+                    details.get("duties"),
+                    details.get("key_qualifications"),
+                ]
+                description = "\n\n".join((part or "").strip() for part in parts if (part or "").strip())
+                if description:
+                    vacancy["short_description"] = description[:500]
+        except Exception as exc:
+            logging.warning("Yandex enrich ошибка для %s: %s", vacancy.get("id"), exc)
+        finally:
+            if should_sleep:
+                await asyncio.sleep(0.3)
+
+        return vacancy

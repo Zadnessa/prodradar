@@ -3,7 +3,7 @@
 import os
 
 SHOW_DESCRIPTION = False
-TEST_MODE = True
+TEST_MODE = False
 TEST_LIMIT = 3
 
 REQUEST_HEADERS = {

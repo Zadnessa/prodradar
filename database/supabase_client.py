@@ -47,7 +47,7 @@ class SupabaseService:
         delivered_result = (
             self.client.table("user_vacancy_delivery")
             .select("vacancy_id")
-            .eq("chat_id", chat_id)
+            .eq("user_chat_id", chat_id)
             .execute()
         )
         delivered_ids = {row["vacancy_id"] for row in delivered_result.data or []}
@@ -67,7 +67,7 @@ class SupabaseService:
         delivered_at = datetime.now(timezone.utc).isoformat()
         payload = [
             {
-                "chat_id": chat_id,
+                "user_chat_id": chat_id,
                 "vacancy_id": vacancy_id,
                 "source": source,
                 "delivered_at": delivered_at,
@@ -76,7 +76,7 @@ class SupabaseService:
         ]
         self.client.table("user_vacancy_delivery").upsert(
             payload,
-            on_conflict="chat_id,vacancy_id",
+            on_conflict="user_chat_id,vacancy_id",
             ignore_duplicates=True,
         ).execute()
 

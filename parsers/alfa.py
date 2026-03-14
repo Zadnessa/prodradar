@@ -17,7 +17,8 @@ class AlfaParser(BaseParser):
             parts = [p for p in slug.split("/") if p]
             raw_city = parts[0] if parts else ""
             city = city_mappings.get(("alfa_slug", raw_city), raw_city.replace("-", " ").title() if raw_city else "Не указан")
-            title = item.get("name", "")
+            title = (item.get("name", "") or "").strip()
+            description = (item.get("descriptionText") or "").strip()
             vacancies.append(
                 {
                     "id": f"alfa_{item.get('id')}",
@@ -28,7 +29,7 @@ class AlfaParser(BaseParser):
                     "work_format": "Не указан",
                     "experience": config.ALFA_EXPERIENCE_MAP.get(item.get("experienceId"), "Не указан"),
                     "url": f"https://job.alfabank.ru/vacancies/{item.get('id')}",
-                    "short_description": None,
+                    "short_description": description[:500] if description else None,
                     "source_json": item,
                 }
             )

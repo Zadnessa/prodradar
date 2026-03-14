@@ -21,7 +21,7 @@ class WildberriesParser(BaseParser):
             vacancy_id = f"wb_{item.get('id')}"
             employment_types = item.get("employment_types") or []
             work_format = ", ".join(t.get("title", "") for t in employment_types if t.get("title")) or "Не указан"
-            title = item.get("name", "")
+            title = (item.get("name", "") or "").strip()
 
             vacancies.append(
                 {

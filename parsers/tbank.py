@@ -20,7 +20,7 @@ class TBankParser(BaseParser):
 
         vacancies = []
         for item in result.get("payload", {}).get("vacancies", []):
-            title = item.get("title", "")
+            title = (item.get("title", "") or "").strip()
             tags = item.get("tags") or []
             grade = tags[0] if tags else guess_grade_from_title(title)
             city = ", ".join(item.get("cities", [])) or "Не указан"

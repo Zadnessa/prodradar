@@ -1,8 +1,27 @@
 """Парсер вакансий Sber."""
 
+import re
+
 from parsers.base import BaseParser
 from parsers.utils import normalize_city
 import config
+
+
+_MD_PATTERNS = [
+    (r"```.*?```", " "),
+    (r"`([^`]*)`", r"\1"),
+    (r"!\[[^\]]*\]\([^)]*\)", " "),
+    (r"\[([^\]]+)\]\([^)]*\)", r"\1"),
+    (r"[*_~>#-]", " "),
+]
+
+
+def _clean_markdown(text):
+    cleaned = text or ""
+    for pattern, repl in _MD_PATTERNS:
+        cleaned = re.sub(pattern, repl, cleaned, flags=re.DOTALL)
+    cleaned = re.sub(r"\s+", " ", cleaned)
+    return cleaned.strip()
 
 
 class SberParser(BaseParser):
@@ -18,9 +37,13 @@ class SberParser(BaseParser):
         keywords = ("product", "продакт", "продукт", "cpo")
         vacancies = []
         for item in payload.get("data", {}).get("vacancies", []):
-            title = item.get("title", "")
+            title = (item.get("title", "") or "").strip()
             if not any(keyword in title.lower() for keyword in keywords):
                 continue
+
+            duties_clean = _clean_markdown(item.get("duties") or "")
+            short_description = duties_clean[:500] if duties_clean else None
+
             vacancies.append(
                 {
                     "id": f"sber_{item.get('internalId')}",
@@ -31,8 +54,14 @@ class SberParser(BaseParser):
                     "work_format": "Не указан",
                     "experience": config.SBER_EXPERIENCE_MAP.get(item.get("experienceId"), "Не указан"),
                     "url": f"https://rabota.sber.ru/search/{item.get('internalId')}",
-                    "short_description": None,
-                    "source_json": item,
+                    "short_description": short_description,
+                    "source_json": {
+                        **item,
+                        "introduction": item.get("introduction"),
+                        "duties": item.get("duties"),
+                        "requirements": item.get("requirements"),
+                        "conditions": item.get("conditions"),
+                    },
                 }
             )
         return vacancies

@@ -9,6 +9,7 @@ import config
 from database.supabase_client import SupabaseService
 from delivery.telegram import deliver_vacancies, send_admin_report
 from enrichment.ai_summary import generate_summary
+from enrichment.normalizer import grade_from_experience, grade_from_title, normalize_experience
 from parsers import PARSER_REGISTRY
 
 
@@ -55,6 +56,11 @@ async def run():
         if not vacancy.get("short_description"):
             vacancy["short_description"] = generate_summary(vacancy)
         vacancy["city"] = _normalize_general_city(city_mappings, vacancy.get("city"))
+        vacancy["experience"] = normalize_experience(vacancy.get("experience"))
+        if not vacancy.get("grade"):
+            vacancy["grade"] = grade_from_title(vacancy.get("title", ""))
+        if not vacancy.get("grade"):
+            vacancy["grade"] = grade_from_experience(vacancy.get("experience", ""))
 
     db.save_vacancies(new_vacancies)
 

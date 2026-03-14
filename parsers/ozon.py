@@ -1,6 +1,5 @@
 """Парсер вакансий Ozon."""
 
-from enrichment.grade_guesser import guess_grade_from_title
 from parsers.base import BaseParser
 from parsers.utils import normalize_city
 import config
@@ -24,7 +23,7 @@ class OzonParser(BaseParser):
                     "id": f"ozon_{item.get('hhId')}",
                     "company": "Ozon",
                     "title": title,
-                    "grade": guess_grade_from_title(title),
+                    "grade": None,
                     "city": normalize_city(city_mappings, item.get("city")),
                     "work_format": work_format,
                     "experience": item.get("experience") or "Не указан",

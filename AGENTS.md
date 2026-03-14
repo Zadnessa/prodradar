@@ -46,3 +46,13 @@
 Файл: parsers/*.py
 Было: title мог сохраняться с ведущими/замыкающими пробелами
 Стало: title нормализуется через .strip() перед сохранением
+
+### BUG-006: затирание short_description в main.py
+Файл: main.py
+Было: short_description всегда перезаписывался результатом generate_summary (None)
+Стало: generate_summary вызывается только если short_description отсутствует
+
+### BUG-007: грейды Yandex через фильтр pro_levels
+Файл: parsers/yandex.py
+Было: грейд/опыт определялись только из заголовка
+Стало: данные собираются отдельными запросами по pro_levels с дедупликацией по приоритету грейда и fallback-запросом без pro_levels

@@ -52,7 +52,8 @@ async def run():
     new_vacancies = [v for v in all_collected if v["id"] not in existing_ids]
 
     for vacancy in new_vacancies:
-        vacancy["short_description"] = generate_summary(vacancy)
+        if not vacancy.get("short_description"):
+            vacancy["short_description"] = generate_summary(vacancy)
         vacancy["city"] = _normalize_general_city(city_mappings, vacancy.get("city"))
 
     db.save_vacancies(new_vacancies)

@@ -3,8 +3,8 @@
 import os
 
 SHOW_DESCRIPTION = False
-TEST_MODE = False
-TEST_LIMIT = 2
+TEST_MODE = True
+TEST_LIMIT = 3
 
 REQUEST_HEADERS = {
     "User-Agent": (

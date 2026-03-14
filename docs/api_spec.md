@@ -10,6 +10,14 @@
 - Ссылка: https://career.rwb.ru/vacancies/{id}
 - Описание: только через HTML-страницу
 
+### API отдельной вакансии
+- Метод: GET
+- URL: https://career.rwb.ru/crm-api/api/v1/pub/vacancies/{id}
+- Обязательные заголовки: Referer: https://career.rwb.ru/vacancies
+- Поля для enrichment:
+  - grade: data.skill_level_id (если null — не заполнять)
+  - description: data.description + data.duties_arr + data.requirements_arr (склеить, обрезать до 500 символов)
+
 ## Yandex
 - Метод: GET
 - URL: https://yandex.ru/jobs/api/publications
@@ -21,6 +29,13 @@
 - Ссылка: https://yandex.ru/jobs/vacancies/{publication_slug_url}
 - Описание: short_summary из API (краткое), полное — через HTML
 
+### API отдельной вакансии
+- Метод: GET
+- URL: https://yandex.ru/jobs/api/publications/{id}
+- Поля для enrichment:
+  - grade: vacancy.pro_level_max_display (берём последний сегмент: intern/junior → Junior, middle → Middle, senior → Senior)
+  - description: short_summary + duties + key_qualifications (склеить, обрезать до 500 символов)
+
 ## Ozon
 - Метод: GET
 - URL: https://job-api.ozon.ru/v2/vacancy
@@ -31,6 +46,14 @@
 - Ссылка: https://career.ozon.ru/vacancy/{hhId}
 - Описание: только через HTML-страницу
 
+### API отдельной вакансии
+- Метод: GET
+- URL: https://job-api.ozon.ru/vacancy/{hhId}
+- Поля для enrichment:
+  - description: descr (HTML, очистить и обрезать до 500 символов)
+  - experience: exp (только если текущее значение пустое/не указано)
+  - work_format: workFormat (только если текущее значение пустое)
+
 ## T-Bank
 - Метод: POST
 - URL: https://www.tbank.ru/pfpjobs/papi/getVacancies
@@ -40,6 +63,13 @@
 - Поля: urlSlug (str), title (str), shortDescription (str — содержит HTML-теги, очищать), cities (array[str]), tags (array[str] — грейд: Middle, Senior, Head), source (str), specialty (str)
 - Ссылка: https://www.tbank.ru/career/{source}/{specialty}/{urlSlug}/
 - Описание: shortDescription из API (краткое, нужна очистка HTML)
+
+### API отдельной вакансии
+- Метод: GET
+- URL: https://hrsites-api-vacancies.tbank.ru/vacancies/public/api/platform/v2/getVacancy?urlSlug={slug}
+- Поля для enrichment:
+  - grade: experiences[0].name
+  - description: tasks + requirements (HTML, очистить и обрезать до 500 символов)
 
 ## VK
 - Метод: GET

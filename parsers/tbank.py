@@ -1,5 +1,8 @@
 """Парсер вакансий T-Bank."""
 
+import asyncio
+import logging
+
 from bs4 import BeautifulSoup
 from parsers.base import BaseParser
 import config
@@ -41,3 +44,44 @@ class TBankParser(BaseParser):
                 }
             )
         return vacancies
+
+    async def enrich(self, session, vacancy):
+        should_sleep = False
+        try:
+            slug = (vacancy.get("id") or "").replace("tbank_", "", 1)
+            if not slug:
+                return vacancy
+
+            details_url = (
+                "https://hrsites-api-vacancies.tbank.ru/vacancies/public/api/platform/v2/getVacancy"
+                f"?urlSlug={slug}"
+            )
+            should_sleep = True
+            async with session.get(details_url, headers=config.REQUEST_HEADERS) as response:
+                response.raise_for_status()
+                payload = await response.json()
+
+            data = payload.get("payload") or payload
+
+            if not vacancy.get("grade"):
+                experiences = data.get("experiences") or []
+                first_exp = experiences[0] if experiences else {}
+                if first_exp.get("name"):
+                    vacancy["grade"] = first_exp.get("name")
+
+            if not vacancy.get("short_description"):
+                parts = [data.get("tasks"), data.get("requirements")]
+                description = "\n\n".join(
+                    BeautifulSoup(part, "html.parser").get_text(" ", strip=True)
+                    for part in parts
+                    if part
+                )
+                if description:
+                    vacancy["short_description"] = description[:500]
+        except Exception as exc:
+            logging.warning("T-Bank enrich ошибка для %s: %s", vacancy.get("id"), exc)
+        finally:
+            if should_sleep:
+                await asyncio.sleep(0.3)
+
+        return vacancy

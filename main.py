@@ -9,7 +9,7 @@ import config
 from database.supabase_client import SupabaseService
 from delivery.telegram import deliver_vacancies, send_admin_report
 from enrichment.ai_summary import generate_summary
-from enrichment.normalizer import grade_from_experience, grade_from_title, normalize_experience
+from enrichment.normalizer import grade_from_experience, normalize_experience
 from parsers import PARSER_REGISTRY
 
 
@@ -52,6 +52,16 @@ async def run():
                 parser_errors.append(f"{company.get('name')}: {exc}")
                 logging.exception("Ошибка парсера %s", parser_name)
 
+        # Фильтрация нерелевантных вакансий по стоп-словам
+        before_filter = len(all_collected)
+        all_collected = [
+            v for v in all_collected
+            if not any(pattern in v.get("title", "").lower() for pattern in config.TITLE_STOP_PATTERNS)
+        ]
+        filtered_out = before_filter - len(all_collected)
+        if filtered_out:
+            logging.info("Отфильтровано по стоп-словам: %s", filtered_out)
+
         new_vacancies = [v for v in all_collected if v["id"] not in existing_ids]
 
         for vacancy in new_vacancies:
@@ -64,8 +74,6 @@ async def run():
 
             vacancy["city"] = _normalize_general_city(city_mappings, vacancy.get("city"))
             vacancy["experience"] = normalize_experience(vacancy.get("experience"))
-            if not vacancy.get("grade"):
-                vacancy["grade"] = grade_from_title(vacancy.get("title", ""))
             if not vacancy.get("grade"):
                 vacancy["grade"] = grade_from_experience(vacancy.get("experience", ""))
             if not vacancy.get("short_description"):

@@ -34,7 +34,7 @@ class TBankParser(BaseParser):
             if len(grade_tags) == 1:
                 grade = grade_tags[0]
             elif len(grade_tags) > 1:
-                grade = f"{grade_tags[0]}–{grade_tags[-1]}"
+                grade = f"{grade_tags[0]}-{grade_tags[-1]}"
             else:
                 grade = None
             city = ", ".join(item.get("cities", [])) or "Не указан"

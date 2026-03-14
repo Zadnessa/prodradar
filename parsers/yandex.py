@@ -74,7 +74,7 @@ class YandexParser(BaseParser):
                     if not max_grade or min_grade == max_grade:
                         vacancy["grade"] = min_grade
                     else:
-                        vacancy["grade"] = f"{min_grade}–{max_grade}"
+                        vacancy["grade"] = f"{min_grade}-{max_grade}"
 
             if not vacancy.get("short_description"):
                 parts = [

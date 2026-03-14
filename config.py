@@ -6,6 +6,17 @@ SHOW_DESCRIPTION = False
 TEST_MODE = False
 TEST_LIMIT = 3
 
+TITLE_STOP_PATTERNS = [
+    "project manager",
+    "менеджер проект",
+    "руководитель проект",
+    "аккаунт",
+    "account",
+    "product marketing",
+    "категорийн",
+    "оценки и развития",
+]
+
 REQUEST_HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "

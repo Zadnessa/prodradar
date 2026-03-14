@@ -9,10 +9,6 @@ import config
 
 def _resolve_grade(title):
     lowered = title.lower()
-    if "руководитель" in lowered:
-        return "Lead"
-    if "ведущий" in lowered or "старший" in lowered:
-        return "Senior"
     if "стажёр" in lowered or "стажер" in lowered:
         return "Junior"
     return None

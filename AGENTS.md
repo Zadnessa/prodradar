@@ -67,3 +67,13 @@
 Файл: enrichment/grade_guesser.py (удалён)
 Было: guess_grade_from_title определял Junior/Middle/Senior по ключевым словам в заголовке
 Стало: grade определяется только из фактических данных — поле grade API, маппинг experience → grade, или Lead+ по ключевым словам руководящих позиций. Файл заменён на enrichment/normalizer.py.
+
+### BUG-010: Normalizer не покрывает краевые случаи experience
+Файл: enrichment/normalizer.py
+Было: строки "от 3 лет", "более 6 лет" не нормализовались
+Стало: добавлен regex-fallback для любых строк с числами
+
+### BUG-011: Telegram потерял полужирные подзаголовки
+Файл: delivery/telegram.py
+Было: поля выводились без <b> тегов
+Стало: названия полей снова в <b>, но с маленькой буквы

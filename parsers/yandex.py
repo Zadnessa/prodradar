@@ -15,7 +15,8 @@ class YandexParser(BaseParser):
         vacancies = []
         for item in payload.get("results", []):
             vacancy = item.get("vacancy", {})
-            cities = ", ".join(c.get("name", "") for c in vacancy.get("cities", []) if c.get("name")) or "Не указан"
+            vacancy_cities = vacancy.get("cities") or item.get("cities") or []
+            cities = ", ".join(c.get("name", "") for c in vacancy_cities if c.get("name")) or "Не указан"
             work_modes = ", ".join(m.get("name", "") for m in vacancy.get("work_modes", []) if m.get("name")) or "Не указан"
             title = (item.get("title", "") or "").strip()
 

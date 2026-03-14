@@ -36,7 +36,7 @@ def format_vacancy_message(vacancy, company_meta):
     ]
     for label, value in fields:
         if value and str(value).strip().lower() != "не указан":
-            lines.append(f"{label}: {_escape_html(value)}")
+            lines.append(f"<b>{label}:</b> {_escape_html(value)}")
 
     description = vacancy.get("short_description")
     if config.SHOW_DESCRIPTION and description and str(description).strip().lower() != "не указан":

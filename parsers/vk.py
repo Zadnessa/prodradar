@@ -4,7 +4,6 @@ import asyncio
 import re
 
 from bs4 import BeautifulSoup
-from enrichment.grade_guesser import guess_grade_from_title
 from parsers.base import BaseParser
 from parsers.utils import normalize_city
 import config
@@ -29,7 +28,7 @@ class VKParser(BaseParser):
             work_format = work_map.get(raw_work_format, item.get("work_format") or "Не указан")
             title = (item.get("title", "") or "").strip()
             vacancy_id = f"vk_{item.get('id')}"
-            grade = guess_grade_from_title(title)
+            grade = None
 
             if vacancy_id not in existing_ids:
                 try:

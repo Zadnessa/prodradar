@@ -15,7 +15,7 @@ def _resolve_grade(title):
         return "Senior"
     if "стажёр" in lowered or "стажер" in lowered:
         return "Junior"
-    return "Middle"
+    return None
 
 
 class AvitoParser(BaseParser):

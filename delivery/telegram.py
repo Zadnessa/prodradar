@@ -22,24 +22,29 @@ def _escape_html(text):
 
 def format_vacancy_message(vacancy, company_meta):
     emoji = company_meta.get("emoji", "") if company_meta else ""
-    lines = [f"{emoji} Новая вакансия в {vacancy.get('company', 'Компания')}\n", f"<b>Позиция:</b> {_escape_html(vacancy.get('title', ''))}"]
+    lines = [
+        f"{emoji} {vacancy.get('company', 'Компания')}",
+        f"<b>{_escape_html(vacancy.get('title', ''))}</b>",
+        "",
+    ]
 
     fields = [
-        ("Город", vacancy.get("city")),
-        ("Опыт", vacancy.get("experience")),
-        ("Грейд", vacancy.get("grade")),
-        ("Формат", vacancy.get("work_format")),
+        ("грейд", vacancy.get("grade")),
+        ("опыт", vacancy.get("experience")),
+        ("город", vacancy.get("city")),
+        ("формат", vacancy.get("work_format")),
     ]
     for label, value in fields:
-        if value and value != "Не указан":
-            lines.append(f"<b>{label}:</b> {_escape_html(value)}")
+        if value and str(value).strip().lower() != "не указан":
+            lines.append(f"{label}: {_escape_html(value)}")
 
     description = vacancy.get("short_description")
-    if config.SHOW_DESCRIPTION and description and description != "Не указан":
-        lines.append(f"<b>Описание:</b> {_escape_html(description)}")
+    if config.SHOW_DESCRIPTION and description and str(description).strip().lower() != "не указан":
+        lines.append(f"описание: {_escape_html(description)}")
 
+    lines.append("")
     url = vacancy.get("url", "")
-    lines.append(f'<a href="{url}">Посмотреть вакансию</a>')
+    lines.append(f'<a href="{url}">Открыть вакансию</a>')
     return "\n".join(lines)
 
 

@@ -17,7 +17,7 @@ class OzonParser(BaseParser):
         for item in payload.get("items", []):
             if item.get("vacancyType") != "external_vacancy":
                 continue
-            title = item.get("title", "")
+            title = (item.get("title", "") or "").strip()
             work_format = ", ".join(item.get("workFormat", [])) or "Не указан"
             vacancies.append(
                 {
@@ -30,7 +30,7 @@ class OzonParser(BaseParser):
                     "experience": item.get("experience") or "Не указан",
                     "url": f"https://career.ozon.ru/vacancy/{item.get('hhId')}",
                     "short_description": None,
-                    "source_json": item,
+                    "source_json": {**item, "department": item.get("department")},
                 }
             )
         return vacancies

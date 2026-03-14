@@ -2,10 +2,20 @@
 
 from bs4 import BeautifulSoup
 
-from enrichment.grade_guesser import guess_grade_from_title
 from parsers.base import BaseParser
 from parsers.utils import normalize_city
 import config
+
+
+def _resolve_grade(title):
+    lowered = title.lower()
+    if "руководитель" in lowered:
+        return "Lead"
+    if "ведущий" in lowered or "старший" in lowered:
+        return "Senior"
+    if "стажёр" in lowered or "стажер" in lowered:
+        return "Junior"
+    return "Middle"
 
 
 class AvitoParser(BaseParser):
@@ -23,22 +33,29 @@ class AvitoParser(BaseParser):
 
         vacancies = []
         for card in cards:
-            link = card.find("a")
-            title = link.get_text(strip=True) if link else ""
+            link = card.find("a", class_="vacancies-section__item-name")
+            title = (link.get_text(strip=True) if link else "").strip()
             href = link.get("href") if link else ""
+            work_format_el = card.select_one("span.vacancies-section__item-format")
+            work_format = (work_format_el.get_text(strip=True) if work_format_el else "").strip() or "Не указан"
             data_attrs = {k: v for k, v in card.attrs.items() if k.startswith("data-")}
             vacancies.append(
                 {
                     "id": f"avito_{card.get('data-vacancy-id')}",
                     "company": "Avito",
                     "title": title,
-                    "grade": guess_grade_from_title(title),
+                    "grade": _resolve_grade(title),
                     "city": normalize_city(city_mappings, card.get("data-vacancy-geo")),
-                    "work_format": "Удаленка" if card.get("data-vacancy-remote") == "Да" else "Офис",
+                    "work_format": work_format,
                     "experience": "Не указан",
                     "url": f"https://career.avito.com{href}",
                     "short_description": None,
-                    "source_json": {"data_attrs": data_attrs, "title": title, "href": href},
+                    "source_json": {
+                        "data_attrs": data_attrs,
+                        "title": title,
+                        "href": href,
+                        "team": card.get("data-vacancy-team"),
+                    },
                 }
             )
         return vacancies

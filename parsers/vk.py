@@ -27,7 +27,7 @@ class VKParser(BaseParser):
                 "офисный": "Офис",
             }
             work_format = work_map.get(raw_work_format, item.get("work_format") or "Не указан")
-            title = item.get("title", "")
+            title = (item.get("title", "") or "").strip()
             vacancy_id = f"vk_{item.get('id')}"
             grade = guess_grade_from_title(title)
 
@@ -58,7 +58,7 @@ class VKParser(BaseParser):
                     "experience": "Не указан",
                     "url": f"https://team.vk.company/vacancy/{item.get('id')}/",
                     "short_description": None,
-                    "source_json": item,
+                    "source_json": {**item, "group_name": (item.get("group") or {}).get("name")},
                 }
             )
         return vacancies

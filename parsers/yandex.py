@@ -17,19 +17,24 @@ class YandexParser(BaseParser):
             vacancy = item.get("vacancy", {})
             cities = ", ".join(c.get("name", "") for c in vacancy.get("cities", []) if c.get("name")) or "Не указан"
             work_modes = ", ".join(m.get("name", "") for m in vacancy.get("work_modes", []) if m.get("name")) or "Не указан"
-            title = item.get("title", "")
+            title = (item.get("title", "") or "").strip()
+            grade = guess_grade_from_title(title)
+            experience_map = {"Junior": "1-3 лет", "Middle": "3-5 лет", "Senior": "5+ лет", "Lead": "5+ лет"}
             vacancies.append(
                 {
                     "id": f"ya_{item.get('id')}",
                     "company": "Yandex",
                     "title": title,
-                    "grade": guess_grade_from_title(title),
+                    "grade": grade,
                     "city": cities,
                     "work_format": work_modes,
-                    "experience": "Не указан",
+                    "experience": experience_map.get(grade, "Не указан"),
                     "url": f"https://yandex.ru/jobs/vacancies/{item.get('publication_slug_url')}",
-                    "short_description": None,
-                    "source_json": item,
+                    "short_description": item.get("short_summary") or None,
+                    "source_json": {
+                        **item,
+                        "public_service_name": (item.get("public_service") or {}).get("name"),
+                    },
                 }
             )
         return vacancies

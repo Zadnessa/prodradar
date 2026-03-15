@@ -38,6 +38,8 @@
 - Онбординг реализован как state machine в bot/onboarding.py. onboarding.py — чистая логика, не импортирует telegram_api или database. Состояние хранится в users.onboarding_step. Фильтры копятся в users.filters инкрементально при переходах между шагами. Промежуточное состояние toggle-кнопок живёт в reply_markup сообщения, не в БД.
 - callback_data для онбординга имеет префикс "ob:" и формат ob:action или ob:action:value. Примеры: ob:quick, ob:g:Junior, ob:co:yandex, ob:next, ob:done.
 - Все кнопки онбординга обновляют текущее сообщение через edit_message (не send_message). На шагах с запросами к БД сообщение сначала обновляется на лоадер (⏳), затем на результат.
+- Avito: грейд определяется по префиксу заголовка в парсере (Ведущий → Senior, Руководитель/CPO/Head of → Lead+). Это исключение из правила BUG-009 — применяется только к Avito, где API не содержит данных о грейде.
+- Т-Банк: tags Head и CPO маппятся в Lead+.
 
 ## Исправленные баги (не повторять)
 
@@ -116,3 +118,13 @@
 Файл: enrichment/normalizer.py, main.py, parsers/avito.py
 Было: Lead+ и часть грейдов определялись эвристиками по заголовку
 Стало: автоматическое определение Lead+ из заголовка удалено, грейд остаётся только из API enrichment и grade_from_experience
+
+### BUG-016: Т-Банк теряет грейд Head из tags
+Файл: parsers/tbank.py
+Было: grade_priority содержал только Junior, Middle, Senior, Lead — тег Head не распознавался
+Стало: добавлены Head и CPO с маппингом в Lead+
+
+### BUG-017: Avito — все вакансии без грейда
+Файл: parsers/avito.py
+Было: grade всегда null, т.к. API Avito не возвращает грейд
+Стало: грейд определяется по номенклатуре должностей Avito (Ведущий → Senior, Руководитель → Lead+)

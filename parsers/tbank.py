@@ -29,6 +29,8 @@ class TBankParser(BaseParser):
                 "Middle": 2,
                 "Senior": 3,
                 "Lead": 4,
+                "Head": 5,
+                "CPO": 5,
             }
             grade_tags = sorted({tag for tag in tags if tag in grade_priority}, key=lambda x: grade_priority[x])
             if len(grade_tags) == 1:
@@ -37,6 +39,9 @@ class TBankParser(BaseParser):
                 grade = f"{grade_tags[0]}-{grade_tags[-1]}"
             else:
                 grade = None
+
+            if grade:
+                grade = grade.replace("Head", "Lead+").replace("CPO", "Lead+")
             city = ", ".join(item.get("cities", [])) or "Не указан"
             short_html = item.get("shortDescription") or ""
             short_description = BeautifulSoup(short_html, "html.parser").get_text(" ", strip=True) or None
@@ -44,7 +49,7 @@ class TBankParser(BaseParser):
             vacancies.append(
                 {
                     "id": f"tbank_{item.get('urlSlug')}",
-                    "company": "T-Bank",
+                    "company": "Т-Банк",
                     "title": title,
                     "grade": grade,
                     "city": city,

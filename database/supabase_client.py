@@ -102,7 +102,7 @@ class SupabaseService:
     def get_user(self, chat_id):
         result = (
             self.client.table("users")
-            .select("chat_id,filters,onboarding_step,paused")
+            .select("chat_id,filters,onboarding_step,paused,is_active")
             .eq("chat_id", chat_id)
             .maybe_single()
             .execute()

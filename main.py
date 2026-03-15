@@ -104,8 +104,11 @@ async def run():
 
         chat_id = user.get("chat_id")
         try:
-            undelivered = db.get_undelivered_vacancies(chat_id)
+            undelivered = db.get_undelivered_vacancies(chat_id, limit=10)
             filtered_vacancies = filter_vacancies_for_user(undelivered, user.get("filters") or {})
+
+            if not filtered_vacancies:
+                continue
 
             delivered_ids = []
             for vacancy in filtered_vacancies:
@@ -114,7 +117,6 @@ async def run():
                 if result:
                     delivered_ids.append(vacancy["id"])
                     sent_count += 1
-                await asyncio.sleep(0.05)
 
             db.mark_delivered(chat_id, delivered_ids, source="scheduled")
         except Exception as exc:

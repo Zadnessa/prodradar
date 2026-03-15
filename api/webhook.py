@@ -4,7 +4,15 @@ import json
 import os
 from http.server import BaseHTTPRequestHandler
 
-from bot.handlers import handle_callback, handle_start, handle_stop, handle_unknown
+from bot.handlers import (
+    handle_callback,
+    handle_settings,
+    handle_settings_callback,
+    handle_start,
+    handle_stats,
+    handle_stop,
+    handle_unknown,
+)
 from bot.telegram_api import answer_callback
 from database.supabase_client import SupabaseService
 
@@ -39,9 +47,14 @@ class handler(BaseHTTPRequestHandler):
                 if callback_query_id:
                     answer_callback(callback_query_id)
 
-                if data.startswith("ob:") and chat_id and message_id:
+                prefix = data.split(":", 1)[0] if ":" in data else data
+
+                if prefix == "ob" and chat_id and message_id:
                     db = SupabaseService()
                     handle_callback(data, chat_id, message_id, callback_message, db=db)
+                elif prefix == "st" and chat_id and message_id:
+                    db = SupabaseService()
+                    handle_settings_callback(data, chat_id, message_id, callback_message, db=db)
 
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
@@ -61,6 +74,10 @@ class handler(BaseHTTPRequestHandler):
                     handle_start(chat_id, username, db=db)
                 elif text == "/stop":
                     handle_stop(chat_id, db=db)
+                elif text == "/settings":
+                    handle_settings(chat_id, db=db)
+                elif text == "/stats":
+                    handle_stats(chat_id, db=db)
                 else:
                     handle_unknown(chat_id)
 

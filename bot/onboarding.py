@@ -37,7 +37,7 @@ def get_welcome_message():
     return text, reply_markup
 
 
-def get_step_message(step, current_filters, companies_list=None):
+def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
     current_filters = current_filters or {}
 
     if step == "grade":
@@ -49,7 +49,7 @@ def get_step_message(step, current_filters, companies_list=None):
         buttons = [
             {
                 "text": f"{'✅' if grade in selected else '⬜'} {grade}",
-                "callback_data": f"ob:g:{grade}",
+                "callback_data": f"{prefix}:g:{grade}",
             }
             for grade in GRADE_OPTIONS
         ]
@@ -72,7 +72,7 @@ def get_step_message(step, current_filters, companies_list=None):
         buttons = [
             {
                 "text": f"{'✅' if option['filter_value'] in selected else '⬜'} {option['label']}",
-                "callback_data": f"ob:c:{option['callback_value']}",
+                "callback_data": f"{prefix}:c:{option['callback_value']}",
             }
             for option in CITY_OPTIONS
         ]
@@ -94,7 +94,7 @@ def get_step_message(step, current_filters, companies_list=None):
         buttons = [
             {
                 "text": f"{'✅' if option['filter_value'] in selected else '⬜'} {option['label']}",
-                "callback_data": f"ob:wf:{option['callback_value']}",
+                "callback_data": f"{prefix}:wf:{option['callback_value']}",
             }
             for option in WORK_FORMAT_OPTIONS
         ]
@@ -126,7 +126,7 @@ def get_step_message(step, current_filters, companies_list=None):
             row.append(
                 {
                     "text": f"{marker} {label}",
-                    "callback_data": f"ob:co:{parser_name}",
+                    "callback_data": f"{prefix}:co:{parser_name}",
                 }
             )
             if len(row) == 2:
@@ -146,7 +146,6 @@ def get_step_message(step, current_filters, companies_list=None):
 
     if step == "confirm":
         companies_list = companies_list or []
-        company_name_map = {item.get("parser_name"): item.get("name") for item in companies_list}
 
         grades = current_filters.get("grades") or []
         cities = current_filters.get("cities") or []
@@ -156,11 +155,7 @@ def get_step_message(step, current_filters, companies_list=None):
         grades_text = ", ".join(grades) if grades else "Все"
         cities_text = ", ".join(cities) if cities else "Все"
         work_formats_text = ", ".join(work_formats) if work_formats else "Все"
-        if companies:
-            company_names = [company_name_map.get(parser_name, parser_name) for parser_name in companies]
-            companies_text = ", ".join(company_names)
-        else:
-            companies_text = "Все"
+        companies_text = ", ".join(companies) if companies else "Все"
 
         text = (
             "<b>Шаг 5 из 5 — Проверь настройки</b>\n\n"
@@ -183,18 +178,18 @@ def get_step_message(step, current_filters, companies_list=None):
     return get_fallback_message()
 
 
-def toggle_selection(step, reply_markup, callback_value, all_company_names=None):
+def toggle_selection(step, reply_markup, callback_value, all_company_names=None, prefix="ob"):
     markup = deepcopy(reply_markup or {"inline_keyboard": []})
     for row in markup.get("inline_keyboard", []):
         for button in row:
             callback_data = button.get("callback_data", "")
-            if step == "grade" and callback_data == f"ob:g:{callback_value}":
+            if step == "grade" and callback_data == f"{prefix}:g:{callback_value}":
                 button["text"] = button["text"].replace("✅", "⬜", 1) if button["text"].startswith("✅") else button["text"].replace("⬜", "✅", 1)
-            elif step == "city" and callback_data == f"ob:c:{callback_value}":
+            elif step == "city" and callback_data == f"{prefix}:c:{callback_value}":
                 button["text"] = button["text"].replace("✅", "⬜", 1) if button["text"].startswith("✅") else button["text"].replace("⬜", "✅", 1)
-            elif step == "work_format" and callback_data == f"ob:wf:{callback_value}":
+            elif step == "work_format" and callback_data == f"{prefix}:wf:{callback_value}":
                 button["text"] = button["text"].replace("✅", "⬜", 1) if button["text"].startswith("✅") else button["text"].replace("⬜", "✅", 1)
-            elif step == "company" and callback_data == f"ob:co:{callback_value}":
+            elif step == "company" and callback_data == f"{prefix}:co:{callback_value}":
                 button["text"] = button["text"].replace("🟢", "🔴", 1) if button["text"].startswith("🟢") else button["text"].replace("🔴", "🟢", 1)
 
     if step == "company" and all_company_names:
@@ -204,7 +199,7 @@ def toggle_selection(step, reply_markup, callback_value, all_company_names=None)
     return markup
 
 
-def parse_selections_from_markup(step, reply_markup):
+def parse_selections_from_markup(step, reply_markup, companies_list=None, prefix="ob"):
     markup = reply_markup or {}
     rows = markup.get("inline_keyboard", [])
 
@@ -213,7 +208,7 @@ def parse_selections_from_markup(step, reply_markup):
         for row in rows:
             for button in row:
                 callback_data = button.get("callback_data", "")
-                if callback_data.startswith("ob:g:") and button.get("text", "").startswith("✅"):
+                if callback_data.startswith(f"{prefix}:g:") and button.get("text", "").startswith("✅"):
                     selected.append(callback_data.split(":", 2)[2])
         return {"grades": selected}
 
@@ -222,7 +217,7 @@ def parse_selections_from_markup(step, reply_markup):
         for row in rows:
             for button in row:
                 callback_data = button.get("callback_data", "")
-                if callback_data.startswith("ob:c:") and button.get("text", "").startswith("✅"):
+                if callback_data.startswith(f"{prefix}:c:") and button.get("text", "").startswith("✅"):
                     callback_value = callback_data.split(":", 2)[2]
                     selected.append(CITY_CALLBACK_TO_FILTER.get(callback_value, callback_value))
         return {"cities": selected}
@@ -232,22 +227,25 @@ def parse_selections_from_markup(step, reply_markup):
         for row in rows:
             for button in row:
                 callback_data = button.get("callback_data", "")
-                if callback_data.startswith("ob:wf:") and button.get("text", "").startswith("✅"):
+                if callback_data.startswith(f"{prefix}:wf:") and button.get("text", "").startswith("✅"):
                     callback_value = callback_data.split(":", 2)[2]
                     selected.append(WORK_FORMAT_CALLBACK_TO_FILTER.get(callback_value, callback_value))
         return {"work_formats": selected}
 
     if step == "company":
+        companies_list = companies_list or []
+        company_name_map = {item.get("parser_name"): item.get("name") for item in companies_list}
         enabled = []
         all_names = []
         for row in rows:
             for button in row:
                 callback_data = button.get("callback_data", "")
-                if callback_data.startswith("ob:co:"):
+                if callback_data.startswith(f"{prefix}:co:"):
                     parser_name = callback_data.split(":", 2)[2]
-                    all_names.append(parser_name)
+                    company_name = company_name_map.get(parser_name, parser_name)
+                    all_names.append(company_name)
                     if button.get("text", "").startswith("🟢"):
-                        enabled.append(parser_name)
+                        enabled.append(company_name)
 
         if all_names and len(enabled) == len(all_names):
             return {"companies": []}

@@ -11,7 +11,12 @@ from database.supabase_client import SupabaseService
 from delivery.filters import filter_vacancies_for_user
 from delivery.telegram import format_vacancy_message, send_admin_report
 from enrichment.ai_summary import generate_summary
-from enrichment.normalizer import grade_from_experience, normalize_experience
+from enrichment.normalizer import (
+    grade_from_experience,
+    normalize_experience,
+    normalize_grade,
+    normalize_work_format,
+)
 from parsers import PARSER_REGISTRY
 
 
@@ -77,6 +82,9 @@ async def run():
             vacancy["experience"] = normalize_experience(vacancy.get("experience"))
             if not vacancy.get("grade"):
                 vacancy["grade"] = grade_from_experience(vacancy.get("experience", ""))
+            vacancy["work_format"] = normalize_work_format(vacancy.get("work_format"))
+            if vacancy.get("grade") is not None:
+                vacancy["grade"] = normalize_grade(vacancy.get("grade"))
             if not vacancy.get("short_description"):
                 vacancy["short_description"] = generate_summary(vacancy)
 

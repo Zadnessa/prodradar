@@ -85,3 +85,73 @@ def grade_from_experience(normalized_experience):
     if normalized_experience == "не указан":
         return None
     return _GRADE_FROM_EXPERIENCE.get(normalized_experience)
+
+
+def normalize_work_format(raw_value):
+    """Приводит формат работы к стандартным значениям."""
+    if raw_value is None:
+        return "Не указан"
+
+    value = str(raw_value).strip()
+    if not value or value.lower() == "не указан":
+        return "Не указан"
+
+    normalized_parts = []
+    for raw_part in value.lower().split(","):
+        part = raw_part.strip()
+        if not part:
+            continue
+
+        labels_with_positions = []
+
+        def _first_position(keywords):
+            positions = [part.find(keyword) for keyword in keywords if keyword in part]
+            return min(positions) if positions else None
+
+        office_position = _first_position(("офис", "на месте", "office"))
+        remote_position = _first_position(("удал", "remote"))
+        hybrid_position = _first_position(("гибр", "гибк", "комбин", "hybrid"))
+
+        if office_position is not None:
+            labels_with_positions.append((office_position, "Офис"))
+        if remote_position is not None:
+            labels_with_positions.append((remote_position, "Удалёнка"))
+        if hybrid_position is not None:
+            labels_with_positions.append((hybrid_position, "Гибрид"))
+
+        for _, label in sorted(labels_with_positions, key=lambda item: item[0]):
+            if label not in normalized_parts:
+                normalized_parts.append(label)
+
+    if not normalized_parts:
+        return "Не указан"
+    return ", ".join(normalized_parts)
+
+
+def normalize_grade(raw_value):
+    """Приводит грейд к стандартному формату."""
+    if raw_value is None:
+        return None
+
+    value = str(raw_value).strip()
+    if not value:
+        return None
+
+    normalized_parts = []
+    for raw_part in value.split(","):
+        part = raw_part.strip()
+        if not part:
+            continue
+
+        normalized = part.title()
+        if normalized in {"Lead", "Head", "Cpo"}:
+            normalized = "Lead+"
+
+        if normalized not in normalized_parts:
+            normalized_parts.append(normalized)
+
+    if not normalized_parts:
+        return None
+    if len(normalized_parts) == 1:
+        return normalized_parts[0]
+    return "-".join(normalized_parts)

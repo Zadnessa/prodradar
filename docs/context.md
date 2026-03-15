@@ -145,3 +145,11 @@ Enricher должен брать min, не max.
 - На шаге confirm в онбординге добавлена кнопка «◀️ Назад» рядом с «👍 Отлично» и «🔄 Заново».
 - Фильтр grade: сохранён `+` в базовом грейде (`Lead+` матчит `Lead+`), а пользовательские фильтры расширяются (`Middle` → `Middle`+`Middle+`, `Senior` → `Senior`+`Senior+`, `Junior` → `Junior`+`Junior+`).
 - Для шага company при toggle обновляется только `reply_markup`; текст сообщения переиспользуется текущий, без пересборки шага и без потери списка компаний.
+
+## Hotfix: рендер компаний, адаптивная кнопка, навигация назад, сводка settings
+
+- BUG-027: `get_step_message("company")` сравнивал `parser_name` с фильтрами, содержащими русские `name`. Исправлено на сравнение по `name`.
+- BUG-028: toggle в handlers.py отправлял `reply_markup` из `toggle_selection` без обновлённой навигации. Исправлено: используется полный `reply_markup` из `get_step_message` / `get_settings_step`.
+- BUG-029: `ob:back` вызывал `get_step_message` с пустыми фильтрами и без `companies_list`. Исправлено: передаются фильтры из БД и `companies_list` для шага company.
+- UX: в `get_settings_menu` добавлена сводка текущих фильтров.
+- Confirm-шаг параметризован по prefix.

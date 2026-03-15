@@ -17,7 +17,26 @@ _STEP_TITLES = {
 def get_settings_menu(user):
     user = user or {}
     paused = bool(user.get("paused"))
-    text = "⚙️ Настройки\n\nЧто хочешь изменить?"
+    filters = user.get("filters") or {}
+
+    grades = filters.get("grades") or []
+    cities = filters.get("cities") or []
+    work_formats = filters.get("work_formats") or []
+    companies = filters.get("companies") or []
+
+    grades_text = ", ".join(grades) if grades else "Все"
+    cities_text = ", ".join(cities) if cities else "Все"
+    work_formats_text = ", ".join(work_formats) if work_formats else "Все"
+    companies_text = ", ".join(companies) if companies else "Все"
+
+    text = (
+        "⚙️ Настройки\n\n"
+        f"Грейд: {grades_text}\n"
+        f"Город: {cities_text}\n"
+        f"Формат: {work_formats_text}\n"
+        f"Компании: {companies_text}\n\n"
+        "Что хочешь изменить?"
+    )
 
     keyboard = [
         [{"text": "Грейд", "callback_data": "st:edit:grade"}],

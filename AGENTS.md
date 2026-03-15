@@ -201,3 +201,10 @@
 Файл: bot/handlers.py
 Было: `ob:back` вызывал `get_step_message(previous_step, {})` и не передавал `companies_list` для шага company.
 Стало: передаются `user.get("filters")` и `companies_list` (если previous_step == company) с лоадером `⏳` перед запросом к БД.
+
+- При выдаче вакансий: сначала полная выборка undelivered и фильтрация, потом лимит порции. Порция перемешивается.
+
+### BUG-030: limit до фильтрации скрывал релевантные вакансии
+Файл: bot/handlers.py
+Было: `_send_onboarding_batch` брал только `limit=6`, затем фильтровал и отправлял до 5.
+Стало: `_send_onboarding_batch` берёт `limit=500`, фильтрует, перемешивает (`shuffle`) и отправляет до 10.

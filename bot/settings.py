@@ -14,7 +14,7 @@ _STEP_TITLES = {
 }
 
 
-def get_settings_menu(user):
+def get_settings_menu(user, show_deliver=False):
     user = user or {}
     paused = bool(user.get("paused"))
     filters = user.get("filters") or {}
@@ -38,6 +38,12 @@ def get_settings_menu(user):
         "Что хочешь изменить?"
     )
 
+    if show_deliver:
+        text += (
+            "\n\n📬 Фильтры обновлены. Новые вакансии придут в ближайшей рассылке, "
+            "или можешь получить подборку прямо сейчас:"
+        )
+
     keyboard = [
         [{"text": "Грейд", "callback_data": "st:edit:grade"}],
         [{"text": "Город", "callback_data": "st:edit:city"}],
@@ -49,6 +55,9 @@ def get_settings_menu(user):
         keyboard.append([{"text": "▶️ Возобновить рассылку", "callback_data": "st:resume"}])
     else:
         keyboard.append([{"text": "⏸ Поставить на паузу", "callback_data": "st:pause"}])
+
+    if show_deliver:
+        keyboard.append([{"text": "📬 Получить вакансии", "callback_data": "st:deliver"}])
 
     keyboard.append([{"text": "🚫 Отписаться", "callback_data": "st:stop"}])
     keyboard.append([{"text": "✕ Закрыть", "callback_data": "st:close"}])

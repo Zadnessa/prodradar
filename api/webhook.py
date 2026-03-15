@@ -4,7 +4,7 @@ import json
 import os
 from http.server import BaseHTTPRequestHandler
 
-from bot.handlers import handle_start, handle_stop, handle_unknown
+from bot.handlers import handle_callback, handle_start, handle_stop, handle_unknown
 from bot.telegram_api import answer_callback
 from database.supabase_client import SupabaseService
 
@@ -30,8 +30,24 @@ class handler(BaseHTTPRequestHandler):
             callback_query = update.get("callback_query")
             if callback_query:
                 callback_query_id = callback_query.get("id")
+                data = callback_query.get("data") or ""
+                chat_id = (callback_query.get("from") or {}).get("id")
+                callback_message = callback_query.get("message") or {}
+                message_chat_id = ((callback_message.get("chat") or {}).get("id"))
+                message_id = callback_message.get("message_id")
+
                 if callback_query_id:
                     answer_callback(callback_query_id)
+
+                if data.startswith("ob:") and chat_id and message_id:
+                    db = SupabaseService()
+                    handle_callback(data, chat_id, message_id, callback_message, db=db)
+
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"ok": True, "chat_id": message_chat_id}).encode("utf-8"))
+                return
 
             message = update.get("message", {})
             chat = message.get("chat", {})

@@ -35,6 +35,9 @@
 - Фильтрация по пользовательским настройкам в delivery/filters.py. Пустой filters = всё.
 - paused=true — пользователь не получает рассылку, остаётся в базе.
 - Вакансии старше VACANCY_TTL_DAYS не учитываются в статистике.
+- Онбординг реализован как state machine в bot/onboarding.py. onboarding.py — чистая логика, не импортирует telegram_api или database. Состояние хранится в users.onboarding_step. Фильтры копятся в users.filters инкрементально при переходах между шагами. Промежуточное состояние toggle-кнопок живёт в reply_markup сообщения, не в БД.
+- callback_data для онбординга имеет префикс "ob:" и формат ob:action или ob:action:value. Примеры: ob:quick, ob:g:Junior, ob:co:yandex, ob:next, ob:done.
+- Все кнопки онбординга обновляют текущее сообщение через edit_message (не send_message). На шагах с запросами к БД сообщение сначала обновляется на лоадер (⏳), затем на результат.
 
 ## Исправленные баги (не повторять)
 

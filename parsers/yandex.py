@@ -26,7 +26,7 @@ class YandexParser(BaseParser):
             vacancies.append(
                 {
                     "id": f"ya_{item.get('id')}",
-                    "company": "Yandex",
+                    "company": "Яндекс",
                     "title": title,
                     "grade": None,
                     "city": cities,

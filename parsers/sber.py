@@ -47,7 +47,7 @@ class SberParser(BaseParser):
             vacancies.append(
                 {
                     "id": f"sber_{item.get('internalId')}",
-                    "company": "Sber",
+                    "company": "Сбер",
                     "title": title,
                     "grade": None,
                     "city": normalize_city(city_mappings, item.get("city")),

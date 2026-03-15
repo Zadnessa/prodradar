@@ -22,7 +22,7 @@ class AlfaParser(BaseParser):
             vacancies.append(
                 {
                     "id": f"alfa_{item.get('id')}",
-                    "company": "Alfa-Bank",
+                    "company": "Альфа-Банк",
                     "title": title,
                     "grade": None,
                     "city": city,

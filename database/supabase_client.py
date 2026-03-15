@@ -54,7 +54,7 @@ class SupabaseService:
 
         query = self.client.table("vacancies").select("*").eq("is_active", True)
         if delivered_ids:
-            query = query.not_in("id", list(delivered_ids))
+            query = query.not_.in_("id", list(delivered_ids))
 
         end = offset + limit - 1
         result = query.order("created_at", desc=True).range(offset, end).execute()

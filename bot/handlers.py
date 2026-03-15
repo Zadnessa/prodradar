@@ -3,6 +3,7 @@
 from bot.onboarding import (
     advance_step,
     get_fallback_message,
+    get_empty_filter_for_step,
     get_step_message,
     get_welcome_message,
     parse_selections_from_markup,
@@ -12,13 +13,63 @@ from bot.telegram_api import edit_message, send_message
 from database.supabase_client import SupabaseService
 
 
-FINAL_TEXT = "Готово! Буду присылать вакансии по выбранным настройкам."
-QUICK_START_TEXT = "Готово! Буду присылать все вакансии. Настройки можно изменить позже через /settings."
+FINAL_TEXT = (
+    "Настройки сохранены! Буду присылать подходящие вакансии дважды в день.\n\n"
+    "Изменить фильтры: /settings"
+)
+QUICK_START_TEXT = (
+    "Отлично! Буду присылать все вакансии для продактов дважды в день.\n\n"
+    "Настроить фильтры можно в любой момент через /settings."
+)
 
 
 def _edit_fallback(chat_id, message_id):
     text, _ = get_fallback_message()
     edit_message(chat_id, message_id, text, reply_markup=None)
+
+
+def _handle_step_transition(chat_id, message_id, reply_markup, db, skip=False):
+    if not reply_markup:
+        _edit_fallback(chat_id, message_id)
+        return
+
+    user = db.get_user(chat_id)
+    if not user:
+        _edit_fallback(chat_id, message_id)
+        return
+
+    current_step = user.get("onboarding_step")
+    if current_step not in {"grade", "city", "work_format", "company"}:
+        _edit_fallback(chat_id, message_id)
+        return
+
+    current_filters = user.get("filters") or {}
+    step_filter_fragment = (
+        get_empty_filter_for_step(current_step)
+        if skip
+        else parse_selections_from_markup(current_step, reply_markup)
+    )
+    next_filters = dict(current_filters)
+    next_filters.update(step_filter_fragment)
+
+    next_step = advance_step(current_step)
+    if not next_step:
+        _edit_fallback(chat_id, message_id)
+        return
+
+    companies_list = None
+    if next_step == "company":
+        edit_message(chat_id, message_id, "⏳ Загружаю список компаний...", reply_markup=None)
+        companies_list = db.get_enabled_companies()
+    elif next_step == "confirm":
+        edit_message(chat_id, message_id, "⏳ Применяю настройки...", reply_markup=None)
+        companies_list = db.get_enabled_companies()
+
+    db.update_user_filters(chat_id, next_filters)
+    db.update_onboarding_step(chat_id, next_step)
+
+    text, next_markup = get_step_message(next_step, next_filters, companies_list=companies_list)
+    edit_message(chat_id, message_id, text, reply_markup=next_markup)
 
 
 def handle_start(chat_id, username, db=None):
@@ -95,43 +146,11 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
         return
 
     if data == "ob:next":
-        if not reply_markup:
-            _edit_fallback(chat_id, message_id)
-            return
+        _handle_step_transition(chat_id, message_id, reply_markup, db, skip=False)
+        return
 
-        user = db.get_user(chat_id)
-        if not user:
-            _edit_fallback(chat_id, message_id)
-            return
-
-        current_step = user.get("onboarding_step")
-        if current_step not in {"grade", "city", "work_format", "company"}:
-            _edit_fallback(chat_id, message_id)
-            return
-
-        current_filters = user.get("filters") or {}
-        step_filter_fragment = parse_selections_from_markup(current_step, reply_markup)
-        next_filters = dict(current_filters)
-        next_filters.update(step_filter_fragment)
-
-        next_step = advance_step(current_step)
-        if not next_step:
-            _edit_fallback(chat_id, message_id)
-            return
-
-        companies_list = None
-        if next_step == "company":
-            edit_message(chat_id, message_id, "⏳ Загружаю список компаний...", reply_markup=None)
-            companies_list = db.get_enabled_companies()
-        elif next_step == "confirm":
-            edit_message(chat_id, message_id, "⏳ Применяю настройки...", reply_markup=None)
-            companies_list = db.get_enabled_companies()
-
-        db.update_user_filters(chat_id, next_filters)
-        db.update_onboarding_step(chat_id, next_step)
-
-        text, next_markup = get_step_message(next_step, next_filters, companies_list=companies_list)
-        edit_message(chat_id, message_id, text, reply_markup=next_markup)
+    if data == "ob:skip":
+        _handle_step_transition(chat_id, message_id, reply_markup, db, skip=True)
         return
 
     if data == "ob:done":

@@ -2,11 +2,11 @@
 
 from copy import deepcopy
 
-GRADE_OPTIONS = ["Junior", "Middle", "Senior"]
+GRADE_OPTIONS = ["Junior", "Middle", "Senior", "Lead+"]
 CITY_OPTIONS = [
     {"label": "Москва", "callback_value": "Москва", "filter_value": "Москва"},
     {"label": "Санкт-Петербург", "callback_value": "СПб", "filter_value": "Санкт-Петербург"},
-    {"label": "Другой", "callback_value": "Другой", "filter_value": "Другой"},
+    {"label": "Другой / зарубежные", "callback_value": "Другой", "filter_value": "Другой"},
 ]
 WORK_FORMAT_OPTIONS = [
     {"label": "Офис", "callback_value": "office", "filter_value": "Офис"},
@@ -20,8 +20,11 @@ WORK_FORMAT_CALLBACK_TO_FILTER = {item["callback_value"]: item["filter_value"] f
 
 def get_welcome_message():
     text = (
-        "👋 Добро пожаловать в Vacancy Radar!\n\n"
-        "Помогу настроить рассылку вакансий Product Manager под твои предпочтения."
+        "Привет! Я — <b>ProductRadar</b>.\n\n"
+        "Слежу за вакансиями для продакт-менеджеров напрямую на сайтах Яндекса, Озона, Т-Банка и ещё 5 компаний. "
+        "Никаких агрегаторов — только первоисточники.\n\n"
+        "Присылаю новые позиции дважды в день.\n\n"
+        "Можешь настроить фильтры под себя или начать сразу — потом всё легко поменять через /settings."
     )
     reply_markup = {
         "inline_keyboard": [
@@ -38,7 +41,10 @@ def get_step_message(step, current_filters, companies_list=None):
     current_filters = current_filters or {}
 
     if step == "grade":
-        text = "Шаг 1/5. Выбери грейд(ы):"
+        text = (
+            "<b>Шаг 1 из 5 — Грейд</b>\n\n"
+            "Какой уровень позиций тебе интересен? Можно выбрать несколько — покажу вакансии по всем отмеченным."
+        )
         selected = set(current_filters.get("grades") or [])
         buttons = [
             {
@@ -47,11 +53,21 @@ def get_step_message(step, current_filters, companies_list=None):
             }
             for grade in GRADE_OPTIONS
         ]
-        keyboard = [buttons, [{"text": "Далее →", "callback_data": "ob:next"}]]
+        keyboard = [buttons[i : i + 2] for i in range(0, len(buttons), 2)]
+        keyboard.append(
+            [
+                {"text": "Не важно →", "callback_data": "ob:skip"},
+                {"text": "Далее →", "callback_data": "ob:next"},
+            ]
+        )
         return text, {"inline_keyboard": keyboard}
 
     if step == "city":
-        text = "Шаг 2/5. Выбери город(а):"
+        text = (
+            "<b>Шаг 2 из 5 — Город</b>\n\n"
+            "В каком городе ищешь? «Другой / зарубежные» — это все остальные города и  другие страны, где нанимают компании из списка.\n\n"
+            "Формат работы (удалёнка, офис) будет на следующем шаге."
+        )
         selected = set(current_filters.get("cities") or [])
         buttons = [
             {
@@ -60,11 +76,20 @@ def get_step_message(step, current_filters, companies_list=None):
             }
             for option in CITY_OPTIONS
         ]
-        keyboard = [buttons, [{"text": "Далее →", "callback_data": "ob:next"}]]
+        keyboard = [buttons]
+        keyboard.append(
+            [
+                {"text": "Не важно →", "callback_data": "ob:skip"},
+                {"text": "Далее →", "callback_data": "ob:next"},
+            ]
+        )
         return text, {"inline_keyboard": keyboard}
 
     if step == "work_format":
-        text = "Шаг 3/5. Выбери формат работы:"
+        text = (
+            "<b>Шаг 3 из 5 — Формат работы</b>\n\n"
+            "Какой формат подходит? Если у вакансии формат не указан — я всё равно её покажу, чтобы ты ничего не пропустил."
+        )
         selected = set(current_filters.get("work_formats") or [])
         buttons = [
             {
@@ -73,11 +98,20 @@ def get_step_message(step, current_filters, companies_list=None):
             }
             for option in WORK_FORMAT_OPTIONS
         ]
-        keyboard = [buttons, [{"text": "Далее →", "callback_data": "ob:next"}]]
+        keyboard = [buttons]
+        keyboard.append(
+            [
+                {"text": "Не важно →", "callback_data": "ob:skip"},
+                {"text": "Далее →", "callback_data": "ob:next"},
+            ]
+        )
         return text, {"inline_keyboard": keyboard}
 
     if step == "company":
-        text = "Шаг 4/5. Выбери компании:"
+        text = (
+            "<b>Шаг 4 из 5 — Компании</b>\n\n"
+            "Все компании включены по-умолчанию. Нажми на компанию, чтобы убрать её из рассылки."
+        )
         companies_list = companies_list or []
         enabled_companies = current_filters.get("companies") or []
         all_enabled = len(enabled_companies) == 0
@@ -102,7 +136,12 @@ def get_step_message(step, current_filters, companies_list=None):
         if row:
             rows.append(row)
 
-        rows.append([{"text": "Далее →", "callback_data": "ob:next"}])
+        rows.append(
+            [
+                {"text": "Не важно →", "callback_data": "ob:skip"},
+                {"text": "Далее →", "callback_data": "ob:next"},
+            ]
+        )
         return text, {"inline_keyboard": rows}
 
     if step == "confirm":
@@ -124,11 +163,12 @@ def get_step_message(step, current_filters, companies_list=None):
             companies_text = "Все"
 
         text = (
-            "Шаг 5/5. Проверь настройки:\n\n"
+            "<b>Шаг 5 из 5 — Проверь настройки</b>\n\n"
             f"• Грейды: {grades_text}\n"
             f"• Города: {cities_text}\n"
             f"• Формат: {work_formats_text}\n"
-            f"• Компании: {companies_text}"
+            f"• Компании: {companies_text}\n\n"
+            "Изменить фильтры можно в любой момент через /settings."
         )
         reply_markup = {
             "inline_keyboard": [
@@ -213,6 +253,18 @@ def parse_selections_from_markup(step, reply_markup):
             return {"companies": []}
         return {"companies": enabled}
 
+    return {}
+
+
+def get_empty_filter_for_step(step):
+    if step == "grade":
+        return {"grades": []}
+    if step == "city":
+        return {"cities": []}
+    if step == "work_format":
+        return {"work_formats": []}
+    if step == "company":
+        return {"companies": []}
     return {}
 
 

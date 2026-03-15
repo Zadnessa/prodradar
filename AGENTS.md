@@ -208,3 +208,19 @@
 Файл: bot/handlers.py
 Было: `_send_onboarding_batch` брал только `limit=6`, затем фильтровал и отправлял до 5.
 Стало: `_send_onboarding_batch` берёт `limit=500`, фильтрует, перемешивает (`shuffle`) и отправляет до 10.
+
+### BUG-031: webhook проглатывал ошибки без логирования
+Файл: api/webhook.py
+Было: `except Exception` возвращал `{ok:false}` без записи стека в логи.
+Стало: добавлен `logging.exception("Webhook error")` и диагностический лог входящих update/callback.
+
+### BUG-032: зависание лоадера при ошибке выдачи вакансий
+Файл: bot/handlers.py
+Было: `_send_onboarding_batch` не имел защитного `try/except`, при падении лоадер оставался навсегда.
+Стало: добавлен `try/except` с fallback-сообщением пользователю и логированием через `logging.exception`.
+
+## Дополнительные правила
+
+- `api/webhook.py` обязан логировать ВСЕ исключения через `logging.exception`.
+- Любая функция, которая показывает пользователю лоадер `⏳`, обязана иметь `try/except` с fallback-сообщением.
+- Callback prefix `more:` используется для пагинации выдачи вакансий. Формат: `more:N` (offset) или `more:stop`.

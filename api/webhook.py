@@ -1,11 +1,14 @@
 """Vercel serverless webhook для Telegram."""
 
 import json
+import logging
 import os
+import traceback
 from http.server import BaseHTTPRequestHandler
 
 from bot.handlers import (
     handle_callback,
+    handle_more_callback,
     handle_settings,
     handle_settings_callback,
     handle_start,
@@ -34,6 +37,11 @@ class handler(BaseHTTPRequestHandler):
             content_len = int(self.headers.get("Content-Length", 0))
             body = self.rfile.read(content_len)
             update = json.loads(body.decode("utf-8"))
+            logging.info(
+                "Webhook update received: callback=%s message=%s",
+                ((update.get("callback_query") or {}).get("data")),
+                ((update.get("message") or {}).get("text")),
+            )
 
             callback_query = update.get("callback_query")
             if callback_query:
@@ -55,6 +63,9 @@ class handler(BaseHTTPRequestHandler):
                 elif prefix == "st" and chat_id and message_id:
                     db = SupabaseService()
                     handle_settings_callback(data, chat_id, message_id, callback_message, db=db)
+                elif prefix == "more" and chat_id and message_id:
+                    db = SupabaseService()
+                    handle_more_callback(data, chat_id, message_id, callback_message, db=db)
 
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
@@ -86,6 +97,8 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps({"ok": True}).encode("utf-8"))
         except Exception:
+            logging.exception("Webhook error")
+            logging.error("Webhook traceback:\n%s", traceback.format_exc())
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.end_headers()

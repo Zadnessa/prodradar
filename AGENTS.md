@@ -186,3 +186,18 @@
 Файл: delivery/filters.py
 Было: `_grade_base` удалял `+` (`Lead+` → `lead`), из-за чего выбор `Lead+` не матчил вакансии `Lead+`.
 Стало: `+` сохраняется в `_grade_base`; при фильтрации добавлено расширение пользовательского списка грейдов (`middle`→`middle+`, `senior`→`senior+`, `junior`→`junior+`).
+
+### BUG-027: get_step_message("company") сравнивал parser_name с name
+Файл: bot/onboarding.py
+Было: состояние кнопок компаний вычислялось через `parser_name in enabled_companies`, но в filters.companies хранятся русские `name`.
+Стало: сравнение идёт по `label` (`name`) — корректно отображаются 🟢/🔴 при непустом фильтре компаний.
+
+### BUG-028: toggle-ветки не обновляли адаптивную кнопку навигации
+Файл: bot/handlers.py
+Было: в ветках `ob:g/c/wf` и `st:g/c/wf` в `edit_message` уходил `reply_markup` из `toggle_selection`, где нижний ряд Skip/Next оставался старым.
+Стало: после `toggle_selection` и `parse_selections_from_markup` финальный `reply_markup` берётся из `get_step_message`/`get_settings_step`.
+
+### BUG-029: ob:back терял фильтры и список компаний
+Файл: bot/handlers.py
+Было: `ob:back` вызывал `get_step_message(previous_step, {})` и не передавал `companies_list` для шага company.
+Стало: передаются `user.get("filters")` и `companies_list` (если previous_step == company) с лоадером `⏳` перед запросом к БД.

@@ -128,7 +128,7 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
         for company in companies_list:
             parser_name = company.get("parser_name")
             label = company.get("name") or parser_name
-            is_enabled = all_enabled or parser_name in enabled_companies
+            is_enabled = all_enabled or label in enabled_companies
             marker = "🟢" if is_enabled else "🔴"
             row.append(
                 {
@@ -170,9 +170,9 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
         reply_markup = {
             "inline_keyboard": [
                 [
-                    {"text": "◀️ Назад", "callback_data": "ob:back"},
-                    {"text": "👍 Отлично", "callback_data": "ob:done"},
-                    {"text": "🔄 Заново", "callback_data": "ob:restart"},
+                    {"text": "◀️ Назад", "callback_data": f"{prefix}:back"},
+                    {"text": "👍 Отлично", "callback_data": f"{prefix}:done"},
+                    {"text": "🔄 Заново", "callback_data": f"{prefix}:restart"},
                 ]
             ]
         }

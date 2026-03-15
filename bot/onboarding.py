@@ -170,6 +170,7 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
         reply_markup = {
             "inline_keyboard": [
                 [
+                    {"text": "◀️ Назад", "callback_data": "ob:back"},
                     {"text": "👍 Отлично", "callback_data": "ob:done"},
                     {"text": "🔄 Заново", "callback_data": "ob:restart"},
                 ]

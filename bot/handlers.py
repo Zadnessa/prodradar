@@ -165,7 +165,8 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
 
         callback_value = data.split(":", 2)[2]
         next_markup = toggle_selection("grade", reply_markup, callback_value)
-        text, _ = get_step_message("grade", {})
+        current_filters = parse_selections_from_markup("grade", next_markup)
+        text, _ = get_step_message("grade", current_filters)
         edit_message(chat_id, message_id, text, reply_markup=next_markup)
         return
 
@@ -176,7 +177,8 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
 
         callback_value = data.split(":", 2)[2]
         next_markup = toggle_selection("city", reply_markup, callback_value)
-        text, _ = get_step_message("city", {})
+        current_filters = parse_selections_from_markup("city", next_markup)
+        text, _ = get_step_message("city", current_filters)
         edit_message(chat_id, message_id, text, reply_markup=next_markup)
         return
 
@@ -187,7 +189,8 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
 
         callback_value = data.split(":", 2)[2]
         next_markup = toggle_selection("work_format", reply_markup, callback_value)
-        text, _ = get_step_message("work_format", {})
+        current_filters = parse_selections_from_markup("work_format", next_markup)
+        text, _ = get_step_message("work_format", current_filters)
         edit_message(chat_id, message_id, text, reply_markup=next_markup)
         return
 
@@ -197,10 +200,8 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
             return
 
         callback_value = data.split(":", 2)[2]
-        companies_list = db.get_enabled_companies()
-        all_company_names = [company.get("name") for company in companies_list]
-        next_markup = toggle_selection("company", reply_markup, callback_value, all_company_names=all_company_names)
-        text, _ = get_step_message("company", {}, companies_list=companies_list)
+        next_markup = toggle_selection("company", reply_markup, callback_value, all_company_names=None)
+        text = (callback_message or {}).get("text") or "<b>Шаг 4 из 5 — Компании</b>"
         edit_message(chat_id, message_id, text, reply_markup=next_markup)
         return
 
@@ -298,23 +299,21 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
             step = "company"
 
         callback_value = data.split(":", 2)[2]
-        companies_list = None
-        all_company_names = None
-        if step == "company":
-            companies_list = db.get_enabled_companies()
-            all_company_names = [company.get("name") for company in companies_list]
-
         next_markup = toggle_selection(
             step,
             reply_markup,
             callback_value,
-            all_company_names=all_company_names,
+            all_company_names=None,
             prefix="st",
         )
 
-        user = db.get_user(chat_id)
-        current_filters = (user or {}).get("filters") or {}
-        text, _ = get_settings_step(step, current_filters, companies_list=companies_list)
+        if step == "company":
+            text = (callback_message or {}).get("text") or "⚙️ Настройка: Компании"
+            edit_message(chat_id, message_id, text, reply_markup=next_markup)
+            return
+
+        current_filters = parse_selections_from_markup(step, next_markup, prefix="st")
+        text, _ = get_settings_step(step, current_filters, companies_list=None)
         edit_message(chat_id, message_id, text, reply_markup=next_markup)
         return
 

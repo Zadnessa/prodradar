@@ -4,8 +4,8 @@ import config
 from bot.onboarding import (
     advance_step,
     get_fallback_message,
-    get_empty_filter_for_step,
     get_step_message,
+    reverse_step,
     get_welcome_message,
     parse_selections_from_markup,
     toggle_selection,
@@ -89,7 +89,7 @@ def _send_onboarding_batch(chat_id, message_id, db, filters):
         )
 
 
-def _handle_step_transition(chat_id, message_id, reply_markup, db, skip=False):
+def _handle_step_transition(chat_id, message_id, reply_markup, db):
     if not reply_markup:
         _edit_fallback(chat_id, message_id)
         return
@@ -105,11 +105,7 @@ def _handle_step_transition(chat_id, message_id, reply_markup, db, skip=False):
         return
 
     current_filters = user.get("filters") or {}
-    step_filter_fragment = (
-        get_empty_filter_for_step(current_step)
-        if skip
-        else parse_selections_from_markup(current_step, reply_markup)
-    )
+    step_filter_fragment = parse_selections_from_markup(current_step, reply_markup)
     next_filters = dict(current_filters)
     next_filters.update(step_filter_fragment)
 
@@ -125,11 +121,7 @@ def _handle_step_transition(chat_id, message_id, reply_markup, db, skip=False):
     elif next_step == "confirm":
         edit_message(chat_id, message_id, "⏳ Применяю настройки...", reply_markup=None)
         companies_list = db.get_enabled_companies()
-        step_filter_fragment = (
-            get_empty_filter_for_step(current_step)
-            if skip
-            else parse_selections_from_markup(current_step, reply_markup, companies_list=companies_list)
-        )
+        step_filter_fragment = parse_selections_from_markup(current_step, reply_markup, companies_list=companies_list)
         next_filters = dict(current_filters)
         next_filters.update(step_filter_fragment)
 
@@ -213,11 +205,23 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
         return
 
     if data == "ob:next":
-        _handle_step_transition(chat_id, message_id, reply_markup, db, skip=False)
+        _handle_step_transition(chat_id, message_id, reply_markup, db)
         return
 
-    if data == "ob:skip":
-        _handle_step_transition(chat_id, message_id, reply_markup, db, skip=True)
+    if data == "ob:back":
+        user = db.get_user(chat_id)
+        if not user:
+            _edit_fallback(chat_id, message_id)
+            return
+
+        previous_step = reverse_step(user.get("onboarding_step"))
+        if previous_step is None:
+            _edit_fallback(chat_id, message_id)
+            return
+
+        db.update_onboarding_step(chat_id, previous_step)
+        text, step_markup = get_step_message(previous_step, {})
+        edit_message(chat_id, message_id, text, reply_markup=step_markup)
         return
 
     if data == "ob:done":
@@ -361,6 +365,10 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
     if data == "st:stop:yes":
         db.deactivate_user(chat_id)
         edit_message(chat_id, message_id, "Ты отписался от рассылки. Чтобы вернуться — /start", reply_markup=None)
+        return
+
+    if data == "st:close":
+        edit_message(chat_id, message_id, "Настройки сохранены.", reply_markup=None)
         return
 
     if data in {"st:menu", "st:back"}:

@@ -32,6 +32,7 @@ def get_settings_menu(user):
         keyboard.append([{"text": "⏸ Поставить на паузу", "callback_data": "st:pause"}])
 
     keyboard.append([{"text": "🚫 Отписаться", "callback_data": "st:stop"}])
+    keyboard.append([{"text": "✕ Закрыть", "callback_data": "st:close"}])
 
     return text, {"inline_keyboard": keyboard}
 

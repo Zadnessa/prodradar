@@ -37,6 +37,28 @@ def get_welcome_message():
     return text, reply_markup
 
 
+def _get_adaptive_next_button(step, current_filters, prefix):
+    selected_map = {
+        "grade": current_filters.get("grades") or [],
+        "city": current_filters.get("cities") or [],
+        "work_format": current_filters.get("work_formats") or [],
+    }
+
+    is_selected = True if step == "company" else bool(selected_map.get(step, []))
+    button_text = "Далее ➡️" if is_selected else "Пропустить ⏭"
+    return {"text": button_text, "callback_data": f"{prefix}:next"}
+
+
+def _build_step_navigation(step, current_filters, prefix):
+    next_button = _get_adaptive_next_button(step, current_filters, prefix)
+    if step == "grade":
+        return [next_button]
+    return [
+        {"text": "◀️ Назад", "callback_data": f"{prefix}:back"},
+        next_button,
+    ]
+
+
 def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
     current_filters = current_filters or {}
 
@@ -54,12 +76,7 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
             for grade in GRADE_OPTIONS
         ]
         keyboard = [buttons[i : i + 2] for i in range(0, len(buttons), 2)]
-        keyboard.append(
-            [
-                {"text": "Не важно →", "callback_data": "ob:skip"},
-                {"text": "Далее →", "callback_data": "ob:next"},
-            ]
-        )
+        keyboard.append(_build_step_navigation("grade", current_filters, prefix))
         return text, {"inline_keyboard": keyboard}
 
     if step == "city":
@@ -77,12 +94,7 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
             for option in CITY_OPTIONS
         ]
         keyboard = [buttons]
-        keyboard.append(
-            [
-                {"text": "Не важно →", "callback_data": "ob:skip"},
-                {"text": "Далее →", "callback_data": "ob:next"},
-            ]
-        )
+        keyboard.append(_build_step_navigation("city", current_filters, prefix))
         return text, {"inline_keyboard": keyboard}
 
     if step == "work_format":
@@ -99,12 +111,7 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
             for option in WORK_FORMAT_OPTIONS
         ]
         keyboard = [buttons]
-        keyboard.append(
-            [
-                {"text": "Не важно →", "callback_data": "ob:skip"},
-                {"text": "Далее →", "callback_data": "ob:next"},
-            ]
-        )
+        keyboard.append(_build_step_navigation("work_format", current_filters, prefix))
         return text, {"inline_keyboard": keyboard}
 
     if step == "company":
@@ -136,12 +143,7 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
         if row:
             rows.append(row)
 
-        rows.append(
-            [
-                {"text": "Не важно →", "callback_data": "ob:skip"},
-                {"text": "Далее →", "callback_data": "ob:next"},
-            ]
-        )
+        rows.append(_build_step_navigation("company", current_filters, prefix))
         return text, {"inline_keyboard": rows}
 
     if step == "confirm":
@@ -254,16 +256,14 @@ def parse_selections_from_markup(step, reply_markup, companies_list=None, prefix
     return {}
 
 
-def get_empty_filter_for_step(step):
-    if step == "grade":
-        return {"grades": []}
-    if step == "city":
-        return {"cities": []}
-    if step == "work_format":
-        return {"work_formats": []}
-    if step == "company":
-        return {"companies": []}
-    return {}
+
+def reverse_step(current_step):
+    order = ["grade", "city", "work_format", "company", "confirm"]
+    if current_step not in order:
+        return None
+
+    index = order.index(current_step)
+    return order[index - 1] if index > 0 else None
 
 
 def advance_step(current_step):

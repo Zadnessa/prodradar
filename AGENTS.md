@@ -146,3 +146,17 @@
 Файл: delivery/filters.py
 Было: точное сравнение строк, «Москва, Санкт-Петербург» не матчилось ни с чем
 Стало: разбивка по запятой, матч по любому фрагменту, «Любой город» пропускается
+
+## Обновления PR 5c
+
+- Callback prefix `st:` используется для settings (по аналогии с `ob:` для онбординга).
+- `get_step_message`, `toggle_selection`, `parse_selections_from_markup` параметризованы по `prefix` (по умолчанию `"ob"`).
+- `filters.companies` хранит `name` компании, а не `parser_name`.
+- После онбординга отправляется порция до 5 вакансий без `sleep`.
+- В `main.py` лимит отправки — максимум 10 вакансий на пользователя за запуск.
+- Команды `/settings` и `/stats` блокируются во время онбординга (`onboarding_step != null`).
+
+### BUG-021: filters.companies хранил parser_name вместо name
+Файл: bot/onboarding.py, bot/handlers.py
+Было: в `filters.companies` сохранялся `parser_name`, из-за чего фильтрация по компаниям не совпадала с вакансиями.
+Стало: сохраняется `name` компании через маппинг `parser_name -> name`.

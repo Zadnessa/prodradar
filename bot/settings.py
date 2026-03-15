@@ -44,23 +44,31 @@ def get_settings_menu(user, show_deliver=False):
             "или можешь получить подборку прямо сейчас:"
         )
 
-    keyboard = [
-        [{"text": "Грейд", "callback_data": "st:edit:grade"}],
-        [{"text": "Город", "callback_data": "st:edit:city"}],
-        [{"text": "Формат работы", "callback_data": "st:edit:wf"}],
-        [{"text": "Компании", "callback_data": "st:edit:company"}],
-    ]
-
-    if paused:
-        keyboard.append([{"text": "▶️ Возобновить рассылку", "callback_data": "st:resume"}])
-    else:
-        keyboard.append([{"text": "⏸ Поставить на паузу", "callback_data": "st:pause"}])
+    keyboard = []
 
     if show_deliver:
         keyboard.append([{"text": "📬 Получить вакансии", "callback_data": "st:deliver"}])
 
-    keyboard.append([{"text": "🚫 Отписаться", "callback_data": "st:stop"}])
-    keyboard.append([{"text": "✕ Закрыть", "callback_data": "st:close"}])
+    keyboard.extend(
+        [
+            [
+                {"text": "Грейд", "callback_data": "st:edit:grade"},
+                {"text": "Город", "callback_data": "st:edit:city"},
+            ],
+            [
+                {"text": "Формат", "callback_data": "st:edit:wf"},
+                {"text": "Компании", "callback_data": "st:edit:company"},
+            ],
+            [
+                {
+                    "text": "▶️ Возобновить" if paused else "⏸ Пауза",
+                    "callback_data": "st:resume" if paused else "st:pause",
+                },
+                {"text": "🚫 Отписаться", "callback_data": "st:stop"},
+            ],
+            [{"text": "◀️ Назад", "callback_data": "st:close"}],
+        ]
+    )
 
     return text, {"inline_keyboard": keyboard}
 

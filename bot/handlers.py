@@ -1,6 +1,7 @@
 """Обработка команд Telegram-бота."""
 
 import config
+import logging
 import random
 from bot.onboarding import (
     advance_step,
@@ -52,49 +53,100 @@ def _detect_step_by_markup(reply_markup):
     return None
 
 
-def _send_onboarding_batch(chat_id, message_id, db, filters):
-    edit_message(chat_id, message_id, "⏳ Подбираю вакансии...", reply_markup=None)
-    user = db.get_user(chat_id)
-    effective_filters = filters if filters is not None else (user or {}).get("filters") or {}
+def _build_more_keyboard(offset):
+    return {
+        "inline_keyboard": [
+            [
+                {"text": "📬 Ещё 10", "callback_data": f"more:{offset}"},
+                {"text": "✕ Хватит", "callback_data": "more:stop"},
+            ]
+        ]
+    }
 
+
+def _send_vacancies_chunk(chat_id, db, filters):
     companies_list = db.get_enabled_companies()
     companies_map = {company.get("name"): company for company in companies_list}
 
     undelivered = db.get_undelivered_vacancies(chat_id, limit=500)
-    filtered = filter_vacancies_for_user(undelivered, effective_filters)
+    filtered = filter_vacancies_for_user(undelivered, filters)
     random.shuffle(filtered)
     batch = filtered[:10]
 
     if not batch:
-        edit_message(chat_id, message_id, FINAL_TEXT, reply_markup=None)
-        return
+        send_message(chat_id, "Это все вакансии. Новые пришлю, как только появятся.")
+        return 0, 0
+
+    sent_ids = []
+    for vacancy in batch:
+        try:
+            message = format_vacancy_message(vacancy, companies_map.get(vacancy.get("company"), {}))
+            send_message(chat_id, message)
+            sent_ids.append(vacancy["id"])
+        except Exception:
+            logging.exception("Не удалось отправить вакансию пользователю")
+
+    if sent_ids:
+        db.mark_delivered(chat_id, sent_ids, source="onboarding")
 
     total = len(filtered)
-    if total > len(batch):
-        summary_text = f"Нашёл {total} подходящих вакансий. Вот первые {len(batch)}:"
-    else:
-        summary_text = f"Нашёл {total} вакансий:"
+    sent_count = len(sent_ids)
 
-    edit_message(chat_id, message_id, summary_text, reply_markup=None)
+    if total <= 10:
+        send_message(chat_id, "Это все вакансии. Новые пришлю, как только появятся.")
+    elif sent_count > 0:
+        remaining = total - sent_count
+        if remaining > 0:
+            send_message(
+                chat_id,
+                f"Показано {sent_count} из {total}",
+                reply_markup=_build_more_keyboard(sent_count),
+            )
+        else:
+            send_message(chat_id, "Это все вакансии. Новые пришлю, как только появятся.")
 
-    for vacancy in batch:
-        message = format_vacancy_message(vacancy, companies_map.get(vacancy.get("company"), {}))
-        send_message(chat_id, message)
+    return sent_count, total
 
-    db.mark_delivered(chat_id, [vacancy["id"] for vacancy in batch], source="onboarding")
 
-    remaining = total - len(batch)
-    if remaining > 0:
-        send_message(
+def _send_onboarding_batch(chat_id, message_id, db, filters):
+    try:
+        edit_message(chat_id, message_id, "⏳ Подбираю вакансии...", reply_markup=None)
+        user = db.get_user(chat_id)
+        effective_filters = filters if filters is not None else (user or {}).get("filters") or {}
+
+        undelivered = db.get_undelivered_vacancies(chat_id, limit=500)
+        filtered = filter_vacancies_for_user(undelivered, effective_filters)
+        total = len(filtered)
+
+        if total == 0:
+            edit_message(chat_id, message_id, FINAL_TEXT, reply_markup=None)
+            return
+
+        if total <= 10:
+            prompt = f"Нашёл {total} подходящих вакансий.\n\nПоказать все {total}?"
+        else:
+            prompt = f"Нашёл {total} подходящих вакансий.\n\nПоказать первые 10?"
+
+        edit_message(
             chat_id,
-            f"Ещё {remaining} вакансий — пришлю в ближайших рассылках.\n\n"
-            "Изменить фильтры: /settings",
+            message_id,
+            prompt,
+            reply_markup={
+                "inline_keyboard": [
+                    [
+                        {"text": "📬 Показать", "callback_data": "more:0"},
+                        {"text": "⚙️ Изменить фильтры", "callback_data": "st:menu"},
+                    ]
+                ]
+            },
         )
-    else:
-        send_message(
+    except Exception:
+        logging.exception("Ошибка при подготовке выдачи вакансий")
+        edit_message(
             chat_id,
-            "Это все вакансии на данный момент. Новые пришлю, как только появятся.\n\n"
-            "Изменить фильтры: /settings",
+            message_id,
+            "Произошла ошибка при загрузке вакансий. Попробуй позже или нажми /settings",
+            reply_markup=None,
         )
 
 
@@ -254,6 +306,38 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
 
     if data.startswith("ob:"):
         _edit_fallback(chat_id, message_id)
+
+
+def handle_more_callback(data, chat_id, message_id, callback_message, db=None):
+    db = db or SupabaseService()
+
+    if data == "more:stop":
+        edit_message(chat_id, message_id, "Остальные пришлю в рассылках. /settings", reply_markup=None)
+        return
+
+    if not data.startswith("more:"):
+        return
+
+    try:
+        offset_part = data.split(":", 1)[1]
+        int(offset_part)
+    except (ValueError, IndexError):
+        edit_message(chat_id, message_id, "Не удалось обработать запрос. Попробуй ещё раз через /settings", reply_markup=None)
+        return
+
+    try:
+        edit_message(chat_id, message_id, "⏳ Загружаю...", reply_markup=None)
+        user = db.get_user(chat_id) or {}
+        filters = user.get("filters") or {}
+        _send_vacancies_chunk(chat_id, db, filters)
+    except Exception:
+        logging.exception("Ошибка при обработке more callback")
+        edit_message(
+            chat_id,
+            message_id,
+            "Произошла ошибка при загрузке вакансий. Попробуй позже или нажми /settings",
+            reply_markup=None,
+        )
 
 
 def handle_settings(chat_id, db=None):

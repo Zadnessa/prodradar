@@ -99,6 +99,16 @@ class SupabaseService:
     def set_user_paused(self, chat_id, paused):
         self.client.table("users").update({"paused": paused}).eq("chat_id", chat_id).execute()
 
+    def get_user(self, chat_id):
+        result = (
+            self.client.table("users")
+            .select("chat_id,filters,onboarding_step,paused")
+            .eq("chat_id", chat_id)
+            .maybe_single()
+            .execute()
+        )
+        return result.data
+
     def get_vacancy_stats(self):
         cutoff = datetime.now(timezone.utc) - timedelta(days=config.VACANCY_TTL_DAYS)
         result = (

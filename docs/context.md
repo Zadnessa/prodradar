@@ -89,3 +89,16 @@ Enricher должен брать min, не max.
 - Модель доставки: `user_vacancy_delivery` вместо `notified_at`.
 - Структура filters: `{"grades": [], "cities": [], "work_formats": [], "companies": []}`.
 - Логика фильтрации: пустой список = всё, grade-диапазоны по левой части, `Middle+` = `Middle`, `null`/`Не указан` пропускается.
+
+## PR 5b: Онбординг UI
+
+- Создан `bot/onboarding.py` — state machine онбординга.
+- CJM: /start → welcome → [Быстрый старт | Настроить] → grade → city → work_format → company → confirm.
+- Toggle без БД: промежуточный выбор живёт в reply_markup, запись в Supabase только при ob:next, ob:done, ob:quick.
+- Компании: по умолчанию все включены (🟢). Пустой companies=[] значит "все". В filters хранится список включённых parser_name.
+- callback_data формат: ob:quick, ob:setup, ob:g:Junior, ob:c:СПб, ob:wf:remote, ob:co:yandex, ob:next, ob:done, ob:restart.
+- Лоадеры через edit_message на шагах с запросами к БД.
+- Fallback при невосстановимом состоянии: "Сессия настройки устарела..."
+- Повторный /start сбрасывает filters и перезапускает онбординг.
+- Добавлен метод get_user(chat_id) в SupabaseService.
+- webhook.py: callback_query и message — взаимоисключающие пути.

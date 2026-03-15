@@ -1,6 +1,7 @@
 """Обработка команд Telegram-бота."""
 
 import config
+import random
 from bot.onboarding import (
     advance_step,
     get_fallback_message,
@@ -59,15 +60,22 @@ def _send_onboarding_batch(chat_id, message_id, db, filters):
     companies_list = db.get_enabled_companies()
     companies_map = {company.get("name"): company for company in companies_list}
 
-    undelivered = db.get_undelivered_vacancies(chat_id, limit=6)
+    undelivered = db.get_undelivered_vacancies(chat_id, limit=500)
     filtered = filter_vacancies_for_user(undelivered, effective_filters)
-    batch = filtered[:5]
+    random.shuffle(filtered)
+    batch = filtered[:10]
 
     if not batch:
         edit_message(chat_id, message_id, FINAL_TEXT, reply_markup=None)
         return
 
-    edit_message(chat_id, message_id, "Настройки сохранены! Вот первые подходящие вакансии:", reply_markup=None)
+    total = len(filtered)
+    if total > len(batch):
+        summary_text = f"Нашёл {total} подходящих вакансий. Вот первые {len(batch)}:"
+    else:
+        summary_text = f"Нашёл {total} вакансий:"
+
+    edit_message(chat_id, message_id, summary_text, reply_markup=None)
 
     for vacancy in batch:
         message = format_vacancy_message(vacancy, companies_map.get(vacancy.get("company"), {}))
@@ -75,10 +83,11 @@ def _send_onboarding_batch(chat_id, message_id, db, filters):
 
     db.mark_delivered(chat_id, [vacancy["id"] for vacancy in batch], source="onboarding")
 
-    if len(filtered) > 5 or len(undelivered) == 6:
+    remaining = total - len(batch)
+    if remaining > 0:
         send_message(
             chat_id,
-            "Остальные подходящие вакансии пришлю в ближайшей рассылке.\n\n"
+            f"Ещё {remaining} вакансий — пришлю в ближайших рассылках.\n\n"
             "Изменить фильтры: /settings",
         )
     else:
@@ -313,14 +322,18 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
             prefix="st",
         )
 
-        companies_list = db.get_enabled_companies() if step == "company" else None
+        if step == "company":
+            text = (callback_message or {}).get("text") or "⚙️ Настройка: Компании"
+            edit_message(chat_id, message_id, text, reply_markup=toggled_markup)
+            return
+
         current_filters = parse_selections_from_markup(
             step,
             toggled_markup,
-            companies_list=companies_list,
+            companies_list=None,
             prefix="st",
         )
-        text, next_markup = get_settings_step(step, current_filters, companies_list=companies_list)
+        text, next_markup = get_settings_step(step, current_filters, companies_list=None)
         edit_message(chat_id, message_id, text, reply_markup=next_markup)
         return
 
@@ -347,8 +360,12 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
         db.update_user_filters(chat_id, merged)
 
         refreshed_user = db.get_user(chat_id) or {}
-        text, menu_markup = get_settings_menu(refreshed_user)
+        text, menu_markup = get_settings_menu(refreshed_user, show_deliver=True)
         edit_message(chat_id, message_id, text, reply_markup=menu_markup)
+        return
+
+    if data == "st:deliver":
+        _send_onboarding_batch(chat_id, message_id, db, filters=None)
         return
 
     if data == "st:pause":

@@ -36,7 +36,7 @@
 - paused=true — пользователь не получает рассылку, остаётся в базе.
 - Вакансии старше VACANCY_TTL_DAYS не учитываются в статистике.
 - Онбординг реализован как state machine в bot/onboarding.py. onboarding.py — чистая логика, не импортирует telegram_api или database. Состояние хранится в users.onboarding_step. Фильтры копятся в users.filters инкрементально при переходах между шагами. Промежуточное состояние toggle-кнопок живёт в reply_markup сообщения, не в БД.
-- callback_data для онбординга имеет префикс "ob:" и формат ob:action или ob:action:value. Примеры: ob:quick, ob:g:Junior, ob:co:yandex, ob:next, ob:done.
+- callback_data для онбординга имеет префикс "ob:" и формат ob:action или ob:action:value. Примеры: ob:quick, ob:g:Junior, ob:co:yandex, ob:back, ob:next, ob:done.
 - Все кнопки онбординга обновляют текущее сообщение через edit_message (не send_message). На шагах с запросами к БД сообщение сначала обновляется на лоадер (⏳), затем на результат.
 - Avito: грейд определяется по префиксу заголовка в парсере (Ведущий → Senior, Руководитель/CPO/Head of → Lead+). Это исключение из правила BUG-009 — применяется только к Avito, где API не содержит данных о грейде.
 - Т-Банк: tags Head и CPO маппятся в Lead+.
@@ -160,3 +160,9 @@
 Файл: bot/onboarding.py, bot/handlers.py
 Было: в `filters.companies` сохранялся `parser_name`, из-за чего фильтрация по компаниям не совпадала с вакансиями.
 Стало: сохраняется `name` компании через маппинг `parser_name -> name`.
+
+
+### BUG-022: навигация онбординга и закрытие settings
+Файл: bot/onboarding.py, bot/handlers.py, bot/settings.py
+Было: на шагах использовалась кнопка «Не важно →», нельзя было вернуться назад, в settings не было явного закрытия меню.
+Стало: навигация стала адаптивной ("Пропустить ⏭"/"Далее ➡️"), добавлена кнопка "◀️ Назад" для шагов city/work_format/company и кнопка "✕ Закрыть" (st:close) в settings.

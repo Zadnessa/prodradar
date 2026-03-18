@@ -14,7 +14,7 @@ _STEP_TITLES = {
 }
 
 
-def get_settings_menu(user, show_deliver=True):
+def get_settings_menu(user):
     user = user or {}
     paused = bool(user.get("paused"))
     filters = user.get("filters") or {}
@@ -39,9 +39,7 @@ def get_settings_menu(user, show_deliver=True):
         "\n\n<i>Не все компании указывают грейд и город — такие вакансии тоже попадают в выдачу.</i>"
     )
 
-    keyboard = []
-    if show_deliver:
-        keyboard.append([{"text": "📬 Получить вакансии", "callback_data": "st:deliver"}])
+    keyboard = [[{"text": "📬 Получить вакансии", "callback_data": "st:deliver"}]]
 
     keyboard.extend([
         [

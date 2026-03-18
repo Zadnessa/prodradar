@@ -111,10 +111,10 @@ class SupabaseService:
             self.client.table("users")
             .select("chat_id,filters,onboarding_step,paused,is_active")
             .eq("chat_id", chat_id)
-            .maybe_single()
             .execute()
         )
-        return result.data
+        rows = result.data or []
+        return rows[0] if rows else None
 
     def get_vacancy_stats(self):
         cutoff = datetime.now(timezone.utc) - timedelta(days=config.VACANCY_TTL_DAYS)

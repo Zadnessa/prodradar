@@ -4,7 +4,9 @@ import config
 import logging
 from bot.onboarding import (
     advance_step,
+    get_continue_message,
     get_fallback_message,
+    get_hub_message,
     get_step_message,
     reverse_step,
     get_welcome_message,
@@ -201,12 +203,27 @@ def _handle_step_transition(chat_id, message_id, reply_markup, db):
 
 def handle_start(chat_id, username, db=None):
     db = db or SupabaseService()
+    user = db.get_user(chat_id)
+
+    if user is None or user.get("is_active") is False:
+        db.upsert_user(chat_id, username, bot_id="main")
+        db.set_user_paused(chat_id, False)
+        db.update_user_filters(chat_id, {})
+        db.update_onboarding_step(chat_id, "welcome")
+
+        text, reply_markup = get_welcome_message()
+        send_message(chat_id, text, reply_markup=reply_markup)
+        return
+
     db.upsert_user(chat_id, username, bot_id="main")
     db.set_user_paused(chat_id, False)
-    db.update_user_filters(chat_id, {})
-    db.update_onboarding_step(chat_id, "welcome")
 
-    text, reply_markup = get_welcome_message()
+    if user.get("onboarding_step") is not None:
+        text, reply_markup = get_continue_message()
+        send_message(chat_id, text, reply_markup=reply_markup)
+        return
+
+    text, reply_markup = get_hub_message(user)
     send_message(chat_id, text, reply_markup=reply_markup)
 
 
@@ -312,6 +329,71 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
         return
 
     if data.startswith("ob:"):
+        _edit_fallback(chat_id, message_id)
+
+
+def handle_hub_callback(data, chat_id, message_id, callback_message, db=None):
+    db = db or SupabaseService()
+
+    if data == "hub:vacancies":
+        _send_onboarding_batch(chat_id, message_id, db, filters=None)
+        return
+
+    if data == "hub:settings":
+        user = db.get_user(chat_id)
+        if not user:
+            edit_message(chat_id, message_id, "Сначала подпишись через /start", reply_markup=None)
+            return
+
+        text, reply_markup = get_settings_menu(user)
+        edit_message(chat_id, message_id, text, reply_markup=reply_markup)
+        return
+
+    if data == "hub:continue":
+        user = db.get_user(chat_id)
+        if not user:
+            edit_message(chat_id, message_id, "Сначала подпишись через /start", reply_markup=None)
+            return
+
+        step = user.get("onboarding_step")
+        if step is None:
+            text, reply_markup = get_hub_message(user)
+            edit_message(chat_id, message_id, text, reply_markup=reply_markup)
+            return
+
+        if step == "welcome":
+            text, reply_markup = get_welcome_message()
+            edit_message(chat_id, message_id, text, reply_markup=reply_markup)
+            return
+
+        companies_list = None
+        if step == "company":
+            try:
+                edit_message(chat_id, message_id, "⏳ Загружаю список компаний...", reply_markup=None)
+                companies_list = db.get_enabled_companies()
+            except Exception:
+                logging.exception("Ошибка при продолжении онбординга")
+                edit_message(
+                    chat_id,
+                    message_id,
+                    "Не удалось загрузить шаг настройки. Попробуй позже или нажми /start.",
+                    reply_markup=None,
+                )
+                return
+
+        text, reply_markup = get_step_message(step, user.get("filters") or {}, companies_list=companies_list)
+        edit_message(chat_id, message_id, text, reply_markup=reply_markup)
+        return
+
+    if data == "hub:reset":
+        db.update_user_filters(chat_id, {})
+        db.update_onboarding_step(chat_id, "grade")
+        db.clear_delivery_history(chat_id)
+        text, reply_markup = get_step_message("grade", {})
+        edit_message(chat_id, message_id, text, reply_markup=reply_markup)
+        return
+
+    if data.startswith("hub:"):
         _edit_fallback(chat_id, message_id)
 
 

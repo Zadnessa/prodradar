@@ -8,6 +8,7 @@ from http.server import BaseHTTPRequestHandler
 
 from bot.handlers import (
     handle_callback,
+    handle_hub_callback,
     handle_more_callback,
     handle_settings,
     handle_settings_callback,
@@ -66,6 +67,9 @@ class handler(BaseHTTPRequestHandler):
                 elif prefix == "more" and chat_id and message_id:
                     db = SupabaseService()
                     handle_more_callback(data, chat_id, message_id, callback_message, db=db)
+                elif prefix == "hub" and chat_id and message_id:
+                    db = SupabaseService()
+                    handle_hub_callback(data, chat_id, message_id, callback_message, db=db)
 
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")

@@ -43,6 +43,10 @@ class SupabaseService:
         result = self.client.table("vacancies").select("*").is_("notified_at", "null").eq("is_active", True).execute()
         return result.data or []
 
+    def count_active_vacancies(self):
+        result = self.client.table("vacancies").select("id", count="exact").eq("is_active", True).execute()
+        return result.count or 0
+
     def get_undelivered_vacancies(self, chat_id, limit=50, offset=0):
         delivered_result = (
             self.client.table("user_vacancy_delivery")

@@ -20,7 +20,7 @@ from bot.settings import (
     get_settings_step,
     get_stop_confirm,
 )
-from bot.telegram_api import edit_message, send_message
+from bot.telegram_api import delete_message, edit_message, send_message
 from database.supabase_client import SupabaseService
 from delivery.filters import filter_vacancies_for_user
 from delivery.telegram import format_vacancy_message
@@ -53,11 +53,12 @@ def _detect_step_by_markup(reply_markup):
     return None
 
 
-def _build_more_keyboard(offset):
+def _build_more_keyboard(offset, remaining):
+    more_text = f"📬 Показать оставшиеся {remaining}" if remaining <= 10 else "📬 Ещё 10"
     return {
         "inline_keyboard": [
             [
-                {"text": "📬 Ещё 10", "callback_data": f"more:{offset}"},
+                {"text": more_text, "callback_data": f"more:{offset}"},
                 {"text": "✕ Хватит", "callback_data": "more:stop"},
             ]
         ]
@@ -96,10 +97,14 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0):
     batch = filtered[:10]
 
     if not batch:
-        edit_message(
+        try:
+            delete_message(chat_id, loader_message_id)
+        except Exception:
+            logging.exception("Не удалось удалить лоадер перед финальным сообщением")
+        send_message(
             chat_id,
-            loader_message_id,
-            "Это все подходящие вакансии. Проверяю новые утром и вечером — пришлю сразу.",
+            "Это все подходящие вакансии. Проверяю новые утром и вечером — пришлю сразу.\n\n"
+            "Фильтры — /settings",
             reply_markup=None,
         )
         return 0, 0
@@ -119,19 +124,27 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0):
     total = offset + len(filtered)
     sent_count = len(sent_ids)
     shown_count = offset + sent_count
+    remaining = len(filtered) - sent_count
 
     if total > shown_count and sent_count > 0:
-        edit_message(
+        try:
+            delete_message(chat_id, loader_message_id)
+        except Exception:
+            logging.exception("Не удалось удалить лоадер перед сообщением с навигацией")
+        send_message(
             chat_id,
-            loader_message_id,
             f"Показано {shown_count} из {total}",
-            reply_markup=_build_more_keyboard(shown_count),
+            reply_markup=_build_more_keyboard(shown_count, remaining),
         )
     else:
-        edit_message(
+        try:
+            delete_message(chat_id, loader_message_id)
+        except Exception:
+            logging.exception("Не удалось удалить лоадер перед финальным сообщением")
+        send_message(
             chat_id,
-            loader_message_id,
-            "Это все подходящие вакансии. Проверяю новые утром и вечером — пришлю сразу.",
+            "Это все подходящие вакансии. Проверяю новые утром и вечером — пришлю сразу.\n\n"
+            "Фильтры — /settings",
             reply_markup=None,
         )
 
@@ -437,7 +450,8 @@ def handle_more_callback(data, chat_id, message_id, callback_message, db=None):
         edit_message(
             chat_id,
             message_id,
-            "Остальные пришлю в ближайшей рассылке — проверяю утром и вечером.",
+            "Остальные пришлю в ближайшей рассылке — проверяю утром и вечером.\n\n"
+            "Ещё вакансии — /settings",
             reply_markup=None,
         )
         return

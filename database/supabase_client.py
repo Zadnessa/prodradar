@@ -80,6 +80,9 @@ class SupabaseService:
             ignore_duplicates=True,
         ).execute()
 
+    def clear_delivery_history(self, chat_id):
+        self.client.table("user_vacancy_delivery").delete().eq("user_chat_id", chat_id).execute()
+
     def get_active_users(self, bot_id="main"):
         result = (
             self.client.table("users")

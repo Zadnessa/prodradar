@@ -37,6 +37,50 @@ def get_welcome_message():
     return text, reply_markup
 
 
+def _format_filter_values(values, empty_text):
+    return ", ".join(values) if values else empty_text
+
+
+def get_hub_message(user):
+    user = user or {}
+    filters = user.get("filters") or {}
+
+    grades_text = _format_filter_values(filters.get("grades") or [], "любой")
+    cities_text = _format_filter_values(filters.get("cities") or [], "любой")
+    work_formats_text = _format_filter_values(filters.get("work_formats") or [], "любой")
+    companies_text = _format_filter_values(filters.get("companies") or [], "все")
+
+    text = (
+        "<b>С возвращением!</b>\n\n"
+        f"Грейд: {grades_text}\n"
+        f"Город: {cities_text}\n"
+        f"Формат: {work_formats_text}\n"
+        f"Компании: {companies_text}\n\n"
+        "Что хочешь сделать?"
+    )
+    reply_markup = {
+        "inline_keyboard": [
+            [{"text": "📬 Получить вакансии", "callback_data": "hub:vacancies"}],
+            [{"text": "⚙️ Изменить фильтры", "callback_data": "hub:settings"}],
+            [{"text": "🔄 Начать заново", "callback_data": "hub:reset"}],
+        ]
+    }
+    return text, reply_markup
+
+
+def get_continue_message():
+    text = "Ты не закончил настройку. Продолжить с того места или начать заново?"
+    reply_markup = {
+        "inline_keyboard": [
+            [
+                {"text": "▶️ Продолжить", "callback_data": "hub:continue"},
+                {"text": "🔄 Заново", "callback_data": "hub:reset"},
+            ]
+        ]
+    }
+    return text, reply_markup
+
+
 def _get_adaptive_next_button(step, current_filters, prefix):
     selected_map = {
         "grade": current_filters.get("grades") or [],

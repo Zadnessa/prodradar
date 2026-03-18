@@ -326,3 +326,21 @@ def advance_step(current_step):
 
 def get_fallback_message():
     return "Сессия настройки устарела. Нажми /start, чтобы начать заново.", None
+
+
+def get_disclaimer_message():
+    text = (
+        "<b>Последний момент</b>\n\n"
+        "Не все компании указывают грейд, город и формат работы в API. "
+        "Из-за этого часть вакансий приходит с пустыми полями.\n\n"
+        "Что делать с такими вакансиями?"
+    )
+    reply_markup = {
+        "inline_keyboard": [
+            [
+                {"text": "Показывать все", "callback_data": "ob:strict:off"},
+                {"text": "Только полные", "callback_data": "ob:strict:on"},
+            ]
+        ]
+    }
+    return text, reply_markup

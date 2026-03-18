@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+from datetime import datetime, timedelta, timezone
 
 import aiohttp
 
@@ -103,6 +104,7 @@ async def run():
             continue
 
         chat_id = user.get("chat_id")
+        bot_id = user.get("bot_id") or "main"
         try:
             undelivered = db.get_undelivered_vacancies(chat_id, limit=200)
             filtered_vacancies = filter_vacancies_for_user(undelivered, user.get("filters") or {})
@@ -111,13 +113,23 @@ async def run():
             if not batch:
                 continue
 
+            send_message(chat_id, "Новые вакансии по твоим фильтрам:", bot_id=bot_id)
+
             delivered_ids = []
             for vacancy in batch:
                 message = format_vacancy_message(vacancy, companies_map.get(vacancy.get("company"), {}))
-                result = send_message(chat_id, message, bot_id=user.get("bot_id") or "main")
+                result = send_message(chat_id, message, bot_id=bot_id)
                 if result:
                     delivered_ids.append(vacancy["id"])
                     sent_count += 1
+
+            moscow_now = datetime.now(timezone.utc) + timedelta(hours=3)
+            next_check_text = "Следующая проверка вечером." if moscow_now.hour < 15 else "Следующая проверка утром."
+            send_message(
+                chat_id,
+                f"Показано {len(delivered_ids)} вакансий. {next_check_text}\n\nФильтры — /settings",
+                bot_id=bot_id,
+            )
 
             db.mark_delivered(chat_id, delivered_ids, source="scheduled")
         except Exception as exc:

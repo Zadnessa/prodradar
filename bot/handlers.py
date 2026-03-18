@@ -5,6 +5,7 @@ import logging
 from bot.onboarding import (
     advance_step,
     get_continue_message,
+    get_disclaimer_message,
     get_fallback_message,
     get_hub_message,
     get_step_message,
@@ -369,8 +370,26 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
         return
 
     if data == "ob:done":
+        text, disclaimer_markup = get_disclaimer_message()
+        edit_message(chat_id, message_id, text, reply_markup=disclaimer_markup)
+        return
+
+    if data == "ob:strict:off":
+        user = db.get_user(chat_id) or {}
+        filters = dict(user.get("filters") or {})
+        filters["strict_mode"] = False
+        db.update_user_filters(chat_id, filters)
         db.update_onboarding_step(chat_id, None)
-        _send_onboarding_batch(chat_id, message_id, db, filters=None)
+        _send_onboarding_batch(chat_id, message_id, db, filters=filters)
+        return
+
+    if data == "ob:strict:on":
+        user = db.get_user(chat_id) or {}
+        filters = dict(user.get("filters") or {})
+        filters["strict_mode"] = True
+        db.update_user_filters(chat_id, filters)
+        db.update_onboarding_step(chat_id, None)
+        _send_onboarding_batch(chat_id, message_id, db, filters=filters)
         return
 
     if data == "ob:restart":

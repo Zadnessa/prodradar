@@ -94,9 +94,13 @@ def get_settings_step(step, current_filters, companies_list=None):
 
 def get_pause_message():
     return (
-        "Рассылка приостановлена. Настройки сохранены — когда будешь готов,\n"
-        "возобнови через /settings.",
-        {"inline_keyboard": [[{"text": "◀️ К настройкам", "callback_data": "st:menu"}]]},
+        "Рассылка приостановлена. Настройки сохранены — когда будешь готов, возобнови одной кнопкой.",
+        {
+            "inline_keyboard": [[
+                {"text": "▶️ Возобновить", "callback_data": "st:resume"},
+                {"text": "◀️ К настройкам", "callback_data": "st:menu"},
+            ]]
+        },
     )
 
 

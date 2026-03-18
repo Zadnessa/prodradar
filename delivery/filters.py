@@ -40,6 +40,7 @@ def filter_vacancies_for_user(vacancies, user_filters):
     if not user_filters:
         return vacancies
 
+    strict_mode = bool(user_filters.get("strict_mode", False))
     grades_filter = [str(v).strip().lower() for v in (user_filters.get("grades") or []) if str(v).strip()]
     grades_filter = _expand_grade_filters(grades_filter)
     grades_filter_set = set(grades_filter)
@@ -55,25 +56,34 @@ def filter_vacancies_for_user(vacancies, user_filters):
         company_ok = True
 
         grade = vacancy.get("grade")
-        if grades_filter and not _is_missing(grade):
-            grade_parts = [part.strip() for part in str(grade).split(",") if part.strip()]
-            if not grade_parts:
-                grade_parts = [str(grade).strip()]
-            grade_ok = any(_grade_candidates(part) & grades_filter_set for part in grade_parts)
+        if grades_filter:
+            if _is_missing(grade):
+                grade_ok = not strict_mode
+            else:
+                grade_parts = [part.strip() for part in str(grade).split(",") if part.strip()]
+                if not grade_parts:
+                    grade_parts = [str(grade).strip()]
+                grade_ok = any(_grade_candidates(part) & grades_filter_set for part in grade_parts)
 
         city = vacancy.get("city")
-        if cities_filter and not _is_missing(city):
-            city_value = str(city).strip()
-            if city_value == "Любой город":
-                city_ok = True
+        if cities_filter:
+            if _is_missing(city):
+                city_ok = not strict_mode
             else:
-                city_parts = [part.strip() for part in city_value.split(",") if part.strip()]
-                city_ok = any(part in cities_filter for part in city_parts)
+                city_value = str(city).strip()
+                if city_value == "Любой город":
+                    city_ok = True
+                else:
+                    city_parts = [part.strip() for part in city_value.split(",") if part.strip()]
+                    city_ok = any(part in cities_filter for part in city_parts)
 
         work_format = vacancy.get("work_format")
-        if work_formats_filter and not _is_missing(work_format):
-            work_format_parts = [part.strip().lower() for part in str(work_format).split(",") if part.strip()]
-            work_format_ok = any(part in work_formats_filter for part in work_format_parts)
+        if work_formats_filter:
+            if _is_missing(work_format):
+                work_format_ok = not strict_mode
+            else:
+                work_format_parts = [part.strip().lower() for part in str(work_format).split(",") if part.strip()]
+                work_format_ok = any(part in work_formats_filter for part in work_format_parts)
 
         company = vacancy.get("company")
         if companies_filter:

@@ -64,6 +64,9 @@ class OzonParser(BaseParser):
 
             if not vacancy.get("work_format") and payload.get("workFormat"):
                 vacancy["work_format"] = ", ".join(payload.get("workFormat"))
+
+            if not vacancy.get("published_at") and payload.get("publishedAt"):
+                vacancy["published_at"] = payload.get("publishedAt")
         except Exception as exc:
             logging.warning("Ozon enrich ошибка для %s: %s", vacancy.get("id"), exc)
         finally:

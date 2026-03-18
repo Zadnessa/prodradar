@@ -104,14 +104,15 @@ async def run():
 
         chat_id = user.get("chat_id")
         try:
-            undelivered = db.get_undelivered_vacancies(chat_id, limit=10)
+            undelivered = db.get_undelivered_vacancies(chat_id, limit=200)
             filtered_vacancies = filter_vacancies_for_user(undelivered, user.get("filters") or {})
+            batch = filtered_vacancies[:10]
 
-            if not filtered_vacancies:
+            if not batch:
                 continue
 
             delivered_ids = []
-            for vacancy in filtered_vacancies:
+            for vacancy in batch:
                 message = format_vacancy_message(vacancy, companies_map.get(vacancy.get("company"), {}))
                 result = send_message(chat_id, message, bot_id=user.get("bot_id") or "main")
                 if result:

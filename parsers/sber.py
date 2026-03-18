@@ -54,6 +54,7 @@ class SberParser(BaseParser):
                     "work_format": "Не указан",
                     "experience": config.SBER_EXPERIENCE_MAP.get(item.get("experienceId"), "Не указан"),
                     "url": f"https://rabota.sber.ru/search/{item.get('internalId')}",
+                    "published_at": item.get("publicationDate"),
                     "short_description": short_description,
                     "source_json": {
                         **item,

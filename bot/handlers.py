@@ -2,7 +2,6 @@
 
 import config
 import logging
-import random
 from bot.onboarding import (
     advance_step,
     get_fallback_message,
@@ -64,17 +63,21 @@ def _build_more_keyboard(offset):
     }
 
 
-def _send_vacancies_chunk(chat_id, db, filters):
+def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0):
     companies_list = db.get_enabled_companies()
     companies_map = {company.get("name"): company for company in companies_list}
 
     undelivered = db.get_undelivered_vacancies(chat_id, limit=500)
     filtered = filter_vacancies_for_user(undelivered, filters)
-    random.shuffle(filtered)
     batch = filtered[:10]
 
     if not batch:
-        send_message(chat_id, "Это все вакансии. Новые пришлю, как только появятся.")
+        edit_message(
+            chat_id,
+            loader_message_id,
+            "Это все вакансии. Новые пришлю, как только появятся.",
+            reply_markup=None,
+        )
         return 0, 0
 
     sent_ids = []
@@ -89,21 +92,24 @@ def _send_vacancies_chunk(chat_id, db, filters):
     if sent_ids:
         db.mark_delivered(chat_id, sent_ids, source="onboarding")
 
-    total = len(filtered)
+    total = offset + len(filtered)
     sent_count = len(sent_ids)
+    shown_count = offset + sent_count
 
-    if total <= 10:
-        send_message(chat_id, "Это все вакансии. Новые пришлю, как только появятся.")
-    elif sent_count > 0:
-        remaining = total - sent_count
-        if remaining > 0:
-            send_message(
-                chat_id,
-                f"Показано {sent_count} из {total}",
-                reply_markup=_build_more_keyboard(sent_count),
-            )
-        else:
-            send_message(chat_id, "Это все вакансии. Новые пришлю, как только появятся.")
+    if total > shown_count and sent_count > 0:
+        edit_message(
+            chat_id,
+            loader_message_id,
+            f"Показано {shown_count} из {total}",
+            reply_markup=_build_more_keyboard(shown_count),
+        )
+    else:
+        edit_message(
+            chat_id,
+            loader_message_id,
+            "Это все вакансии. Новые пришлю, как только появятся.",
+            reply_markup=None,
+        )
 
     return sent_count, total
 
@@ -196,6 +202,7 @@ def _handle_step_transition(chat_id, message_id, reply_markup, db):
 def handle_start(chat_id, username, db=None):
     db = db or SupabaseService()
     db.upsert_user(chat_id, username, bot_id="main")
+    db.set_user_paused(chat_id, False)
     db.update_user_filters(chat_id, {})
     db.update_onboarding_step(chat_id, "welcome")
 
@@ -320,7 +327,7 @@ def handle_more_callback(data, chat_id, message_id, callback_message, db=None):
 
     try:
         offset_part = data.split(":", 1)[1]
-        int(offset_part)
+        offset = int(offset_part)
     except (ValueError, IndexError):
         edit_message(chat_id, message_id, "Не удалось обработать запрос. Попробуй ещё раз через /settings", reply_markup=None)
         return
@@ -329,7 +336,7 @@ def handle_more_callback(data, chat_id, message_id, callback_message, db=None):
         edit_message(chat_id, message_id, "⏳ Загружаю...", reply_markup=None)
         user = db.get_user(chat_id) or {}
         filters = user.get("filters") or {}
-        _send_vacancies_chunk(chat_id, db, filters)
+        _send_vacancies_chunk(chat_id, message_id, db, filters, offset=offset)
     except Exception:
         logging.exception("Ошибка при обработке more callback")
         edit_message(
@@ -444,7 +451,7 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
         db.update_user_filters(chat_id, merged)
 
         refreshed_user = db.get_user(chat_id) or {}
-        text, menu_markup = get_settings_menu(refreshed_user, show_deliver=True)
+        text, menu_markup = get_settings_menu(refreshed_user)
         edit_message(chat_id, message_id, text, reply_markup=menu_markup)
         return
 

@@ -14,7 +14,7 @@ _STEP_TITLES = {
 }
 
 
-def get_settings_menu(user, show_deliver=False):
+def get_settings_menu(user):
     user = user or {}
     paused = bool(user.get("paused"))
     filters = user.get("filters") or {}
@@ -38,37 +38,25 @@ def get_settings_menu(user, show_deliver=False):
         "Что хочешь изменить?"
     )
 
-    if show_deliver:
-        text += (
-            "\n\n📬 Фильтры обновлены. Новые вакансии придут в ближайшей рассылке, "
-            "или можешь получить подборку прямо сейчас:"
-        )
-
-    keyboard = []
-
-    if show_deliver:
-        keyboard.append([{"text": "📬 Получить вакансии", "callback_data": "st:deliver"}])
-
-    keyboard.extend(
+    keyboard = [
+        [{"text": "📬 Получить вакансии", "callback_data": "st:deliver"}],
         [
-            [
-                {"text": "Грейд", "callback_data": "st:edit:grade"},
-                {"text": "Город", "callback_data": "st:edit:city"},
-            ],
-            [
-                {"text": "Формат", "callback_data": "st:edit:wf"},
-                {"text": "Компании", "callback_data": "st:edit:company"},
-            ],
-            [
-                {
-                    "text": "▶️ Возобновить" if paused else "⏸ Пауза",
-                    "callback_data": "st:resume" if paused else "st:pause",
-                },
-                {"text": "🚫 Отписаться", "callback_data": "st:stop"},
-            ],
-            [{"text": "◀️ Назад", "callback_data": "st:close"}],
-        ]
-    )
+            {"text": "Грейд", "callback_data": "st:edit:grade"},
+            {"text": "Город", "callback_data": "st:edit:city"},
+        ],
+        [
+            {"text": "Формат", "callback_data": "st:edit:wf"},
+            {"text": "Компании", "callback_data": "st:edit:company"},
+        ],
+        [
+            {
+                "text": "▶️ Возобновить" if paused else "⏸ Пауза",
+                "callback_data": "st:resume" if paused else "st:pause",
+            },
+            {"text": "🚫 Отписаться", "callback_data": "st:stop"},
+        ],
+        [{"text": "◀️ Назад", "callback_data": "st:close"}],
+    ]
 
     return text, {"inline_keyboard": keyboard}
 
@@ -119,7 +107,7 @@ def get_resume_message():
 
 def get_stop_confirm():
     return (
-        "Ты уверен? Фильтры будут сброшены.",
+        "Рассылка будет остановлена. Фильтры сохранятся — если вернёшься через /start, продолжим с ними.",
         {
             "inline_keyboard": [
                 [

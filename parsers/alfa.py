@@ -29,6 +29,7 @@ class AlfaParser(BaseParser):
                     "work_format": "Не указан",
                     "experience": config.ALFA_EXPERIENCE_MAP.get(item.get("experienceId"), "Не указан"),
                     "url": f"https://job.alfabank.ru/vacancies/{item.get('id')}",
+                    "published_at": item.get("createdAt"),
                     "short_description": description[:500] if description else None,
                     "source_json": item,
                 }

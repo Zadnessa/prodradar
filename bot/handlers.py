@@ -251,16 +251,22 @@ def handle_start(chat_id, username, db=None):
         send_message(chat_id, text, reply_markup=reply_markup)
         return
 
+    was_paused = bool(user.get("paused"))
+
     db.upsert_user(chat_id, username, bot_id="main")
     db.set_user_paused(chat_id, False)
 
     if user.get("onboarding_step") is not None:
         text, reply_markup = get_continue_message()
         send_message(chat_id, text, reply_markup=reply_markup)
+        if was_paused:
+            send_message(chat_id, "Рассылка возобновлена — новые вакансии придут в ближайшую проверку.")
         return
 
     text, reply_markup = get_hub_message(user)
     send_message(chat_id, text, reply_markup=reply_markup)
+    if was_paused:
+        send_message(chat_id, "Рассылка возобновлена — новые вакансии придут в ближайшую проверку.")
 
 
 def handle_callback(data, chat_id, message_id, callback_message, db=None):
@@ -535,7 +541,7 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
             merged["cities"] = []
             db.update_user_filters(chat_id, merged)
             refreshed_user = db.get_user(chat_id) or {}
-            text, menu_markup = get_settings_menu(refreshed_user, show_deliver=True)
+            text, menu_markup = get_settings_menu(refreshed_user)
             edit_message(chat_id, message_id, text, reply_markup=menu_markup)
             return
 
@@ -643,10 +649,6 @@ def handle_stats(chat_id, db=None):
         send_message(chat_id, "Сначала подпишись через /start")
         return
 
-    if user.get("onboarding_step") is not None:
-        send_message(chat_id, "Сначала заверши настройку фильтров или нажми /start, чтобы начать заново.")
-        return
-
     stats = db.get_vacancy_stats()
     total = stats.get("total", 0)
     by_company = stats.get("by_company") or {}
@@ -680,4 +682,12 @@ def handle_stop(chat_id, db=None):
 
 
 def handle_unknown(chat_id):
-    send_message(chat_id, "Доступные команды: /start, /stop, /settings, /stats\n\nНовые вакансии приходят автоматически.")
+    send_message(
+        chat_id,
+        "Вот что я умею:\n\n"
+        "/settings — настроить фильтры вакансий\n"
+        "/stats — статистика по рынку\n"
+        "/start — начать сначала\n"
+        "/stop — отписаться от рассылки\n\n"
+        "Новые вакансии приходят автоматически — утром и вечером.",
+    )

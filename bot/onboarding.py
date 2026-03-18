@@ -163,7 +163,8 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
     if step == "company":
         text = (
             "<b>Шаг 4 из 5 — Компании</b>\n\n"
-            "Все компании включены по-умолчанию. Нажми на компанию, чтобы убрать её из рассылки."
+            "Все компании включены по умолчанию. Нажми на компанию, чтобы убрать её из рассылки.\n\n"
+            "<i>Нажимай кнопки по одной — Telegram может не успеть обработать быстрые нажатия.</i>"
         )
         companies_list = companies_list or []
         enabled_companies = current_filters.get("companies") or []

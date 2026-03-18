@@ -133,6 +133,10 @@ def edit_message(chat_id, message_id, text, reply_markup=None, bot_id="main"):
     return data.get("result")
 
 
+def delete_message(chat_id, message_id, bot_id="main"):
+    return _post("deleteMessage", {"chat_id": chat_id, "message_id": message_id}, bot_id=bot_id)
+
+
 def answer_callback(callback_query_id, text=None, bot_id="main"):
     payload = {"callback_query_id": callback_query_id}
     if text:

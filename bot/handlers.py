@@ -261,6 +261,16 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
             return
 
         callback_value = data.split(":", 2)[2]
+        if callback_value == "any":
+            user = db.get_user(chat_id)
+            current_filters = dict((user.get("filters") or {})) if user else {}
+            current_filters["cities"] = []
+            db.update_user_filters(chat_id, current_filters)
+            db.update_onboarding_step(chat_id, "work_format")
+            text, step_markup = get_step_message("work_format", current_filters)
+            edit_message(chat_id, message_id, text, reply_markup=step_markup)
+            return
+
         toggled_markup = toggle_selection("city", reply_markup, callback_value)
         current_filters = parse_selections_from_markup("city", toggled_markup)
         text, next_markup = get_step_message("city", current_filters)
@@ -475,6 +485,16 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
     if data.startswith("st:g:") or data.startswith("st:c:") or data.startswith("st:wf:") or data.startswith("st:co:"):
         if not reply_markup:
             _edit_fallback(chat_id, message_id)
+            return
+
+        if data == "st:c:any":
+            user = db.get_user(chat_id)
+            merged = dict(user.get("filters") or {}) if user else {}
+            merged["cities"] = []
+            db.update_user_filters(chat_id, merged)
+            refreshed_user = db.get_user(chat_id) or {}
+            text, menu_markup = get_settings_menu(refreshed_user, show_deliver=True)
+            edit_message(chat_id, message_id, text, reply_markup=menu_markup)
             return
 
         if data.startswith("st:g:"):

@@ -14,7 +14,7 @@ _STEP_TITLES = {
 }
 
 
-def get_settings_menu(user):
+def get_settings_menu(user, show_deliver=True):
     user = user or {}
     paused = bool(user.get("paused"))
     filters = user.get("filters") or {}
@@ -25,7 +25,7 @@ def get_settings_menu(user):
     companies = filters.get("companies") or []
 
     grades_text = ", ".join(grades) if grades else "Все"
-    cities_text = ", ".join(cities) if cities else "Все"
+    cities_text = ", ".join(cities) if cities else "Любой"
     work_formats_text = ", ".join(work_formats) if work_formats else "Все"
     companies_text = ", ".join(companies) if companies else "Все"
 
@@ -38,8 +38,11 @@ def get_settings_menu(user):
         "Что хочешь изменить?"
     )
 
-    keyboard = [
-        [{"text": "📬 Получить вакансии", "callback_data": "st:deliver"}],
+    keyboard = []
+    if show_deliver:
+        keyboard.append([{"text": "📬 Получить вакансии", "callback_data": "st:deliver"}])
+
+    keyboard.extend([
         [
             {"text": "Грейд", "callback_data": "st:edit:grade"},
             {"text": "Город", "callback_data": "st:edit:city"},
@@ -56,7 +59,7 @@ def get_settings_menu(user):
             {"text": "🚫 Отписаться", "callback_data": "st:stop"},
         ],
         [{"text": "◀️ Назад", "callback_data": "st:close"}],
-    ]
+    ])
 
     return text, {"inline_keyboard": keyboard}
 

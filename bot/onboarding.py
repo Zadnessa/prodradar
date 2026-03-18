@@ -6,7 +6,6 @@ GRADE_OPTIONS = ["Junior", "Middle", "Senior", "Lead+"]
 CITY_OPTIONS = [
     {"label": "Москва", "callback_value": "Москва", "filter_value": "Москва"},
     {"label": "Санкт-Петербург", "callback_value": "СПб", "filter_value": "Санкт-Петербург"},
-    {"label": "Другой / зарубежные", "callback_value": "Другой", "filter_value": "Другой"},
 ]
 WORK_FORMAT_OPTIONS = [
     {"label": "Офис", "callback_value": "office", "filter_value": "Офис"},
@@ -126,7 +125,7 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
     if step == "city":
         text = (
             "<b>Шаг 2 из 5 — Город</b>\n\n"
-            "В каком городе ищешь? «Другой / зарубежные» — это все остальные города и  другие страны, где нанимают компании из списка.\n\n"
+            "В каком городе ищешь?\n\n"
             "Формат работы (удалёнка, офис) будет на следующем шаге."
         )
         selected = set(current_filters.get("cities") or [])
@@ -137,8 +136,11 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
             }
             for option in CITY_OPTIONS
         ]
-        keyboard = [buttons]
-        keyboard.append(_build_step_navigation("city", current_filters, prefix))
+        keyboard = [
+            [{"text": "🌍 Любой город", "callback_data": f"{prefix}:c:any"}],
+            buttons,
+            _build_step_navigation("city", current_filters, prefix),
+        ]
         return text, {"inline_keyboard": keyboard}
 
     if step == "work_format":
@@ -199,7 +201,7 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
         companies = current_filters.get("companies") or []
 
         grades_text = ", ".join(grades) if grades else "Все"
-        cities_text = ", ".join(cities) if cities else "Все"
+        cities_text = ", ".join(cities) if cities else "Любой"
         work_formats_text = ", ".join(work_formats) if work_formats else "Все"
         companies_text = ", ".join(companies) if companies else "Все"
 

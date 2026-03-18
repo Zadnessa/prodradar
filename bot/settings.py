@@ -36,6 +36,7 @@ def get_settings_menu(user, show_deliver=True):
         f"Формат: {work_formats_text}\n"
         f"Компании: {companies_text}\n\n"
         "Что хочешь изменить?"
+        "\n\n<i>Не все компании указывают грейд и город — такие вакансии тоже попадают в выдачу.</i>"
     )
 
     keyboard = []

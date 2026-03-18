@@ -212,6 +212,7 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
             f"• Формат: {work_formats_text}\n"
             f"• Компании: {companies_text}\n\n"
             "Изменить фильтры можно в любой момент через /settings."
+            "\n<i>Не все компании указывают грейд и город — такие вакансии тоже попадут в выдачу.</i>"
         )
         reply_markup = {
             "inline_keyboard": [

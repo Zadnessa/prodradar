@@ -27,8 +27,7 @@ from delivery.telegram import format_vacancy_message
 
 
 FINAL_TEXT = (
-    "Настройки сохранены! Пока подходящих вакансий нет —\n"
-    "пришлю, как только появятся.\n\n"
+    "Настройки сохранены! Пока подходящих вакансий нет — проверяю утром и вечером и пришлю сразу.\n\n"
     "Изменить фильтры: /settings"
 )
 
@@ -65,6 +64,29 @@ def _build_more_keyboard(offset):
     }
 
 
+def _get_zero_state_text(chat_id, db, effective_filters):
+    _ = effective_filters
+
+    total_active = db.count_active_vacancies()
+    if total_active == 0:
+        return (
+            "Сейчас на рынке нет активных вакансий. Такое бывает редко — "
+            "проверю снова утром и вечером и пришлю, как только появятся."
+        )
+
+    all_undelivered = db.get_undelivered_vacancies(chat_id, limit=1)
+    if not all_undelivered:
+        return (
+            "Ты уже видел все подходящие вакансии — молодец! "
+            "Новые проверяю утром и вечером, пришлю сразу."
+        )
+
+    return (
+        f"По твоим фильтрам сейчас ничего нет, но на рынке есть {total_active} активных вакансий. "
+        "Попробуй расширить фильтры в /settings — может, найдётся что-то интересное."
+    )
+
+
 def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0):
     companies_list = db.get_enabled_companies()
     companies_map = {company.get("name"): company for company in companies_list}
@@ -77,7 +99,7 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0):
         edit_message(
             chat_id,
             loader_message_id,
-            "Это все вакансии. Новые пришлю, как только появятся.",
+            "Это все подходящие вакансии. Проверяю новые утром и вечером — пришлю сразу.",
             reply_markup=None,
         )
         return 0, 0
@@ -109,7 +131,7 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0):
         edit_message(
             chat_id,
             loader_message_id,
-            "Это все вакансии. Новые пришлю, как только появятся.",
+            "Это все подходящие вакансии. Проверяю новые утром и вечером — пришлю сразу.",
             reply_markup=None,
         )
 
@@ -127,7 +149,8 @@ def _send_onboarding_batch(chat_id, message_id, db, filters):
         total = len(filtered)
 
         if total == 0:
-            edit_message(chat_id, message_id, FINAL_TEXT, reply_markup=None)
+            zero_state_text = _get_zero_state_text(chat_id, db, effective_filters)
+            edit_message(chat_id, message_id, zero_state_text, reply_markup=None)
             return
 
         if total <= 10:
@@ -411,7 +434,12 @@ def handle_more_callback(data, chat_id, message_id, callback_message, db=None):
     db = db or SupabaseService()
 
     if data == "more:stop":
-        edit_message(chat_id, message_id, "Остальные пришлю в рассылках. /settings", reply_markup=None)
+        edit_message(
+            chat_id,
+            message_id,
+            "Остальные пришлю в ближайшей рассылке — проверяю утром и вечером.",
+            reply_markup=None,
+        )
         return
 
     if not data.startswith("more:"):

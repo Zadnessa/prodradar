@@ -211,3 +211,52 @@
 Было: описание проблемы
 Стало: описание решения
 Причина: почему так случилось
+
+
+### BUG-035: T-Bank filters.tag возвращает 503
+Файл: parsers/tbank.py
+Было: filters.tag: ["product-manager"] — сервер отвечает 503.
+Стало: tcareer_it_profession: ["product-management"] — сервер отвечает 200.
+Причина: T-Bank изменил API фильтрации, старый ключ больше не поддерживается.
+
+### BUG-036: T-Bank getVacancy пустышка для publisher
+Файл: parsers/tbank.py
+Было: enrich() запрашивал getVacancy?urlSlug={slug}, для source=publisher получал пустые поля.
+Стало: enrichment отключён, метод возвращает vacancy без HTTP-запроса.
+Причина: эндпоинт getVacancy не поддерживает вакансии из внешнего ATS (source=publisher).
+
+### BUG-037: T-Bank cities всегда пустой массив
+Файл: parsers/tbank.py
+Было: город брался из cities — всегда [''], результат "Не указан".
+Стало: город берётся из regionId с маппингом через city_mappings.
+Причина: поле cities в API T-Bank не заполняется, реальный город в regionId (FIAS UUID).
+
+### BUG-038: T-Bank URL вакансии нерабочий
+Файл: parsers/tbank.py
+Было: URL строился как /career/{source}/{specialty}/{urlSlug}/ — ссылка не открывалась.
+Стало: URL строится как /career/it/vacancy/{city_slug}/{seoSlug}/{urlSlug}/.
+Причина: шаблон URL в спецификации не соответствовал реальной структуре сайта.
+
+### BUG-039: Ozon limit=100 обрезается сервером до 50
+Файл: parsers/ozon.py
+Было: meta.limit=100, сервер возвращал только 50, пагинация отсутствовала.
+Стало: meta.limit=50, добавлена пагинация по meta.page/meta.totalPages.
+Причина: серверное ограничение perPage=50 не было учтено.
+
+### BUG-040: Alfa-Bank URL через id вместо slug
+Файл: parsers/alfa.py
+Было: URL строился как /vacancies/{id} — работает через редирект, но не каноническая ссылка.
+Стало: URL строится как /vacancies{slug} (slug содержит ведущий слеш).
+Причина: каноническая ссылка использует slug с городом и транслитерированным названием.
+
+### BUG-041: Alfa-Bank work_format всегда "Не указан"
+Файл: parsers/alfa.py
+Было: work_format не извлекался, всегда "Не указан".
+Стало: загружается справочник archetypes через /api/optionLists, archetypeId маппится в название.
+Причина: формат работы хранится как archetypeId, расшифровка только через справочник.
+
+### BUG-042: VK limit=100 обрезается сервером до 50
+Файл: parsers/vk.py
+Было: limit=100, сервер возвращал только 50, часть вакансий терялась при >50 результатах.
+Стало: limit=50, добавлена пагинация через поле next/offset.
+Причина: серверное ограничение limit=50 не было учтено.

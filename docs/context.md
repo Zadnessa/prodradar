@@ -4,6 +4,7 @@
 
 - `grade` берётся из API, через маппинг `experience -> grade`, либо из заголовка только для исключений Avito и T-Bank (`Lead+`). Универсальный `grade_guesser` удалён.
 - Enrichment реализуется методом `enrich()` внутри конкретного парсера, а не отдельным слоем файлов.
+- Для T-Bank, VK и Avito полное описание вакансии извлекается из SSR HTML-страницы, а не из API. У Avito дополнительно используется JSON-LD `JobPosting`, откуда берётся и `datePosted`.
 - Онбординг строится как сценарий `/start` → welcome → выбор `grade` → `city` → `work_format` → `company` → `confirm` → disclaimer (`strict_mode`) → выдача вакансий.
 - Для returning user команда `/start` показывает хаб с тремя вариантами: получить вакансии, открыть настройки, начать заново. `/start` снимает паузу рассылки.
 - В фильтрах пустой список означает «всё». `strict_mode=true` отсекает вакансии с пустыми полями, `strict_mode=false` пропускает их.
@@ -60,7 +61,7 @@
 | Ozon | да | `publishedAt` из enrichment API |
 | T-Bank | нет | fallback на `created_at` |
 | VK | нет | fallback на `created_at` |
-| Avito | нет | fallback на `created_at` |
+| Avito | да | `datePosted` из JSON-LD |
 | Sber | да | `publicationDate` |
 | Alfa-Bank | да | `createdAt` |
 

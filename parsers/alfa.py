@@ -16,7 +16,7 @@ class AlfaParser(BaseParser):
     @staticmethod
     def _extract_option_list(payload, target_id):
         if isinstance(payload, dict):
-            if str(payload.get("id")) == str(target_id) or payload.get("code") == target_id or payload.get("listId") == target_id:
+            if str(payload.get("id")) == str(target_id) or payload.get("code") == target_id or payload.get("listId") == target_id or payload.get("alias") == target_id:
                 items = payload.get("items") or payload.get("options") or payload.get("values") or payload.get("data") or []
                 if isinstance(items, list):
                     return items

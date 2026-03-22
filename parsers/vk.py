@@ -2,7 +2,7 @@
 
 import asyncio
 import re
-from bs4 import NavigableString
+from bs4 import NavigableString, Tag
 from urllib.parse import parse_qs, urlparse
 
 from bs4 import BeautifulSoup
@@ -12,6 +12,33 @@ import config
 
 
 class VKParser(BaseParser):
+    @staticmethod
+    def _extract_section_text_from_h3(soup, section_name):
+        header = soup.find("h3", string=lambda value: isinstance(value, str) and value.strip() == section_name)
+        if not header or not getattr(header, "parent", None):
+            return None
+
+        parts = []
+        for sibling in header.parent.next_siblings:
+            if isinstance(sibling, NavigableString):
+                text = str(sibling).strip()
+                if text:
+                    parts.append(text)
+                continue
+
+            if not isinstance(sibling, Tag):
+                continue
+
+            if sibling.find(["h2", "h3"]):
+                break
+
+            text = sibling.get_text("\n", strip=True)
+            if text:
+                parts.append(text)
+
+        section_text = "\n".join(parts).strip()
+        return section_text or None
+
     @staticmethod
     def _extract_grade_from_level_block(soup):
         level_header = soup.find("h4", string=lambda value: isinstance(value, str) and value.strip().lower() == "уровень")
@@ -66,6 +93,7 @@ class VKParser(BaseParser):
                 title = (item.get("title", "") or "").strip()
                 vacancy_id = f"vk_{item.get('id')}"
                 grade = None
+                short_description = None
 
                 if vacancy_id not in existing_ids:
                     try:
@@ -82,6 +110,14 @@ class VKParser(BaseParser):
                             match = re.search(r"уровня\s+([\w,\s]+?)(?:\s+в\s+проект|\s+с\s+графиком)", content, flags=re.IGNORECASE)
                             if match:
                                 grade = self._normalize_grade_text(match.group(1).strip())
+
+                        description_parts = [
+                            self._extract_section_text_from_h3(soup, "Задачи"),
+                            self._extract_section_text_from_h3(soup, "Требования"),
+                        ]
+                        description = "\n\n".join(part for part in description_parts if part).strip()
+                        if description:
+                            short_description = description[:500]
                     except Exception:
                         grade = None
                     await asyncio.sleep(0.5)
@@ -96,7 +132,7 @@ class VKParser(BaseParser):
                         "work_format": work_format,
                         "experience": "Не указан",
                         "url": f"https://team.vk.company/vacancy/{item.get('id')}/",
-                        "short_description": None,
+                        "short_description": short_description,
                         "source_json": {**item, "group_name": (item.get("group") or {}).get("name")},
                     }
                 )

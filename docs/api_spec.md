@@ -136,8 +136,8 @@
 | Wildberries | Полное (структурированное) | Нет |
 | Yandex | Полное | Нет |
 | Ozon | Полное | Нет |
-| T-Bank | Краткое (shortDescription) | Да, для полного |
-| VK | Нет | Да (+ грейд) |
-| Avito | Нет | Да |
+| T-Bank | Полное (HTML-парсинг h2-секций) | Да |
+| VK | Полное (HTML-парсинг h3-секций + грейд из h4) | Да |
+| Avito | Полное (JSON-LD schema.org/JobPosting + HTML fallback) | Да |
 | Sber | Полное | Нет |
 | Alfa-Bank | Полное | Нет |

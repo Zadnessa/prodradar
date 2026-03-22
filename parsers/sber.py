@@ -41,28 +41,51 @@ class SberParser(BaseParser):
             if not any(keyword in title.lower() for keyword in keywords):
                 continue
 
-            duties_clean = _clean_markdown(item.get("duties") or "")
-            short_description = duties_clean[:500] if duties_clean else None
+            description_parts = [
+                _clean_markdown(item.get("introduction") or ""),
+                _clean_markdown(item.get("duties") or ""),
+                _clean_markdown(item.get("requirements") or ""),
+            ]
+            short_description = "\n\n".join(part for part in description_parts if part)[:500] or None
 
-            vacancies.append(
-                {
-                    "id": f"sber_{item.get('internalId')}",
-                    "company": "Сбер",
-                    "title": title,
-                    "grade": None,
-                    "city": normalize_city(city_mappings, item.get("city")),
-                    "work_format": "Не указан",
-                    "experience": config.SBER_EXPERIENCE_MAP.get(item.get("experienceId"), "Не указан"),
-                    "url": f"https://rabota.sber.ru/search/{item.get('internalId')}",
-                    "published_at": item.get("publicationDate"),
-                    "short_description": short_description,
-                    "source_json": {
-                        **item,
-                        "introduction": item.get("introduction"),
-                        "duties": item.get("duties"),
-                        "requirements": item.get("requirements"),
-                        "conditions": item.get("conditions"),
-                    },
-                }
-            )
+            min_salary = item.get("salary_min")
+            max_salary = item.get("salary_max")
+            has_min_salary = min_salary not in (None, 0)
+            has_max_salary = max_salary not in (None, 0)
+            salary = None
+            if has_min_salary and has_max_salary:
+                salary = f"{min_salary} - {max_salary}"
+            elif has_min_salary:
+                salary = f"от {min_salary}"
+            elif has_max_salary:
+                salary = f"до {max_salary}"
+
+            work_format_map = {1: "Полный день", 2: "Сменный", 3: "Гибкий"}
+            source_json = {
+                **item,
+                "introduction": item.get("introduction"),
+                "duties": item.get("duties"),
+                "requirements": item.get("requirements"),
+                "conditions": item.get("conditions"),
+                "salary_min": min_salary,
+                "salary_max": max_salary,
+            }
+
+            vacancy = {
+                "id": f"sber_{item.get('internalId')}",
+                "company": "Сбер",
+                "title": title,
+                "grade": None,
+                "city": normalize_city(city_mappings, item.get("city")),
+                "work_format": work_format_map.get(item.get("workScheduleId"), "Не указан"),
+                "experience": config.SBER_EXPERIENCE_MAP.get(item.get("experienceId"), "Не указан"),
+                "url": f"https://rabota.sber.ru/search/{item.get('internalId')}",
+                "published_at": item.get("publicationDate"),
+                "short_description": short_description,
+                "source_json": source_json,
+            }
+            if salary:
+                vacancy["salary"] = salary
+
+            vacancies.append(vacancy)
         return vacancies

@@ -9,7 +9,8 @@
 - В фильтрах пустой список означает «всё». `strict_mode=true` отсекает вакансии с пустыми полями, `strict_mode=false` пропускает их.
 - В онбординге используются два города — Москва и Санкт-Петербург — плюс вариант «Любой город». Это осознанное решение после анализа данных.
 - Текст отписки должен быть честным: при `/stop` фильтры сохраняются.
-- `published_at` приходит из источника только у части компаний: Сбер (`publicationDate`), Альфа-Банк (`createdAt`), Ozon (`publishedAt` через enrichment API). Для остальных используется fallback на `created_at` в базе.
+- `published_at` приходит из источника только у части компаний: Сбер (`publicationDate`), Альфа-Банк (`createdAt`), Ozon (`publishedAt` через enrichment API), Yandex (`published_at` через enrichment API). Для остальных используется fallback на `created_at` в базе.
+- `salary` извлекается из API Альфа-Банка (`minSalary`/`maxSalary`) и Сбера (`salary_min`/`salary_max`), если эти поля заполнены. У остальных компаний зарплата в API сейчас не публикуется.
 
 ## Результаты code review
 
@@ -55,7 +56,7 @@
 | Компания | published_at | Источник |
 | --- | --- | --- |
 | Wildberries | нет | fallback на `created_at` |
-| Yandex | нет | fallback на `created_at` |
+| Yandex | да | `published_at` из enrichment API |
 | Ozon | да | `publishedAt` из enrichment API |
 | T-Bank | нет | fallback на `created_at` |
 | VK | нет | fallback на `created_at` |

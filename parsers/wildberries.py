@@ -64,7 +64,8 @@ class WildberriesParser(BaseParser):
             if not vacancy.get("short_description"):
                 duties_arr = data.get("duties_arr") or []
                 requirements_arr = data.get("requirements_arr") or []
-                parts = [data.get("description"), *duties_arr, *requirements_arr]
+                conditions_arr = data.get("conditions_arr") or []
+                parts = [data.get("description"), *duties_arr, *requirements_arr, *conditions_arr]
                 description = "\n\n".join((part or "").strip() for part in parts if (part or "").strip())
                 if description:
                     vacancy["short_description"] = description[:500]

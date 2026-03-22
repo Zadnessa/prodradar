@@ -46,13 +46,14 @@ class AlfaParser(BaseParser):
 
     async def parse(self, session, existing_ids, city_mappings):
         options_url = "https://job.alfabank.ru/api/optionLists"
-        options_params = [("listIds", "archetypes"), ("listIds", "cities")]
+        options_params = [("listIds", "archetypes"), ("listIds", "cities"), ("listIds", "experiences")]
         async with session.get(options_url, headers=config.REQUEST_HEADERS, params=options_params) as response:
             response.raise_for_status()
             option_lists = await response.json()
 
         archetype_map = self._build_option_map(option_lists, "archetypes")
         city_map = self._build_option_map(option_lists, "cities")
+        experience_map = self._build_option_map(option_lists, "experiences")
 
         url = "https://job.alfabank.ru/api/vacancies?businessLine=1020&take=100&search=продукт"
         async with session.get(url, headers=config.REQUEST_HEADERS) as response:
@@ -64,21 +65,45 @@ class AlfaParser(BaseParser):
             slug = item.get("slug") or ""
             city = city_map.get(str(item.get("cityId"))) or self._fallback_city_from_slug(city_mappings, slug)
             title = (item.get("name", "") or "").strip()
-            description = (item.get("descriptionText") or "").strip()
+            description_parts = [item.get("duties"), item.get("requirements"), item.get("conditions")]
+            structured_description = "\n\n".join((part or "").strip() for part in description_parts if (part or "").strip())
+            fallback_description = (item.get("descriptionText") or "").strip()
+            description = structured_description or fallback_description
+
+            min_salary = item.get("minSalary")
+            max_salary = item.get("maxSalary")
+            has_min_salary = min_salary not in (None, 0)
+            has_max_salary = max_salary not in (None, 0)
+            salary = None
+            if has_min_salary and has_max_salary:
+                salary = f"{min_salary} - {max_salary}"
+            elif has_min_salary:
+                salary = f"от {min_salary}"
+            elif has_max_salary:
+                salary = f"до {max_salary}"
+
+            source_json = dict(item)
+            if has_min_salary:
+                source_json["minSalary"] = min_salary
+            if has_max_salary:
+                source_json["maxSalary"] = max_salary
+
             canonical_url = f"https://job.alfabank.ru/vacancies{slug}" if slug else f"https://job.alfabank.ru/vacancies/{item.get('id')}"
-            vacancies.append(
-                {
-                    "id": f"alfa_{item.get('id')}",
-                    "company": "Альфа-Банк",
-                    "title": title,
-                    "grade": None,
-                    "city": city,
-                    "work_format": archetype_map.get(str(item.get("archetypeId")), "Не указан"),
-                    "experience": config.ALFA_EXPERIENCE_MAP.get(item.get("experienceId"), "Не указан"),
-                    "url": canonical_url,
-                    "published_at": item.get("createdAt"),
-                    "short_description": description[:500] if description else None,
-                    "source_json": item,
-                }
-            )
+            vacancy = {
+                "id": f"alfa_{item.get('id')}",
+                "company": "Альфа-Банк",
+                "title": title,
+                "grade": None,
+                "city": city,
+                "work_format": archetype_map.get(str(item.get("archetypeId")), "Не указан"),
+                "experience": experience_map.get(str(item.get("experienceId")))
+                or config.ALFA_EXPERIENCE_MAP.get(item.get("experienceId"), "Не указан"),
+                "url": canonical_url,
+                "published_at": item.get("createdAt"),
+                "short_description": description[:500] if description else None,
+                "source_json": source_json,
+            }
+            if salary:
+                vacancy["salary"] = salary
+            vacancies.append(vacancy)
         return vacancies

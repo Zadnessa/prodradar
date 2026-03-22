@@ -2,6 +2,7 @@
 
 import asyncio
 import re
+from bs4 import NavigableString
 from urllib.parse import parse_qs, urlparse
 
 from bs4 import BeautifulSoup
@@ -11,6 +12,36 @@ import config
 
 
 class VKParser(BaseParser):
+    @staticmethod
+    def _extract_grade_from_level_block(soup):
+        level_header = soup.find("h4", string=lambda value: isinstance(value, str) and value.strip().lower() == "уровень")
+        if not level_header or not getattr(level_header, "parent", None) or not getattr(level_header.parent, "parent", None):
+            return None
+
+        grandparent = level_header.parent.parent
+        element_children = [child for child in grandparent.children if not isinstance(child, NavigableString)]
+        if len(element_children) < 2:
+            return None
+
+        grade_text = element_children[1].get_text(" ", strip=True)
+        return grade_text or None
+
+    @staticmethod
+    def _normalize_grade_text(raw_grade):
+        if not raw_grade:
+            return None
+
+        compact_grade = re.sub(r"[^a-z]", "", raw_grade.lower())
+        known_levels = ("intern", "junior", "middle", "senior")
+        found_levels = [level for level in known_levels if level in compact_grade]
+        if len(found_levels) > 1:
+            return ", ".join(found_levels)
+        if len(found_levels) == 1:
+            return found_levels[0]
+
+        cleaned_grade = raw_grade.strip()
+        return cleaned_grade or None
+
     async def parse(self, session, existing_ids, city_mappings):
         base_url = "https://team.vk.company/career/api/v2/vacancies/"
         limit = 50
@@ -43,11 +74,14 @@ class VKParser(BaseParser):
                             html_response.raise_for_status()
                             html = await html_response.text()
                         soup = BeautifulSoup(html, "html.parser")
-                        meta = soup.find("meta", attrs={"name": "description"})
-                        content = meta.get("content", "") if meta else ""
-                        match = re.search(r"уровня\s+([\w,\s]+?)(?:\s+в\s+проект|\s+с\s+графиком)", content, flags=re.IGNORECASE)
-                        if match:
-                            grade = match.group(1).strip()
+
+                        grade = self._normalize_grade_text(self._extract_grade_from_level_block(soup))
+                        if not grade:
+                            meta = soup.find("meta", attrs={"name": "description"})
+                            content = meta.get("content", "") if meta else ""
+                            match = re.search(r"уровня\s+([\w,\s]+?)(?:\s+в\s+проект|\s+с\s+графиком)", content, flags=re.IGNORECASE)
+                            if match:
+                                grade = self._normalize_grade_text(match.group(1).strip())
                     except Exception:
                         grade = None
                     await asyncio.sleep(0.5)

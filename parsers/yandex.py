@@ -81,6 +81,8 @@ class YandexParser(BaseParser):
                     details.get("short_summary"),
                     details.get("duties"),
                     details.get("key_qualifications"),
+                    details.get("additional_requirements"),
+                    details.get("conditions"),
                 ]
                 description = "\n\n".join((part or "").strip() for part in parts if (part or "").strip())
                 if description:

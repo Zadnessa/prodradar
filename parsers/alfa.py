@@ -39,7 +39,7 @@ class AlfaParser(BaseParser):
             if not isinstance(item, dict):
                 continue
             item_id = item.get("id")
-            name = item.get("name") or item.get("title")
+            name = item.get("name") or item.get("title") or item.get("text")
             if item_id is not None and name:
                 result[str(item_id)] = name
         return result

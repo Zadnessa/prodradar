@@ -108,7 +108,7 @@ def normalize_work_format(raw_value):
             positions = [part.find(keyword) for keyword in keywords if keyword in part]
             return min(positions) if positions else None
 
-        office_position = _first_position(("офис", "на месте", "office"))
+        office_position = _first_position(("офис", "на месте", "office", "полн"))
         remote_position = _first_position(("удал", "remote"))
         hybrid_position = _first_position(("гибр", "гибк", "комбин", "hybrid"))
 

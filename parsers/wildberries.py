@@ -69,7 +69,7 @@ class WildberriesParser(BaseParser):
                 parts = [data.get("description"), *duties_arr, *requirements_arr, *conditions_arr]
                 description = "\n\n".join((part or "").strip() for part in parts if (part or "").strip())
                 if description:
-                    vacancy["short_description"] = description[:500]
+                    vacancy["short_description"] = description
         except Exception as exc:
             logging.warning("Wildberries enrich ошибка для %s: %s", vacancy.get("id"), exc)
         finally:

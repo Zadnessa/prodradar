@@ -90,24 +90,6 @@ class VKParser(BaseParser):
         cleaned_grade = raw_grade.strip()
         return cleaned_grade or None
 
-    @staticmethod
-    def _extract_work_format_from_meta(soup):
-        meta = soup.find("meta", attrs={"name": "description"})
-        content = meta.get("content", "") if meta else ""
-        if not content:
-            return None
-
-        patterns = (
-            r"с\s+графиком\s+([^,.]+)",
-            r"графиком\s+работы\s+([^,.]+)",
-        )
-        for pattern in patterns:
-            match = re.search(pattern, content, flags=re.IGNORECASE)
-            if match:
-                work_format = match.group(1).strip()
-                return work_format or None
-        return None
-
     async def parse(self, session, existing_ids, city_mappings):
         del existing_ids
         base_url = "https://team.vk.company/career/api/v2/vacancies/"
@@ -125,6 +107,7 @@ class VKParser(BaseParser):
                 raw_work_format = (item.get("work_format") or "").strip().lower()
                 work_map = {
                     "комбинированный": "Гибрид",
+                    "гибкий": "Гибрид",
                     "удалённый": "Удаленка",
                     "удаленный": "Удаленка",
                     "офисный": "Офис",
@@ -183,11 +166,7 @@ class VKParser(BaseParser):
             ]
             description = "\n\n".join(part for part in description_parts if part).strip()
             if description:
-                vacancy["short_description"] = description[:500]
-
-            work_format = self._extract_work_format_from_meta(soup)
-            if work_format:
-                vacancy["work_format"] = work_format
+                vacancy["short_description"] = description
         finally:
             await asyncio.sleep(0.5)
 

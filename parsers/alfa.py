@@ -101,7 +101,7 @@ class AlfaParser(BaseParser):
                 or config.ALFA_EXPERIENCE_MAP.get(item.get("experienceId"), "Не указан"),
                 "url": canonical_url,
                 "published_at": item.get("createdAt"),
-                "short_description": description[:500] if description else None,
+                "short_description": description if description else None,
                 "source_json": source_json,
             }
             if salary:

@@ -11,6 +11,16 @@ import config
 
 
 class OzonParser(BaseParser):
+    @staticmethod
+    def _normalize_work_format_values(values):
+        normalized_values = []
+        for value in values or []:
+            if isinstance(value, str):
+                normalized_values.append(value.replace("\xa0", " "))
+            else:
+                normalized_values.append(value)
+        return normalized_values
+
     async def parse(self, session, existing_ids, city_mappings):
         base_url = "https://job-api.ozon.ru/v2/vacancy"
         page = 1
@@ -30,7 +40,8 @@ class OzonParser(BaseParser):
                 if item.get("vacancyType") != "external_vacancy":
                     continue
                 title = (item.get("title", "") or "").strip()
-                work_format = ", ".join(item.get("workFormat", [])) or "Не указан"
+                work_format_values = self._normalize_work_format_values(item.get("workFormat", []))
+                work_format = ", ".join(work_format_values) or "Не указан"
                 vacancies.append(
                     {
                         "id": f"ozon_{item.get('hhId')}",
@@ -79,7 +90,7 @@ class OzonParser(BaseParser):
                 vacancy["experience"] = payload.get("exp")
 
             if not vacancy.get("work_format") and payload.get("workFormat"):
-                vacancy["work_format"] = ", ".join(payload.get("workFormat"))
+                vacancy["work_format"] = ", ".join(self._normalize_work_format_values(payload.get("workFormat", [])))
 
             if not vacancy.get("published_at") and payload.get("publishedAt"):
                 vacancy["published_at"] = payload.get("publishedAt")

@@ -57,7 +57,7 @@ class YandexParser(BaseParser):
                 response.raise_for_status()
                 payload = await response.json()
 
-            details = payload.get("vacancy") or payload
+            vacancy_details = payload.get("vacancy") or {}
 
             if not vacancy.get("grade"):
                 grade_map = {
@@ -66,8 +66,8 @@ class YandexParser(BaseParser):
                     "middle": "Middle",
                     "senior": "Senior",
                 }
-                min_level = (details.get("pro_level_min_display") or "").split(".")[-1].strip().lower()
-                max_level = (details.get("pro_level_max_display") or "").split(".")[-1].strip().lower()
+                min_level = (vacancy_details.get("pro_level_min_display") or "").split(".")[-1].strip().lower()
+                max_level = (vacancy_details.get("pro_level_max_display") or "").split(".")[-1].strip().lower()
                 min_grade = grade_map.get(min_level)
                 max_grade = grade_map.get(max_level)
 
@@ -79,17 +79,17 @@ class YandexParser(BaseParser):
 
             current_description = vacancy.get("short_description") or ""
             parts = [
-                details.get("short_summary"),
-                details.get("duties"),
-                details.get("key_qualifications"),
-                details.get("additional_requirements"),
-                details.get("conditions"),
+                payload.get("short_summary"),
+                payload.get("duties"),
+                payload.get("key_qualifications"),
+                payload.get("additional_requirements"),
+                payload.get("conditions"),
             ]
             description = "\n\n".join((part or "").strip() for part in parts if (part or "").strip())
             if description and len(description) > len(current_description):
                 vacancy["short_description"] = description
 
-            published_at = payload.get("published_at") or details.get("published_at")
+            published_at = payload.get("published_at")
             if not vacancy.get("published_at") and published_at:
                 vacancy["published_at"] = published_at
         except Exception as exc:

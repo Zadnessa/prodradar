@@ -1,10 +1,32 @@
 """Операции с Supabase в одном месте."""
 
+import hashlib
 from datetime import datetime, timedelta, timezone
 
 from supabase import create_client
 
 import config
+
+
+CONTENT_HASH_FIELDS = (
+    "title",
+    "short_description",
+    "grade",
+    "city",
+    "work_format",
+    "experience",
+)
+
+
+def compute_content_hash(vacancy):
+    """Считает SHA-256 хеш ключевых полей вакансии."""
+    normalized_values = []
+    for field in CONTENT_HASH_FIELDS:
+        value = vacancy.get(field, "")
+        normalized_values.append("" if value is None else str(value))
+
+    raw_value = "|".join(normalized_values)
+    return hashlib.sha256(raw_value.encode("utf-8")).hexdigest()
 
 
 class SupabaseService:
@@ -13,9 +35,18 @@ class SupabaseService:
     def __init__(self):
         self.client = create_client(config.SUPABASE_URL, config.SUPABASE_KEY)
 
+    @staticmethod
+    def _chunked(items, chunk_size):
+        for index in range(0, len(items), chunk_size):
+            yield items[index:index + chunk_size]
+
     def get_existing_vacancy_ids(self):
         result = self.client.table("vacancies").select("id").execute()
         return {row["id"] for row in result.data or []}
+
+    def get_existing_vacancy_hashes(self):
+        result = self.client.table("vacancies").select("id,content_hash").execute()
+        return {row["id"]: row.get("content_hash") for row in result.data or []}
 
     def get_city_mappings(self):
         result = self.client.table("city_mappings").select("source,raw_value,normalized").execute()
@@ -28,10 +59,56 @@ class SupabaseService:
         result = self.client.table("companies").select("*").eq("is_enabled", True).execute()
         return result.data or []
 
-    def save_vacancies(self, vacancies):
+    def insert_vacancies(self, vacancies):
         if not vacancies:
-            return
-        self.client.table("vacancies").insert(vacancies).execute()
+            return 0
+
+        last_seen_at = datetime.now(timezone.utc).isoformat()
+        payload = [{**vacancy, "last_seen_at": last_seen_at, "is_active": True} for vacancy in vacancies]
+        self.client.table("vacancies").insert(payload).execute()
+        return len(payload)
+
+    def touch_vacancies(self, vacancy_ids):
+        if not vacancy_ids:
+            return 0
+
+        last_seen_at = datetime.now(timezone.utc).isoformat()
+        for chunk in self._chunked(vacancy_ids, 500):
+            self.client.table("vacancies").update({"last_seen_at": last_seen_at}).in_("id", chunk).execute()
+        return len(vacancy_ids)
+
+    def update_vacancies(self, vacancies):
+        if not vacancies:
+            return 0
+
+        last_seen_at = datetime.now(timezone.utc).isoformat()
+        for chunk in self._chunked(vacancies, 50):
+            payload = [{**vacancy, "last_seen_at": last_seen_at, "is_active": True} for vacancy in chunk]
+            self.client.table("vacancies").upsert(payload, on_conflict="id").execute()
+        return len(vacancies)
+
+    def deactivate_missing_vacancies(self, active_ids):
+        active_ids = sorted(set(active_ids))
+        if active_ids and len(active_ids) <= 500:
+            missing_result = (
+                self.client.table("vacancies")
+                .select("id")
+                .eq("is_active", True)
+                .not_.in_("id", active_ids)
+                .execute()
+            )
+            missing_ids = sorted(row["id"] for row in missing_result.data or [])
+        else:
+            current_active_result = self.client.table("vacancies").select("id").eq("is_active", True).execute()
+            current_active_ids = {row["id"] for row in current_active_result.data or []}
+            missing_ids = sorted(current_active_ids - set(active_ids))
+
+        if not missing_ids:
+            return 0
+
+        for chunk in self._chunked(missing_ids, 500):
+            self.client.table("vacancies").update({"is_active": False}).in_("id", chunk).execute()
+        return len(missing_ids)
 
     def mark_vacancies_notified(self, vacancy_ids):
         if not vacancy_ids:

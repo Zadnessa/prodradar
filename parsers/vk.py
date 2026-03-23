@@ -2,13 +2,13 @@
 
 import asyncio
 import re
-from bs4 import NavigableString, Tag
 from urllib.parse import parse_qs, urlparse
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString, Tag
+
+import config
 from parsers.base import BaseParser
 from parsers.utils import normalize_city
-import config
 
 
 class VKParser(BaseParser):
@@ -90,7 +90,26 @@ class VKParser(BaseParser):
         cleaned_grade = raw_grade.strip()
         return cleaned_grade or None
 
+    @staticmethod
+    def _extract_work_format_from_meta(soup):
+        meta = soup.find("meta", attrs={"name": "description"})
+        content = meta.get("content", "") if meta else ""
+        if not content:
+            return None
+
+        patterns = (
+            r"с\s+графиком\s+([^,.]+)",
+            r"графиком\s+работы\s+([^,.]+)",
+        )
+        for pattern in patterns:
+            match = re.search(pattern, content, flags=re.IGNORECASE)
+            if match:
+                work_format = match.group(1).strip()
+                return work_format or None
+        return None
+
     async def parse(self, session, existing_ids, city_mappings):
+        del existing_ids
         base_url = "https://team.vk.company/career/api/v2/vacancies/"
         limit = 50
         offset = 0
@@ -110,50 +129,19 @@ class VKParser(BaseParser):
                     "удаленный": "Удаленка",
                     "офисный": "Офис",
                 }
-                work_format = work_map.get(raw_work_format, item.get("work_format") or "Не указан")
                 title = (item.get("title", "") or "").strip()
-                vacancy_id = f"vk_{item.get('id')}"
-                grade = None
-                short_description = None
-
-                if vacancy_id not in existing_ids:
-                    try:
-                        html_url = f"https://team.vk.company/vacancy/{item.get('id')}/"
-                        async with session.get(html_url, headers=config.REQUEST_HEADERS) as html_response:
-                            html_response.raise_for_status()
-                            html = await html_response.text()
-                        soup = BeautifulSoup(html, "html.parser")
-
-                        grade = self._normalize_grade_text(self._extract_grade_from_level_block(soup))
-                        if not grade:
-                            meta = soup.find("meta", attrs={"name": "description"})
-                            content = meta.get("content", "") if meta else ""
-                            match = re.search(r"уровня\s+([\w,\s]+?)(?:\s+в\s+проект|\s+с\s+графиком)", content, flags=re.IGNORECASE)
-                            if match:
-                                grade = self._normalize_grade_text(match.group(1).strip())
-
-                        description_parts = [
-                            self._extract_section_text_from_h3(soup, "Задачи"),
-                            self._extract_section_text_from_h3(soup, "Требования"),
-                        ]
-                        description = "\n\n".join(part for part in description_parts if part).strip()
-                        if description:
-                            short_description = description[:500]
-                    except Exception:
-                        grade = None
-                    await asyncio.sleep(0.5)
 
                 vacancies.append(
                     {
-                        "id": vacancy_id,
+                        "id": f"vk_{item.get('id')}",
                         "company": "VK",
                         "title": title,
-                        "grade": grade,
+                        "grade": None,
                         "city": normalize_city(city_mappings, (item.get("town") or {}).get("name")),
-                        "work_format": work_format,
+                        "work_format": work_map.get(raw_work_format, item.get("work_format") or "Не указан"),
                         "experience": "Не указан",
                         "url": f"https://team.vk.company/vacancy/{item.get('id')}/",
-                        "short_description": short_description,
+                        "short_description": None,
                         "source_json": {**item, "group_name": (item.get("group") or {}).get("name")},
                     }
                 )
@@ -167,3 +155,40 @@ class VKParser(BaseParser):
             offset = int(next_offset)
 
         return vacancies
+
+    async def enrich(self, session, vacancy):
+        try:
+            async with session.get(vacancy["url"], headers=config.REQUEST_HEADERS) as html_response:
+                html_response.raise_for_status()
+                html = await html_response.text()
+        except Exception:
+            await asyncio.sleep(0.5)
+            return vacancy
+
+        try:
+            soup = BeautifulSoup(html, "html.parser")
+            grade = self._normalize_grade_text(self._extract_grade_from_level_block(soup))
+            if not grade:
+                meta = soup.find("meta", attrs={"name": "description"})
+                content = meta.get("content", "") if meta else ""
+                match = re.search(r"уровня\s+([\w,\s]+?)(?:\s+в\s+проект|\s+с\s+графиком)", content, flags=re.IGNORECASE)
+                if match:
+                    grade = self._normalize_grade_text(match.group(1).strip())
+            if grade:
+                vacancy["grade"] = grade
+
+            description_parts = [
+                self._extract_section_text_from_h3(soup, "Задачи"),
+                self._extract_section_text_from_h3(soup, "Требования"),
+            ]
+            description = "\n\n".join(part for part in description_parts if part).strip()
+            if description:
+                vacancy["short_description"] = description[:500]
+
+            work_format = self._extract_work_format_from_meta(soup)
+            if work_format:
+                vacancy["work_format"] = work_format
+        finally:
+            await asyncio.sleep(0.5)
+
+        return vacancy

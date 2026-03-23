@@ -10,6 +10,7 @@ import config
 
 class WildberriesParser(BaseParser):
     async def parse(self, session, existing_ids, city_mappings):
+        del existing_ids
         headers = dict(config.REQUEST_HEADERS)
         headers["Referer"] = "https://career.rwb.ru/vacancies"
         url = "https://career.rwb.ru/crm-api/api/v1/pub/vacancies?limit=200&offset=0&direction_ids[]=9"

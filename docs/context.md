@@ -12,6 +12,9 @@
 - Текст отписки должен быть честным: при `/stop` фильтры сохраняются.
 - `published_at` приходит из источника только у части компаний: Сбер (`publicationDate`), Альфа-Банк (`createdAt`), Ozon (`publishedAt` через enrichment API), Yandex (`published_at` через enrichment API). Для остальных используется fallback на `created_at` в базе.
 - `salary` извлекается из API Альфа-Банка (`minSalary`/`maxSalary`) и Сбера (`salary_min`/`salary_max`), если эти поля заполнены. У остальных компаний зарплата в API сейчас не публикуется.
+- `content_hash` вычисляется из `title + short_description + grade + city + work_format + experience` через разделитель `|` и используется для определения изменений вакансии.
+- Если `content_hash` совпадает с сохранённым значением, обновляется только `last_seen_at`; если хеш изменился, выполняется полный upsert записи.
+- Вакансии, которые отсутствуют в текущей выдаче API, деактивируются через `is_active=false`.
 
 ## Результаты code review
 
@@ -21,7 +24,7 @@
 - Убрать дублирование: переписать `edit_message()` в `bot/telegram_api.py` через `_post()`, убрать `_normalize_general_city()` из `main.py` и использовать `normalize_city()` из `parsers/utils.py`, унифицировать логику доставки в webhook и cron.
 - Исправить баг в `bot/handlers.py`: `_send_vacancies_chunk()` должен проверять результат `send_message()` до добавления вакансии в `sent_ids`.
 - Пересмотреть стратегию ошибок в `api/webhook.py`: сейчас при исключениях нужен выбор между `500` для transient-ошибок и `200` для бизнес-ошибок.
-- Заменить `insert` на `upsert` с `on_conflict="id"` и убрать загрузку всех ID вакансий в память.
+- ✅ Заменить `insert` на `upsert` с `on_conflict="id"` и убрать загрузку всех ID вакансий в память.
 - Зафиксировать контракт `enrich()`: метод мутирует `dict` in-place, а `main.py` должен опираться на это поведение явно и безопасно.
 
 ### Принято к исполнению (масштабирование)

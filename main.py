@@ -8,7 +8,7 @@ import aiohttp
 
 import config
 from bot.telegram_api import send_message
-from database.supabase_client import SupabaseService
+from database.supabase_client import SupabaseService, compute_content_hash
 from delivery.filters import filter_vacancies_for_user
 from delivery.telegram import format_vacancy_message, send_admin_report
 from enrichment.ai_summary import generate_summary
@@ -19,15 +19,20 @@ from enrichment.normalizer import (
     normalize_work_format,
 )
 from parsers import PARSER_REGISTRY
+from parsers.utils import normalize_city
 
 
-def _normalize_general_city(city_mappings, city):
-    if not city:
-        return "Не указан"
-    value = str(city).strip()
-    if not value:
-        return "Не указан"
-    return city_mappings.get(("general", value), value)
+def _prepare_vacancy(vacancy, city_mappings):
+    vacancy["city"] = normalize_city(city_mappings, vacancy.get("city"))
+    vacancy["experience"] = normalize_experience(vacancy.get("experience"))
+    if not vacancy.get("grade"):
+        vacancy["grade"] = grade_from_experience(vacancy.get("experience", ""))
+    vacancy["work_format"] = normalize_work_format(vacancy.get("work_format"))
+    if vacancy.get("grade") is not None:
+        vacancy["grade"] = normalize_grade(vacancy.get("grade"))
+    if not vacancy.get("short_description"):
+        vacancy["short_description"] = generate_summary(vacancy)
+    return vacancy
 
 
 async def run():
@@ -35,12 +40,13 @@ async def run():
 
     db = SupabaseService()
     companies = db.get_enabled_companies()
-    existing_ids = db.get_existing_vacancy_ids()
     city_mappings = db.get_city_mappings()
 
     all_collected = []
+    all_collected_ids = set()
     parser_errors = []
     parsers_by_company = {}
+    empty_existing_ids = set()
 
     async with aiohttp.ClientSession() as session:
         for company in companies:
@@ -51,10 +57,11 @@ async def run():
                     raise ValueError(f"Парсер {parser_name} не найден в PARSER_REGISTRY")
                 parser = parser_cls()
                 parsers_by_company[company.get("name")] = parser
-                vacancies = await parser.parse(session, existing_ids, city_mappings)
+                vacancies = await parser.parse(session, empty_existing_ids, city_mappings)
                 if config.TEST_MODE:
                     vacancies = vacancies[: config.TEST_LIMIT]
                 all_collected.extend(vacancies)
+                all_collected_ids.update(vacancy["id"] for vacancy in vacancies)
                 logging.info("%s: собрано %s", parser_name, len(vacancies))
             except Exception as exc:
                 parser_errors.append(f"{company.get('name')}: {exc}")
@@ -62,16 +69,27 @@ async def run():
 
         before_filter = len(all_collected)
         all_collected = [
-            v for v in all_collected
-            if not any(pattern in v.get("title", "").lower() for pattern in config.TITLE_STOP_PATTERNS)
+            vacancy
+            for vacancy in all_collected
+            if not any(pattern in vacancy.get("title", "").lower() for pattern in config.TITLE_STOP_PATTERNS)
         ]
         filtered_out = before_filter - len(all_collected)
         if filtered_out:
             logging.info("Отфильтровано по стоп-словам: %s", filtered_out)
 
-        new_vacancies = [v for v in all_collected if v["id"] not in existing_ids]
+        existing_hashes = db.get_existing_vacancy_hashes()
+        new_vacancies = []
+        changed_vacancies = []
+        touch_ids = []
 
-        for vacancy in new_vacancies:
+        for vacancy in all_collected:
+            content_hash = compute_content_hash(vacancy)
+            existing_hash = existing_hashes.get(vacancy["id"])
+
+            if vacancy["id"] in existing_hashes and existing_hash == content_hash:
+                touch_ids.append(vacancy["id"])
+                continue
+
             parser = parsers_by_company.get(vacancy.get("company"))
             if parser:
                 try:
@@ -79,17 +97,32 @@ async def run():
                 except Exception as exc:
                     logging.warning("Ошибка enrichment для %s: %s", vacancy.get("id"), exc)
 
-            vacancy["city"] = _normalize_general_city(city_mappings, vacancy.get("city"))
-            vacancy["experience"] = normalize_experience(vacancy.get("experience"))
-            if not vacancy.get("grade"):
-                vacancy["grade"] = grade_from_experience(vacancy.get("experience", ""))
-            vacancy["work_format"] = normalize_work_format(vacancy.get("work_format"))
-            if vacancy.get("grade") is not None:
-                vacancy["grade"] = normalize_grade(vacancy.get("grade"))
-            if not vacancy.get("short_description"):
-                vacancy["short_description"] = generate_summary(vacancy)
+            _prepare_vacancy(vacancy, city_mappings)
+            vacancy["content_hash"] = content_hash
 
-    db.save_vacancies(new_vacancies)
+            if vacancy["id"] in existing_hashes:
+                changed_vacancies.append(vacancy)
+            else:
+                new_vacancies.append(vacancy)
+
+    db.insert_vacancies(new_vacancies)
+    db.touch_vacancies(touch_ids)
+    db.update_vacancies(changed_vacancies)
+
+    deactivated_count = 0
+    if parser_errors:
+        logging.warning("Деактивация пропущена из-за ошибок парсеров: %s", ", ".join(parser_errors))
+    else:
+        deactivated_count = db.deactivate_missing_vacancies(all_collected_ids)
+
+    unchanged_count = len(touch_ids)
+    logging.info(
+        "Новых: %s, изменённых: %s, без изменений: %s, деактивировано: %s",
+        len(new_vacancies),
+        len(changed_vacancies),
+        unchanged_count,
+        deactivated_count,
+    )
 
     users = db.get_active_users(bot_id="main")
     companies_map = {c.get("name"): c for c in companies}
@@ -139,6 +172,9 @@ async def run():
     send_admin_report(
         total=len(all_collected),
         new_count=len(new_vacancies),
+        changed_count=len(changed_vacancies),
+        unchanged_count=unchanged_count,
+        deactivated_count=deactivated_count,
         sent_count=sent_count,
         users_count=len(users),
         paused_count=paused_users,
@@ -146,9 +182,12 @@ async def run():
     )
 
     logging.info(
-        "Итог: собрано=%s, новые=%s, разослано=%s, подписчики=%s, пауза=%s, ошибок=%s",
+        "Итог: собрано=%s, новые=%s, изменённые=%s, без изменений=%s, деактивировано=%s, разослано=%s, подписчики=%s, пауза=%s, ошибок=%s",
         len(all_collected),
         len(new_vacancies),
+        len(changed_vacancies),
+        unchanged_count,
+        deactivated_count,
         sent_count,
         len(users),
         paused_users,

@@ -10,7 +10,6 @@ import config
 
 CONTENT_HASH_FIELDS = (
     "title",
-    "short_description",
     "grade",
     "city",
     "work_format",

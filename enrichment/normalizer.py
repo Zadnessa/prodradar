@@ -50,6 +50,14 @@ _GRADE_FROM_EXPERIENCE = {
     "5+ лет": "Senior",
 }
 
+_EXPERIENCE_FROM_GRADE = {
+    "Junior": "до 1 года",
+    "Middle": "1-3 года",
+    "Middle+": "3-5 лет",
+    "Senior": "5+ лет",
+    "Lead+": "5+ лет",
+}
+
 
 def normalize_experience(raw_experience):
     """Приводит опыт к единому формату."""
@@ -85,6 +93,19 @@ def grade_from_experience(normalized_experience):
     if normalized_experience == "не указан":
         return None
     return _GRADE_FROM_EXPERIENCE.get(normalized_experience)
+
+
+def experience_from_grade(normalized_grade):
+    """Возвращает опыт на основе нормализованного грейда."""
+    if normalized_grade is None:
+        return None
+
+    value = normalize_grade(normalized_grade)
+    if not value:
+        return None
+
+    max_grade = value.split("-")[-1].strip()
+    return _EXPERIENCE_FROM_GRADE.get(max_grade)
 
 
 def normalize_work_format(raw_value):

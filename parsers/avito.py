@@ -87,7 +87,9 @@ class AvitoParser(BaseParser):
             title = (link.get_text(strip=True) if link else "").strip()
             href = link.get("href") if link else ""
             work_format_el = card.select_one("span.vacancies-section__item-format")
-            work_format = (work_format_el.get_text(strip=True) if work_format_el else "").strip() or "Не указан"
+            work_format = (work_format_el.get_text(strip=True) if work_format_el else "").strip()
+            if not work_format:
+                work_format = "удаленно" if card.get("data-vacancy-remote") == "Да" else "Не указан"
             data_attrs = {k: v for k, v in card.attrs.items() if k.startswith("data-")}
             vacancies.append(
                 {

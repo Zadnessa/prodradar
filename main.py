@@ -13,6 +13,7 @@ from delivery.filters import filter_vacancies_for_user
 from delivery.telegram import format_vacancy_message, send_admin_report
 from enrichment.ai_summary import generate_summary
 from enrichment.normalizer import (
+    experience_from_grade,
     grade_from_experience,
     normalize_experience,
     normalize_grade,
@@ -25,11 +26,17 @@ from parsers.utils import normalize_city
 def _prepare_vacancy(vacancy, city_mappings):
     vacancy["city"] = normalize_city(city_mappings, vacancy.get("city"))
     vacancy["experience"] = normalize_experience(vacancy.get("experience"))
-    if not vacancy.get("grade"):
-        vacancy["grade"] = grade_from_experience(vacancy.get("experience", ""))
     vacancy["work_format"] = normalize_work_format(vacancy.get("work_format"))
     if vacancy.get("grade") is not None:
         vacancy["grade"] = normalize_grade(vacancy.get("grade"))
+    if not vacancy.get("grade"):
+        vacancy["grade"] = grade_from_experience(vacancy.get("experience", ""))
+    elif vacancy.get("experience") == "не указан":
+        inferred_experience = experience_from_grade(vacancy.get("grade"))
+        if inferred_experience is not None:
+            vacancy["experience"] = inferred_experience
+    if vacancy.get("city") == "Не указан" and "Удалёнка" in vacancy.get("work_format", ""):
+        vacancy["city"] = "Удалёнка"
     if not vacancy.get("short_description"):
         vacancy["short_description"] = generate_summary(vacancy)
     return vacancy

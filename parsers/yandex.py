@@ -78,17 +78,16 @@ class YandexParser(BaseParser):
                         vacancy["grade"] = f"{min_grade}-{max_grade}"
 
             current_description = vacancy.get("short_description") or ""
-                parts = [
-                    details.get("short_summary"),
-                    details.get("duties"),
-                    details.get("key_qualifications"),
-                    details.get("additional_requirements"),
-                    details.get("conditions"),
-                ]
-                description = "\n\n".join((part or "").strip() for part in parts if (part or "").strip())
-                if description:
-                    if len(description) > len(current_description):
-                        vacancy["short_description"] = description
+            parts = [
+                details.get("short_summary"),
+                details.get("duties"),
+                details.get("key_qualifications"),
+                details.get("additional_requirements"),
+                details.get("conditions"),
+            ]
+            description = "\n\n".join((part or "").strip() for part in parts if (part or "").strip())
+            if description and len(description) > len(current_description):
+                vacancy["short_description"] = description
 
             published_at = payload.get("published_at") or details.get("published_at")
             if not vacancy.get("published_at") and published_at:

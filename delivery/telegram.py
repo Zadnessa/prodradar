@@ -141,7 +141,17 @@ async def deliver_vacancies(vacancies, users, companies_map, bot_id="main"):
     return sent_count, failed_users
 
 
-def send_admin_report(total, new_count, sent_count, users_count, parser_errors, paused_count=0):
+def send_admin_report(
+    total,
+    new_count,
+    sent_count,
+    users_count,
+    parser_errors,
+    paused_count=0,
+    changed_count=0,
+    unchanged_count=0,
+    deactivated_count=0,
+):
     admin_chat_id = config.ADMIN_CHAT_ID
     if not admin_chat_id:
         return
@@ -152,6 +162,9 @@ def send_admin_report(total, new_count, sent_count, users_count, parser_errors, 
         "📊 Vacancy Radar — отчёт\n\n"
         f"Собрано: {total} вакансий\n"
         f"Новых: {new_count}\n"
+        f"Изменённых: {changed_count}\n"
+        f"Без изменений: {unchanged_count}\n"
+        f"Деактивировано: {deactivated_count}\n"
         f"Отправлено: {sent_count} сообщений на {users_count} подписчиков\n"
         f"На паузе: {paused_count}\n"
         f"Ошибки: {errors_text}"

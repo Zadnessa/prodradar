@@ -106,6 +106,7 @@ class TBankParser(BaseParser):
         return sections
 
     async def parse(self, session, existing_ids, city_mappings):
+        del existing_ids
         url = "https://www.tbank.ru/pfpjobs/papi/getVacancies"
         pagination = {"it": {"limit": 100, "offset": 0}}
         collected = []

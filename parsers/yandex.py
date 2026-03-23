@@ -11,6 +11,7 @@ class YandexParser(BaseParser):
     URL = "https://yandex.ru/jobs/api/publications?public_professions=product-manager&page_size=100"
 
     async def parse(self, session, existing_ids, city_mappings):
+        del existing_ids
         async with session.get(self.URL, headers=config.REQUEST_HEADERS) as response:
             response.raise_for_status()
             payload = await response.json()

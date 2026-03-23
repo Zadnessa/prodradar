@@ -69,6 +69,7 @@ class AvitoParser(BaseParser):
         return description or None
 
     async def parse(self, session, existing_ids, city_mappings):
+        del existing_ids
         headers = dict(config.REQUEST_HEADERS)
         headers["X-Requested-With"] = "XMLHttpRequest"
         url = "https://career.avito.com/vacancies/?action=filter&direction=upravlenie-produktom"

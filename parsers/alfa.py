@@ -45,6 +45,7 @@ class AlfaParser(BaseParser):
         return result
 
     async def parse(self, session, existing_ids, city_mappings):
+        del existing_ids
         options_url = "https://job.alfabank.ru/api/optionLists"
         options_params = [("listIds", "archetypes"), ("listIds", "cities"), ("listIds", "experiences")]
         async with session.get(options_url, headers=config.REQUEST_HEADERS, params=options_params) as response:

@@ -22,6 +22,7 @@ class OzonParser(BaseParser):
         return normalized_values
 
     async def parse(self, session, existing_ids, city_mappings):
+        del existing_ids
         base_url = "https://job-api.ozon.ru/v2/vacancy"
         page = 1
         vacancies = []

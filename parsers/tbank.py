@@ -48,12 +48,6 @@ class TBankParser(BaseParser):
         return city_mappings.get(("tbank_region", str(region_id)), str(region_id))
 
     @staticmethod
-    def _resolve_city_slug(city_mappings, region_id):
-        if region_id is None:
-            return "remote"
-        return city_mappings.get(("tbank_city_slug", str(region_id)), str(region_id))
-
-    @staticmethod
     def _merge_cities(primary_city, duplicate_city):
         cities = []
         for city_value in (primary_city, duplicate_city):
@@ -141,12 +135,11 @@ class TBankParser(BaseParser):
             region_id = item.get("regionId")
             seo_slug = item.get("seoSlug")
             url_slug = item.get("urlSlug")
-            city_slug = self._resolve_city_slug(city_mappings, region_id)
             city = self._resolve_city(city_mappings, region_id)
             short_html = item.get("shortDescription") or ""
             short_description = BeautifulSoup(short_html, "html.parser").get_text(" ", strip=True) or None
             if seo_slug:
-                vacancy_url = f"https://www.tbank.ru/career/it/vacancy/{city_slug}/{seo_slug}/{url_slug}/"
+                vacancy_url = f"https://www.tbank.ru/career/it/vacancy/moscow/{seo_slug}/{url_slug}/"
             else:
                 vacancy_url = f"https://www.tbank.ru/career/it/{url_slug}/"
 
@@ -202,7 +195,7 @@ class TBankParser(BaseParser):
             summary = "\n\n".join(part for part in summary_parts if part).strip()
             current_short_description = vacancy.get("short_description") or ""
             if summary and len(summary) > len(current_short_description):
-                vacancy["short_description"] = summary[:500]
+                vacancy["short_description"] = summary
 
             if vacancy.get("work_format") in (None, "", "Не указан"):
                 vacancy["work_format"] = self._extract_work_format((vacancy.get("source_json") or {}).get("tags"))

@@ -84,7 +84,7 @@ class OzonParser(BaseParser):
                 descr_html = payload.get("descr") or ""
                 description = BeautifulSoup(descr_html, "html.parser").get_text(" ", strip=True)
                 if description:
-                    vacancy["short_description"] = description[:500]
+                    vacancy["short_description"] = description
 
             experience = (vacancy.get("experience") or "").strip().lower()
             if experience in {"", "не указан"} and payload.get("exp"):

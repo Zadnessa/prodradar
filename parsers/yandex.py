@@ -87,7 +87,7 @@ class YandexParser(BaseParser):
                 ]
                 description = "\n\n".join((part or "").strip() for part in parts if (part or "").strip())
                 if description:
-                    vacancy["short_description"] = description[:500]
+                    vacancy["short_description"] = description
 
             published_at = payload.get("published_at") or details.get("published_at")
             if not vacancy.get("published_at") and published_at:

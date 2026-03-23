@@ -47,7 +47,7 @@ class SberParser(BaseParser):
                 _clean_markdown(item.get("duties") or ""),
                 _clean_markdown(item.get("requirements") or ""),
             ]
-            short_description = "\n\n".join(part for part in description_parts if part)[:500] or None
+            short_description = "\n\n".join(part for part in description_parts if part) or None
 
             min_salary = item.get("salary_min")
             max_salary = item.get("salary_max")

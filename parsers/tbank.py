@@ -193,15 +193,15 @@ class TBankParser(BaseParser):
             vacancy.setdefault("source_json", {})
             vacancy["source_json"]["html_sections"] = sections
 
-            if not vacancy.get("short_description"):
-                summary_parts = [
-                    sections.get("Описание"),
-                    sections.get("Обязанности"),
-                    sections.get("Требования"),
-                ]
-                summary = "\n\n".join(part for part in summary_parts if part).strip()
-                if summary:
-                    vacancy["short_description"] = summary[:500]
+            summary_parts = [
+                sections.get("Описание"),
+                sections.get("Обязанности"),
+                sections.get("Требования"),
+            ]
+            summary = "\n\n".join(part for part in summary_parts if part).strip()
+            current_short_description = vacancy.get("short_description") or ""
+            if summary and len(summary) > len(current_short_description):
+                vacancy["short_description"] = summary[:500]
 
             if vacancy.get("work_format") in (None, "", "Не указан"):
                 vacancy["work_format"] = self._extract_work_format((vacancy.get("source_json") or {}).get("tags"))

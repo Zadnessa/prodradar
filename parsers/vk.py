@@ -14,12 +14,33 @@ import config
 class VKParser(BaseParser):
     @staticmethod
     def _extract_section_text_from_h3(soup, section_name):
-        header = soup.find("h3", string=lambda value: isinstance(value, str) and value.strip() == section_name)
-        if not header or not getattr(header, "parent", None):
+        article_root = None
+        article_header = None
+
+        headers = soup.find_all("h3", string=lambda value: isinstance(value, str) and value.strip() == section_name)
+        for header in headers:
+            if getattr(header, "parent", None) and getattr(header.parent, "parent", None):
+                candidate_article = header.parent.parent.find("div", class_="article")
+                if candidate_article:
+                    article_root = candidate_article
+                    article_header = article_root.find(
+                        "h3",
+                        string=lambda value: isinstance(value, str) and value.strip() == section_name,
+                    )
+                    if article_header:
+                        break
+
+            candidate_article = header.find_parent("div", class_="article")
+            if candidate_article:
+                article_root = candidate_article
+                article_header = header
+                break
+
+        if not article_root or not article_header:
             return None
 
         parts = []
-        for sibling in header.parent.next_siblings:
+        for sibling in article_header.next_siblings:
             if isinstance(sibling, NavigableString):
                 text = str(sibling).strip()
                 if text:
@@ -29,7 +50,7 @@ class VKParser(BaseParser):
             if not isinstance(sibling, Tag):
                 continue
 
-            if sibling.find(["h2", "h3"]):
+            if sibling.name == "h3":
                 break
 
             text = sibling.get_text("\n", strip=True)

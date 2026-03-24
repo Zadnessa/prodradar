@@ -47,19 +47,7 @@ class SberParser(BaseParser):
                 _clean_markdown(item.get("duties") or ""),
                 _clean_markdown(item.get("requirements") or ""),
             ]
-            short_description = "\n\n".join(part for part in description_parts if part) or None
-
-            min_salary = item.get("salary_min")
-            max_salary = item.get("salary_max")
-            has_min_salary = min_salary not in (None, 0)
-            has_max_salary = max_salary not in (None, 0)
-            salary = None
-            if has_min_salary and has_max_salary:
-                salary = f"{min_salary} - {max_salary}"
-            elif has_min_salary:
-                salary = f"от {min_salary}"
-            elif has_max_salary:
-                salary = f"до {max_salary}"
+            description = "\n\n".join(part for part in description_parts if part) or None
 
             work_format_map = {1: "Полный день", 2: "Сменный", 3: "Гибкий"}
             source_json = {
@@ -68,8 +56,8 @@ class SberParser(BaseParser):
                 "duties": item.get("duties"),
                 "requirements": item.get("requirements"),
                 "conditions": item.get("conditions"),
-                "salary_min": min_salary,
-                "salary_max": max_salary,
+                "salary_min": item.get("salary_min"),
+                "salary_max": item.get("salary_max"),
             }
 
             vacancy = {
@@ -82,11 +70,9 @@ class SberParser(BaseParser):
                 "experience": config.SBER_EXPERIENCE_MAP.get(item.get("experienceId"), "Не указан"),
                 "url": f"https://rabota.sber.ru/search/{item.get('internalId')}",
                 "published_at": item.get("publicationDate"),
-                "short_description": short_description,
+                "description": description,
                 "source_json": source_json,
             }
-            if salary:
-                vacancy["salary"] = salary
 
             vacancies.append(vacancy)
         return vacancies

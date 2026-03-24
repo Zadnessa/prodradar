@@ -27,8 +27,16 @@ class handler(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
             secret = os.getenv("TELEGRAM_WEBHOOK_SECRET")
+            if not secret:
+                logging.error("TELEGRAM_WEBHOOK_SECRET не задан, webhook отключён")
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"ok": False, "error": "webhook_secret_missing"}).encode("utf-8"))
+                return
+
             header_token = self.headers.get("X-Telegram-Bot-Api-Secret-Token", "")
-            if secret and header_token != secret:
+            if header_token != secret:
                 self.send_response(403)
                 self.send_header("Content-Type", "application/json")
                 self.end_headers()
@@ -43,6 +51,7 @@ class handler(BaseHTTPRequestHandler):
                 ((update.get("callback_query") or {}).get("data")),
                 ((update.get("message") or {}).get("text")),
             )
+            db = SupabaseService()
 
             callback_query = update.get("callback_query")
             if callback_query:
@@ -56,19 +65,24 @@ class handler(BaseHTTPRequestHandler):
                 if callback_query_id:
                     answer_callback(callback_query_id)
 
+                user = db.get_user(chat_id) if chat_id else None
+                if not user:
+                    logging.info("Неизвестный chat_id=%s, игнорирую", chat_id)
+                    self.send_response(200)
+                    self.send_header("Content-Type", "application/json")
+                    self.end_headers()
+                    self.wfile.write(json.dumps({"ok": True, "chat_id": message_chat_id}).encode("utf-8"))
+                    return
+
                 prefix = data.split(":", 1)[0] if ":" in data else data
 
                 if prefix == "ob" and chat_id and message_id:
-                    db = SupabaseService()
                     handle_callback(data, chat_id, message_id, callback_message, db=db)
                 elif prefix == "st" and chat_id and message_id:
-                    db = SupabaseService()
                     handle_settings_callback(data, chat_id, message_id, callback_message, db=db)
                 elif prefix == "more" and chat_id and message_id:
-                    db = SupabaseService()
                     handle_more_callback(data, chat_id, message_id, callback_message, db=db)
                 elif prefix == "hub" and chat_id and message_id:
-                    db = SupabaseService()
                     handle_hub_callback(data, chat_id, message_id, callback_message, db=db)
 
                 self.send_response(200)
@@ -84,7 +98,15 @@ class handler(BaseHTTPRequestHandler):
             text = (message.get("text") or "").strip()
 
             if chat_id:
-                db = SupabaseService()
+                user = db.get_user(chat_id)
+                if user is None and text != "/start":
+                    logging.info("Неизвестный chat_id=%s, игнорирую", chat_id)
+                    self.send_response(200)
+                    self.send_header("Content-Type", "application/json")
+                    self.end_headers()
+                    self.wfile.write(json.dumps({"ok": True}).encode("utf-8"))
+                    return
+
                 if text == "/start":
                     handle_start(chat_id, username, db=db)
                 elif text == "/stop":

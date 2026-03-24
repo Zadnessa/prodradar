@@ -15,7 +15,7 @@
 - `content_hash` вычисляется из `title + grade + city + work_format + experience` через разделитель `|` и используется для определения изменений вакансии.
 - Если `content_hash` совпадает с сохранённым значением, обновляется только `last_seen_at`; если хеш изменился, выполняется полный upsert записи.
 - Вакансии, которые отсутствуют в текущей выдаче API, деактивируются через `is_active=false`.
-- `short_description` хранит полный текст описания без ограничения длины, чтобы AI-фаза работала с полными данными.
+- `description` хранит полный текст описания без ограничения длины, чтобы AI-фаза работала с полными данными.
 - Если `experience = 'не указан'` и `grade` заполнен, `experience` выводится из `grade` через обратный маппинг.
 - Если `city = 'Не указан'` и `work_format` содержит `Удалёнка`, `city` автоматически заменяется на `Удалёнка`.
 - Для T-Bank `city_slug` в URL вакансии всегда фиксирован как `moscow`: это даёт SSR HTML-секции для вакансий из любого города, а фактический город по-прежнему берётся из `regionId` через `city_mappings`.
@@ -29,12 +29,15 @@
 
 ### Принято к исполнению (PR cleanup)
 
-- Удалить мёртвый код: `deliver_vacancies()` и `send_telegram_message()` в `delivery/telegram.py`, `mark_vacancies_notified()` и `get_unnotified_vacancies()` в `database/supabase_client.py`, `FINAL_TEXT` в `bot/handlers.py`.
-- Убрать дублирование: переписать `edit_message()` в `bot/telegram_api.py` через `_post()`, убрать `_normalize_general_city()` из `main.py` и использовать `normalize_city()` из `parsers/utils.py`, унифицировать логику доставки в webhook и cron.
-- Исправить баг в `bot/handlers.py`: `_send_vacancies_chunk()` должен проверять результат `send_message()` до добавления вакансии в `sent_ids`.
 - Пересмотреть стратегию ошибок в `api/webhook.py`: сейчас при исключениях нужен выбор между `500` для transient-ошибок и `200` для бизнес-ошибок.
+
+### Выполнено (PR cleanup)
+
+- [x] Удалить мёртвый код: `deliver_vacancies()` и `send_telegram_message()` в `delivery/telegram.py`, `mark_vacancies_notified()` и `get_unnotified_vacancies()` в `database/supabase_client.py`, `FINAL_TEXT` в `bot/handlers.py`.
+- [x] Убрать дублирование: переписать `edit_message()` в `bot/telegram_api.py` через `_post()`.
+- [x] Исправить баг в `bot/handlers.py`: `_send_vacancies_chunk()` проверяет результат `send_message()` до добавления вакансии в `sent_ids`.
 - [x] Заменить `insert` на `upsert` с `on_conflict="id"` и убрать загрузку всех ID вакансий в память.
-- Зафиксировать контракт `enrich()`: метод мутирует `dict` in-place, а `main.py` должен опираться на это поведение явно и безопасно.
+- [x] Зафиксировать контракт `enrich()`: метод мутирует `dict` in-place, а `main.py` опирается на это поведение явно и безопасно.
 
 ### Принято к исполнению (масштабирование)
 

@@ -53,7 +53,7 @@ class OzonParser(BaseParser):
                         "work_format": work_format,
                         "experience": item.get("experience") or "Не указан",
                         "url": f"https://career.ozon.ru/vacancy/{item.get('hhId')}",
-                        "short_description": None,
+                        "description": None,
                         "source_json": {**item, "department": item.get("department")},
                     }
                 )
@@ -80,11 +80,11 @@ class OzonParser(BaseParser):
                 response.raise_for_status()
                 payload = await response.json()
 
-            if not vacancy.get("short_description"):
+            if not vacancy.get("description"):
                 descr_html = payload.get("descr") or ""
                 description = BeautifulSoup(descr_html, "html.parser").get_text(" ", strip=True)
                 if description:
-                    vacancy["short_description"] = description
+                    vacancy["description"] = description
 
             experience = (vacancy.get("experience") or "").strip().lower()
             if experience in {"", "не указан"} and payload.get("exp"):

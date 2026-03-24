@@ -1,11 +1,8 @@
 """Отправка и форматирование сообщений в Telegram."""
-
-import asyncio
 from datetime import datetime, timezone
 
 import config
 from bot.telegram_api import send_message
-from delivery.filters import filter_vacancies_for_user
 
 
 def _escape_html(text):
@@ -106,7 +103,7 @@ def format_vacancy_message(vacancy, company_meta):
     if published_at_label:
         lines.append(f"<b>опубликовано:</b> {published_at_label}")
 
-    description = vacancy.get("short_description")
+    description = vacancy.get("description")
     if config.SHOW_DESCRIPTION and description and str(description).strip().lower() != "не указан":
         lines.append(f"описание: {_escape_html(description)}")
 
@@ -114,31 +111,6 @@ def format_vacancy_message(vacancy, company_meta):
     url = vacancy.get("url", "")
     lines.append(f'<a href="{url}">Открыть вакансию</a>')
     return "\n".join(lines)
-
-
-def send_telegram_message(token, chat_id, text):
-    del token
-    return send_message(chat_id, text)
-
-
-async def deliver_vacancies(vacancies, users, companies_map, bot_id="main"):
-    del bot_id
-    sent_count = 0
-    failed_users = []
-
-    for user in users:
-        try:
-            filtered = filter_vacancies_for_user(vacancies, user.get("filters") or {})
-            for vacancy in filtered:
-                message = format_vacancy_message(vacancy, companies_map.get(vacancy.get("company"), {}))
-                result = send_message(user["chat_id"], message, bot_id=user.get("bot_id") or "main")
-                if result:
-                    sent_count += 1
-                await asyncio.sleep(0.05)
-        except Exception as exc:
-            failed_users.append(f"{user.get('chat_id')}: {exc}")
-
-    return sent_count, failed_users
 
 
 def send_admin_report(

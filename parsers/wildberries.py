@@ -36,7 +36,7 @@ class WildberriesParser(BaseParser):
                     "work_format": work_format,
                     "experience": item.get("experience_type_title") or "Не указан",
                     "url": f"https://career.rwb.ru/vacancies/{item.get('id')}",
-                    "short_description": None,
+                    "description": None,
                     "source_json": item,
                 }
             )
@@ -62,14 +62,14 @@ class WildberriesParser(BaseParser):
             if not vacancy.get("grade") and data.get("skill_level_id") is not None:
                 vacancy["grade"] = str(data.get("skill_level_id"))
 
-            if not vacancy.get("short_description"):
+            if not vacancy.get("description"):
                 duties_arr = data.get("duties_arr") or []
                 requirements_arr = data.get("requirements_arr") or []
                 conditions_arr = data.get("conditions_arr") or []
                 parts = [data.get("description"), *duties_arr, *requirements_arr, *conditions_arr]
                 description = "\n\n".join((part or "").strip() for part in parts if (part or "").strip())
                 if description:
-                    vacancy["short_description"] = description
+                    vacancy["description"] = description
         except Exception as exc:
             logging.warning("Wildberries enrich ошибка для %s: %s", vacancy.get("id"), exc)
         finally:

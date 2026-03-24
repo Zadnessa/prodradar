@@ -40,8 +40,23 @@ def _parse_vacancy_datetime(value):
     return parsed.astimezone(timezone.utc)
 
 
+def format_company_emoji(company_meta):
+    if company_meta is None:
+        return ""
+
+    fallback_emoji = company_meta.get("emoji") or "🏢"
+    custom_emoji_id = company_meta.get("custom_emoji_id")
+
+    if isinstance(custom_emoji_id, str):
+        custom_emoji_id = custom_emoji_id.strip()
+
+    if custom_emoji_id:
+        return f'<tg-emoji emoji-id="{custom_emoji_id}">{fallback_emoji}</tg-emoji>'
+
+    return fallback_emoji
+
 def _format_published_at_label(vacancy):
-    published_at = vacancy.get("published_at") or vacancy.get("created_at")
+    published_at = vacancy.get("published_at")
     published_datetime = _parse_vacancy_datetime(published_at)
     if not published_datetime:
         return None
@@ -72,7 +87,7 @@ def _format_published_at_label(vacancy):
 
 
 def format_vacancy_message(vacancy, company_meta):
-    emoji = company_meta.get("emoji", "") if company_meta else ""
+    emoji = format_company_emoji(company_meta)
     lines = [
         f"{emoji} {vacancy.get('company', 'Компания')}",
         f"<b>{_escape_html(vacancy.get('title', ''))}</b>",

@@ -132,7 +132,7 @@ class SupabaseService:
             query = query.not_.in_("id", list(delivered_ids))
 
         end = offset + limit - 1
-        result = query.order("created_at", desc=True).range(offset, end).execute()
+        result = query.order("published_at", desc=True).order("created_at", desc=True).range(offset, end).execute()
         return result.data or []
 
     def mark_delivered(self, chat_id, vacancy_ids, source="scheduled"):

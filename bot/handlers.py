@@ -24,7 +24,7 @@ from bot.settings import (
 from bot.telegram_api import delete_message, edit_message, send_message
 from database.supabase_client import SupabaseService
 from delivery.filters import filter_vacancies_for_user
-from delivery.telegram import format_vacancy_message
+from delivery.telegram import format_company_emoji, format_vacancy_message
 
 
 def _edit_fallback(chat_id, message_id):
@@ -676,7 +676,7 @@ def handle_stats(chat_id, db=None):
     company_lines = []
     for company_name, count in sorted(by_company.items(), key=lambda item: item[1], reverse=True):
         company_meta = companies_map.get(company_name, {})
-        emoji = company_meta.get("emoji") or "🏢"
+        emoji = format_company_emoji(company_meta)
         company_lines.append(f"{emoji} {company_name}: {count}")
 
     lines = "\n".join(company_lines) if company_lines else "Нет данных"

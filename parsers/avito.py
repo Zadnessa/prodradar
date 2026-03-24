@@ -101,7 +101,7 @@ class AvitoParser(BaseParser):
                     "work_format": work_format,
                     "experience": "Не указан",
                     "url": f"https://career.avito.com{href}",
-                    "short_description": None,
+                    "description": None,
                     "source_json": {
                         "data_attrs": data_attrs,
                         "title": title,
@@ -131,10 +131,10 @@ class AvitoParser(BaseParser):
             if json_ld:
                 vacancy["source_json"]["json_ld"] = json_ld
 
-                if not vacancy.get("short_description"):
+                if not vacancy.get("description"):
                     description = BeautifulSoup(json_ld.get("description", ""), "html.parser").get_text("\n", strip=True).strip()
                     if description:
-                        vacancy["short_description"] = description
+                        vacancy["description"] = description
 
                 if not vacancy.get("published_at"):
                     published_at = json_ld.get("datePosted")
@@ -143,8 +143,8 @@ class AvitoParser(BaseParser):
                 return vacancy
 
             description = self._extract_description_from_sections(soup)
-            if description and not vacancy.get("short_description"):
-                vacancy["short_description"] = description
+            if description and not vacancy.get("description"):
+                vacancy["description"] = description
         except Exception as exc:
             logger.warning("Avito enrich: ошибка парсинга HTML для %s: %s", vacancy.get("url"), exc)
 

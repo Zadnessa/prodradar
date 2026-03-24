@@ -71,23 +71,7 @@ class AlfaParser(BaseParser):
             fallback_description = (item.get("descriptionText") or "").strip()
             description = structured_description or fallback_description
 
-            min_salary = item.get("minSalary")
-            max_salary = item.get("maxSalary")
-            has_min_salary = min_salary not in (None, 0)
-            has_max_salary = max_salary not in (None, 0)
-            salary = None
-            if has_min_salary and has_max_salary:
-                salary = f"{min_salary} - {max_salary}"
-            elif has_min_salary:
-                salary = f"от {min_salary}"
-            elif has_max_salary:
-                salary = f"до {max_salary}"
-
             source_json = dict(item)
-            if has_min_salary:
-                source_json["minSalary"] = min_salary
-            if has_max_salary:
-                source_json["maxSalary"] = max_salary
 
             canonical_url = f"https://job.alfabank.ru/vacancies{slug}" if slug else f"https://job.alfabank.ru/vacancies/{item.get('id')}"
             vacancy = {
@@ -101,10 +85,8 @@ class AlfaParser(BaseParser):
                 or config.ALFA_EXPERIENCE_MAP.get(item.get("experienceId"), "Не указан"),
                 "url": canonical_url,
                 "published_at": item.get("createdAt"),
-                "short_description": description if description else None,
+                "description": description if description else None,
                 "source_json": source_json,
             }
-            if salary:
-                vacancy["salary"] = salary
             vacancies.append(vacancy)
         return vacancies

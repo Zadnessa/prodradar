@@ -27,12 +27,6 @@ from delivery.filters import filter_vacancies_for_user
 from delivery.telegram import format_vacancy_message
 
 
-FINAL_TEXT = (
-    "Настройки сохранены! Пока подходящих вакансий нет — проверяю утром и вечером и пришлю сразу.\n\n"
-    "Изменить фильтры: /settings"
-)
-
-
 def _edit_fallback(chat_id, message_id):
     text, _ = get_fallback_message()
     edit_message(chat_id, message_id, text, reply_markup=None)
@@ -114,8 +108,9 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0):
     for vacancy in batch:
         try:
             message = format_vacancy_message(vacancy, companies_map.get(vacancy.get("company"), {}))
-            send_message(chat_id, message)
-            sent_ids.append(vacancy["id"])
+            result = send_message(chat_id, message)
+            if result:
+                sent_ids.append(vacancy["id"])
         except Exception:
             logging.exception("Не удалось отправить вакансию пользователю")
 

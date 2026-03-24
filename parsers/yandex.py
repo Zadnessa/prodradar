@@ -34,7 +34,7 @@ class YandexParser(BaseParser):
                     "work_format": work_modes,
                     "experience": "не указан",
                     "url": f"https://yandex.ru/jobs/vacancies/{item.get('publication_slug_url')}",
-                    "short_description": item.get("short_summary") or None,
+                    "description": item.get("short_summary") or None,
                     "source_json": {
                         **item,
                         "public_service_name": (item.get("public_service") or {}).get("name"),
@@ -77,7 +77,7 @@ class YandexParser(BaseParser):
                     else:
                         vacancy["grade"] = f"{min_grade}-{max_grade}"
 
-            current_description = vacancy.get("short_description") or ""
+            current_description = vacancy.get("description") or ""
             parts = [
                 payload.get("short_summary"),
                 payload.get("duties"),
@@ -87,7 +87,7 @@ class YandexParser(BaseParser):
             ]
             description = "\n\n".join((part or "").strip() for part in parts if (part or "").strip())
             if description and len(description) > len(current_description):
-                vacancy["short_description"] = description
+                vacancy["description"] = description
 
             published_at = payload.get("published_at")
             if not vacancy.get("published_at") and published_at:

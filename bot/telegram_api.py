@@ -17,7 +17,7 @@ def _get_bot_token(bot_id="main"):
     return os.getenv(token_env, "")
 
 
-def _post(method, payload, bot_id="main", allow_retry=True):
+def _post(method, payload, bot_id="main", allow_retry=True, suppress_not_modified=False):
     token = _get_bot_token(bot_id)
     if not token:
         logging.error("Не задан токен для бота %s", bot_id)
@@ -29,6 +29,13 @@ def _post(method, payload, bot_id="main", allow_retry=True):
         response = requests.post(url, json=payload, timeout=_API_TIMEOUT)
     except requests.RequestException as exc:
         logging.exception("Ошибка запроса к Telegram %s: %s", method, exc)
+        return None
+
+    if (
+        suppress_not_modified
+        and response.status_code == 400
+        and "message is not modified" in response.text.lower()
+    ):
         return None
 
     if response.status_code == 403:
@@ -43,7 +50,13 @@ def _post(method, payload, bot_id="main", allow_retry=True):
             retry_after = 1
         if allow_retry:
             time.sleep(retry_after)
-            return _post(method, payload, bot_id=bot_id, allow_retry=False)
+            return _post(
+                method,
+                payload,
+                bot_id=bot_id,
+                allow_retry=False,
+                suppress_not_modified=suppress_not_modified,
+            )
         logging.warning("Telegram %s: повторный 429, chat_id=%s", method, payload.get("chat_id"))
         return None
 
@@ -87,50 +100,7 @@ def edit_message(chat_id, message_id, text, reply_markup=None, bot_id="main"):
     if reply_markup:
         payload["reply_markup"] = reply_markup
 
-    token = _get_bot_token(bot_id)
-    if not token:
-        logging.error("Не задан токен для бота %s", bot_id)
-        return None
-
-    url = f"https://api.telegram.org/bot{token}/editMessageText"
-    try:
-        response = requests.post(url, json=payload, timeout=_API_TIMEOUT)
-    except requests.RequestException as exc:
-        logging.exception("Ошибка запроса к Telegram editMessageText: %s", exc)
-        return None
-
-    if response.status_code == 400 and "message is not modified" in response.text.lower():
-        return None
-
-    if response.status_code == 403:
-        logging.warning("Telegram editMessageText: 403 для chat_id=%s", chat_id)
-        return None
-
-    if response.status_code == 429:
-        try:
-            body = response.json()
-            retry_after = (body.get("parameters") or {}).get("retry_after", 1)
-        except ValueError:
-            retry_after = 1
-        time.sleep(retry_after)
-        retry = _post("editMessageText", payload, bot_id=bot_id, allow_retry=False)
-        return retry
-
-    if response.status_code >= 400:
-        logging.error("Telegram editMessageText: HTTP %s, body=%s", response.status_code, response.text)
-        return None
-
-    try:
-        data = response.json()
-    except ValueError:
-        logging.error("Telegram editMessageText: невалидный JSON в ответе")
-        return None
-
-    if not data.get("ok"):
-        logging.error("Telegram editMessageText: API error=%s", data)
-        return None
-
-    return data.get("result")
+    return _post("editMessageText", payload, bot_id=bot_id, suppress_not_modified=True)
 
 
 def delete_message(chat_id, message_id, bot_id="main"):

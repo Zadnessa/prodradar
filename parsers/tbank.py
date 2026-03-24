@@ -137,7 +137,7 @@ class TBankParser(BaseParser):
             url_slug = item.get("urlSlug")
             city = self._resolve_city(city_mappings, region_id)
             short_html = item.get("shortDescription") or ""
-            short_description = BeautifulSoup(short_html, "html.parser").get_text(" ", strip=True) or None
+            description = BeautifulSoup(short_html, "html.parser").get_text(" ", strip=True) or None
             if seo_slug:
                 vacancy_url = f"https://www.tbank.ru/career/it/vacancy/moscow/{seo_slug}/{url_slug}/"
             else:
@@ -152,7 +152,7 @@ class TBankParser(BaseParser):
                 "work_format": self._extract_work_format(item.get("tags")),
                 "experience": "Не указан",
                 "url": vacancy_url,
-                "short_description": short_description,
+                "description": description,
                 "source_json": item,
             }
 
@@ -193,9 +193,9 @@ class TBankParser(BaseParser):
                 sections.get("Требования"),
             ]
             summary = "\n\n".join(part for part in summary_parts if part).strip()
-            current_short_description = vacancy.get("short_description") or ""
-            if summary and len(summary) > len(current_short_description):
-                vacancy["short_description"] = summary
+            current_description = vacancy.get("description") or ""
+            if summary and len(summary) > len(current_description):
+                vacancy["description"] = summary
 
             if vacancy.get("work_format") in (None, "", "Не указан"):
                 vacancy["work_format"] = self._extract_work_format((vacancy.get("source_json") or {}).get("tags"))

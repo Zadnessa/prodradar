@@ -124,7 +124,7 @@ class VKParser(BaseParser):
                         "work_format": work_map.get(raw_work_format, item.get("work_format") or "Не указан"),
                         "experience": "Не указан",
                         "url": f"https://team.vk.company/vacancy/{item.get('id')}/",
-                        "short_description": None,
+                        "description": None,
                         "source_json": {**item, "group_name": (item.get("group") or {}).get("name")},
                     }
                 )
@@ -166,7 +166,7 @@ class VKParser(BaseParser):
             ]
             description = "\n\n".join(part for part in description_parts if part).strip()
             if description:
-                vacancy["short_description"] = description
+                vacancy["description"] = description
         finally:
             await asyncio.sleep(0.5)
 

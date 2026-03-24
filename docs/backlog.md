@@ -10,16 +10,16 @@
 
 Цель: убрать технический долг, чтобы каждый следующий PR не спотыкался о мёртвый код и дублирование.
 
-- [ ] Удалить мёртвый код: deliver_vacancies() и send_telegram_message() в delivery/telegram.py
-- [ ] Удалить мёртвый код: mark_vacancies_notified() и get_unnotified_vacancies() в database/supabase_client.py
-- [ ] Удалить мёртвый код: FINAL_TEXT в bot/handlers.py
-- [ ] Переписать edit_message() в bot/telegram_api.py через _post(), убрать дублирование обработки ошибок
-- [ ] Удалить salary из парсеров Alfa и Sber (решение: salary не хранится в БД, не извлекается парсерами; рыночная аналитика зарплат — отдельная задача AI-фазы или партнёрства)
-- [ ] Переименовать short_description в description: колонка в БД + все ссылки в коде (ALTER TABLE vacancies RENAME COLUMN short_description TO description)
-- [ ] Баг: _send_vacancies_chunk() в bot/handlers.py — проверять результат send_message() до добавления vacancy id в sent_ids (send_message может вернуть None без исключения)
-- [ ] Webhook secret сделать обязательным: если TELEGRAM_WEBHOOK_SECRET не задан — возвращать 500 и логировать ошибку, не обрабатывать запрос
-- [ ] Защита webhook от неизвестных chat_id: не создавать SupabaseService и не обрабатывать callback, если chat_id отсутствует в таблице users
-- [ ] Деактивация вакансий per-company: при ошибке парсера компании X деактивировать только вакансии компаний, чьи парсеры успешно завершились; вакансии компании X не трогать
+- [x] Удалить мёртвый код: deliver_vacancies() и send_telegram_message() в delivery/telegram.py
+- [x] Удалить мёртвый код: mark_vacancies_notified() и get_unnotified_vacancies() в database/supabase_client.py
+- [x] Удалить мёртвый код: FINAL_TEXT в bot/handlers.py
+- [x] Переписать edit_message() в bot/telegram_api.py через _post(), убрать дублирование обработки ошибок
+- [x] Удалить salary из парсеров Alfa и Sber (решение: salary не хранится в БД, не извлекается парсерами; рыночная аналитика зарплат — отдельная задача AI-фазы или партнёрства)
+- [x] Переименовать short_description в description: колонка в БД + все ссылки в коде (ALTER TABLE vacancies RENAME COLUMN short_description TO description)
+- [x] Баг: _send_vacancies_chunk() в bot/handlers.py — проверять результат send_message() до добавления vacancy id в sent_ids (send_message может вернуть None без исключения)
+- [x] Webhook secret сделать обязательным: если TELEGRAM_WEBHOOK_SECRET не задан — возвращать 500 и логировать ошибку, не обрабатывать запрос
+- [x] Защита webhook от неизвестных chat_id: не создавать SupabaseService и не обрабатывать callback, если chat_id отсутствует в таблице users
+- [x] Деактивация вакансий per-company: при ошибке парсера компании X деактивировать только вакансии компаний, чьи парсеры успешно завершились; вакансии компании X не трогать
 - [ ] Зафиксировать контракт enrich() в AGENTS.md: метод мутирует dict in-place, вызывается до normalizer, НЕ должен перезаписывать поля, которые уже заполнены (кроме short_description, где сравнивается длина)
 - [ ] Привести docs/context.md в соответствие с текущим кодом (убрать устаревшие пункты из раздела «Принято к исполнению», перенести выполненные в отдельный раздел «Выполнено»)
 

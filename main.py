@@ -37,8 +37,8 @@ def _prepare_vacancy(vacancy, city_mappings):
             vacancy["experience"] = inferred_experience
     if vacancy.get("city") == "Не указан" and "Удалёнка" in vacancy.get("work_format", ""):
         vacancy["city"] = "Удалёнка"
-    if not vacancy.get("short_description"):
-        vacancy["short_description"] = generate_summary(vacancy)
+    if not vacancy.get("description"):
+        vacancy["description"] = generate_summary(vacancy)
     return vacancy
 
 
@@ -52,6 +52,7 @@ async def run():
     all_collected = []
     all_collected_ids = set()
     parser_errors = []
+    successful_companies = set()
     parsers_by_company = {}
     empty_existing_ids = set()
 
@@ -69,6 +70,7 @@ async def run():
                     vacancies = vacancies[: config.TEST_LIMIT]
                 all_collected.extend(vacancies)
                 all_collected_ids.update(vacancy["id"] for vacancy in vacancies)
+                successful_companies.add(company.get("name"))
                 logging.info("%s: собрано %s", parser_name, len(vacancies))
             except Exception as exc:
                 parser_errors.append(f"{company.get('name')}: {exc}")
@@ -116,11 +118,10 @@ async def run():
     db.touch_vacancies(touch_ids)
     db.update_vacancies(changed_vacancies)
 
-    deactivated_count = 0
-    if parser_errors:
-        logging.warning("Деактивация пропущена из-за ошибок парсеров: %s", ", ".join(parser_errors))
-    else:
-        deactivated_count = db.deactivate_missing_vacancies(all_collected_ids)
+    deactivated_count = db.deactivate_missing_vacancies(
+        all_collected_ids,
+        companies=sorted(successful_companies),
+    )
 
     unchanged_count = len(touch_ids)
     logging.info(

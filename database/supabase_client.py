@@ -86,19 +86,24 @@ class SupabaseService:
             self.client.table("vacancies").upsert(payload, on_conflict="id").execute()
         return len(vacancies)
 
-    def deactivate_missing_vacancies(self, active_ids):
+    def deactivate_missing_vacancies(self, active_ids, companies=None):
         active_ids = sorted(set(active_ids))
+        if companies is not None:
+            companies = sorted({company for company in companies if company})
+            if not companies:
+                return 0
+
         if active_ids and len(active_ids) <= 500:
-            missing_result = (
-                self.client.table("vacancies")
-                .select("id")
-                .eq("is_active", True)
-                .not_.in_("id", active_ids)
-                .execute()
-            )
+            query = self.client.table("vacancies").select("id").eq("is_active", True)
+            if companies:
+                query = query.in_("company", companies)
+            missing_result = query.not_.in_("id", active_ids).execute()
             missing_ids = sorted(row["id"] for row in missing_result.data or [])
         else:
-            current_active_result = self.client.table("vacancies").select("id").eq("is_active", True).execute()
+            query = self.client.table("vacancies").select("id").eq("is_active", True)
+            if companies:
+                query = query.in_("company", companies)
+            current_active_result = query.execute()
             current_active_ids = {row["id"] for row in current_active_result.data or []}
             missing_ids = sorted(current_active_ids - set(active_ids))
 
@@ -108,16 +113,6 @@ class SupabaseService:
         for chunk in self._chunked(missing_ids, 500):
             self.client.table("vacancies").update({"is_active": False}).in_("id", chunk).execute()
         return len(missing_ids)
-
-    def mark_vacancies_notified(self, vacancy_ids):
-        if not vacancy_ids:
-            return
-        notified_at = datetime.now(timezone.utc).isoformat()
-        self.client.table("vacancies").update({"notified_at": notified_at}).in_("id", vacancy_ids).execute()
-
-    def get_unnotified_vacancies(self):
-        result = self.client.table("vacancies").select("*").is_("notified_at", "null").eq("is_active", True).execute()
-        return result.data or []
 
     def count_active_vacancies(self):
         result = self.client.table("vacancies").select("id", count="exact").eq("is_active", True).execute()

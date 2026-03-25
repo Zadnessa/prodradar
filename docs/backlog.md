@@ -47,11 +47,11 @@
 
 Цель: не упасть при росте данных выше 1000 записей.
 
-- [ ] Пагинация Supabase: get_existing_vacancy_hashes() в database/supabase_client.py — лимит 1000 строк на запрос
-- [ ] Пагинация Supabase: get_active_users() — аналогично
-- [ ] Пагинация Supabase: get_vacancy_stats() — аналогично
-- [ ] Пагинация Supabase: deactivate_missing_vacancies() ветка для больших наборов — аналогично
-- [ ] Пагинация Yandex-парсера: сейчас page_size=100 без цикла, при >100 вакансий потеря данных
+- [x] Пагинация Supabase: get_existing_vacancy_hashes() в database/supabase_client.py — лимит 1000 строк на запрос
+- [x] Пагинация Supabase: get_active_users() — аналогично
+- [x] Пагинация Supabase: get_vacancy_stats() — аналогично
+- [x] Пагинация Supabase: deactivate_missing_vacancies() ветка для больших наборов — аналогично
+- [x] Пагинация Yandex-парсера: сейчас page_size=100 без цикла, при >100 вакансий потеря данных
 
 ## Этап 4: Масштабирование (некритичное — после релиза)
 

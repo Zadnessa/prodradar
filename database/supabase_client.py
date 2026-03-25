@@ -31,6 +31,8 @@ def compute_content_hash(vacancy):
 class SupabaseService:
     """Обертка над supabase-py."""
 
+    PAGE_SIZE = 1000
+
     def __init__(self):
         self.client = create_client(config.SUPABASE_URL, config.SUPABASE_KEY)
 
@@ -44,8 +46,26 @@ class SupabaseService:
         return {row["id"] for row in result.data or []}
 
     def get_existing_vacancy_hashes(self):
-        result = self.client.table("vacancies").select("id,content_hash").execute()
-        return {row["id"]: row.get("content_hash") for row in result.data or []}
+        hashes = {}
+        offset = 0
+        page_size = self.PAGE_SIZE
+
+        while True:
+            result = (
+                self.client.table("vacancies")
+                .select("id,content_hash")
+                .range(offset, offset + page_size - 1)
+                .execute()
+            )
+            rows = result.data or []
+            for row in rows:
+                hashes[row["id"]] = row.get("content_hash")
+
+            if len(rows) < page_size:
+                break
+            offset += page_size
+
+        return hashes
 
     def get_city_mappings(self):
         result = self.client.table("city_mappings").select("source,raw_value,normalized").execute()
@@ -100,11 +120,27 @@ class SupabaseService:
             missing_result = query.not_.in_("id", active_ids).execute()
             missing_ids = sorted(row["id"] for row in missing_result.data or [])
         else:
-            query = self.client.table("vacancies").select("id").eq("is_active", True)
-            if companies:
-                query = query.in_("company", companies)
-            current_active_result = query.execute()
-            current_active_ids = {row["id"] for row in current_active_result.data or []}
+            offset = 0
+            page_size = self.PAGE_SIZE
+            current_active_ids = set()
+
+            while True:
+                query = (
+                    self.client.table("vacancies")
+                    .select("id")
+                    .eq("is_active", True)
+                    .range(offset, offset + page_size - 1)
+                )
+                if companies:
+                    query = query.in_("company", companies)
+                current_active_result = query.execute()
+                rows = current_active_result.data or []
+                current_active_ids.update(row["id"] for row in rows)
+
+                if len(rows) < page_size:
+                    break
+                offset += page_size
+
             missing_ids = sorted(current_active_ids - set(active_ids))
 
         if not missing_ids:
@@ -119,13 +155,24 @@ class SupabaseService:
         return result.count or 0
 
     def get_undelivered_vacancies(self, chat_id, limit=50, offset=0):
-        delivered_result = (
-            self.client.table("user_vacancy_delivery")
-            .select("vacancy_id")
-            .eq("user_chat_id", chat_id)
-            .execute()
-        )
-        delivered_ids = {row["vacancy_id"] for row in delivered_result.data or []}
+        delivered_ids = set()
+        delivery_offset = 0
+        page_size = self.PAGE_SIZE
+
+        while True:
+            delivered_result = (
+                self.client.table("user_vacancy_delivery")
+                .select("vacancy_id")
+                .eq("user_chat_id", chat_id)
+                .range(delivery_offset, delivery_offset + page_size - 1)
+                .execute()
+            )
+            rows = delivered_result.data or []
+            delivered_ids.update(row["vacancy_id"] for row in rows)
+
+            if len(rows) < page_size:
+                break
+            delivery_offset += page_size
 
         query = self.client.table("vacancies").select("*").eq("is_active", True)
         if delivered_ids:
@@ -159,14 +206,27 @@ class SupabaseService:
         self.client.table("user_vacancy_delivery").delete().eq("user_chat_id", chat_id).execute()
 
     def get_active_users(self, bot_id="main"):
-        result = (
-            self.client.table("users")
-            .select("chat_id,username,filters,bot_id,paused")
-            .eq("is_active", True)
-            .eq("bot_id", bot_id)
-            .execute()
-        )
-        return result.data or []
+        users = []
+        offset = 0
+        page_size = self.PAGE_SIZE
+
+        while True:
+            result = (
+                self.client.table("users")
+                .select("chat_id,username,filters,bot_id,paused")
+                .eq("is_active", True)
+                .eq("bot_id", bot_id)
+                .range(offset, offset + page_size - 1)
+                .execute()
+            )
+            rows = result.data or []
+            users.extend(rows)
+
+            if len(rows) < page_size:
+                break
+            offset += page_size
+
+        return users
 
     def update_user_filters(self, chat_id, filters):
         self.client.table("users").update({"filters": filters}).eq("chat_id", chat_id).execute()
@@ -189,15 +249,26 @@ class SupabaseService:
 
     def get_vacancy_stats(self):
         cutoff = datetime.now(timezone.utc) - timedelta(days=config.VACANCY_TTL_DAYS)
-        result = (
-            self.client.table("vacancies")
-            .select("company")
-            .eq("is_active", True)
-            .gte("first_seen_at", cutoff.isoformat())
-            .execute()
-        )
+        rows = []
+        offset = 0
+        page_size = self.PAGE_SIZE
 
-        rows = result.data or []
+        while True:
+            result = (
+                self.client.table("vacancies")
+                .select("company")
+                .eq("is_active", True)
+                .gte("first_seen_at", cutoff.isoformat())
+                .range(offset, offset + page_size - 1)
+                .execute()
+            )
+            page_rows = result.data or []
+            rows.extend(page_rows)
+
+            if len(page_rows) < page_size:
+                break
+            offset += page_size
+
         by_company = {}
         for row in rows:
             company = row.get("company") or "Не указана"

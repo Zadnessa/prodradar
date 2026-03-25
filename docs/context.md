@@ -41,9 +41,16 @@
 ### Принято к исполнению (масштабирование)
 
 - Пересмотреть стратегию ошибок в `api/webhook.py`: сейчас при исключениях нужен выбор между `500` для transient-ошибок и `200` для бизнес-ошибок.
-- Добавить пагинацию для `get_existing_vacancy_ids()` и `get_active_users()`: у Supabase лимит 1000 строк на запрос.
 - Перенести `get_undelivered_vacancies()` в SQL (`LEFT JOIN`) вместо клиентского `NOT IN`.
-- Добавить пагинацию в парсеры: сейчас они читают только одну страницу.
+
+### Выполнено (масштабирование)
+
+- [x] Добавить пагинацию для `get_existing_vacancy_hashes()`: цикл с `.range()` по 1000 строк до полного чтения.
+- [x] Добавить пагинацию для `get_active_users()`: цикл с `.range()` по 1000 строк до полного чтения.
+- [x] Добавить пагинацию для `get_vacancy_stats()`: полная загрузка активных вакансий по страницам перед агрегированием.
+- [x] Добавить пагинацию в `deactivate_missing_vacancies()` для ветки больших наборов: сбор `current_active_ids` по страницам.
+- [x] Добавить пагинацию delivered IDs в `get_undelivered_vacancies()`: полный набор `vacancy_id` по страницам до `NOT IN`.
+- [x] Добавить cursor-based пагинацию в `YandexParser.parse()`: чтение всех страниц через `next` с извлечением `cursor`.
 
 ### Отложено до AI-фазы
 
@@ -72,7 +79,7 @@
 | Компания | published_at | Источник |
 | --- | --- | --- |
 | Wildberries | нет | fallback на `created_at` |
-| Yandex | да | `published_at` из enrichment API |
+| Yandex | да | `published_at` из enrichment API; `page_size` игнорируется сервером (фиксированно 20), cursor-based пагинация через поле `next` (внутренний URL femida, cursor извлекается и подставляется в публичный endpoint) |
 | Ozon | да | `publishedAt` из enrichment API |
 | T-Bank | нет | fallback на `created_at` |
 | VK | нет | fallback на `created_at` |

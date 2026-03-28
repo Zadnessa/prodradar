@@ -86,6 +86,20 @@ async def run():
         if filtered_out:
             logging.info("Отфильтровано по стоп-словам: %s", filtered_out)
 
+        before_sber_whitelist = len(all_collected)
+        all_collected = [
+            vacancy
+            for vacancy in all_collected
+            if vacancy.get("company") != "Сбер"
+            or any(
+                pattern in vacancy.get("title", "").lower()
+                for pattern in config.SBER_TITLE_WHITELIST
+            )
+        ]
+        sber_filtered_out = before_sber_whitelist - len(all_collected)
+        if sber_filtered_out:
+            logging.info("Отфильтровано по Сбер whitelist: %s", sber_filtered_out)
+
         existing_hashes = db.get_existing_vacancy_hashes()
         new_vacancies = []
         changed_vacancies = []

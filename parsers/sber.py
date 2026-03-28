@@ -27,20 +27,31 @@ def _clean_markdown(text):
 class SberParser(BaseParser):
     async def parse(self, session, existing_ids, city_mappings):
         del existing_ids
-        url = (
+        base_url = (
             "https://rabota.sber.ru/public/app-candidate-public-api-gateway/api/v1/publications"
-            "?skip=0&take=200&profAreas=56555ea9-92d9-4d66-b4bf-ba74a850dbdb"
         )
-        async with session.get(url, headers=config.REQUEST_HEADERS) as response:
-            response.raise_for_status()
-            payload = await response.json()
+        prof_areas = [
+            "56555ea9-92d9-4d66-b4bf-ba74a850dbdb",
+            "6ce12a6c-fe3a-4f4e-9fdb-1b6277bc1963",
+        ]
 
-        keywords = ("product", "продакт", "продукт", "cpo")
+        items = []
+        for prof_area in prof_areas:
+            url = f"{base_url}?skip=0&take=200&profAreas={prof_area}"
+            async with session.get(url, headers=config.REQUEST_HEADERS) as response:
+                response.raise_for_status()
+                payload = await response.json()
+            items.extend(payload.get("data", {}).get("vacancies", []))
+
+        seen_internal_ids = set()
         vacancies = []
-        for item in payload.get("data", {}).get("vacancies", []):
-            title = (item.get("title", "") or "").strip()
-            if not any(keyword in title.lower() for keyword in keywords):
+        for item in items:
+            internal_id = item.get("internalId")
+            if internal_id in seen_internal_ids:
                 continue
+            seen_internal_ids.add(internal_id)
+
+            title = (item.get("title", "") or "").strip()
 
             description_parts = [
                 _clean_markdown(item.get("introduction") or ""),

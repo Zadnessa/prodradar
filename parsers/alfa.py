@@ -56,7 +56,7 @@ class AlfaParser(BaseParser):
         city_map = self._build_option_map(option_lists, "cities")
         experience_map = self._build_option_map(option_lists, "experiences")
 
-        url = "https://job.alfabank.ru/api/vacancies?businessLine=1020&take=100&search=продукт"
+        url = "https://job.alfabank.ru/api/vacancies?businessLine=1020&take=100"
         async with session.get(url, headers=config.REQUEST_HEADERS) as response:
             response.raise_for_status()
             payload = await response.json()

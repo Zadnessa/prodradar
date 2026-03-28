@@ -110,7 +110,7 @@
 - Пагинация: data.total, управление через skip/take
 - Поля: requisitionId (str, UUID), internalId (number), publicationId (UUID), title (str), company (str), companyShortName (str), city (str), publicationDate (str, ISO-8601), salary_min, salary_max, workScheduleId, experienceId (UUID), specializationId (UUID), introduction (str), duties (str), requirements (str), conditions (str)
 - Текстовые блоки содержат Markdown-разметку
-- Фильтрация по заголовку: product/продакт/продукт/cpo
+- Фильтрация в парсере: без keyword-фильтра; дальше применяется общий TITLE_STOP_PATTERNS и SBER_TITLE_WHITELIST в main.py
 - Ссылка: https://rabota.sber.ru/search/{internalId} (работает, редирект на slug-версию)
 - Описание: ЕСТЬ В API (introduction + duties + requirements + conditions)
 - Справочные эндпоинты:
@@ -128,6 +128,19 @@
 - Справочные эндпоинты:
   - GET /api/optionLists (14 словарей)
   - GET /api/vacancies/options (фильтры с count)
+
+
+## Dodo
+- Метод: GET
+- URL списка: https://career-api.dodoteam.ru/api/v1/vacancies
+- Путь к вакансиям: data[*].items (массив групп, у каждой поле items)
+- Пагинация: отсутствует, все вакансии в одном ответе
+- Поля списка: id (int), position (str), vacancy_location (str), work_format (array str), subspeciality (str), brand (str)
+- Фильтр: subspeciality содержит "product" (клиентская фильтрация)
+- Ссылка: https://dodoteam.ru/vacancy/{id}
+- URL detail: https://career-api.dodoteam.ru/api/v1/pages/vacancy/{id}
+- Enrichment: grade из data.page.content[type=vacancy_main].data.grade; description из склейки data.text блоков vacancy_text, vacancy_expectation, vacancy_you_will, vacancy_benefits (HTML, очистка через BS4)
+- Ловушки: массив вакансий не плоский (двойной цикл); vacancy_location часто пустая строка; work_format может быть пустым массивом; grade отсутствует в списке, только в detail
 
 ## Сводка: где есть описание
 

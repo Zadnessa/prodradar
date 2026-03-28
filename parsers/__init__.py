@@ -2,6 +2,7 @@
 
 from parsers.alfa import AlfaParser
 from parsers.avito import AvitoParser
+from parsers.dodo import DodoParser
 from parsers.ozon import OzonParser
 from parsers.sber import SberParser
 from parsers.tbank import TBankParser
@@ -18,4 +19,5 @@ PARSER_REGISTRY = {
     "avito": AvitoParser,
     "sber": SberParser,
     "alfa": AlfaParser,
+    "dodo": DodoParser,
 }

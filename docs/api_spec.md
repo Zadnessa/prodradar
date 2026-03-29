@@ -162,6 +162,21 @@
 - published_at: присутствует на странице (DD.MM.YYYY), но НЕ ИСПОЛЬЗУЕТСЯ -- вакансии могут висеть годами без обновления даты
 - Справочный эндпоинт: https://hr.tochka.com/data/v2/hr/categories.json (категории и специализации)
 
+
+## Циан
+- Метод: POST
+- URL: https://api.cian.ru/job-vacancies-backend/v2/get-vacancies/
+- Тело запроса: {"filters": {"specializations": ["58"]}}
+- Обязательные заголовки: Origin: https://www.cian.ru, Referer: https://www.cian.ru/, sec-fetch-dest: empty, sec-fetch-mode: cors, sec-fetch-site: same-site
+- Cookie: автоматически получить через предварительный GET https://www.cian.ru/ (сессионные _yasc и _CIAN_GK)
+- Путь к вакансиям: groups[].vacancies[] (вложенная структура, нужен двойной цикл)
+- Пагинация: не обнаружена; контроль обрезки по group.count vs len(group.vacancies)
+- Поля: id (int), name (str), labels (array str, нетипизированный)
+- Разбор labels: зарплата отсекается; "Удалённо/Удаленно" -> work_format; остальные элементы -> city (через join)
+- Фильтр: specializations: ["58"]
+- Enrichment: SSR HTML карточки, initialState в inline script, данные в state.vacancies.vacancy.contents
+- Отсутствующие поля в API списка: grade, experience, published_at
+
 ## Сводка: где есть описание
 
 | Компания | Описание в API | Нужен HTML-парсинг |
@@ -174,3 +189,6 @@
 | Avito | Полное (JSON-LD schema.org/JobPosting + HTML fallback) | Да |
 | Sber | Полное | Нет |
 | Alfa-Bank | Полное | Нет |
+| Dodo | Полное (API detail) | Нет |
+| Точка | Нет (HTML-парсинг h2-секций) | Да |
+| Циан | Нет (SSR HTML, initialState JSON) | Да |

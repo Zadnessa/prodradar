@@ -203,6 +203,28 @@
   - experience: HTML-страница, regex "Опыт от N лет/года" (НЕТ в JSON-LD)
 - Fallback description: CSS-селектор div.vacancy-rubric__body (весь текст блока)
 
+
+## Lamoda
+- Метод: GET
+- URL: https://job.lamoda.ru/api/hr/vacancies/compact
+- Обязательные заголовки: нет (стандартные)
+- Путь к вакансиям: data
+- Пагинация: offset/limit (pagination[start], pagination[limit]), meta.start/meta.limit/meta.total, максимальный limit = 100
+- Фильтр: dir[0]=upravlenie-proektami-i-produktami
+- Поля: id (int), name (str), slug (str, содержит слэш — не кодировать), location.name (str, город), externalPublicationDate (str, ISO 8601), shortInfo (str|null, у продуктовых всегда null), department.name (str), direction.name (str)
+- Ссылка: https://job.lamoda.ru/vacancies/{slug}
+- Описание: НЕТ в списке (shortInfo=null для продуктовых), полное через API detail
+
+### API отдельной вакансии
+- Метод: GET
+- URL: https://job.lamoda.ru/api/hr/vacancies/{id}
+- Путь к данным: data.attributes
+- Поля для enrichment:
+  - description: duties (HTML) + requirements (HTML) + conditions (HTML|null) — склеить, очистить HTML
+  - experience: minExperience (number|null, у всех проверенных = null)
+- Отсутствующие поля: grade, experience, work_format — нет ни в списке, ни в detail
+- Ловушки: HTML содержит &amp;nbsp;, пустые <br>, <p><br></p>; slug содержит слэш; вакансия "Технолог процессов ПВЗ" попадает в направление продуктов, но не является PM-ролью
+
 ## Сводка: где есть описание
 
 | Компания | Описание в API | Нужен HTML-парсинг |
@@ -219,3 +241,4 @@
 | Точка | Нет (HTML-парсинг h2-секций) | Да |
 | Циан | Нет (SSR HTML, initialState JSON) | Да |
 | Контур | Нет (JSON-LD enrichment) | Да |
+| Lamoda | Нет (API detail: duties + requirements) | Нет |

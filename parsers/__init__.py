@@ -5,6 +5,7 @@ from parsers.avito import AvitoParser
 from parsers.cian import CianParser
 from parsers.dodo import DodoParser
 from parsers.kontur import KonturParser
+from parsers.lamoda import LamodaParser
 from parsers.ozon import OzonParser
 from parsers.sber import SberParser
 from parsers.tbank import TBankParser
@@ -26,4 +27,5 @@ PARSER_REGISTRY = {
     "cian": CianParser,
     "tochka": TochkaParser,
     "kontur": KonturParser,
+    "lamoda": LamodaParser,
 }

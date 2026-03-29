@@ -33,6 +33,7 @@ TITLE_STOP_PATTERNS = [
     "по работе с",
     "по сделк",
     "cje",
+    "процесс",
 ]
 
 SBER_TITLE_WHITELIST = [

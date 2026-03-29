@@ -177,6 +177,32 @@
 - Enrichment: SSR HTML карточки, initialState в inline script, данные в state.vacancies.vacancy.contents
 - Отсутствующие поля в API списка: grade, experience, published_at
 
+
+## Контур
+- Метод: GET
+- URL: https://kontur.ru/career/vacancies?direction=product-management
+- Обязательные заголовки: стандартные
+- Путь к вакансиям: HTML-страница, парсить элементы списка вакансий
+- Пагинация: отсутствует, все вакансии на одной странице
+- Фильтр: direction=product-management (серверный, query-параметр)
+- Поля: id (int, из href /career/vacancies/{id}), title (str, содержит грейд-суффикс после последней запятой), city (str, может содержать "и ещё N городов"), work_format (str, человекочитаемая строка)
+- Грейд: из суффикса title после последней запятой (junior, middle, middle+, senior, lead, middle/middle+, middle+/senior); слеш заменяется на дефис
+- Ловушки:   в title повсеместно, &#x2B; вместо "+" в грейдах, hidden-элементы в списке (data-vacancy-hidden) — парсить все
+- Ссылка: https://kontur.ru/career/vacancies/{id}
+- Описание: через enrichment (JSON-LD JobPosting)
+
+### Enrichment (карточка вакансии)
+- Метод: GET
+- URL: https://kontur.ru/career/vacancies/{id}
+- JS-рендеринг: НЕ требуется (SSR)
+- JSON-LD: schema.org/JobPosting присутствует на каждой карточке
+- Поля для enrichment:
+  - description: JSON-LD JobPosting.description (HTML entities, очистить strip_tags)
+  - published_at: JSON-LD JobPosting.datePosted (YYYY-MM-DD)
+  - city (полный): JSON-LD JobPosting.jobLocation[].address.addressLocality (объект или массив)
+  - experience: HTML-страница, regex "Опыт от N лет/года" (НЕТ в JSON-LD)
+- Fallback description: CSS-селектор div.vacancy-rubric__body (весь текст блока)
+
 ## Сводка: где есть описание
 
 | Компания | Описание в API | Нужен HTML-парсинг |
@@ -192,3 +218,4 @@
 | Dodo | Полное (API detail) | Нет |
 | Точка | Нет (HTML-парсинг h2-секций) | Да |
 | Циан | Нет (SSR HTML, initialState JSON) | Да |
+| Контур | Нет (JSON-LD enrichment) | Да |

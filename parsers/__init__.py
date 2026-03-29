@@ -6,6 +6,7 @@ from parsers.dodo import DodoParser
 from parsers.ozon import OzonParser
 from parsers.sber import SberParser
 from parsers.tbank import TBankParser
+from parsers.tochka import TochkaParser
 from parsers.vk import VKParser
 from parsers.wildberries import WildberriesParser
 from parsers.yandex import YandexParser
@@ -20,4 +21,5 @@ PARSER_REGISTRY = {
     "sber": SberParser,
     "alfa": AlfaParser,
     "dodo": DodoParser,
+    "tochka": TochkaParser,
 }

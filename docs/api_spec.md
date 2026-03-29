@@ -142,6 +142,26 @@
 - Enrichment: grade из data.page.content[type=vacancy_main].data.grade; description из склейки data.text блоков vacancy_text, vacancy_expectation, vacancy_you_will, vacancy_benefits (HTML, очистка через BS4)
 - Ловушки: массив вакансий не плоский (двойной цикл); vacancy_location часто пустая строка; work_format может быть пустым массивом; grade отсутствует в списке, только в detail
 
+## Точка Банк
+- Метод: GET
+- URL: https://hr.tochka.com/api/v2/hr/vacancies/
+- Обязательные заголовки: нет (стандартные)
+- Путь к вакансиям: items
+- Пагинация: page-based (параметр page, с 1), фиксированный размер 20, meta.total для условия остановки
+- Фильтр: category=it&specializations[]=product-management
+- Поля: slug (str, роль id), title (str), city.name (str или null), workExperience (str-enum: up_to_three_years, up_to_five_years, over_five_years), workFormat (str-enum: remotely, hybrid, trips), type (str или null, "lead" у руководящих), salary (int или null, нижняя граница)
+- Ссылка: https://hr.tochka.com/vacancies/catalog/{slug}/
+- Описание: только через HTML-страницу
+- Грейд: НЕТ В API, определяется через grade_from_experience. Если type == "lead" -> Lead+
+
+### Enrichment (HTML)
+- Метод: GET
+- URL: https://hr.tochka.com/vacancies/catalog/{slug}/
+- JS-рендеринг: желателен (без JS кириллица в заголовках может ломаться, тексты секций сохраняются)
+- Секции описания: h2-заголовки "Что делать", "Ты подойдёшь, если", "Что ждёт тебя в Точка Банк" -- текст из sibling-элементов после каждого h2
+- published_at: присутствует на странице (DD.MM.YYYY), но НЕ ИСПОЛЬЗУЕТСЯ -- вакансии могут висеть годами без обновления даты
+- Справочный эндпоинт: https://hr.tochka.com/data/v2/hr/categories.json (категории и специализации)
+
 ## Сводка: где есть описание
 
 | Компания | Описание в API | Нужен HTML-парсинг |

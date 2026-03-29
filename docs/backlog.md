@@ -44,7 +44,7 @@
 
 Цель: довести список с 9 до 22+ компаний. 20+ компаний — обязательное условие релиза.
 
-Текущие парсеры (9): Avito, Yandex, T-Bank, Alfa-Bank, Ozon, Sber, VK, Wildberries, Dodo.
+Текущие парсеры (12): Avito, Yandex, T-Bank, Alfa-Bank, Ozon, Sber, VK, Wildberries, Dodo, Точка, Циан.
 
 Компании для добавления:
 - Касперский
@@ -56,7 +56,7 @@
 - Lamoda
 - ВТБ
 - hh.ru (работодатель, не источник данных)
-- Циан
+- [x] Циан
 - Райффайзен
 - Wildberries & Russ (проверить: отличается ли от текущего парсера Wildberries)
 

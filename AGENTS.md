@@ -23,6 +23,8 @@
 - Города нормализуются через таблицу `city_mappings` в Supabase, не хардкодить. Исключение: `CITY_OPTIONS` в онбординге — осознанное UX-решение.
 - Один парсер = один файл в `parsers/`.
 - Любой новый парсер обязательно регистрируется в `PARSER_REGISTRY` в `parsers/__init__.py`.
+- При добавлении нового парсера обязателен INSERT в таблицу companies в Supabase (name, parser_name, emoji, is_enabled). Без записи в companies парсер не запустится — get_enabled_companies() его не вернёт.
+- Запрещено использовать точные хешированные CSS-классы (паттерн ComponentName__element_hash) как основной селектор для извлечения данных. Такие классы меняются при каждом деплое сайта. Использовать семантические теги (main, article), data-атрибуты, aria-атрибуты, JSON-LD, или слабые class-fragment селекторы ([class*="content"]) только как подсказку.
 - Парсеры импортируются только через `PARSER_REGISTRY`, не через `importlib`.
 - Ошибка одного парсера или enrichment не должна останавливать остальные.
 - Telegram API вызовы идут только через `bot/telegram_api.py`, не через прямой `requests.post`.

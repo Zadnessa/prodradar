@@ -34,6 +34,11 @@ TITLE_STOP_PATTERNS = [
     "по сделк",
     "cje",
     "процесс",
+    "продуктовый дизайнер",
+    "продуктовый аналитик",
+    "продуктового маркетинг",
+    "product analyst",
+    "product designer",
 ]
 
 SBER_TITLE_WHITELIST = [
@@ -41,6 +46,14 @@ SBER_TITLE_WHITELIST = [
     "владелец продукт",
     "менеджер по продукт",
     "продуктов",
+]
+
+DOMCLICK_TITLE_WHITELIST = [
+    "product",
+    "продукт",
+    "менеджер продукта",
+    "владелец продукт",
+    "лидер кластера",
 ]
 
 REQUEST_HEADERS = {

@@ -225,6 +225,25 @@
 - Отсутствующие поля: grade, experience, work_format — нет ни в списке, ни в detail
 - Ловушки: HTML содержит &amp;nbsp;, пустые <br>, <p><br></p>; slug содержит слэш; вакансия "Технолог процессов ПВЗ" попадает в направление продуктов, но не является PM-ролью
 
+## ДомКлик
+- Метод: GET
+- URL: https://rabota-bff.domclick.ru/api/v1/vacancies
+- Обязательные заголовки: Referer: https://career.domclick.ru/
+- Путь к вакансиям: data
+- Пагинация: отсутствует, все вакансии в одном ответе
+- Фильтр: без серверного фильтра; клиентская фильтрация через DOMCLICK_TITLE_WHITELIST в main.py
+- Поля: id (str, HH ID), name (str), area.name (str, город), schedule.name (str, формат работы), experience.name (str, читаемая строка), slug (str, компонент URL)
+- Ссылка: https://career.domclick.ru/vacancy/{slug}
+- Описание: только сниппеты в списке, полное через detail endpoint
+- Ловушки: keywords работает только по латинице и ищет по всему тексту; параметры пагинации/фильтрации игнорируются сервером; HTTP 404 при пустом результате (не JSON); хештеги в конце description — отрезать; два разных ID (id — HH ID, vacancyId — внутренний)
+
+### API отдельной вакансии
+- Метод: GET
+- URL: https://rabota-bff.domclick.ru/api/v1/vacancies/{id}
+- Путь к данным: data
+- Поля для enrichment: description (HTML, очистить strip_tags, отрезать хештеги)
+- Отсутствующие поля: grade, published_at
+
 ## Сводка: где есть описание
 
 | Компания | Описание в API | Нужен HTML-парсинг |
@@ -242,3 +261,4 @@
 | Циан | Нет (SSR HTML, initialState JSON) | Да |
 | Контур | Нет (JSON-LD enrichment) | Да |
 | Lamoda | Нет (API detail: duties + requirements) | Нет |
+| ДомКлик | Полное (API detail) | Нет |

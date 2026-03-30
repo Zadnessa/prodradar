@@ -7,6 +7,7 @@ from datetime import datetime, timedelta, timezone
 import aiohttp
 
 import config
+from config import DOMCLICK_TITLE_WHITELIST
 from bot.telegram_api import send_message
 from database.supabase_client import SupabaseService, compute_content_hash
 from delivery.filters import filter_vacancies_for_user
@@ -99,6 +100,20 @@ async def run():
         sber_filtered_out = before_sber_whitelist - len(all_collected)
         if sber_filtered_out:
             logging.info("Отфильтровано по Сбер whitelist: %s", sber_filtered_out)
+
+        before_domclick_whitelist = len(all_collected)
+        all_collected = [
+            vacancy
+            for vacancy in all_collected
+            if vacancy.get("company") != "ДомКлик"
+            or any(
+                pattern in vacancy.get("title", "").lower()
+                for pattern in DOMCLICK_TITLE_WHITELIST
+            )
+        ]
+        domclick_filtered_out = before_domclick_whitelist - len(all_collected)
+        if domclick_filtered_out:
+            logging.info("Отфильтровано по ДомКлик whitelist: %s", domclick_filtered_out)
 
         existing_hashes = db.get_existing_vacancy_hashes()
         new_vacancies = []

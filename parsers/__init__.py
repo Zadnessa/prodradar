@@ -4,6 +4,7 @@ from parsers.alfa import AlfaParser
 from parsers.avito import AvitoParser
 from parsers.cian import CianParser
 from parsers.dodo import DodoParser
+from parsers.domclick import DomClickParser
 from parsers.kontur import KonturParser
 from parsers.lamoda import LamodaParser
 from parsers.ozon import OzonParser
@@ -28,4 +29,5 @@ PARSER_REGISTRY = {
     "tochka": TochkaParser,
     "kontur": KonturParser,
     "lamoda": LamodaParser,
+    "domclick": DomClickParser,
 }

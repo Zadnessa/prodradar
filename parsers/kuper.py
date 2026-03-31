@@ -14,6 +14,9 @@ class KuperParser(BaseParser):
     DETAIL_URL_TEMPLATE = "https://vacancies-api.sbermarket.ru/api/vacancy/{friendly_url}"
     GROUP_ID = "186247de-f72e-469e-9da3-db468f9b6197"
 
+    def __init__(self):
+        self._friendly_urls = {}
+
     @staticmethod
     def _extract_category_data(payload, category_name):
         result = payload.get("result") or []
@@ -53,6 +56,7 @@ class KuperParser(BaseParser):
     async def parse(self, session, existing_ids, city_mappings):
         del existing_ids, city_mappings
         vacancies = []
+        self._friendly_urls = {}
 
         page = 1
         total_pages = 1
@@ -68,16 +72,18 @@ class KuperParser(BaseParser):
             total_pages = int(pagination.get("pages") or total_pages)
 
             for item in vacancy_items:
+                vacancy_id = str(item.get("id"))
                 friendly_url = item.get("friendlyUrl")
-                if not friendly_url:
+                if not vacancy_id or not friendly_url:
                     continue
 
                 work_format_values = [str(value).strip() for value in (item.get("wf") or []) if str(value).strip()]
                 experience_years = item.get("workExperience")
+                self._friendly_urls[vacancy_id] = friendly_url
 
                 vacancies.append(
                     {
-                        "id": str(item.get("id")),
+                        "id": vacancy_id,
                         "company": "Купер",
                         "title": (item.get("title") or "").strip(),
                         "grade": self._normalize_grade(item.get("grade") or []),
@@ -87,7 +93,6 @@ class KuperParser(BaseParser):
                         "published_at": None,
                         "url": f"https://team.kuper.ru/vacancies/{friendly_url}",
                         "description": "",
-                        "_friendly_url": friendly_url,
                     }
                 )
 
@@ -96,7 +101,8 @@ class KuperParser(BaseParser):
         return vacancies
 
     async def enrich(self, session, vacancy):
-        friendly_url = vacancy.get("_friendly_url")
+        vacancy_id = vacancy.get("id")
+        friendly_url = self._friendly_urls.get(vacancy_id)
         if not friendly_url:
             return vacancy
 

@@ -6,6 +6,7 @@ from parsers.cian import CianParser
 from parsers.dodo import DodoParser
 from parsers.domclick import DomClickParser
 from parsers.kontur import KonturParser
+from parsers.kuper import KuperParser
 from parsers.lamoda import LamodaParser
 from parsers.ozon import OzonParser
 from parsers.sber import SberParser
@@ -16,18 +17,19 @@ from parsers.wildberries import WildberriesParser
 from parsers.yandex import YandexParser
 
 PARSER_REGISTRY = {
+    "alfa": AlfaParser,
+    "avito": AvitoParser,
+    "cian": CianParser,
+    "dodo": DodoParser,
+    "domclick": DomClickParser,
+    "kontur": KonturParser,
+    "kuper": KuperParser,
+    "lamoda": LamodaParser,
+    "ozon": OzonParser,
+    "sber": SberParser,
+    "tbank": TBankParser,
+    "tochka": TochkaParser,
+    "vk": VKParser,
     "wildberries": WildberriesParser,
     "yandex": YandexParser,
-    "ozon": OzonParser,
-    "tbank": TBankParser,
-    "vk": VKParser,
-    "avito": AvitoParser,
-    "sber": SberParser,
-    "alfa": AlfaParser,
-    "dodo": DodoParser,
-    "cian": CianParser,
-    "tochka": TochkaParser,
-    "kontur": KonturParser,
-    "lamoda": LamodaParser,
-    "domclick": DomClickParser,
 }

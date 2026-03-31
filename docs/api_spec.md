@@ -244,6 +244,28 @@
 - Поля для enrichment: description (HTML, очистить strip_tags, отрезать хештеги)
 - Отсутствующие поля: grade, published_at
 
+
+## Купер
+- Метод: GET
+- URL: https://vacancies-api.sbermarket.ru/api/vacancy_pagination/
+- Обязательные заголовки: нет (стандартные)
+- Путь к вакансиям: result (массив категорий, искать по category === "vacancies", данные в .data)
+- Пагинация: page-based (параметр page, с 1), фиксированный размер 10, условие остановки: result[category=pagination].data.pages
+- Фильтр: group=186247de-f72e-469e-9da3-db468f9b6197 (Product & Project Management)
+- Поля: id (str, UUID), title (str), city (str, человекочитаемая), grade (array[str], может быть []), wf (array[str], может быть []), workExperience (int|null, число лет), description (str, HTML preview), friendlyUrl (str, ключ для detail и URL), group (str), division (str), idForUrl (int, не используется)
+- Ссылка: https://team.kuper.ru/vacancies/{friendlyUrl}
+- Описание: PREVIEW в списке (укороченное), полное через API detail
+
+### API отдельной вакансии
+- Метод: GET
+- URL: https://vacancies-api.sbermarket.ru/api/vacancy/{friendlyUrl}
+- Формат: JSON, каждое поле обёрнуто в {value, displayName, order}, данные в .value
+- Поля для enrichment:
+  - description: descriptionVacancy.value + responsibilities.value + requirements.value + terms.value (HTML, склеить, очистить)
+- Отсутствующие поля: published_at — нет ни в списке, ни в detail
+- Ловушки: detail принимает только friendlyUrl, не UUID и не idForUrl; структура result в списке — массив категорий, не обращаться по индексу; grade и wf — массивы, могут быть пустыми []; workExperience — int, не строка; домен API (sbermarket.ru) отличается от домена сайта (kuper.ru)
+
+
 ## Сводка: где есть описание
 
 | Компания | Описание в API | Нужен HTML-парсинг |
@@ -257,6 +279,7 @@
 | Sber | Полное | Нет |
 | Alfa-Bank | Полное | Нет |
 | Dodo | Полное (API detail) | Нет |
+| Купер | Полное (API detail) | Нет |
 | Точка | Нет (HTML-парсинг h2-секций) | Да |
 | Циан | Нет (SSR HTML, initialState JSON) | Да |
 | Контур | Нет (JSON-LD enrichment) | Да |

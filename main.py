@@ -56,25 +56,35 @@ async def run():
     successful_companies = set()
     parsers_by_company = {}
     empty_existing_ids = set()
+    unique_parser_names = []
+    seen_parser_names = set()
+
+    for company in companies:
+        parser_name = company.get("parser_name")
+        if not parser_name or parser_name in seen_parser_names:
+            continue
+        seen_parser_names.add(parser_name)
+        unique_parser_names.append(parser_name)
 
     async with aiohttp.ClientSession() as session:
-        for company in companies:
-            parser_name = company.get("parser_name")
+        for parser_name in unique_parser_names:
             try:
                 parser_cls = PARSER_REGISTRY.get(parser_name)
                 if not parser_cls:
                     raise ValueError(f"Парсер {parser_name} не найден в PARSER_REGISTRY")
                 parser = parser_cls()
-                parsers_by_company[company.get("name")] = parser
                 vacancies = await parser.parse(session, empty_existing_ids, city_mappings)
                 if config.TEST_MODE:
                     vacancies = vacancies[: config.TEST_LIMIT]
                 all_collected.extend(vacancies)
                 all_collected_ids.update(vacancy["id"] for vacancy in vacancies)
-                successful_companies.add(company.get("name"))
+                parser_companies = {vacancy.get("company") for vacancy in vacancies if vacancy.get("company")}
+                for vacancy_company in parser_companies:
+                    parsers_by_company[vacancy_company] = parser
+                successful_companies.update(parser_companies)
                 logging.info("%s: собрано %s", parser_name, len(vacancies))
             except Exception as exc:
-                parser_errors.append(f"{company.get('name')}: {exc}")
+                parser_errors.append(f"{parser_name}: {exc}")
                 logging.exception("Ошибка парсера %s", parser_name)
 
         before_filter = len(all_collected)

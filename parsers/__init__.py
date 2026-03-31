@@ -8,6 +8,7 @@ from parsers.domclick import DomClickParser
 from parsers.kontur import KonturParser
 from parsers.kuper import KuperParser
 from parsers.lamoda import LamodaParser
+from parsers.mts import MtsParser
 from parsers.ozon import OzonParser
 from parsers.sber import SberParser
 from parsers.tbank import TBankParser
@@ -25,6 +26,7 @@ PARSER_REGISTRY = {
     "kontur": KonturParser,
     "kuper": KuperParser,
     "lamoda": LamodaParser,
+    "mts": MtsParser,
     "ozon": OzonParser,
     "sber": SberParser,
     "tbank": TBankParser,

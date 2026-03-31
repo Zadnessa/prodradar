@@ -265,6 +265,23 @@
 - Отсутствующие поля: published_at — нет ни в списке, ни в detail
 - Ловушки: detail принимает только friendlyUrl, не UUID и не idForUrl; структура result в списке — массив категорий, не обращаться по индексу; grade и wf — массивы, могут быть пустыми []; workExperience — int, не строка; домен API (sbermarket.ru) отличается от домена сайта (kuper.ru)
 
+## МТС
+- Метод: POST
+- URL: https://api.job.mts.ru/v1/vacancies/filtered/career
+- Обязательные заголовки: x-api-key (JWT Ed25519, автообновление из HTML https://job.mts.ru/)
+- Путь к вакансиям: data.vacancies
+- Пагинация: offset/limit, max limit 200, условие остановки offset >= data.pageInfo.total
+- Поля: id (str), name (str), info.city (str), info.experience (str), info.worktype (str), info.date (str, русская дата), info.brand (str, маппинг в company), info.category (str, используется для фильтрации)
+- Фильтр: клиентский вариант C — PM-категория целиком + строгий whitelist для остальных категорий
+- Ссылка: https://job.mts.ru/vacancy/{id}
+- Описание: через API detail (4 текстовых блока, plain text)
+- Экосистема: один API, 5 компаний (МТС, МТС Банк, MWS.AI, KION, Юрент), маппинг по info.brand
+
+### API отдельной вакансии
+- Метод: GET
+- URL: https://api.job.mts.ru/v1/vacancy/{id}
+- Поля для enrichment: detailText.descriptionOfProject + detailText.description + detailText.requirements + detailText.conditions (plain text)
+
 
 ## Сводка: где есть описание
 
@@ -285,3 +302,4 @@
 | Контур | Нет (JSON-LD enrichment) | Да |
 | Lamoda | Нет (API detail: duties + requirements) | Нет |
 | ДомКлик | Полное (API detail) | Нет |
+| МТС | Полное (API detail, plain text) | Нет |

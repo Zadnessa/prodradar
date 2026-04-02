@@ -9,6 +9,7 @@ from parsers.kontur import KonturParser
 from parsers.kuper import KuperParser
 from parsers.lamoda import LamodaParser
 from parsers.mts import MtsParser
+from parsers.mtslink import MtsLinkParser
 from parsers.ozon import OzonParser
 from parsers.sber import SberParser
 from parsers.tbank import TBankParser
@@ -27,6 +28,7 @@ PARSER_REGISTRY = {
     "kuper": KuperParser,
     "lamoda": LamodaParser,
     "mts": MtsParser,
+    "mtslink": MtsLinkParser,
     "ozon": OzonParser,
     "sber": SberParser,
     "tbank": TBankParser,

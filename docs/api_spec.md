@@ -283,6 +283,24 @@
 - Поля для enrichment: detailText.descriptionOfProject + detailText.description + detailText.requirements + detailText.conditions (plain text)
 
 
+
+## МТС Линк
+- Метод: GET
+- URL: https://mts-link.ru/api/huntflow/vacancies?categoryId=221722
+- Обязательные заголовки: Authorization: Bearer (статический), Origin: https://job.mts-link.ru, Referer: https://job.mts-link.ru/
+- Путь к вакансиям: корень (JSON-массив)
+- Пагинация: отсутствует (API отдаёт все вакансии одним массивом)
+- Фильтр: categoryId=221722 (направление «Продукт»)
+- Поля: id (int), position (str), workExperience (str-enum), workFormat (str), accountDivision (str), created (object), hidden (bool), money (str)
+- Ссылка: https://job.mts-link.ru/vacancy/?id={id}
+- Описание: через API detail (body + requirements + conditions, HTML)
+- Отсутствующие поля: grade, city
+
+### API отдельной вакансии
+- Метод: GET
+- URL: https://mts-link.ru/api/huntflow/vacancy/{id}
+- Поля для enrichment: body (HTML) + requirements (HTML) + conditions (HTML)
+
 ## Сводка: где есть описание
 
 | Компания | Описание в API | Нужен HTML-парсинг |
@@ -303,3 +321,4 @@
 | Lamoda | Нет (API detail: duties + requirements) | Нет |
 | ДомКлик | Полное (API detail) | Нет |
 | МТС | Полное (API detail, plain text) | Нет |
+| МТС Линк | Полное (API detail) | Нет |

@@ -126,6 +126,8 @@ IT-юрлица (Ozon Tech, X5 Tech и т.п.): писать парсер тол
 - [ ] Развилка: определить точный порядок — сначала фикс content_hash, потом re-enrichment, потом проверка результатов.
 - [ ] Тестовый режим компании: добавить поле status в таблицу companies (значения: active, testing, disabled). При status=testing вакансии собираются и сохраняются, но доставляются только ADMIN_CHAT_ID. При status=disabled парсер не запускается. SQL: ALTER TABLE companies ADD COLUMN status text NOT NULL DEFAULT 'active'. В main.py: фильтровать companies по status != 'disabled'. В delivery: если company.status = 'testing', отправлять вакансии только в ADMIN_CHAT_ID.
 - [ ] Единое логирование парсеров: внедрить стандарт логирования для всех парсеров (parse: количество запросов, пагинация, результат; enrich: обогащено/пропущено/ошибки). Шаблон — browser.py + cian.py + sberhealth.py из PR fix/critical-logging.
+- [ ] Автообновление Chrome UA: вынести версию Chrome в переменную окружения CHROME_VERSION с дефолтом на актуальную. Собирать UA-строку в config.py из этой переменной. browser.py и все парсеры читают из config.REQUEST_HEADERS. Обновление версии Chrome = одна правка дефолта, без PR.
+- [ ] Песочница для отладки парсеров: отдельный workflow debug.yml (workflow_dispatch). Принимает параметр parser_name (string, обязательный). Устанавливает зависимости (с кэшем), запускает fetch_browser_secrets() + один указанный парсер, выводит результат в лог. НЕ сохраняет в БД, НЕ рассылает вакансии, НЕ деактивирует. Цель: изолированный запуск парсера для отладки без полного прогона пайплайна (экономия времени с ~5 мин до ~1 мин).
 
 ## Wave 4 — Предрелизный аудит
 

@@ -89,20 +89,6 @@
 - Ссылка: https://team.vk.company/vacancy/{id}/
 - Описание: только через HTML-страницу
 
-## Avito
-- Метод: GET
-- URL: https://career.avito.com/vacancies/?action=filter&direction=upravlenie-produktom
-- Обязательные заголовки: X-Requested-With: XMLHttpRequest
-- Формат: JSON с полем html, внутри — HTML-разметка (Bitrix CMS)
-- CSS-селектор карточки: div.vacancies-section__item
-- Поля из data-атрибутов: data-vacancy-id, data-vacancy-geo, data-vacancy-team, data-vacancy-remote (Да/Нет), data-vacancy-intern (Да/Нет), data-vacancy-section (название направления кириллицей)
-- Название: селектор a.vacancies-section__item-name (НЕ a.vacancies-section__item-link — та пустая)
-- Формат работы: селектор span.vacancies-section__item-format ("офис и удаленно", "можно удаленно", "удаленно", "офис")
-- Ссылка: https://career.avito.com{href}
-- Дополнительный фильтр: &managers=Y для руководящих позиций (Lead+)
-- Грейд из названия: Ведущий = Senior, Руководитель = Lead, Стажёр = Junior, без префикса = Middle
-- Описание: только через HTML-страницу вакансии
-
 ## Sber
 - Метод: GET
 - URL: https://rabota.sber.ru/public/app-candidate-public-api-gateway/api/v1/publications
@@ -128,6 +114,40 @@
 - Справочные эндпоинты:
   - GET /api/optionLists (14 словарей)
   - GET /api/vacancies/options (фильтры с count)
+
+## Aviasales
+- Метод: GET
+- URL: https://vacancies-app.aviasales.ru/api/vacancies?specializations=Product+managment&language=ru
+- Обязательные заголовки: нет (стандартные)
+- Путь к вакансиям: корень (JSON-массив)
+- Пагинация: отсутствует, все вакансии в одном ответе
+- Фильтр: specializations=Product+managment (серверный)
+- Поля: id (int), position (str), tags (array str), team.name (str), workPlace (null у всех, заглушка remote)
+- Ссылка: https://aviasales.ru/about/vacancies/{id}
+- Описание: НЕТ в списке, полное через HTML-карточку (SSR)
+- Мониторинг: при каждом прогоне проверять новые ключи в объекте и workPlace != null
+- Отсутствующие поля: grade, experience, published_at, work_format (заглушка remote при workPlace=null)
+
+### Enrichment (HTML-карточка)
+- Метод: GET
+- URL: https://aviasales.ru/about/vacancies/{id}
+- JS-рендеринг: НЕ требуется (SSR, данные в inline-скрипте)
+- Данные: window._ROUTER_DATA -> loaderData -> about/vacancies/(id)/page -> vacancy
+- Поля для enrichment: description + todo + requirements + conditions (HTML, очистить теги)
+
+## Avito
+- Метод: GET
+- URL: https://career.avito.com/vacancies/?action=filter&direction=upravlenie-produktom
+- Обязательные заголовки: X-Requested-With: XMLHttpRequest
+- Формат: JSON с полем html, внутри — HTML-разметка (Bitrix CMS)
+- CSS-селектор карточки: div.vacancies-section__item
+- Поля из data-атрибутов: data-vacancy-id, data-vacancy-geo, data-vacancy-team, data-vacancy-remote (Да/Нет), data-vacancy-intern (Да/Нет), data-vacancy-section (название направления кириллицей)
+- Название: селектор a.vacancies-section__item-name (НЕ a.vacancies-section__item-link — та пустая)
+- Формат работы: селектор span.vacancies-section__item-format ("офис и удаленно", "можно удаленно", "удаленно", "офис")
+- Ссылка: https://career.avito.com{href}
+- Дополнительный фильтр: &managers=Y для руководящих позиций (Lead+)
+- Грейд из названия: Ведущий = Senior, Руководитель = Lead, Стажёр = Junior, без префикса = Middle
+- Описание: только через HTML-страницу вакансии
 
 
 ## Dodo
@@ -329,9 +349,10 @@
 | Ozon | Полное | Нет |
 | T-Bank | Полное (HTML-парсинг h2-секций) | Да |
 | VK | Полное (HTML-парсинг h3-секций + грейд из h4) | Да |
-| Avito | Полное (JSON-LD schema.org/JobPosting + HTML fallback) | Да |
 | Sber | Полное | Нет |
 | Alfa-Bank | Полное | Нет |
+| Aviasales | Нет (HTML-карточка: SSR window._ROUTER_DATA) | Да |
+| Avito | Полное (JSON-LD schema.org/JobPosting + HTML fallback) | Да |
 | Dodo | Полное (API detail) | Нет |
 | Купер | Полное (API detail) | Нет |
 | Точка | Нет (HTML-парсинг h2-секций) | Да |

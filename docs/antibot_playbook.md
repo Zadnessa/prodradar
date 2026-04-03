@@ -43,7 +43,7 @@ WAF определяет HTTP-клиент по параметрам TLS handsha
 
 | Компания | Блокировка | Транспорт | Примечания |
 | --- | --- | --- | --- |
-| Циан (API) | cookies + headers | aiohttp* + browser_secrets | `_yasc` обязательна, sec-заголовки обязательны (*используется `curl_cffi.requests.post` для удобства, но `aiohttp` тоже работает при наличии cookies) |
+| Циан (API) | cookies + headers | aiohttp + browser_secrets cookies | `_yasc` обязательна, sec-заголовки обязательны; API не требует TLS impersonate, нужны только cookies + заголовки |
 | Циан (enrichment) | TLS fingerprint | curl_cffi impersonate="chrome131" | cookies не нужны, CSR-страница |
 | СберЗдоровье | JS challenge | Playwright | buildId из HTML |
 

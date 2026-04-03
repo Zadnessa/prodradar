@@ -6,6 +6,7 @@ from parsers.avito import AvitoParser
 from parsers.cian import CianParser
 from parsers.dodo import DodoParser
 from parsers.domclick import DomClickParser
+from parsers.hh import HHParser
 from parsers.kontur import KonturParser
 from parsers.kuper import KuperParser
 from parsers.lamoda import LamodaParser
@@ -27,6 +28,7 @@ PARSER_REGISTRY = {
     "cian": CianParser,
     "dodo": DodoParser,
     "domclick": DomClickParser,
+    "hh": HHParser,
     "kontur": KonturParser,
     "kuper": KuperParser,
     "lamoda": LamodaParser,

@@ -55,7 +55,7 @@ jobs:
               print("GITHUB_REF =", os.getenv("GITHUB_REF"))
               print("platform =", platform.platform())
               print("python =", platform.python_version())
-              print("playwright =", playwright.__version__)
+              print("playwright =", "version check skipped")
 
               netlog = []
 

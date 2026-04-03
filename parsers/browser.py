@@ -37,17 +37,17 @@ async def fetch_browser_secrets():
                 "--no-default-browser-check",
             ],
         )
-        context = await browser.new_context(
-            user_agent=config.REQUEST_HEADERS["User-Agent"],
-            viewport={"width": 1920, "height": 1080},
-            locale="ru-RU",
-        )
-        await context.add_init_script(
-            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
-        )
-        page = await context.new_page()
 
         for idx, task in enumerate(tasks):
+            context = await browser.new_context(
+                user_agent=config.REQUEST_HEADERS["User-Agent"],
+                viewport={"width": 1920, "height": 1080},
+                locale="ru-RU",
+            )
+            await context.add_init_script(
+                "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+            )
+            page = await context.new_page()
             try:
                 await page.goto(task["url"], timeout=30_000)
                 await page.wait_for_load_state("networkidle")
@@ -72,6 +72,8 @@ async def fetch_browser_secrets():
             except Exception as exc:
                 results[task["key"]] = None
                 logging.warning("Браузерное задание %s не удалось: %s", task["key"], exc)
+            finally:
+                await context.close()
 
             if idx < len(tasks) - 1:
                 await asyncio.sleep(2)

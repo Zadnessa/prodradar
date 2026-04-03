@@ -123,7 +123,7 @@ class CianParser(BaseParser):
             "origin": "https://www.cian.ru",
             "referer": "https://www.cian.ru/",
             "cookie": cookie_string,
-            "sec-ch-ua": '"Chromium";v="131", "Not-A.Brand";v="24", "Google Chrome";v="131"',
+            "sec-ch-ua": '"Chromium";v="146", "Not_A Brand";v="24", "Google Chrome";v="146"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
             "sec-fetch-dest": "empty",

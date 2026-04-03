@@ -380,3 +380,9 @@
 Было: parse() добавлял служебное поле _friendly_url в словарь вакансии для передачи slug-а в enrich(). Поле не удалялось и попадало в INSERT, вызывая APIError PGRST204.
 Стало: friendly_url хранится в self._friendly_urls (dict), словарь вакансии не содержит служебных полей.
 Причина: контракт BaseParser не предусматривает передачу данных между parse() и enrich() — парсер использовал словарь вакансии как транспорт, что нарушило схему БД.
+
+### BUG-063: Циан API блокирует curl_cffi с impersonate
+Файл: parsers/cian.py
+Было: POST к api.cian.ru через curl_cffi с impersonate="chrome131" — API возвращал text/html (challenge-страницу) вместо JSON.
+Стало: POST через aiohttp session с cookies в заголовке Cookie — API возвращает JSON.
+Причина: API api.cian.ru не требует TLS impersonate; curl_cffi с impersonate триггерил другую ветку WAF, которая блокировала запрос.

@@ -88,7 +88,6 @@ class CianParser(BaseParser):
         raise ValueError("Не удалось сбалансировать скобки JSON initialState")
 
     async def parse(self, session, existing_ids, city_mappings, browser_secrets=None):
-        del session
         del existing_ids
 
         cookies = (browser_secrets or {}).get("cian_cookies") or []
@@ -133,29 +132,22 @@ class CianParser(BaseParser):
         }
         payload = {"filters": {"specializations": ["58"]}}
 
-        response = await asyncio.to_thread(
-            curl_requests.post,
-            self.API_URL,
-            headers=headers,
-            json=payload,
-            impersonate="chrome131",
-            timeout=30,
-        )
-        response.raise_for_status()
+        async with session.post(self.API_URL, headers=headers, json=payload, timeout=30) as response:
+            response.raise_for_status()
 
-        logger.info(
-            "Cian parse: API ответ status=%s, Content-Type=%s",
-            response.status_code,
-            response.headers.get("Content-Type"),
-        )
-        content_type = (response.headers.get("Content-Type") or "").lower()
-        if "json" not in content_type:
-            raise RuntimeError(
-                "Циан API вернул не JSON: возможна captcha или блокировка "
-                f"(Content-Type={response.headers.get('Content-Type')})"
+            logger.info(
+                "Cian parse: API ответ status=%s, Content-Type=%s",
+                response.status,
+                response.headers.get("Content-Type"),
             )
+            content_type = (response.headers.get("Content-Type") or "").lower()
+            if "json" not in content_type:
+                raise RuntimeError(
+                    "Циан API вернул не JSON: возможна captcha или блокировка "
+                    f"(Content-Type={response.headers.get('Content-Type')})"
+                )
 
-        data = response.json()
+            data = await response.json()
         vacancies = []
         groups = data.get("groups") or []
         total_vacancies = sum(len((group or {}).get("vacancies") or []) for group in groups)

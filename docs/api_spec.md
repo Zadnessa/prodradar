@@ -358,10 +358,35 @@
 - URL: https://rabota.x5.ru/public/api/vacancies/vacancies/{id}/
 - Статус: Возвращает те же данные, что и список. Enrichment не требуется.
 
+## 2ГИС
+- Метод: GET
+- URL: https://job.2gis.ru/project/
+- Обязательные заголовки: стандартные (config.REQUEST_HEADERS)
+- Путь к вакансиям: HTML-страница, ссылки с href /project/{id}/
+- Пагинация: отсутствует, все вакансии на одной странице
+- Фильтр: директория /project/ (продуктовые + проектные вакансии, проектные отсекаются TITLE_STOP_PATTERNS в main.py)
+- Поля: id (int, из href), title (str, текст ссылки), work_format (str, из текста карточки — "Удалённая работа" или "Не указан")
+- Ссылка: https://job.2gis.ru/project/{id}/
+- Описание: через enrichment (HTML h2-секции + JSON-LD fallback)
+- Отсутствующие поля в списке: grade, city, experience, published_at, description
+
+### Enrichment (карточка вакансии)
+- Метод: GET
+- URL: https://job.2gis.ru/project/{id}/
+- JS-рендеринг: НЕ требуется (SSR)
+- JSON-LD: schema.org/JobPosting может присутствовать (datePosted, jobLocation)
+- Секции описания: h2-заголовки "Что предстоит делать", "Что будет входить в задачи", "Вам точно предстоит", "Ключевые задачи", "Что мы ожидаем", "Кого мы ищем", "Что предлагаем", "Что мы предлагаем"
+- Поля для enrichment:
+  - description: текст из целевых h2-секций (склеить через \n\n)
+  - experience: regex "Опыт от N лет/года" из полного текста страницы
+  - published_at: JSON-LD JobPosting.datePosted (если присутствует)
+  - city: JSON-LD JobPosting.jobLocation[].address.addressLocality (если присутствует)
+
 ## Сводка: где есть описание
 
 | Компания | Описание в API | Нужен HTML-парсинг |
 |---|---|---|
+| 2ГИС | Нет (HTML h2-секции + JSON-LD) | Да |
 | Wildberries | Полное (структурированное) | Нет |
 | Yandex | Полное | Нет |
 | Ozon | Полное | Нет |

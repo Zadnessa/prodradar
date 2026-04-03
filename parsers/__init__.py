@@ -1,6 +1,7 @@
 """Регистрация доступных парсеров."""
 
 from parsers.alfa import AlfaParser
+from parsers.twogis import TwoGisParser
 from parsers.aviasales import AviasalesParser
 from parsers.avito import AvitoParser
 from parsers.cian import CianParser
@@ -22,6 +23,7 @@ from parsers.x5 import X5Parser
 from parsers.yandex import YandexParser
 
 PARSER_REGISTRY = {
+    "2gis": TwoGisParser,
     "alfa": AlfaParser,
     "aviasales": AviasalesParser,
     "avito": AvitoParser,

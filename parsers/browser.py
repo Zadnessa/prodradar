@@ -7,6 +7,8 @@ import time
 
 from playwright.async_api import async_playwright
 
+import config
+
 
 async def fetch_browser_secrets():
     """Собирает buildId/cookies с защищённых сайтов одним браузерным запуском."""
@@ -36,11 +38,7 @@ async def fetch_browser_secrets():
             ],
         )
         context = await browser.new_context(
-            user_agent=(
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/131.0.0.0 Safari/537.36"
-            ),
+            user_agent=config.REQUEST_HEADERS["User-Agent"],
             viewport={"width": 1920, "height": 1080},
             locale="ru-RU",
         )
@@ -55,6 +53,7 @@ async def fetch_browser_secrets():
                 await page.wait_for_load_state("networkidle")
 
                 if task["extract"] == "html":
+                    await asyncio.sleep(5)
                     html = await page.content()
                     match = re.search(r'"buildId"\s*:\s*"([^"]+)"', html)
                     build_id = match.group(1) if match else None

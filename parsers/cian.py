@@ -113,6 +113,8 @@ class CianParser(BaseParser):
 
         cookie_string = "; ".join(cian_cookie_pairs)
         self._cookie_string = cookie_string
+        has_yasc_cookie = any(pair.startswith("_yasc=") for pair in cian_cookie_pairs)
+        logger.info("Cian parse: cookies=%s, _yasc=%s", len(cian_cookie_pairs), "да" if has_yasc_cookie else "нет")
 
         headers = {
             "accept": "*/*",
@@ -141,6 +143,11 @@ class CianParser(BaseParser):
         )
         response.raise_for_status()
 
+        logger.info(
+            "Cian parse: API ответ status=%s, Content-Type=%s",
+            response.status_code,
+            response.headers.get("Content-Type"),
+        )
         content_type = (response.headers.get("Content-Type") or "").lower()
         if "json" not in content_type:
             raise RuntimeError(
@@ -150,8 +157,11 @@ class CianParser(BaseParser):
 
         data = response.json()
         vacancies = []
+        groups = data.get("groups") or []
+        total_vacancies = sum(len((group or {}).get("vacancies") or []) for group in groups)
+        logger.info("Cian parse: групп=%s, вакансий=%s", len(groups), total_vacancies)
 
-        for group in data.get("groups") or []:
+        for group in groups:
             group_vacancies = group.get("vacancies") or []
             group_count = group.get("count")
             if isinstance(group_count, int) and group_count != len(group_vacancies):

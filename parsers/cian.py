@@ -114,6 +114,7 @@ class CianParser(BaseParser):
         self._cookie_string = cookie_string
         has_yasc_cookie = any(pair.startswith("_yasc=") for pair in cian_cookie_pairs)
         logger.info("Cian parse: cookies=%s, _yasc=%s", len(cian_cookie_pairs), "да" if has_yasc_cookie else "нет")
+        logger.info("Cian parse: cookie names=[%s]", ", ".join(pair.split("=", 1)[0] for pair in cian_cookie_pairs))
 
         headers = {
             "accept": "*/*",

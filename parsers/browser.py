@@ -3,12 +3,14 @@
 import asyncio
 import logging
 import re
+import time
 
 from playwright.async_api import async_playwright
 
 
 async def fetch_browser_secrets():
     """Собирает buildId/cookies с защищённых сайтов одним браузерным запуском."""
+    started_at = time.time()
     tasks = [
         {
             "key": "sberhealth_build_id",
@@ -55,9 +57,19 @@ async def fetch_browser_secrets():
                 if task["extract"] == "html":
                     html = await page.content()
                     match = re.search(r'"buildId"\s*:\s*"([^"]+)"', html)
-                    results[task["key"]] = match.group(1) if match else None
+                    build_id = match.group(1) if match else None
+                    results[task["key"]] = build_id
+                    logging.info("%s: %s", task["key"], build_id or "не найден")
                 elif task["extract"] == "cookies":
-                    results[task["key"]] = await page.context.cookies()
+                    cookies = await page.context.cookies()
+                    results[task["key"]] = cookies
+                    cookie_names = [str(cookie.get("name") or "") for cookie in cookies if cookie.get("name")]
+                    logging.info(
+                        "%s: получено %s cookies [%s]",
+                        task["key"],
+                        len(cookies),
+                        ", ".join(cookie_names),
+                    )
             except Exception as exc:
                 results[task["key"]] = None
                 logging.warning("Браузерное задание %s не удалось: %s", task["key"], exc)
@@ -66,5 +78,7 @@ async def fetch_browser_secrets():
                 await asyncio.sleep(2)
 
         await browser.close()
+        elapsed = time.time() - started_at
+        logging.info("Браузерный этап завершён за %.1f сек", elapsed)
 
     return results

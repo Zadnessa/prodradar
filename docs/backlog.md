@@ -125,6 +125,7 @@ IT-юрлица (Ozon Tech, X5 Tech и т.п.): писать парсер тол
 - [ ] Механизм re-enrichment: для активных вакансий с пустым или коротким description, без published_at — повторно вызывать enrichment при следующем прогоне.
 - [ ] Развилка: определить точный порядок — сначала фикс content_hash, потом re-enrichment, потом проверка результатов.
 - [ ] Тестовый режим компании: добавить поле status в таблицу companies (значения: active, testing, disabled). При status=testing вакансии собираются и сохраняются, но доставляются только ADMIN_CHAT_ID. При status=disabled парсер не запускается. SQL: ALTER TABLE companies ADD COLUMN status text NOT NULL DEFAULT 'active'. В main.py: фильтровать companies по status != 'disabled'. В delivery: если company.status = 'testing', отправлять вакансии только в ADMIN_CHAT_ID.
+- [ ] Единое логирование парсеров: внедрить стандарт логирования для всех парсеров (parse: количество запросов, пагинация, результат; enrich: обогащено/пропущено/ошибки). Шаблон — browser.py + cian.py + sberhealth.py из PR fix/critical-logging.
 
 ## Wave 4 — Предрелизный аудит
 

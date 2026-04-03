@@ -8,6 +8,9 @@ import config
 from parsers.base import BaseParser
 
 
+logger = logging.getLogger(__name__)
+
+
 class SberHealthParser(BaseParser):
     """Парсер продуктовых вакансий СберЗдоровья."""
 
@@ -60,6 +63,7 @@ class SberHealthParser(BaseParser):
             raise RuntimeError("СберЗдоровье: buildId не получен из браузерного этапа")
 
         self._build_id = build_id
+        logger.info("СберЗдоровье parse: buildId=%s", build_id)
 
         headers = {**config.REQUEST_HEADERS, "Accept": "application/json"}
         list_url = self.LIST_URL_TEMPLATE.format(build_id=build_id)
@@ -68,6 +72,7 @@ class SberHealthParser(BaseParser):
             payload = await response.json()
 
         items = payload.get("pageProps", {}).get("vacancies", [])
+        logger.info("СберЗдоровье parse: список получен, status=%s, вакансий=%s", response.status, len(items))
         vacancies = []
 
         for item in items:
@@ -128,7 +133,7 @@ class SberHealthParser(BaseParser):
             if not (vacancy.get("work_format") or "").strip() and new_work_format:
                 vacancy["work_format"] = new_work_format
         except Exception as exc:
-            logging.warning("СберЗдоровье enrichment %s: %s", vacancy.get("id"), exc)
+            logger.warning("СберЗдоровье enrichment %s: %s", vacancy.get("id"), exc)
         finally:
             await asyncio.sleep(0.3)
 

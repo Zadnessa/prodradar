@@ -80,7 +80,7 @@ async def run():
                 if not parser_cls:
                     raise ValueError(f"Парсер {parser_name} не найден в PARSER_REGISTRY")
                 parser = parser_cls()
-                vacancies = await parser.parse(session, empty_existing_ids, city_mappings)
+                vacancies = await parser.parse(session, empty_existing_ids, city_mappings, browser_secrets=browser_secrets)
                 if config.TEST_MODE:
                     vacancies = vacancies[: config.TEST_LIMIT]
                 all_collected.extend(vacancies)

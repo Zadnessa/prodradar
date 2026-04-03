@@ -121,6 +121,20 @@
   - GET /api/v1/profAreas (44 записи)
   - GET /api/v1/experiences (4 уровня)
 
+
+## СберЗдоровье
+- Метод получения buildId: Playwright открывает https://vacancy.sberhealth.ru/vacancies, из HTML тега script id="__NEXT_DATA__" извлекается buildId regex-ом
+- BuildId меняется при каждом деплое фронтенда, требуется браузерный этап (parsers/browser.py)
+- Эндпоинт списка: GET https://vacancy.sberhealth.ru/_next/data/{buildId}/index.json
+- Путь к вакансиям: pageProps.vacancies
+- Пагинация: отсутствует, все вакансии в одном ответе
+- Поля: id (int), position (str), locationName (str), divisionName (str), createdAt (ISO 8601), locationId (int), divisionId (int), isPriority (bool), isPublic (bool)
+- Эндпоинт карточки: GET https://vacancy.sberhealth.ru/_next/data/{buildId}/vacancies/{id}.json
+- Путь к карточке: pageProps.vacancy
+- Поля для enrichment: teamDescription (HTML), body (HTML), requirements (HTML), conditions (HTML)
+- Справочники: отсутствуют
+- Отсутствующие поля: grade, experience (извлекается regex из requirements), work_format (извлекается из conditions)
+
 ## Alfa-Bank
 - Метод: GET
 - URL: https://job.alfabank.ru/api/vacancies
@@ -393,6 +407,7 @@
 | T-Bank | Полное (HTML-парсинг h2-секций) | Да |
 | VK | Полное (HTML-парсинг h3-секций + грейд из h4) | Да |
 | Sber | Полное | Нет |
+| СберЗдоровье | Полное (API detail, HTML очистка) | Нет |
 | Alfa-Bank | Полное | Нет |
 | Aviasales | Нет (HTML-карточка: SSR window._ROUTER_DATA) | Да |
 | Avito | Полное (JSON-LD schema.org/JobPosting + HTML fallback) | Да |

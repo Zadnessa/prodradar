@@ -1,7 +1,6 @@
 """Регистрация доступных парсеров."""
 
 from parsers.alfa import AlfaParser
-from parsers.twogis import TwoGisParser
 from parsers.aviasales import AviasalesParser
 from parsers.avito import AvitoParser
 from parsers.cian import CianParser
@@ -15,8 +14,10 @@ from parsers.mts import MtsParser
 from parsers.mtslink import MtsLinkParser
 from parsers.ozon import OzonParser
 from parsers.sber import SberParser
+from parsers.sberhealth import SberHealthParser
 from parsers.tbank import TBankParser
 from parsers.tochka import TochkaParser
+from parsers.twogis import TwoGisParser
 from parsers.vk import VKParser
 from parsers.wildberries import WildberriesParser
 from parsers.x5 import X5Parser
@@ -38,6 +39,7 @@ PARSER_REGISTRY = {
     "mtslink": MtsLinkParser,
     "ozon": OzonParser,
     "sber": SberParser,
+    "sberhealth": SberHealthParser,
     "tbank": TBankParser,
     "tochka": TochkaParser,
     "vk": VKParser,

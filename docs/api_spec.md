@@ -40,6 +40,24 @@
   - description: short_summary + duties + key_qualifications + additional_requirements + conditions (склеить, обрезать до 500 символов)
   - дополнительные поля: vacancy.employment_types, vacancy.profession, vacancy.public_professions, our_team, tech_stack, pro_level_min_display, additional_requirements, conditions
 
+## HeadHunter
+- Метод: GET
+- URL: https://api.hh.ru/vacancies
+- Обязательные заголовки: HH-User-Agent: VacancyBot/1.0 (mois.pave@gmail.com)
+- Путь к вакансиям: items
+- Пагинация: page (с 0) / per_page (макс 100), ответ содержит found, pages, page, per_page
+- Фильтр: employer_id=1455; двухуровневая фильтрация в main.py через is_product_role (professional_roles содержит id=73) + HH_TITLE_WHITELIST
+- Поля: id (int), name (str), area.name (str), work_format (array, брать name), experience.name (str), published_at (str ISO-8601), alternate_url (str), professional_roles (array, id + name)
+- Ссылка: alternate_url (https://hh.ru/vacancy/{id})
+- Описание: НЕТ в списке, полное через API карточки
+
+### API отдельной вакансии
+- Метод: GET
+- URL: https://api.hh.ru/vacancies/{id}
+- Поля для enrichment: description (HTML, очистить теги)
+- Дополнительные поля: key_skills (array)
+
+
 ## Ozon
 - Метод: GET
 - URL: https://job-api.ozon.ru/v2/vacancy
@@ -360,6 +378,7 @@
 | Контур | Нет (JSON-LD enrichment) | Да |
 | Lamoda | Нет (API detail: duties + requirements) | Нет |
 | ДомКлик | Полное (API detail) | Нет |
+| HeadHunter | Полное (API detail) | Нет |
 | МТС | Полное (API detail, plain text) | Нет |
 | МТС Линк | Полное (API detail) | Нет |
 | X5 Group | Полное (API список) | Нет |

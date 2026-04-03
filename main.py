@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 import aiohttp
 
 import config
-from config import DOMCLICK_TITLE_WHITELIST
+from config import DOMCLICK_TITLE_WHITELIST, HH_TITLE_WHITELIST
 from bot.telegram_api import send_message
 from database.supabase_client import SupabaseService, compute_content_hash
 from delivery.filters import filter_vacancies_for_user
@@ -125,12 +125,29 @@ async def run():
         if domclick_filtered_out:
             logging.info("Отфильтровано по ДомКлик whitelist: %s", domclick_filtered_out)
 
+        before_hh_whitelist = len(all_collected)
+        all_collected = [
+            vacancy
+            for vacancy in all_collected
+            if vacancy.get("company") != "HeadHunter"
+            or vacancy.get("is_product_role") is True
+            or any(
+                pattern in vacancy.get("title", "").lower()
+                for pattern in HH_TITLE_WHITELIST
+            )
+        ]
+        hh_filtered_out = before_hh_whitelist - len(all_collected)
+        if hh_filtered_out:
+            logging.info("Отфильтровано по HeadHunter двухуровневому фильтру: %s", hh_filtered_out)
+
         existing_hashes = db.get_existing_vacancy_hashes()
         new_vacancies = []
         changed_vacancies = []
         touch_ids = []
 
         for vacancy in all_collected:
+            vacancy.pop("is_product_role", None)
+            vacancy.pop("_source", None)
             content_hash = compute_content_hash(vacancy)
             existing_hash = existing_hashes.get(vacancy["id"])
 

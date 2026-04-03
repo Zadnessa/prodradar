@@ -6,8 +6,9 @@ import json
 import logging
 import re
 
-import requests
+from curl_cffi import requests as curl_requests
 
+import config
 from parsers.base import BaseParser
 from parsers.utils import normalize_city
 
@@ -16,15 +17,12 @@ logger = logging.getLogger(__name__)
 
 
 class CianParser(BaseParser):
-    """Парсер Циан: список через API, описание через SSR initialState."""
+    """Парсер Циан: список через API, описание через initialState."""
 
     API_URL = "https://api.cian.ru/job-vacancies-backend/v2/get-vacancies/"
-    ROOT_URL = "https://www.cian.ru/"
-    WARMUP_URL = "https://www.cian.ru/vacancies/"
 
     def __init__(self):
-        self._session = None
-        self._warmed_up = False
+        self._cookie_string = None
 
     @staticmethod
     def _is_salary_label(label):
@@ -89,43 +87,64 @@ class CianParser(BaseParser):
 
         raise ValueError("Не удалось сбалансировать скобки JSON initialState")
 
-    async def _sync_get(self, url, **kwargs):
-        return await asyncio.to_thread(self._session.get, url, **kwargs)
-
-    async def _sync_post(self, url, **kwargs):
-        return await asyncio.to_thread(self._session.post, url, **kwargs)
-
-    async def parse(self, session, existing_ids, city_mappings):
+    async def parse(self, session, existing_ids, city_mappings, browser_secrets=None):
         del session
         del existing_ids
 
-        self._session = requests.Session()
-        self._warmed_up = False
+        cookies = (browser_secrets or {}).get("cian_cookies") or []
+        cian_cookie_pairs = []
+        for cookie in cookies:
+            if not isinstance(cookie, dict):
+                continue
+            domain = str(cookie.get("domain") or "")
+            if "cian.ru" not in domain:
+                continue
+            name = str(cookie.get("name") or "").strip()
+            value = str(cookie.get("value") or "").strip()
+            if not name or not value:
+                continue
+            cian_cookie_pairs.append(f"{name}={value}")
 
-        root_response = await asyncio.to_thread(self._session.get, self.ROOT_URL, timeout=30)
-        root_response.raise_for_status()
+        if not cian_cookie_pairs:
+            raise RuntimeError(
+                "Cian parse: отсутствуют cookies из browser_secrets['cian_cookies']; "
+                "нужен браузерный этап parsers/browser.py"
+            )
+
+        cookie_string = "; ".join(cian_cookie_pairs)
+        self._cookie_string = cookie_string
 
         headers = {
-            "Accept": "*/*",
-            "Content-Type": "application/json",
-            "Origin": "https://www.cian.ru",
-            "Referer": "https://www.cian.ru/",
-            "sec-ch-ua": '"Chromium";v="123", "Google Chrome";v="123", "Not:A-Brand";v="99"',
+            "accept": "*/*",
+            "accept-language": "ru-RU,ru;q=0.9",
+            "content-type": "application/json",
+            "origin": "https://www.cian.ru",
+            "referer": "https://www.cian.ru/",
+            "cookie": cookie_string,
+            "sec-ch-ua": '"Chromium";v="131", "Not-A.Brand";v="24", "Google Chrome";v="131"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
             "sec-fetch-dest": "empty",
             "sec-fetch-mode": "cors",
             "sec-fetch-site": "same-site",
+            "user-agent": config.REQUEST_HEADERS["User-Agent"],
         }
         payload = {"filters": {"specializations": ["58"]}}
 
-        response = await self._sync_post(self.API_URL, json=payload, headers=headers, timeout=30)
+        response = await asyncio.to_thread(
+            curl_requests.post,
+            self.API_URL,
+            headers=headers,
+            json=payload,
+            impersonate="chrome131",
+            timeout=30,
+        )
         response.raise_for_status()
 
         content_type = (response.headers.get("Content-Type") or "").lower()
         if "json" not in content_type:
             raise RuntimeError(
-                "Циан API вернул не JSON: возможна проблема с cookie или captcha "
+                "Циан API вернул не JSON: возможна captcha или блокировка "
                 f"(Content-Type={response.headers.get('Content-Type')})"
             )
 
@@ -185,33 +204,27 @@ class CianParser(BaseParser):
     async def enrich(self, session, vacancy):
         del session
 
-        if self._session is None:
-            return vacancy
-
         raw_id = str(vacancy.get("id") or "").removeprefix("cian_")
         if not raw_id:
             return vacancy
 
         try:
-            if not self._warmed_up:
-                warmup_response = await self._sync_get(self.WARMUP_URL, timeout=30)
-                warmup_response.raise_for_status()
-                self._warmed_up = True
-
-            url = f"https://www.cian.ru/vacancies/{raw_id}/"
-            response = await self._sync_get(url, timeout=30)
+            response = await asyncio.to_thread(
+                curl_requests.get,
+                f"https://www.cian.ru/vacancies/{raw_id}/",
+                headers={"user-agent": config.REQUEST_HEADERS["User-Agent"]},
+                impersonate="chrome131",
+                timeout=30,
+            )
             response.raise_for_status()
             html_text = response.text
 
             if "captcha" in html_text.lower():
-                raise RuntimeError("Cian enrich: получена captcha-страница")
+                logger.warning("Cian enrich: получена captcha для %s", vacancy.get("id"))
+                return vacancy
 
             state = self._extract_initial_state(html_text)
-            contents = (
-                state.get("vacancies", {})
-                .get("vacancy", {})
-                .get("contents", [])
-            )
+            contents = state.get("vacancies", {}).get("vacancy", {}).get("contents", [])
 
             parts = []
             for section in contents:

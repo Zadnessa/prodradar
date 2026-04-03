@@ -21,6 +21,7 @@ from enrichment.normalizer import (
     normalize_work_format,
 )
 from parsers import PARSER_REGISTRY
+from parsers.browser import fetch_browser_secrets
 from parsers.utils import normalize_city
 
 
@@ -49,6 +50,12 @@ async def run():
     db = SupabaseService()
     companies = db.get_enabled_companies()
     city_mappings = db.get_city_mappings()
+
+    try:
+        browser_secrets = await fetch_browser_secrets()
+    except Exception as exc:
+        logging.warning("Браузерный этап не удался: %s", exc)
+        browser_secrets = {}
 
     all_collected = []
     all_collected_ids = set()

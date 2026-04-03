@@ -386,3 +386,15 @@
 Было: POST к api.cian.ru через curl_cffi с impersonate="chrome131" — API возвращал text/html (challenge-страницу) вместо JSON.
 Стало: POST через aiohttp session с cookies в заголовке Cookie — API возвращает JSON.
 Причина: API api.cian.ru не требует TLS impersonate; curl_cffi с impersonate триггерил другую ветку WAF, которая блокировала запрос.
+
+### BUG-064: общий Playwright-контекст загрязнял cookies между сайтами
+Файл: parsers/browser.py
+Было: один Playwright-контекст использовался для всех задач; cookies Циана загрязнялись cookies от СберЗдоровья и трекеров; на GitHub Actions API возвращал капчу.
+Стало: каждая задача выполняется в изолированном контексте (`browser.new_context` + `context.close`); cookie jar чистый для каждого сайта.
+Причина: общий контекст после визита на другой сайт создавал нехарактерный для реального браузера набор cookies, который антибот Циана отклонял.
+
+### BUG-065: sec-ch-ua не совпадал с User-Agent Циана
+Файл: parsers/cian.py
+Было: `sec-ch-ua` был захардкожен как Chrome/131 при User-Agent Chrome/146 из config.py.
+Стало: `sec-ch-ua` обновлён до Chrome/146, консистентно с User-Agent.
+Причина: рассинхрон версий в заголовках мог вызывать подозрение у антибота.

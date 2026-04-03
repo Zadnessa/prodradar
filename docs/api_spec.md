@@ -301,6 +301,25 @@
 - URL: https://mts-link.ru/api/huntflow/vacancy/{id}
 - Поля для enrichment: body (HTML) + requirements (HTML) + conditions (HTML)
 
+## X5 Group
+- Метод: GET
+- URL: https://rabota.x5.ru/public/api/vacancies/vacancies/
+- Обязательные заголовки: нет (стандартные)
+- Путь к вакансиям: items
+- Пагинация: page-based (page с 1, page_size, по умолчанию 10). Условие остановки: next_page is None
+- Фильтр: vacancy_categories=18858 (категория "Управление продуктом")
+- Поля: id (str, hex), name (str), city (str или null), work_format (str enum: office/hybrid/remote или null), data.experience (str или отсутствует), data.main_responsibilities (str или отсутствует), data.professional_skills (str или отсутствует), business_units (array objects с id и title), category.negotiation_type (str)
+- Ссылка: https://rabota.x5.ru/vacancies/{id}
+- Описание: ЕСТЬ В API (data.main_responsibilities + data.professional_skills)
+- Экосистема: один API, 7 компаний (X5 Tech, Пятёрочка, Перекрёсток, Чижик, X5 Media, X5 Импорт, Много лосося), маппинг по business_units[0].title
+- Справочный эндпоинт: GET https://rabota.x5.ru/public/api/vacancies/filters/ (категории, BU, форматы, города)
+- Отсутствующие поля: grade, published_at
+
+### API отдельной вакансии
+- Метод: GET
+- URL: https://rabota.x5.ru/public/api/vacancies/vacancies/{id}/
+- Статус: Возвращает те же данные, что и список. Enrichment не требуется.
+
 ## Сводка: где есть описание
 
 | Компания | Описание в API | Нужен HTML-парсинг |
@@ -322,3 +341,4 @@
 | ДомКлик | Полное (API detail) | Нет |
 | МТС | Полное (API detail, plain text) | Нет |
 | МТС Линк | Полное (API detail) | Нет |
+| X5 Group | Полное (API список) | Нет |

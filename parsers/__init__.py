@@ -16,6 +16,7 @@ from parsers.tbank import TBankParser
 from parsers.tochka import TochkaParser
 from parsers.vk import VKParser
 from parsers.wildberries import WildberriesParser
+from parsers.x5 import X5Parser
 from parsers.yandex import YandexParser
 
 PARSER_REGISTRY = {
@@ -35,5 +36,6 @@ PARSER_REGISTRY = {
     "tochka": TochkaParser,
     "vk": VKParser,
     "wildberries": WildberriesParser,
+    "x5": X5Parser,
     "yandex": YandexParser,
 }

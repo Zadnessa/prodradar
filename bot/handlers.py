@@ -695,6 +695,209 @@ def handle_stop(chat_id, db=None):
     send_message(chat_id, "Ты отписался от рассылки. Чтобы подписаться снова — отправь /start")
 
 
+def handle_mute(chat_id, slug, db=None):
+    db = db or SupabaseService()
+    companies = db.get_enabled_companies()
+    company = next((item for item in companies if item.get("parser_name") == slug), None)
+    if not company:
+        send_message(chat_id, "Компания не найдена.")
+        return
+
+    name = company.get("name")
+    user = db.get_user(chat_id) or {}
+    filters = dict(user.get("filters") or {})
+    excluded_companies = [str(v).strip() for v in (filters.get("excluded_companies") or []) if str(v).strip()]
+    if name in excluded_companies:
+        send_message(chat_id, f"{name} уже заблокирована. Список: /blocked")
+        return
+
+    send_message(
+        chat_id,
+        f"Заблокировать вакансии от {name}?",
+        reply_markup={
+            "inline_keyboard": [[
+                {"text": "Да, заблокировать", "callback_data": f"mute:{slug}:yes"},
+                {"text": "Отмена", "callback_data": f"mute:{slug}:no"},
+            ]]
+        },
+    )
+
+
+def handle_unmute(chat_id, slug, db=None):
+    db = db or SupabaseService()
+    companies = db.get_enabled_companies()
+    company = next((item for item in companies if item.get("parser_name") == slug), None)
+    if not company:
+        send_message(chat_id, "Компания не найдена.")
+        return
+
+    name = company.get("name")
+    user = db.get_user(chat_id) or {}
+    filters = dict(user.get("filters") or {})
+    excluded_companies = [str(v).strip() for v in (filters.get("excluded_companies") or []) if str(v).strip()]
+    if name not in excluded_companies:
+        send_message(chat_id, f"{name} не заблокирована.")
+        return
+
+    send_message(
+        chat_id,
+        f"Разблокировать вакансии от {name}?",
+        reply_markup={
+            "inline_keyboard": [[
+                {"text": "Да, разблокировать", "callback_data": f"unmute:{slug}:yes"},
+                {"text": "Отмена", "callback_data": f"unmute:{slug}:no"},
+            ]]
+        },
+    )
+
+
+def handle_unmute_all(chat_id, db=None):
+    db = db or SupabaseService()
+    user = db.get_user(chat_id) or {}
+    filters = dict(user.get("filters") or {})
+    excluded_companies = [str(v).strip() for v in (filters.get("excluded_companies") or []) if str(v).strip()]
+    if not excluded_companies:
+        send_message(chat_id, "У тебя нет заблокированных компаний.")
+        return
+
+    send_message(
+        chat_id,
+        f"Разблокировать все компании ({len(excluded_companies)} шт.)?",
+        reply_markup={
+            "inline_keyboard": [[
+                {"text": "Да, разблокировать все", "callback_data": "unmute_all:yes"},
+                {"text": "Отмена", "callback_data": "unmute_all:no"},
+            ]]
+        },
+    )
+
+
+def handle_blocked(chat_id, db=None):
+    db = db or SupabaseService()
+    user = db.get_user(chat_id) or {}
+    filters = dict(user.get("filters") or {})
+    excluded_companies = [str(v).strip() for v in (filters.get("excluded_companies") or []) if str(v).strip()]
+    if not excluded_companies:
+        send_message(chat_id, "У тебя нет заблокированных компаний.")
+        return
+
+    companies = db.get_enabled_companies()
+    companies_by_name = {company.get("name"): company for company in companies}
+
+    lines = ["Заблокированные компании:", ""]
+    for name in excluded_companies:
+        company_meta = companies_by_name.get(name)
+        if not company_meta:
+            continue
+        parser_name = company_meta.get("parser_name")
+        if not parser_name:
+            continue
+        emoji = format_company_emoji(company_meta)
+        lines.append(f"{emoji} {name}    /unmute_{parser_name}")
+
+    if len(lines) == 2:
+        send_message(chat_id, "У тебя нет заблокированных компаний.")
+        return
+
+    lines.append("")
+    lines.append("/unmute_all — разблокировать все")
+    send_message(
+        chat_id,
+        "\n".join(lines),
+        reply_markup={"inline_keyboard": [[{"text": "Управлять компаниями", "callback_data": "st:edit:company"}]]},
+    )
+
+
+def handle_mute_callback(data, chat_id, message_id, db=None):
+    db = db or SupabaseService()
+
+    if data.startswith("mute:"):
+        _, slug, action = data.split(":", 2)
+        if action == "no":
+            edit_message(chat_id, message_id, "Ок, ничего не меняю.", reply_markup=None)
+            return
+
+        companies = db.get_enabled_companies()
+        company = next((item for item in companies if item.get("parser_name") == slug), None)
+        if not company:
+            edit_message(chat_id, message_id, "Компания не найдена.", reply_markup=None)
+            return
+
+        name = company.get("name")
+        user = db.get_user(chat_id) or {}
+        filters = dict(user.get("filters") or {})
+        excluded_companies = [str(v).strip() for v in (filters.get("excluded_companies") or []) if str(v).strip()]
+        if name not in excluded_companies:
+            excluded_companies.append(name)
+        filters["excluded_companies"] = excluded_companies
+
+        has_used_mute = bool(filters.get("has_used_mute"))
+        if not has_used_mute:
+            filters["has_used_mute"] = True
+
+        db.update_user_filters(chat_id, filters)
+
+        if not has_used_mute:
+            text = (
+                f"Готово, вакансии от {name} больше не будут приходить.\n\n"
+                "Управлять компаниями можно в /settings.\n"
+                "Заблокированные: /blocked"
+            )
+        else:
+            text = f"Готово, {name} заблокирована.\n\nЗаблокированные: /blocked"
+
+        edit_message(
+            chat_id,
+            message_id,
+            text,
+            reply_markup={
+                "inline_keyboard": [[
+                    {"text": "Заблокировать другие компании", "callback_data": "st:edit:company"}
+                ]]
+            },
+        )
+        return
+
+    if data.startswith("unmute:"):
+        _, slug, action = data.split(":", 2)
+        if action == "no":
+            edit_message(chat_id, message_id, "Ок, ничего не меняю.", reply_markup=None)
+            return
+
+        companies = db.get_enabled_companies()
+        company = next((item for item in companies if item.get("parser_name") == slug), None)
+        if not company:
+            edit_message(chat_id, message_id, "Компания не найдена.", reply_markup=None)
+            return
+
+        name = company.get("name")
+        user = db.get_user(chat_id) or {}
+        filters = dict(user.get("filters") or {})
+        excluded_companies = [str(v).strip() for v in (filters.get("excluded_companies") or []) if str(v).strip()]
+        filters["excluded_companies"] = [company_name for company_name in excluded_companies if company_name != name]
+        db.update_user_filters(chat_id, filters)
+
+        edit_message(
+            chat_id,
+            message_id,
+            f"Готово, вакансии от {name} снова будут приходить.\n\nЗаблокированные: /blocked",
+            reply_markup=None,
+        )
+        return
+
+    if data.startswith("unmute_all:"):
+        _, action = data.split(":", 1)
+        if action == "no":
+            edit_message(chat_id, message_id, "Ок, ничего не меняю.", reply_markup=None)
+            return
+
+        user = db.get_user(chat_id) or {}
+        filters = dict(user.get("filters") or {})
+        filters["excluded_companies"] = []
+        db.update_user_filters(chat_id, filters)
+        edit_message(chat_id, message_id, "Все компании разблокированы.", reply_markup=None)
+
+
 def handle_unknown(chat_id):
     send_message(
         chat_id,
@@ -702,6 +905,7 @@ def handle_unknown(chat_id):
         "/settings — настроить фильтры вакансий\n"
         "/stats — статистика по рынку\n"
         "/start — начать сначала\n"
-        "/stop — отписаться от рассылки\n\n"
+        "/stop — отписаться от рассылки\n"
+        "/blocked — заблокированные компании\n\n"
         "Новые вакансии приходят автоматически — утром и вечером.",
     )

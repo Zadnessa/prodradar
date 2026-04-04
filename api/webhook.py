@@ -7,14 +7,19 @@ import traceback
 from http.server import BaseHTTPRequestHandler
 
 from bot.handlers import (
+    handle_blocked,
     handle_callback,
     handle_hub_callback,
+    handle_mute,
+    handle_mute_callback,
     handle_more_callback,
     handle_settings,
     handle_settings_callback,
     handle_start,
     handle_stats,
     handle_stop,
+    handle_unmute,
+    handle_unmute_all,
     handle_unknown,
 )
 from bot.telegram_api import answer_callback
@@ -84,6 +89,8 @@ class handler(BaseHTTPRequestHandler):
                     handle_more_callback(data, chat_id, message_id, callback_message, db=db)
                 elif prefix == "hub" and chat_id and message_id:
                     handle_hub_callback(data, chat_id, message_id, callback_message, db=db)
+                elif prefix in {"mute", "unmute", "unmute_all"} and chat_id and message_id:
+                    handle_mute_callback(data, chat_id, message_id, db=db)
 
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
@@ -115,6 +122,16 @@ class handler(BaseHTTPRequestHandler):
                     handle_settings(chat_id, db=db)
                 elif text == "/stats":
                     handle_stats(chat_id, db=db)
+                elif text == "/blocked":
+                    handle_blocked(chat_id, db=db)
+                elif text == "/unmute_all":
+                    handle_unmute_all(chat_id, db=db)
+                elif text.startswith("/unmute_"):
+                    slug = text[len("/unmute_"):].strip()
+                    handle_unmute(chat_id, slug, db=db)
+                elif text.startswith("/mute_"):
+                    slug = text[len("/mute_"):].strip()
+                    handle_mute(chat_id, slug, db=db)
                 else:
                     handle_unknown(chat_id)
 

@@ -39,8 +39,6 @@ class HHZvukParser(BaseParser):
 
             items = payload.get("items") or []
             for item in items:
-                professional_roles = item.get("professional_roles") or []
-                is_product_role = any(str(role.get("id")) == "73" for role in professional_roles)
                 work_formats = item.get("work_format") or []
                 work_format = ", ".join(
                     fmt.get("name", "").strip() for fmt in work_formats if (fmt.get("name") or "").strip()
@@ -58,8 +56,6 @@ class HHZvukParser(BaseParser):
                         "published_at": item.get("published_at"),
                         "description": None,
                         "url": item.get("alternate_url"),
-                        "is_product_role": is_product_role,
-                        "_source": item,
                     }
                 )
 

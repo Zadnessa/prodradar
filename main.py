@@ -2,12 +2,13 @@
 
 import asyncio
 import logging
+import re
 from datetime import datetime, timedelta, timezone
 
 import aiohttp
 
 import config
-from config import DOMCLICK_TITLE_WHITELIST, HH_TITLE_WHITELIST, KASPERSKY_TITLE_WHITELIST
+from config import GRADE_OVERRIDE_PATTERNS, TITLE_BLACKLIST_PATTERNS, TITLE_WHITELIST_PATTERNS
 from bot.telegram_api import send_message
 from database.supabase_client import SupabaseService, compute_content_hash
 from delivery.filters import filter_vacancies_for_user
@@ -25,6 +26,26 @@ from parsers.browser import fetch_browser_secrets
 from parsers.utils import normalize_city
 
 
+def _is_product_title(title: str) -> bool:
+    t = title.strip().lower()
+    for pattern, is_regex in TITLE_WHITELIST_PATTERNS:
+        if is_regex:
+            if re.search(pattern, t):
+                return True
+        else:
+            if pattern in t:
+                return True
+    return False
+
+
+def _diagnose_blacklist(title: str) -> str | None:
+    t = title.strip().lower()
+    for pattern in TITLE_BLACKLIST_PATTERNS:
+        if pattern in t:
+            return pattern
+    return None
+
+
 def _prepare_vacancy(vacancy, city_mappings):
     vacancy["city"] = normalize_city(city_mappings, vacancy.get("city"))
     vacancy["experience"] = normalize_experience(vacancy.get("experience"))
@@ -37,6 +58,11 @@ def _prepare_vacancy(vacancy, city_mappings):
         inferred_experience = experience_from_grade(vacancy.get("grade"))
         if inferred_experience is not None:
             vacancy["experience"] = inferred_experience
+    title_lower = vacancy.get("title", "").strip().lower()
+    for pattern, override_grade in GRADE_OVERRIDE_PATTERNS:
+        if re.search(pattern, title_lower):
+            vacancy["grade"] = override_grade
+            break
     if vacancy.get("city") == "Не указан" and "Удалёнка" in vacancy.get("work_format", ""):
         vacancy["city"] = "Удалёнка"
     if not vacancy.get("description"):
@@ -106,86 +132,26 @@ async def run():
                 logging.exception("Ошибка парсера %s", parser_name)
 
         before_filter = len(all_collected)
-        all_collected = [
-            vacancy
-            for vacancy in all_collected
-            if not any(pattern in vacancy.get("title", "").lower() for pattern in config.TITLE_STOP_PATTERNS)
-        ]
-        filtered_out = before_filter - len(all_collected)
-        if filtered_out:
-            logging.info("Отфильтровано по стоп-словам: %s", filtered_out)
-
-        before_sber_whitelist = len(all_collected)
-        all_collected = [
-            vacancy
-            for vacancy in all_collected
-            if vacancy.get("company") != "Сбер"
-            or any(
-                pattern in vacancy.get("title", "").lower()
-                for pattern in config.SBER_TITLE_WHITELIST
-            )
-        ]
-        sber_filtered_out = before_sber_whitelist - len(all_collected)
-        if sber_filtered_out:
-            logging.info("Отфильтровано по Сбер whitelist: %s", sber_filtered_out)
-
-        before_domclick_whitelist = len(all_collected)
-        all_collected = [
-            vacancy
-            for vacancy in all_collected
-            if vacancy.get("company") != "ДомКлик"
-            or any(
-                pattern in vacancy.get("title", "").lower()
-                for pattern in DOMCLICK_TITLE_WHITELIST
-            )
-        ]
-        domclick_filtered_out = before_domclick_whitelist - len(all_collected)
-        if domclick_filtered_out:
-            logging.info("Отфильтровано по ДомКлик whitelist: %s", domclick_filtered_out)
-
-        before_hh_whitelist = len(all_collected)
-        all_collected = [
-            vacancy
-            for vacancy in all_collected
-            if vacancy.get("company") != "HeadHunter"
-            or vacancy.get("is_product_role") is True
-            or any(
-                pattern in vacancy.get("title", "").lower()
-                for pattern in HH_TITLE_WHITELIST
-            )
-        ]
-        hh_filtered_out = before_hh_whitelist - len(all_collected)
-        if hh_filtered_out:
-            logging.info("Отфильтровано по HeadHunter двухуровневому фильтру: %s", hh_filtered_out)
-
-        before_zvuk_whitelist = len(all_collected)
-        all_collected = [
-            vacancy
-            for vacancy in all_collected
-            if vacancy.get("company") != "Звук"
-            or vacancy.get("is_product_role") is True
-            or any(
-                pattern in vacancy.get("title", "").lower()
-                for pattern in HH_TITLE_WHITELIST
-            )
-        ]
-        zvuk_filtered_out = before_zvuk_whitelist - len(all_collected)
-        if zvuk_filtered_out:
-            logging.info("Отфильтровано по Звук двухуровневому фильтру: %s", zvuk_filtered_out)
-
-        before_kaspersky_whitelist = len(all_collected)
-        all_collected = [
-            vacancy
-            for vacancy in all_collected
-            if vacancy.get("company") != "Касперский"
-            or any(
-                pattern in vacancy.get("title", "").lower()
-                for pattern in KASPERSKY_TITLE_WHITELIST
-            )
-        ]
-        kaspersky_filtered_out = before_kaspersky_whitelist - len(all_collected)
-        if kaspersky_filtered_out:
-            logging.info("Отфильтровано по Касперский whitelist: %s", kaspersky_filtered_out)
+        filtered = []
+        blacklist_hits = 0
+        for vacancy in all_collected:
+            if _is_product_title(vacancy["title"]):
+                filtered.append(vacancy)
+            else:
+                blacklist_pattern = _diagnose_blacklist(vacancy["title"])
+                if blacklist_pattern:
+                    blacklist_hits += 1
+                    logging.debug("Отфильтровано (blacklist '%s'): %s", blacklist_pattern, vacancy["title"])
+                else:
+                    logging.debug("Отфильтровано (не прошло whitelist): %s", vacancy["title"])
+        all_collected = filtered
+        logging.info(
+            "Фильтрация заголовков: %s -> %s (отсеяно %s, из них blacklist: %s)",
+            before_filter,
+            len(all_collected),
+            before_filter - len(all_collected),
+            blacklist_hits,
+        )
 
         existing_hashes = db.get_existing_vacancy_hashes()
         new_vacancies = []
@@ -193,8 +159,6 @@ async def run():
         touch_ids = []
 
         for vacancy in all_collected:
-            vacancy.pop("is_product_role", None)
-            vacancy.pop("_source", None)
             content_hash = compute_content_hash(vacancy)
             existing_hash = existing_hashes.get(vacancy["id"])
 

@@ -404,3 +404,9 @@
 Было: fetch_browser_secrets() открывал cian.ru и собирал cookies, хотя парсер cian отключён (is_enabled=false); main.py логировал cian_cookies=None.
 Стало: задача cian_cookies убрана из browser.py, ключ убран из expected_browser_secrets_keys в main.py.
 Причина: фирменный парсер Циан заблокирован WAF, cookies не используются ни одним активным парсером; лишний запуск замедлял браузерный этап на 10+ секунд и создавал шум в логах.
+
+### BUG-067: зоопарк title-фильтров расходился между компаниями и ломал расширение HH-парсеров
+Файл: config.py, main.py, parsers/hh.py, parsers/hh_cian.py, parsers/hh_zvuk.py, parsers/hh_kaspersky.py
+Было: фильтрация зависела от набора per-company whitelist (SBER, DOMCLICK, HH, KASPERSKY), `TITLE_STOP_PATTERNS`, а также служебных полей `is_product_role` и `_source` из HH-парсеров.
+Стало: per-company whitelist, `is_product_role` и `_source` удалены; фильтрация выполняется единым `TITLE_WHITELIST_PATTERNS`, blacklist используется только для диагностики логов (`TITLE_BLACKLIST_PATTERNS`), добавлен grade override из заголовка для `младший/junior/head/chief/cpo/директор`.
+Причина: разношёрстная логика давала непредсказуемый результат при масштабировании источников и мешала переходу к единой трёхзонной схеме перед AI-фазой.

@@ -7,66 +7,77 @@ TEST_MODE = False
 TEST_LIMIT = 3
 VACANCY_TTL_DAYS = 30
 
-TITLE_WHITELIST_PATTERNS = [
-    # руководящие (проверяем первыми)
-    (r"product.{0,20}lead", True),
-    ("product director", False),
-    (r"директор.{0,40}продукт", True),
-    ("head of product", False),
-    ("chief product", False),
-    ("cpo", False),
-    (r"лидер.{0,40}продукт", True),
-    (r"лид.{0,40}продукт", True),
-    (r"руководитель.{0,40}продукт", True),
-    # product manager (латиница)
-    ("product manager", False),
-    ("product-manager", False),
-    # менеджер продукт* (кириллица, regex)
-    (r"менеджер.{0,40}продукт", True),
-    # продакт-менеджер
-    ("продакт-менеджер", False),
-    ("продакт менеджер", False),
-    ("продукт-менеджер", False),
-    ("продукт менеджер", False),
-    # продуктовый менеджер
-    ("продуктовый менеджер", False),
-    ("продуктового менеджмент", False),
-    # миксы рус/англ
-    ("product менеджер", False),
-    ("product-менеджер", False),
-    ("продакт manager", False),
-    (r"manager.{0,40}продукт", True),
-    # product owner / владелец продукта
-    ("product owner", False),
-    ("product-owner", False),
-    (r"владелец.{0,40}продукт", True),
-    # продуктолог
-    ("продуктолог", False),
-    # специалист по продукту
-    ("специалист по продукт", False),
-    ("специалист продуктов", False),
-    # бизнес-партнёр по продукту
+TITLE_EXACT_WHITELIST = [
+    # Руководящие
+    "product lead",
+    "product-lead",
+    "product director",
+    "head of product",
+    "chief product officer",
+    "chief product owner",
+    "cpo",
+    "директор по продукт",
+    "лидер продукт",
+    "лид продукт",
+    "продакт-лид",
+    "продакт лид",
+    # Product manager
+    "product manager",
+    "product-manager",
+    "менеджер продукт",
+    "менеджер по продукт",
+    "продакт-менеджер",
+    "продакт менеджер",
+    "продукт-менеджер",
+    "продукт менеджер",
+    "продуктовый менеджер",
+    "продуктового менеджмент",
+    # Миксы рус/англ
+    "product менеджер",
+    "product-менеджер",
+    "продакт manager",
+    # Product owner
+    "product owner",
+    "product-owner",
+    "владелец продукт",
+    # Прочие
+    "продуктолог",
+    "специалист по продукт",
+    "специалист продуктов",
+    # AI/ML
+    "ai продакт",
+    "ai-продакт",
+    "ml продакт",
+    "ml-продакт",
+    "ai product",
+    "ai-product",
+    "ml product",
+    "ml-product",
+    # Growth
+    "growth-менеджер",
+    "growth менеджер",
+]
+
+# Regex-паттерны. Blacklist применяется после матча.
+TITLE_REGEX_PATTERNS = [
+    r"менеджер.{0,40}продукт",
+    r"руководитель.{0,40}продукт",
+    r"директор.{0,40}продукт",
+    r"владелец.{0,40}продукт",
+    r"лидер.{0,40}продукт",
+    r"лид.{0,40}продукт",
+    r"product.{0,20}lead",
+    r"manager.{0,40}продукт",
+    r"\bpm\b",
+]
+
+# Серая зона. Blacklist применяется. AI-фаза (Wave 7) уточнит.
+TITLE_GREY_PATTERNS = [
+    ("руководитель продукт", False),
+    ("бизнес-лид", False),
+    ("бизнес лид", False),
     ("бизнес-партнер по продукт", False),
     ("бизнес партнер по продукт", False),
-    # продакт-лид (руководящие, но кириллица)
-    (r"продакт.лид", True),
-    (r"продакт-лид", True),
-    # AI/ML продакт/product
-    (r"ai.продакт", True),
-    (r"ai-продакт", True),
-    (r"ml.продакт", True),
-    (r"ml-продакт", True),
-    (r"ai.product", True),
-    (r"ai-product", True),
-    (r"ml.product", True),
-    (r"ml-product", True),
-    # growth-менеджер
-    ("growth-менеджер", False),
-    ("growth менеджер", False),
-    # PM как отдельное слово
-    (r"\bpm\b", True),
-    # серая зона (включена в whitelist с комментарием)
-    # grey zone — включаем в релиз, AI-фаза уточнит
     ("growth manager", False),
     (r"руководитель направлен", True),
     (r"руководитель бизнес", True),
@@ -123,6 +134,9 @@ GRADE_OVERRIDE_PATTERNS = [
     (r"chief product", "Lead+"),
     (r"\bcpo\b", "Lead+"),
     (r"директор.{0,40}продукт", "Lead+"),
+    (r"лидер.{0,40}продукт", "Lead+"),
+    (r"лид.{0,40}продукт", "Lead+"),
+    (r"product.{0,20}lead", "Lead+"),
 ]
 
 REQUEST_HEADERS = {

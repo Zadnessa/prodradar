@@ -398,3 +398,9 @@
 Было: `sec-ch-ua` был захардкожен как Chrome/131 при User-Agent Chrome/146 из config.py.
 Стало: `sec-ch-ua` обновлён до Chrome/146, консистентно с User-Agent.
 Причина: рассинхрон версий в заголовках мог вызывать подозрение у антибота.
+
+### BUG-066: браузерный этап тратил время на cian.ru при выключенном парсере
+Файл: parsers/browser.py, main.py
+Было: fetch_browser_secrets() открывал cian.ru и собирал cookies, хотя парсер cian отключён (is_enabled=false); main.py логировал cian_cookies=None.
+Стало: задача cian_cookies убрана из browser.py, ключ убран из expected_browser_secrets_keys в main.py.
+Причина: фирменный парсер Циан заблокирован WAF, cookies не используются ни одним активным парсером; лишний запуск замедлял браузерный этап на 10+ секунд и создавал шум в логах.

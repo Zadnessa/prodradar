@@ -58,6 +58,14 @@
 - Дополнительные поля: key_skills (array)
 
 
+## Касперский (через HeadHunter)
+- Источник: HH API (api.hh.ru), employer_id=1057
+- Детали по API и enrichment: см. секцию [HeadHunter](#headhunter)
+- API: https://api.hh.ru/vacancies
+- Важно: у этого работодателя professional_role id "96" используется для разработчиков, поэтому в main.py фильтрация выполняется только через KASPERSKY_TITLE_WHITELIST
+- is_product_role: technical flag по professional_roles содержит id "96"
+- Префикс id: hh_kaspersky_
+
 ## Циан (HH)
 - Источник: HH API (api.hh.ru), employer_id=1429999
 - Детали по API и enrichment: см. секцию [HeadHunter](#headhunter)
@@ -425,6 +433,7 @@
 | Lamoda | Нет (API detail: duties + requirements) | Нет |
 | ДомКлик | Полное (API detail) | Нет |
 | HeadHunter | Полное (API detail) | Нет |
+| Касперский | Полное (API detail) | Нет |
 | Циан (HH) | Полное (API detail) | Нет |
 | МТС | Полное (API detail, plain text) | Нет |
 | МТС Линк | Полное (API detail) | Нет |

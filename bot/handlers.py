@@ -2,9 +2,11 @@
 
 import config
 import logging
+import re
 from bot.onboarding import (
     advance_step,
     get_continue_message,
+    get_company_page,
     get_disclaimer_message,
     get_fallback_message,
     get_hub_message,
@@ -30,6 +32,27 @@ from delivery.telegram import format_company_emoji, format_vacancy_message
 def _edit_fallback(chat_id, message_id):
     text, _ = get_fallback_message()
     edit_message(chat_id, message_id, text, reply_markup=None)
+
+
+def _extract_current_company_page(reply_markup, message_text):
+    rows = (reply_markup or {}).get("inline_keyboard", [])
+    for row in rows:
+        for button in row:
+            callback_data = button.get("callback_data", "")
+            if callback_data.startswith("st:co:page:"):
+                try:
+                    page_number = int(callback_data.split(":")[-1])
+                except ValueError:
+                    continue
+                if button.get("text") == "⬅️":
+                    return page_number + 1
+                if button.get("text") == "➡️":
+                    return page_number - 1
+
+    match = re.search(r"\((\d+)/(\d+)\)", message_text or "")
+    if match:
+        return max(0, int(match.group(1)) - 1)
+    return 0
 
 
 def _detect_step_by_markup(reply_markup):
@@ -201,7 +224,7 @@ def _handle_step_transition(chat_id, message_id, reply_markup, db):
         return
 
     current_step = user.get("onboarding_step")
-    if current_step not in {"grade", "city", "work_format", "company"}:
+    if current_step not in {"grade", "city", "work_format"}:
         _edit_fallback(chat_id, message_id)
         return
 
@@ -216,15 +239,8 @@ def _handle_step_transition(chat_id, message_id, reply_markup, db):
         return
 
     companies_list = None
-    if next_step == "company":
-        edit_message(chat_id, message_id, "⏳ Загружаю список компаний...", reply_markup=None)
-        companies_list = db.get_enabled_companies()
-    elif next_step == "confirm":
+    if next_step == "confirm":
         edit_message(chat_id, message_id, "⏳ Применяю настройки...", reply_markup=None)
-        companies_list = db.get_enabled_companies()
-        step_filter_fragment = parse_selections_from_markup(current_step, reply_markup, companies_list=companies_list)
-        next_filters = dict(current_filters)
-        next_filters.update(step_filter_fragment)
 
     db.update_user_filters(chat_id, next_filters)
     db.update_onboarding_step(chat_id, next_step)
@@ -327,17 +343,6 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
         edit_message(chat_id, message_id, text, reply_markup=next_markup)
         return
 
-    if data.startswith("ob:co:"):
-        if not reply_markup:
-            _edit_fallback(chat_id, message_id)
-            return
-
-        callback_value = data.split(":", 2)[2]
-        next_markup = toggle_selection("company", reply_markup, callback_value, all_company_names=None)
-        text = (callback_message or {}).get("text") or "<b>Шаг 4 из 5 — Компании</b>"
-        edit_message(chat_id, message_id, text, reply_markup=next_markup)
-        return
-
     if data == "ob:next":
         _handle_step_transition(chat_id, message_id, reply_markup, db)
         return
@@ -354,13 +359,8 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
             return
 
         current_filters = user.get("filters") or {}
-        companies_list = None
-        if previous_step == "company":
-            edit_message(chat_id, message_id, "⏳ Загружаю список компаний...", reply_markup=None)
-            companies_list = db.get_enabled_companies()
-
         db.update_onboarding_step(chat_id, previous_step)
-        text, step_markup = get_step_message(previous_step, current_filters, companies_list=companies_list)
+        text, step_markup = get_step_message(previous_step, current_filters)
         edit_message(chat_id, message_id, text, reply_markup=step_markup)
         return
 
@@ -432,22 +432,7 @@ def handle_hub_callback(data, chat_id, message_id, callback_message, db=None):
             edit_message(chat_id, message_id, text, reply_markup=reply_markup)
             return
 
-        companies_list = None
-        if step == "company":
-            try:
-                edit_message(chat_id, message_id, "⏳ Загружаю список компаний...", reply_markup=None)
-                companies_list = db.get_enabled_companies()
-            except Exception:
-                logging.exception("Ошибка при продолжении онбординга")
-                edit_message(
-                    chat_id,
-                    message_id,
-                    "Не удалось загрузить шаг настройки. Попробуй позже или нажми /start.",
-                    reply_markup=None,
-                )
-                return
-
-        text, reply_markup = get_step_message(step, user.get("filters") or {}, companies_list=companies_list)
+        text, reply_markup = get_step_message(step, user.get("filters") or {})
         edit_message(chat_id, message_id, text, reply_markup=reply_markup)
         return
 
@@ -569,6 +554,20 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
             step = "company"
 
         callback_value = data.split(":", 2)[2]
+        if step == "company" and callback_value.startswith("page:"):
+            try:
+                page = int(callback_value.split(":", 1)[1])
+            except ValueError:
+                _edit_fallback(chat_id, message_id)
+                return
+
+            user = db.get_user(chat_id) or {}
+            filters = user.get("filters") or {}
+            companies_list = db.get_enabled_companies()
+            text, step_markup = get_company_page(companies_list, filters, page=page)
+            edit_message(chat_id, message_id, text, reply_markup=step_markup)
+            return
+
         toggled_markup = toggle_selection(
             step,
             reply_markup,
@@ -578,7 +577,8 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
         )
 
         if step == "company":
-            text = (callback_message or {}).get("text") or "⚙️ Настройка: Компании"
+            current_page = _extract_current_company_page(reply_markup, (callback_message or {}).get("text", ""))
+            text = (callback_message or {}).get("text") or f"⚙️ Компании ({current_page + 1}/{current_page + 1})\n\n🔴 — заблокированные, 🟢 — активные"
             edit_message(chat_id, message_id, text, reply_markup=toggled_markup)
             return
 
@@ -607,11 +607,42 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
             _edit_fallback(chat_id, message_id)
             return
 
-        companies_list = db.get_enabled_companies() if step == "company" else None
-        fragment = parse_selections_from_markup(step, reply_markup, companies_list=companies_list, prefix="st")
-
         merged = dict(user.get("filters") or {})
-        merged.update(fragment)
+        if step == "company":
+            companies_list = db.get_enabled_companies()
+            parser_to_name = {company.get("parser_name"): company.get("name") for company in companies_list}
+            all_company_names = set(parser_to_name.values())
+            excluded_companies = {
+                str(value).strip()
+                for value in (merged.get("excluded_companies") or [])
+                if str(value).strip() and str(value).strip() in all_company_names
+            }
+
+            page_states = {}
+            for row in reply_markup.get("inline_keyboard", []):
+                for button in row:
+                    callback_data = button.get("callback_data", "")
+                    if not callback_data.startswith("st:co:"):
+                        continue
+                    if callback_data.startswith("st:co:page:"):
+                        continue
+
+                    parser_name = callback_data.split(":", 2)[2]
+                    company_name = parser_to_name.get(parser_name)
+                    if not company_name:
+                        continue
+                    page_states[company_name] = button.get("text", "").startswith("🔴")
+
+            for company_name, is_excluded in page_states.items():
+                if is_excluded:
+                    excluded_companies.add(company_name)
+                else:
+                    excluded_companies.discard(company_name)
+
+            merged["excluded_companies"] = sorted(excluded_companies, key=lambda name: name.lower())
+        else:
+            fragment = parse_selections_from_markup(step, reply_markup, companies_list=None, prefix="st")
+            merged.update(fragment)
         db.update_user_filters(chat_id, merged)
 
         refreshed_user = db.get_user(chat_id) or {}

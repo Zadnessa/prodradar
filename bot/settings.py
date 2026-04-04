@@ -2,7 +2,7 @@
 
 from copy import deepcopy
 
-from bot.onboarding import get_step_message
+from bot.onboarding import get_company_page, get_step_message
 
 
 PREFIX = "st"
@@ -22,19 +22,18 @@ def get_settings_menu(user):
     grades = filters.get("grades") or []
     cities = filters.get("cities") or []
     work_formats = filters.get("work_formats") or []
-    companies = filters.get("companies") or []
+    excluded_companies = [str(v).strip() for v in (filters.get("excluded_companies") or []) if str(v).strip()]
 
     grades_text = ", ".join(grades) if grades else "Все"
     cities_text = ", ".join(cities) if cities else "Любой"
     work_formats_text = ", ".join(work_formats) if work_formats else "Все"
-    companies_text = ", ".join(companies) if companies else "Все"
 
     text = (
         "⚙️ Настройки\n\n"
         f"Грейд: {grades_text}\n"
         f"Город: {cities_text}\n"
         f"Формат: {work_formats_text}\n"
-        f"Компании: {companies_text}\n\n"
+        f"Заблокировано компаний: {len(excluded_companies)}\n\n"
         "Что хочешь изменить?"
         "\n\n<i>Не все компании указывают грейд и город — такие вакансии тоже попадают в выдачу.</i>"
     )
@@ -64,6 +63,9 @@ def get_settings_menu(user):
 
 
 def get_settings_step(step, current_filters, companies_list=None):
+    if step == "company":
+        return get_company_page(companies_list, current_filters, page=0, prefix=PREFIX)
+
     text, reply_markup = get_step_message(
         step,
         current_filters,

@@ -1,5 +1,6 @@
 """State machine онбординга: формирование сообщений и разбор выбора из кнопок."""
 
+import math
 from copy import deepcopy
 
 GRADE_OPTIONS = ["Junior", "Middle", "Senior", "Lead+"]
@@ -87,7 +88,7 @@ def _get_adaptive_next_button(step, current_filters, prefix):
         "work_format": current_filters.get("work_formats") or [],
     }
 
-    is_selected = True if step == "company" else bool(selected_map.get(step, []))
+    is_selected = bool(selected_map.get(step, []))
     button_text = "Далее ➡️" if is_selected else "Пропустить ⏭"
     return {"text": button_text, "callback_data": f"{prefix}:next"}
 
@@ -107,7 +108,7 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
 
     if step == "grade":
         text = (
-            "<b>Шаг 1 из 5 — Грейд</b>\n\n"
+            "<b>Шаг 1 из 4 — Грейд</b>\n\n"
             "Какой уровень позиций тебе интересен? Можно выбрать несколько — покажу вакансии по всем отмеченным."
         )
         selected = set(current_filters.get("grades") or [])
@@ -124,7 +125,7 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
 
     if step == "city":
         text = (
-            "<b>Шаг 2 из 5 — Город</b>\n\n"
+            "<b>Шаг 2 из 4 — Город</b>\n\n"
             "В каком городе ищешь?\n\n"
             "Формат работы (удалёнка, офис) будет на следующем шаге."
         )
@@ -145,7 +146,7 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
 
     if step == "work_format":
         text = (
-            "<b>Шаг 3 из 5 — Формат работы</b>\n\n"
+            "<b>Шаг 3 из 4 — Формат работы</b>\n\n"
             "Какой формат подходит? Если у вакансии формат не указан — я всё равно её покажу, чтобы ты ничего не пропустил."
         )
         selected = set(current_filters.get("work_formats") or [])
@@ -160,58 +161,21 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
         keyboard.append(_build_step_navigation("work_format", current_filters, prefix))
         return text, {"inline_keyboard": keyboard}
 
-    if step == "company":
-        text = (
-            "<b>Шаг 4 из 5 — Компании</b>\n\n"
-            "Все компании включены по умолчанию. Нажми на компанию, чтобы убрать её из рассылки.\n\n"
-            "<i>Нажимай кнопки по одной — Telegram может не успеть обработать быстрые нажатия.</i>"
-        )
-        companies_list = companies_list or []
-        enabled_companies = current_filters.get("companies") or []
-        all_enabled = len(enabled_companies) == 0
-
-        rows = []
-        row = []
-        for company in companies_list:
-            parser_name = company.get("parser_name")
-            label = company.get("name") or parser_name
-            is_enabled = all_enabled or label in enabled_companies
-            marker = "🟢" if is_enabled else "🔴"
-            row.append(
-                {
-                    "text": f"{marker} {label}",
-                    "callback_data": f"{prefix}:co:{parser_name}",
-                }
-            )
-            if len(row) == 2:
-                rows.append(row)
-                row = []
-
-        if row:
-            rows.append(row)
-
-        rows.append(_build_step_navigation("company", current_filters, prefix))
-        return text, {"inline_keyboard": rows}
-
     if step == "confirm":
-        companies_list = companies_list or []
-
         grades = current_filters.get("grades") or []
         cities = current_filters.get("cities") or []
         work_formats = current_filters.get("work_formats") or []
-        companies = current_filters.get("companies") or []
 
         grades_text = ", ".join(grades) if grades else "Все"
         cities_text = ", ".join(cities) if cities else "Любой"
         work_formats_text = ", ".join(work_formats) if work_formats else "Все"
-        companies_text = ", ".join(companies) if companies else "Все"
 
         text = (
-            "<b>Шаг 5 из 5 — Проверь настройки</b>\n\n"
+            "<b>Шаг 4 из 4 — Проверь настройки</b>\n\n"
             f"• Грейды: {grades_text}\n"
             f"• Города: {cities_text}\n"
             f"• Формат: {work_formats_text}\n"
-            f"• Компании: {companies_text}\n\n"
+            "\n"
             "Изменить фильтры можно в любой момент через /settings."
             "\n<i>Не все компании указывают грейд и город — такие вакансии тоже попадут в выдачу.</i>"
         )
@@ -306,8 +270,66 @@ def parse_selections_from_markup(step, reply_markup, companies_list=None, prefix
 
 
 
+
+def get_company_page(companies_list, current_filters, page=0, page_size=8, prefix="st"):
+    companies_list = companies_list or []
+    current_filters = current_filters or {}
+    excluded_companies = set(current_filters.get("excluded_companies") or [])
+
+    blocked_companies = []
+    active_companies = []
+    for company in companies_list:
+        company_name = company.get("name", "")
+        if company_name in excluded_companies:
+            blocked_companies.append(company)
+        else:
+            active_companies.append(company)
+
+    blocked_companies.sort(key=lambda company: company.get("name", "").lower())
+    active_companies.sort(key=lambda company: company.get("name", "").lower())
+    sorted_companies = blocked_companies + active_companies
+
+    total_pages = max(1, math.ceil(len(sorted_companies) / page_size))
+    safe_page = max(0, min(page, total_pages - 1))
+
+    start = safe_page * page_size
+    end = start + page_size
+    page_companies = sorted_companies[start:end]
+
+    rows = []
+    row = []
+    for company in page_companies:
+        parser_name = company.get("parser_name")
+        company_name = company.get("name") or parser_name
+        marker = "🔴" if company_name in excluded_companies else "🟢"
+        row.append({"text": f"{marker} {company_name}", "callback_data": f"{prefix}:co:{parser_name}"})
+        if len(row) == 2:
+            rows.append(row)
+            row = []
+    if row:
+        rows.append(row)
+
+    if total_pages > 1:
+        nav_row = []
+        if safe_page > 0:
+            nav_row.append({"text": "⬅️", "callback_data": f"{prefix}:co:page:{safe_page - 1}"})
+        if safe_page < total_pages - 1:
+            nav_row.append({"text": "➡️", "callback_data": f"{prefix}:co:page:{safe_page + 1}"})
+        if nav_row:
+            rows.append(nav_row)
+
+    rows.append([
+        {"text": "💾 Сохранить", "callback_data": f"{prefix}:save"},
+        {"text": "◀️ Назад", "callback_data": f"{prefix}:back"},
+    ])
+
+    text = f"⚙️ Компании ({safe_page + 1}/{total_pages})\n\n🔴 — заблокированные, 🟢 — активные"
+    return text, {"inline_keyboard": rows}
+
+
+
 def reverse_step(current_step):
-    order = ["grade", "city", "work_format", "company", "confirm"]
+    order = ["grade", "city", "work_format", "confirm"]
     if current_step not in order:
         return None
 
@@ -316,7 +338,7 @@ def reverse_step(current_step):
 
 
 def advance_step(current_step):
-    order = ["grade", "city", "work_format", "company", "confirm"]
+    order = ["grade", "city", "work_format", "confirm"]
     if current_step not in order:
         return None
 

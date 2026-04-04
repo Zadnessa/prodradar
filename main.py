@@ -56,7 +56,7 @@ async def run():
     except Exception as exc:
         logging.warning("Браузерный этап не удался: %s", exc)
         browser_secrets = {}
-    expected_browser_secrets_keys = ("sberhealth_build_id", "cian_cookies")
+    expected_browser_secrets_keys = ("sberhealth_build_id",)
     browser_secrets_parts = []
     for key in expected_browser_secrets_keys:
         value = browser_secrets.get(key)

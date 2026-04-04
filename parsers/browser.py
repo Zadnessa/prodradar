@@ -19,11 +19,6 @@ async def fetch_browser_secrets():
             "url": "https://vacancy.sberhealth.ru/vacancies",
             "extract": "html",
         },
-        {
-            "key": "cian_cookies",
-            "url": "https://www.cian.ru/vacancies/",
-            "extract": "cookies",
-        },
     ]
 
     results = {}

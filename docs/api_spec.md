@@ -58,6 +58,13 @@
 - Дополнительные поля: key_skills (array)
 
 
+
+## Звук (HH API)
+- Источник: HH API (api.hh.ru), employer_id=1829949
+- Детали по API и enrichment: см. секцию [HeadHunter](#headhunter)
+- Отличия от HeadHunter: только employer_id и префикс id
+- Префикс id: hh_zvuk_
+
 ## Касперский (через HeadHunter)
 - Источник: HH API (api.hh.ru), employer_id=1057
 - Детали по API и enrichment: см. секцию [HeadHunter](#headhunter)
@@ -433,6 +440,7 @@
 | Lamoda | Нет (API detail: duties + requirements) | Нет |
 | ДомКлик | Полное (API detail) | Нет |
 | HeadHunter | Полное (API detail) | Нет |
+| Звук (HH API) | Полное (API detail) | Нет |
 | Касперский | Полное (API detail) | Нет |
 | Циан (HH) | Полное (API detail) | Нет |
 | МТС | Полное (API detail, plain text) | Нет |

@@ -12,6 +12,7 @@ from config import (
     GRADE_OVERRIDE_PATTERNS,
     TITLE_BLACKLIST_PATTERNS,
     TITLE_EXACT_WHITELIST,
+    TITLE_PREFILTER_REJECT,
     TITLE_GREY_PATTERNS,
     TITLE_REGEX_PATTERNS,
 )
@@ -34,6 +35,9 @@ from parsers.utils import normalize_city
 
 def _classify_title(title: str) -> str | None:
     t = title.strip().lower()
+    for pattern in TITLE_PREFILTER_REJECT:
+        if pattern in t:
+            return None
     for pattern in TITLE_EXACT_WHITELIST:
         if pattern in t:
             return "exact"
@@ -145,6 +149,7 @@ async def run():
         before_filter = len(all_collected)
         filtered = []
         blacklist_hits = 0
+        prefilter_rejected = 0
         exact_hits = 0
         regex_hits = 0
         grey_hits = 0
@@ -153,6 +158,12 @@ async def run():
         for vacancy in all_collected:
             zone = _classify_title(vacancy["title"])
             if zone is None:
+                title_normalized = vacancy["title"].strip().lower()
+                if any(pattern in title_normalized for pattern in TITLE_PREFILTER_REJECT):
+                    prefilter_rejected += 1
+                    logging.debug("Отфильтровано (pre-filter): %s", vacancy["title"])
+                    continue
+
                 blacklist_pattern = _diagnose_blacklist(vacancy["title"])
                 if blacklist_pattern:
                     blacklist_hits += 1
@@ -196,6 +207,8 @@ async def run():
             regex_blacklist_rejected,
             grey_blacklist_rejected,
         )
+
+        logging.info("Pre-filter отсёк: %s", prefilter_rejected)
 
         existing_hashes = db.get_existing_vacancy_hashes()
         new_vacancies = []

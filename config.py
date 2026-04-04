@@ -7,6 +7,13 @@ TEST_MODE = False
 TEST_LIMIT = 3
 VACANCY_TTL_DAYS = 30
 
+# Абсолютный pre-filter. Отсекает до проверки зон. Расширять эмпирически.
+TITLE_PREFILTER_REJECT = [
+    "стажер",
+    "стажёр",
+    "intern",
+]
+
 TITLE_EXACT_WHITELIST = [
     # Руководящие
     "product lead",
@@ -93,8 +100,6 @@ TITLE_GREY_PATTERNS = [
 ]
 
 TITLE_BLACKLIST_PATTERNS = [
-    "стажер",
-    "стажёр",
     "проджект",
     "project",
     "проект",

@@ -41,7 +41,7 @@ jobs:
           UA = (
               "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
               "AppleWebKit/537.36 (KHTML, like Gecko) "
-              "Chrome/146.0.0.0 Safari/537.36"
+              "Chrome/131.0.0.0 Safari/537.36"
           )
 
           API_URL = "https://api.cian.ru/job-vacancies-backend/v2/get-vacancies/"
@@ -56,8 +56,6 @@ jobs:
               print("platform =", platform.platform())
               print("python =", platform.python_version())
               print("playwright =", "version check skipped")
-
-              netlog = []
 
               async with async_playwright() as p:
                   browser = await p.chromium.launch(
@@ -80,23 +78,6 @@ jobs:
 
                   print("browser.version =", browser.version)
 
-                  async def on_response(resp):
-
-                      url = resp.url
-                      if "cian.ru" not in url:
-                          return
-                      headers = await resp.all_headers()
-                      set_cookie = headers.get("set-cookie")
-                      netlog.append({
-                          "url": url,
-                          "status": resp.status,
-                          "content_type": headers.get("content-type"),
-                          "has_set_cookie": bool(set_cookie),
-                          "set_cookie_preview": (set_cookie[:300] if set_cookie else None),
-                      })
-                      
-                  page.on("response", on_response)
-                  
                   started = time.time()
                   await page.goto("https://www.cian.ru/vacancies/", timeout=30000)
                   await page.wait_for_load_state("networkidle")
@@ -129,7 +110,6 @@ jobs:
                   final_url = page.url
                   await page.screenshot(path=str(ART / "cian_page.png"), full_page=True)
                   dump("cian_page.html", final_html)
-                  dump("network_log.json", json.dumps(netlog, ensure_ascii=False, indent=2))
                   dump("cookie_snapshots.json", json.dumps(snapshots, ensure_ascii=False, indent=2))
 
                   print("final_url =", final_url)
@@ -153,7 +133,7 @@ jobs:
                       "origin": "https://www.cian.ru",
                       "referer": "https://www.cian.ru/",
                       "cookie": cookie_string,
-                      "sec-ch-ua": '"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"',
+                      "sec-ch-ua": '"Chromium";v="131", "Not-A.Brand";v="24", "Google Chrome";v="131"',
                       "sec-ch-ua-mobile": "?0",
                       "sec-ch-ua-platform": '"Windows"',
                       "sec-fetch-dest": "empty",

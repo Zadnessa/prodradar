@@ -58,6 +58,12 @@
 - Дополнительные поля: key_skills (array)
 
 
+## Циан (HH)
+- Источник: HH API (api.hh.ru), employer_id=1429999
+- Детали по API и enrichment: см. секцию [HeadHunter](#headhunter)
+- is_product_role: professional_roles содержит id "73"
+- Префикс id: hh_cian_
+
 ## Ozon
 - Метод: GET
 - URL: https://job-api.ozon.ru/v2/vacancy
@@ -419,6 +425,7 @@
 | Lamoda | Нет (API detail: duties + requirements) | Нет |
 | ДомКлик | Полное (API detail) | Нет |
 | HeadHunter | Полное (API detail) | Нет |
+| Циан (HH) | Полное (API detail) | Нет |
 | МТС | Полное (API detail, plain text) | Нет |
 | МТС Линк | Полное (API detail) | Нет |
 | X5 Group | Полное (API список) | Нет |

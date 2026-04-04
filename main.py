@@ -158,6 +158,21 @@ async def run():
         if hh_filtered_out:
             logging.info("Отфильтровано по HeadHunter двухуровневому фильтру: %s", hh_filtered_out)
 
+        before_zvuk_whitelist = len(all_collected)
+        all_collected = [
+            vacancy
+            for vacancy in all_collected
+            if vacancy.get("company") != "Звук"
+            or vacancy.get("is_product_role") is True
+            or any(
+                pattern in vacancy.get("title", "").lower()
+                for pattern in HH_TITLE_WHITELIST
+            )
+        ]
+        zvuk_filtered_out = before_zvuk_whitelist - len(all_collected)
+        if zvuk_filtered_out:
+            logging.info("Отфильтровано по Звук двухуровневому фильтру: %s", zvuk_filtered_out)
+
         before_kaspersky_whitelist = len(all_collected)
         all_collected = [
             vacancy

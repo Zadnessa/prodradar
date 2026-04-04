@@ -9,6 +9,7 @@ VACANCY_TTL_DAYS = 30
 
 TITLE_STOP_PATTERNS = [
     "project manager",
+    "production",
     "менеджер проект",
     "руководитель проект",
     "аккаунт",

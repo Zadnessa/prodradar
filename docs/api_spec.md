@@ -57,6 +57,24 @@
 - Поля для enrichment: description (HTML, очистить теги)
 - Дополнительные поля: key_skills (array)
 
+## Касперский (через HeadHunter)
+- Метод: GET
+- URL: https://api.hh.ru/vacancies
+- Обязательные заголовки: HH-User-Agent: VacancyBot/1.0 (mois.pave@gmail.com)
+- Путь к вакансиям: items
+- Пагинация: page (с 0) / per_page (макс 100), ответ содержит found, pages, page, per_page
+- Фильтр: employer_id=1057; флаг is_product_role ставится по professional_roles id=96, но у работодателя это поле некорректно размечает разработчиков
+- Фильтрация в main.py: только через KASPERSKY_TITLE_WHITELIST (аналогично Sber/ДомКлик whitelist-подходу)
+- Поля: id (int), name (str), area.name (str), work_format (array, брать name), experience.name (str), published_at (str ISO-8601), alternate_url (str), professional_roles (array, id + name)
+- Ссылка: alternate_url (https://hh.ru/vacancy/{id})
+- Описание: НЕТ в списке, полное через API карточки
+
+### API отдельной вакансии
+- Метод: GET
+- URL: https://api.hh.ru/vacancies/{id}
+- Поля для enrichment: description (HTML, очистить теги)
+- Дополнительные поля: key_skills (array)
+
 
 ## Ozon
 - Метод: GET
@@ -419,6 +437,7 @@
 | Lamoda | Нет (API detail: duties + requirements) | Нет |
 | ДомКлик | Полное (API detail) | Нет |
 | HeadHunter | Полное (API detail) | Нет |
+| Касперский | Полное (API detail) | Нет |
 | МТС | Полное (API detail, plain text) | Нет |
 | МТС Линк | Полное (API detail) | Нет |
 | X5 Group | Полное (API список) | Нет |

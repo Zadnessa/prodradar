@@ -7,6 +7,7 @@ from parsers.cian import CianParser
 from parsers.dodo import DodoParser
 from parsers.domclick import DomClickParser
 from parsers.hh import HHParser
+from parsers.hh_kaspersky import HHKasperskyParser
 from parsers.kontur import KonturParser
 from parsers.kuper import KuperParser
 from parsers.lamoda import LamodaParser
@@ -32,6 +33,7 @@ PARSER_REGISTRY = {
     "dodo": DodoParser,
     "domclick": DomClickParser,
     "hh": HHParser,
+    "hh_kaspersky": HHKasperskyParser,
     "kontur": KonturParser,
     "kuper": KuperParser,
     "lamoda": LamodaParser,

@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 import aiohttp
 
 import config
-from config import DOMCLICK_TITLE_WHITELIST, HH_TITLE_WHITELIST
+from config import DOMCLICK_TITLE_WHITELIST, HH_TITLE_WHITELIST, KASPERSKY_TITLE_WHITELIST
 from bot.telegram_api import send_message
 from database.supabase_client import SupabaseService, compute_content_hash
 from delivery.filters import filter_vacancies_for_user
@@ -157,6 +157,20 @@ async def run():
         hh_filtered_out = before_hh_whitelist - len(all_collected)
         if hh_filtered_out:
             logging.info("Отфильтровано по HeadHunter двухуровневому фильтру: %s", hh_filtered_out)
+
+        before_kaspersky_whitelist = len(all_collected)
+        all_collected = [
+            vacancy
+            for vacancy in all_collected
+            if vacancy.get("company") != "Касперский"
+            or any(
+                pattern in vacancy.get("title", "").lower()
+                for pattern in KASPERSKY_TITLE_WHITELIST
+            )
+        ]
+        kaspersky_filtered_out = before_kaspersky_whitelist - len(all_collected)
+        if kaspersky_filtered_out:
+            logging.info("Отфильтровано по Касперский whitelist: %s", kaspersky_filtered_out)
 
         existing_hashes = db.get_existing_vacancy_hashes()
         new_vacancies = []

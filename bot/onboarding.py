@@ -249,15 +249,18 @@ def parse_selections_from_markup(step, reply_markup, companies_list=None, prefix
 
     if step == "company":
         companies_list = companies_list or []
-        company_name_map = {item.get("parser_name"): item.get("name") for item in companies_list}
+        company_name_map = {
+            str(item.get("slug") or item.get("id") or item.get("parser_name")): item.get("name")
+            for item in companies_list
+        }
         enabled = []
         all_names = []
         for row in rows:
             for button in row:
                 callback_data = button.get("callback_data", "")
                 if callback_data.startswith(f"{prefix}:co:"):
-                    parser_name = callback_data.split(":", 2)[2]
-                    company_name = company_name_map.get(parser_name, parser_name)
+                    company_slug = callback_data.split(":", 2)[2]
+                    company_name = company_name_map.get(company_slug, company_slug)
                     all_names.append(company_name)
                     if button.get("text", "").startswith("🟢"):
                         enabled.append(company_name)
@@ -299,10 +302,10 @@ def get_company_page(companies_list, current_filters, page=0, page_size=8, prefi
     rows = []
     row = []
     for company in page_companies:
-        parser_name = company.get("parser_name")
-        company_name = company.get("name") or parser_name
+        company_slug = company.get("slug") or company.get("id")
+        company_name = company.get("name") or company.get("parser_name") or str(company_slug)
         marker = "🔴" if company_name in excluded_companies else "🟢"
-        row.append({"text": f"{marker} {company_name}", "callback_data": f"{prefix}:co:{parser_name}"})
+        row.append({"text": f"{marker} {company_name}", "callback_data": f"{prefix}:co:{company_slug}"})
         if len(row) == 2:
             rows.append(row)
             row = []

@@ -568,6 +568,38 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
             edit_message(chat_id, message_id, text, reply_markup=step_markup)
             return
 
+        if step == "company":
+            companies_list = db.get_enabled_companies()
+            company = next(
+                (
+                    item
+                    for item in companies_list
+                    if str(item.get("slug") or item.get("id")) == callback_value
+                ),
+                None,
+            )
+            if not company:
+                _edit_fallback(chat_id, message_id)
+                return
+
+            user = db.get_user(chat_id) or {}
+            merged = dict(user.get("filters") or {})
+            excluded_companies = [str(v).strip() for v in (merged.get("excluded_companies") or []) if str(v).strip()]
+
+            company_name = company.get("name")
+            if company_name in excluded_companies:
+                excluded_companies = [name for name in excluded_companies if name != company_name]
+            else:
+                excluded_companies.append(company_name)
+
+            merged["excluded_companies"] = sorted(set(excluded_companies), key=lambda name: name.lower())
+            db.update_user_filters(chat_id, merged)
+
+            current_page = _extract_current_company_page(reply_markup, (callback_message or {}).get("text", ""))
+            text, step_markup = get_company_page(companies_list, merged, page=current_page)
+            edit_message(chat_id, message_id, text, reply_markup=step_markup)
+            return
+
         toggled_markup = toggle_selection(
             step,
             reply_markup,
@@ -575,12 +607,6 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
             all_company_names=None,
             prefix="st",
         )
-
-        if step == "company":
-            current_page = _extract_current_company_page(reply_markup, (callback_message or {}).get("text", ""))
-            text = (callback_message or {}).get("text") or f"⚙️ Компании ({current_page + 1}/{current_page + 1})\n\n🔴 — заблокированные, 🟢 — активные"
-            edit_message(chat_id, message_id, text, reply_markup=toggled_markup)
-            return
 
         current_filters = parse_selections_from_markup(
             step,
@@ -607,42 +633,15 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
             _edit_fallback(chat_id, message_id)
             return
 
-        merged = dict(user.get("filters") or {})
         if step == "company":
-            companies_list = db.get_enabled_companies()
-            parser_to_name = {company.get("parser_name"): company.get("name") for company in companies_list}
-            all_company_names = set(parser_to_name.values())
-            excluded_companies = {
-                str(value).strip()
-                for value in (merged.get("excluded_companies") or [])
-                if str(value).strip() and str(value).strip() in all_company_names
-            }
+            refreshed_user = db.get_user(chat_id) or {}
+            text, menu_markup = get_settings_menu(refreshed_user)
+            edit_message(chat_id, message_id, text, reply_markup=menu_markup)
+            return
 
-            page_states = {}
-            for row in reply_markup.get("inline_keyboard", []):
-                for button in row:
-                    callback_data = button.get("callback_data", "")
-                    if not callback_data.startswith("st:co:"):
-                        continue
-                    if callback_data.startswith("st:co:page:"):
-                        continue
-
-                    parser_name = callback_data.split(":", 2)[2]
-                    company_name = parser_to_name.get(parser_name)
-                    if not company_name:
-                        continue
-                    page_states[company_name] = button.get("text", "").startswith("🔴")
-
-            for company_name, is_excluded in page_states.items():
-                if is_excluded:
-                    excluded_companies.add(company_name)
-                else:
-                    excluded_companies.discard(company_name)
-
-            merged["excluded_companies"] = sorted(excluded_companies, key=lambda name: name.lower())
-        else:
-            fragment = parse_selections_from_markup(step, reply_markup, companies_list=None, prefix="st")
-            merged.update(fragment)
+        merged = dict(user.get("filters") or {})
+        fragment = parse_selections_from_markup(step, reply_markup, companies_list=None, prefix="st")
+        merged.update(fragment)
         db.update_user_filters(chat_id, merged)
 
         refreshed_user = db.get_user(chat_id) or {}
@@ -729,7 +728,7 @@ def handle_stop(chat_id, db=None):
 def handle_mute(chat_id, slug, db=None):
     db = db or SupabaseService()
     companies = db.get_enabled_companies()
-    company = next((item for item in companies if item.get("parser_name") == slug), None)
+    company = next((item for item in companies if item.get("slug") == slug), None)
     if not company:
         send_message(chat_id, "Компания не найдена.")
         return
@@ -757,7 +756,7 @@ def handle_mute(chat_id, slug, db=None):
 def handle_unmute(chat_id, slug, db=None):
     db = db or SupabaseService()
     companies = db.get_enabled_companies()
-    company = next((item for item in companies if item.get("parser_name") == slug), None)
+    company = next((item for item in companies if item.get("slug") == slug), None)
     if not company:
         send_message(chat_id, "Компания не найдена.")
         return
@@ -820,11 +819,12 @@ def handle_blocked(chat_id, db=None):
         company_meta = companies_by_name.get(name)
         if not company_meta:
             continue
-        parser_name = company_meta.get("parser_name")
-        if not parser_name:
+        slug = company_meta.get("slug")
+        if not slug:
             continue
         emoji = format_company_emoji(company_meta)
-        lines.append(f"{emoji} {name}    /unmute_{parser_name}")
+        lines.append(f"{emoji} {name}")
+        lines.append(f"  └ /unmute_{slug}")
 
     if len(lines) == 2:
         send_message(chat_id, "У тебя нет заблокированных компаний.")
@@ -849,7 +849,7 @@ def handle_mute_callback(data, chat_id, message_id, db=None):
             return
 
         companies = db.get_enabled_companies()
-        company = next((item for item in companies if item.get("parser_name") == slug), None)
+        company = next((item for item in companies if item.get("slug") == slug), None)
         if not company:
             edit_message(chat_id, message_id, "Компания не найдена.", reply_markup=None)
             return
@@ -896,7 +896,7 @@ def handle_mute_callback(data, chat_id, message_id, db=None):
             return
 
         companies = db.get_enabled_companies()
-        company = next((item for item in companies if item.get("parser_name") == slug), None)
+        company = next((item for item in companies if item.get("slug") == slug), None)
         if not company:
             edit_message(chat_id, message_id, "Компания не найдена.", reply_markup=None)
             return

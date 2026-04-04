@@ -27,13 +27,20 @@ def get_settings_menu(user):
     grades_text = ", ".join(grades) if grades else "Все"
     cities_text = ", ".join(cities) if cities else "Любой"
     work_formats_text = ", ".join(work_formats) if work_formats else "Все"
+    blocked_summary = ""
+    if excluded_companies:
+        if len(excluded_companies) <= 3:
+            blocked_list = ", ".join(excluded_companies)
+        else:
+            blocked_list = f"{', '.join(excluded_companies[:3])} и ещё {len(excluded_companies) - 3}"
+        blocked_summary = f"Заблокировано: {blocked_list}\n"
 
     text = (
         "⚙️ Настройки\n\n"
         f"Грейд: {grades_text}\n"
         f"Город: {cities_text}\n"
         f"Формат: {work_formats_text}\n"
-        f"Заблокировано компаний: {len(excluded_companies)}\n\n"
+        f"{blocked_summary}\n"
         "Что хочешь изменить?"
         "\n\n<i>Не все компании указывают грейд и город — такие вакансии тоже попадают в выдачу.</i>"
     )

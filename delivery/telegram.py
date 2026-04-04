@@ -125,11 +125,11 @@ def format_vacancy_message(vacancy, company_meta):
     lines.append("")
     url = vacancy.get("url", "")
     lines.append(f'<a href="{url}">Открыть вакансию</a>')
-    parser_name = (company_meta or {}).get("parser_name")
-    if parser_name:
+    slug = (company_meta or {}).get("slug")
+    if slug:
         company_name = vacancy.get("company", "компании")
         lines.append("")
-        lines.append(f"/mute_{parser_name} — не получать вакансии от {company_name}")
+        lines.append(f"/mute_{slug} — не получать вакансии от {company_name}")
     return "\n".join(lines)
 
 

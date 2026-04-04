@@ -40,6 +40,15 @@ def filter_vacancies_for_user(vacancies, user_filters):
     if not user_filters:
         return vacancies
 
+    excluded_companies = {
+        str(v).strip() for v in (user_filters.get("excluded_companies") or []) if str(v).strip()
+    }
+    if excluded_companies:
+        vacancies = [
+            vacancy for vacancy in vacancies
+            if str(vacancy.get("company") or "").strip() not in excluded_companies
+        ]
+
     strict_mode = bool(user_filters.get("strict_mode", False))
     grades_filter = [str(v).strip().lower() for v in (user_filters.get("grades") or []) if str(v).strip()]
     grades_filter = _expand_grade_filters(grades_filter)

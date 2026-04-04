@@ -8,7 +8,13 @@ from datetime import datetime, timedelta, timezone
 import aiohttp
 
 import config
-from config import GRADE_OVERRIDE_PATTERNS, TITLE_BLACKLIST_PATTERNS, TITLE_WHITELIST_PATTERNS
+from config import (
+    GRADE_OVERRIDE_PATTERNS,
+    TITLE_BLACKLIST_PATTERNS,
+    TITLE_EXACT_WHITELIST,
+    TITLE_GREY_PATTERNS,
+    TITLE_REGEX_PATTERNS,
+)
 from bot.telegram_api import send_message
 from database.supabase_client import SupabaseService, compute_content_hash
 from delivery.filters import filter_vacancies_for_user
@@ -26,16 +32,21 @@ from parsers.browser import fetch_browser_secrets
 from parsers.utils import normalize_city
 
 
-def _is_product_title(title: str) -> bool:
+def _classify_title(title: str) -> str | None:
     t = title.strip().lower()
-    for pattern, is_regex in TITLE_WHITELIST_PATTERNS:
+    for pattern in TITLE_EXACT_WHITELIST:
+        if pattern in t:
+            return "exact"
+    for pattern in TITLE_REGEX_PATTERNS:
+        if re.search(pattern, t):
+            return "regex"
+    for pattern, is_regex in TITLE_GREY_PATTERNS:
         if is_regex:
             if re.search(pattern, t):
-                return True
-        else:
-            if pattern in t:
-                return True
-    return False
+                return "grey"
+        elif pattern in t:
+            return "grey"
+    return None
 
 
 def _diagnose_blacklist(title: str) -> str | None:
@@ -134,16 +145,41 @@ async def run():
         before_filter = len(all_collected)
         filtered = []
         blacklist_hits = 0
+        exact_hits = 0
+        regex_hits = 0
+        grey_hits = 0
+        regex_blacklist_rejected = 0
+        grey_blacklist_rejected = 0
         for vacancy in all_collected:
-            if _is_product_title(vacancy["title"]):
-                filtered.append(vacancy)
-            else:
+            zone = _classify_title(vacancy["title"])
+            if zone is None:
                 blacklist_pattern = _diagnose_blacklist(vacancy["title"])
                 if blacklist_pattern:
                     blacklist_hits += 1
                     logging.debug("Отфильтровано (blacklist '%s'): %s", blacklist_pattern, vacancy["title"])
                 else:
                     logging.debug("Отфильтровано (не прошло whitelist): %s", vacancy["title"])
+                continue
+
+            if zone == "exact":
+                exact_hits += 1
+                filtered.append(vacancy)
+                continue
+
+            blacklist_pattern = _diagnose_blacklist(vacancy["title"])
+            if blacklist_pattern:
+                blacklist_hits += 1
+                if zone == "regex":
+                    regex_blacklist_rejected += 1
+                elif zone == "grey":
+                    grey_blacklist_rejected += 1
+                logging.debug("Отфильтровано (blacklist '%s'): %s", blacklist_pattern, vacancy["title"])
+            else:
+                if zone == "regex":
+                    regex_hits += 1
+                elif zone == "grey":
+                    grey_hits += 1
+                filtered.append(vacancy)
         all_collected = filtered
         logging.info(
             "Фильтрация заголовков: %s -> %s (отсеяно %s, из них blacklist: %s)",
@@ -151,6 +187,14 @@ async def run():
             len(all_collected),
             before_filter - len(all_collected),
             blacklist_hits,
+        )
+        logging.info(
+            "Зоны: exact=%s, regex=%s, grey=%s, отсеяно regex+blacklist=%s, отсеяно grey+blacklist=%s",
+            exact_hits,
+            regex_hits,
+            grey_hits,
+            regex_blacklist_rejected,
+            grey_blacklist_rejected,
         )
 
         existing_hashes = db.get_existing_vacancy_hashes()

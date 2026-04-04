@@ -417,3 +417,8 @@
 Стало: проверка по TITLE_STOP_PATTERNS удалена из MTS-парсера. Фильтрация выполняется единым блоком в main.py через TITLE_WHITELIST_PATTERNS. Локальный STRICT_WHITELIST и PM_CATEGORY оставлены как серверный pre-filter.
 Причина: при удалении TITLE_STOP_PATTERNS из config.py не был проверен MTS-парсер, который напрямую использовал эту константу.
 
+### BUG-067: regex-паттерны пропускали мусорные вакансии, blacklist не применялся к whitelist
+Файл: config.py, main.py
+Было: единый TITLE_WHITELIST_PATTERNS с булевым флагом is_regex, blacklist только диагностический, не фильтрующий. Вакансии типа "Менеджер проектов (сопровождение цифровых продуктов)" проходили через regex менеджер.{0,40}продукт.
+Стало: три константы (TITLE_EXACT_WHITELIST, TITLE_REGEX_PATTERNS, TITLE_GREY_PATTERNS). Exact — blacklist не применяется. Regex и grey — blacklist применяется после матча. Функция _is_product_title заменена на _classify_title.
+Причина: regex с произвольным количеством символов между ключевыми словами ловил вакансии, где "продукт" относился к банковскому продукту или был в скобках описания команды, а не к должности.

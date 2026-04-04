@@ -102,11 +102,7 @@ class MtsParser(BaseParser):
             return True
 
         title_lower = (item.get("name") or "").strip().lower()
-        if not any(pattern in title_lower for pattern in cls.STRICT_WHITELIST):
-            return False
-        if any(pattern in title_lower for pattern in config.TITLE_STOP_PATTERNS):
-            return False
-        return True
+        return any(pattern in title_lower for pattern in cls.STRICT_WHITELIST)
 
     async def parse(self, session, existing_ids, city_mappings):
         del existing_ids, city_mappings

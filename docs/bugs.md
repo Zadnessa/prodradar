@@ -410,3 +410,10 @@
 Было: фильтрация зависела от набора per-company whitelist (SBER, DOMCLICK, HH, KASPERSKY), `TITLE_STOP_PATTERNS`, а также служебных полей `is_product_role` и `_source` из HH-парсеров.
 Стало: per-company whitelist, `is_product_role` и `_source` удалены; фильтрация выполняется единым `TITLE_WHITELIST_PATTERNS`, blacklist используется только для диагностики логов (`TITLE_BLACKLIST_PATTERNS`), добавлен grade override из заголовка для `младший/junior/head/chief/cpo/директор`.
 Причина: разношёрстная логика давала непредсказуемый результат при масштабировании источников и мешала переходу к единой трёхзонной схеме перед AI-фазой.
+
+### BUG-067: MTS-парсер падал на удалённом TITLE_STOP_PATTERNS
+Файл: parsers/mts.py
+Было: _is_relevant_vacancy() ссылался на config.TITLE_STOP_PATTERNS, который был удалён в рамках Stream 3A (трёхзонная фильтрация).
+Стало: проверка по TITLE_STOP_PATTERNS удалена из MTS-парсера. Фильтрация выполняется единым блоком в main.py через TITLE_WHITELIST_PATTERNS. Локальный STRICT_WHITELIST и PM_CATEGORY оставлены как серверный pre-filter.
+Причина: при удалении TITLE_STOP_PATTERNS из config.py не был проверен MTS-парсер, который напрямую использовал эту константу.
+

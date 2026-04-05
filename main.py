@@ -1,6 +1,7 @@
 """Точка входа для запуска сбора вакансий через GitHub Actions."""
 
 import asyncio
+import json
 import logging
 import re
 from datetime import datetime, timedelta, timezone
@@ -31,6 +32,30 @@ from enrichment.normalizer import (
 from parsers import PARSER_REGISTRY
 from parsers.browser import fetch_browser_secrets
 from parsers.utils import normalize_city
+
+
+def _classify_parser_error(parser_name: str, exc: Exception) -> str:
+    tag = "[ERROR]"
+
+    if isinstance(exc, aiohttp.ClientResponseError):
+        if exc.status in (403, 429):
+            tag = "[BLOCKED]"
+        else:
+            tag = f"[HTTP_{exc.status}]"
+    elif isinstance(exc, (asyncio.TimeoutError, aiohttp.ServerTimeoutError)):
+        tag = "[TIMEOUT]"
+    elif isinstance(exc, json.JSONDecodeError):
+        tag = "[NOT_JSON]"
+    elif isinstance(exc, ValueError):
+        tag = "[VALUE_ERROR]"
+
+    short_error = str(exc).strip()
+    if len(short_error) > 120:
+        short_error = f"{short_error[:117]}..."
+    if not short_error:
+        short_error = "без деталей"
+
+    return f"{parser_name} {tag}: {short_error}"
 
 
 def _classify_title(title: str) -> str | None:
@@ -127,6 +152,7 @@ async def run():
     empty_existing_ids = set()
     unique_parser_names = []
     seen_parser_names = set()
+    parser_stats = {}
 
     for company in companies:
         parser_name = company.get("parser_name")
@@ -147,13 +173,16 @@ async def run():
                     vacancies = vacancies[: config.TEST_LIMIT]
                 all_collected.extend(vacancies)
                 all_collected_ids.update(vacancy["id"] for vacancy in vacancies)
+                parser_stats[parser_name] = len(vacancies)
                 parser_companies = {vacancy.get("company") for vacancy in vacancies if vacancy.get("company")}
                 for vacancy_company in parser_companies:
                     parsers_by_company[vacancy_company] = parser
                 successful_companies.update(parser_companies)
                 logging.info("%s: собрано %s", parser_name, len(vacancies))
             except Exception as exc:
-                parser_errors.append(f"{parser_name}: {exc}")
+                classified_error = _classify_parser_error(parser_name, exc)
+                parser_errors.append(classified_error)
+                parser_stats[parser_name] = classified_error.replace(f"{parser_name} ", "", 1)
                 logging.exception("Ошибка парсера %s", parser_name)
 
         before_filter = len(all_collected)
@@ -349,6 +378,7 @@ async def run():
         sent_count=sent_count,
         users_count=len(users),
         paused_count=paused_users,
+        parser_stats=parser_stats,
         parser_errors=parser_errors + failed_users,
     )
 

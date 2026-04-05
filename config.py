@@ -150,12 +150,15 @@ GRADE_OVERRIDE_PATTERNS = [
     (r"product.{0,20}lead", "Lead+"),
 ]
 
+CHROME_VERSION = os.getenv("CHROME_VERSION", "146.0.0.0")
+CHROME_USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    f"Chrome/{CHROME_VERSION} Safari/537.36"
+)
+
 REQUEST_HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/146.0.0.0 Safari/537.36"
-    ),
+    "User-Agent": CHROME_USER_AGENT,
     "Accept": "application/json, text/plain, */*",
     "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
 }

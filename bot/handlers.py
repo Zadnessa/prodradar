@@ -983,7 +983,11 @@ def handle_mute_callback(data, chat_id, message_id, db=None):
             chat_id,
             message_id,
             f"Готово, вакансии от {name} снова будут приходить.\n\nЗаблокированные: /blocked",
-            reply_markup=None,
+            reply_markup={
+                "inline_keyboard": [[
+                    {"text": f"📬 Показать вакансии от {name}", "callback_data": "st:deliver"}
+                ]]
+            },
         )
         return
 
@@ -997,7 +1001,16 @@ def handle_mute_callback(data, chat_id, message_id, db=None):
         filters = dict(user.get("filters") or {})
         filters["excluded_companies"] = []
         db.update_user_filters(chat_id, filters)
-        edit_message(chat_id, message_id, "Все компании разблокированы.", reply_markup=None)
+        edit_message(
+            chat_id,
+            message_id,
+            "Все компании разблокированы.",
+            reply_markup={
+                "inline_keyboard": [[
+                    {"text": "📬 Показать вакансии", "callback_data": "st:deliver"}
+                ]]
+            },
+        )
 
 
 def handle_unknown(chat_id):

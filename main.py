@@ -273,12 +273,24 @@ async def run():
         try:
             undelivered = db.get_undelivered_vacancies(chat_id, limit=200)
             filtered_vacancies = filter_vacancies_for_user(undelivered, user.get("filters") or {})
+            announced_ids = db.get_announced_vacancy_ids(chat_id)
+            announced_count = sum(1 for vacancy in filtered_vacancies if vacancy["id"] in announced_ids)
+            new_count = len(filtered_vacancies) - announced_count
             batch = filtered_vacancies[:10]
 
             if not batch:
                 continue
 
-            send_message(chat_id, "Новые вакансии по твоим фильтрам:", bot_id=bot_id)
+            if new_count > 0 and announced_count > 0:
+                intro_text = f"{new_count} новых вакансий. Ещё {announced_count} из прошлого выпуска."
+            elif new_count > 0:
+                intro_text = f"{new_count} новых вакансий по твоим фильтрам."
+            else:
+                intro_text = f"Новых вакансий пока нет. {announced_count} из прошлого выпуска всё ещё доступны."
+                send_message(chat_id, intro_text, bot_id=bot_id)
+                continue
+
+            send_message(chat_id, intro_text, bot_id=bot_id)
 
             delivered_ids = []
             for vacancy in batch:
@@ -290,10 +302,22 @@ async def run():
 
             moscow_now = datetime.now(timezone.utc) + timedelta(hours=3)
             next_check_text = "Следующая проверка вечером." if moscow_now.hour < 15 else "Следующая проверка утром."
+            remaining = len(filtered_vacancies) - len(delivered_ids)
+            reply_markup = None
+            if remaining > 0:
+                reply_markup = {
+                    "inline_keyboard": [
+                        [
+                            {"text": "📬 Ещё 10", "callback_data": f"more:{len(delivered_ids)}"},
+                            {"text": "✕ Хватит", "callback_data": "more:stop"},
+                        ]
+                    ]
+                }
             send_message(
                 chat_id,
                 f"Показано {len(delivered_ids)} вакансий. {next_check_text}\n\nФильтры — /settings",
                 bot_id=bot_id,
+                reply_markup=reply_markup,
             )
 
             db.mark_delivered(chat_id, delivered_ids, source="scheduled")

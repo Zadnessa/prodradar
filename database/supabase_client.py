@@ -164,6 +164,7 @@ class SupabaseService:
                 self.client.table("user_vacancy_delivery")
                 .select("vacancy_id")
                 .eq("user_chat_id", chat_id)
+                .eq("status", "delivered")
                 .range(delivery_offset, delivery_offset + page_size - 1)
                 .execute()
             )
@@ -186,13 +187,34 @@ class SupabaseService:
         if not vacancy_ids:
             return
 
+        _ = source
         delivered_at = datetime.now(timezone.utc).isoformat()
         payload = [
             {
                 "user_chat_id": chat_id,
                 "vacancy_id": vacancy_id,
-                "source": source,
+                "status": "delivered",
                 "delivered_at": delivered_at,
+            }
+            for vacancy_id in vacancy_ids
+        ]
+        self.client.table("user_vacancy_delivery").upsert(
+            payload,
+            on_conflict="user_chat_id,vacancy_id",
+        ).execute()
+
+    def mark_announced(self, chat_id, vacancy_ids):
+        if not vacancy_ids:
+            return
+
+        announced_at = datetime.now(timezone.utc).isoformat()
+        payload = [
+            {
+                "user_chat_id": chat_id,
+                "vacancy_id": vacancy_id,
+                "status": "announced",
+                "announced_at": announced_at,
+                "delivered_at": None,
             }
             for vacancy_id in vacancy_ids
         ]
@@ -201,6 +223,91 @@ class SupabaseService:
             on_conflict="user_chat_id,vacancy_id",
             ignore_duplicates=True,
         ).execute()
+
+    def get_announced_vacancy_ids(self, chat_id):
+        announced_ids = set()
+        delivery_offset = 0
+        page_size = self.PAGE_SIZE
+
+        while True:
+            result = (
+                self.client.table("user_vacancy_delivery")
+                .select("vacancy_id")
+                .eq("user_chat_id", chat_id)
+                .eq("status", "announced")
+                .range(delivery_offset, delivery_offset + page_size - 1)
+                .execute()
+            )
+            rows = result.data or []
+            announced_ids.update(row["vacancy_id"] for row in rows)
+
+            if len(rows) < page_size:
+                break
+            delivery_offset += page_size
+
+        return announced_ids
+
+    def count_new_for_user(self, chat_id):
+        delivery_ids = set()
+        delivery_offset = 0
+        page_size = self.PAGE_SIZE
+
+        while True:
+            result = (
+                self.client.table("user_vacancy_delivery")
+                .select("vacancy_id")
+                .eq("user_chat_id", chat_id)
+                .range(delivery_offset, delivery_offset + page_size - 1)
+                .execute()
+            )
+            rows = result.data or []
+            delivery_ids.update(row["vacancy_id"] for row in rows)
+
+            if len(rows) < page_size:
+                break
+            delivery_offset += page_size
+
+        if not delivery_ids:
+            result = self.client.table("vacancies").select("id", count="exact").eq("is_active", True).execute()
+            return result.count or 0
+
+        if len(delivery_ids) <= 500:
+            result = (
+                self.client.table("vacancies")
+                .select("id", count="exact")
+                .eq("is_active", True)
+                .not_.in_("id", list(delivery_ids))
+                .execute()
+            )
+            return result.count or 0
+
+        count = 0
+        offset = 0
+        while True:
+            result = (
+                self.client.table("vacancies")
+                .select("id")
+                .eq("is_active", True)
+                .range(offset, offset + page_size - 1)
+                .execute()
+            )
+            rows = result.data or []
+            count += sum(1 for row in rows if row["id"] not in delivery_ids)
+            if len(rows) < page_size:
+                break
+            offset += page_size
+        return count
+
+    def count_announced_for_user(self, chat_id):
+        announced_ids = self.get_announced_vacancy_ids(chat_id)
+        if not announced_ids:
+            return 0
+
+        count = 0
+        for chunk in self._chunked(list(announced_ids), 500):
+            result = self.client.table("vacancies").select("id").eq("is_active", True).in_("id", chunk).execute()
+            count += len(result.data or [])
+        return count
 
     def clear_delivery_history(self, chat_id):
         self.client.table("user_vacancy_delivery").delete().eq("user_chat_id", chat_id).execute()

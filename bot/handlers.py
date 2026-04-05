@@ -29,6 +29,18 @@ from delivery.filters import filter_vacancies_for_user
 from delivery.telegram import format_company_emoji, format_vacancy_message
 
 
+def _pluralize(number, one, few, many):
+    number = abs(number) % 100
+    last_digit = number % 10
+    if 10 < number < 20:
+        return many
+    if last_digit == 1:
+        return one
+    if 2 <= last_digit <= 4:
+        return few
+    return many
+
+
 def _edit_fallback(chat_id, message_id):
     text, _ = get_fallback_message()
     edit_message(chat_id, message_id, text, reply_markup=None)
@@ -77,8 +89,9 @@ def _build_more_keyboard(offset, remaining):
         "inline_keyboard": [
             [
                 {"text": more_text, "callback_data": f"more:{offset}"},
-                {"text": "✕ Хватит", "callback_data": "more:stop"},
+                {"text": f"📦 Все ({remaining})", "callback_data": f"more:all:{offset}"},
             ]
+            + [[{"text": "✕ Хватит", "callback_data": "more:stop"}]]
         ]
     }
 
@@ -106,13 +119,13 @@ def _get_zero_state_text(chat_id, db, effective_filters):
     )
 
 
-def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0):
+def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chunk_size=10):
     companies_list = db.get_enabled_companies()
     companies_map = {company.get("name"): company for company in companies_list}
 
     undelivered = db.get_undelivered_vacancies(chat_id, limit=500)
     filtered = filter_vacancies_for_user(undelivered, filters)
-    batch = filtered[:10]
+    batch = filtered if chunk_size is None else filtered[:chunk_size]
 
     if not batch:
         try:
@@ -146,13 +159,22 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0):
     remaining = len(filtered) - sent_count
 
     if total > shown_count and sent_count > 0:
+        if offset == 0:
+            navigation_text = (
+                f"Показано {shown_count} из {total}\n\n"
+                "Если пока не нашёл нужное — в следующих может быть «та самая» вакансия. "
+                "Я мониторю эти компании каждый день и пришлю новые, как только появятся.\n\n"
+                "Что дальше?"
+            )
+        else:
+            navigation_text = f"Показано {shown_count} из {total}"
         try:
             delete_message(chat_id, loader_message_id)
         except Exception:
             logging.exception("Не удалось удалить лоадер перед сообщением с навигацией")
         send_message(
             chat_id,
-            f"Показано {shown_count} из {total}",
+            navigation_text,
             reply_markup=_build_more_keyboard(shown_count, remaining),
         )
     else:
@@ -179,29 +201,42 @@ def _send_onboarding_batch(chat_id, message_id, db, filters):
         undelivered = db.get_undelivered_vacancies(chat_id, limit=500)
         filtered = filter_vacancies_for_user(undelivered, effective_filters)
         total = len(filtered)
+        companies_count = len({vacancy.get("company") for vacancy in filtered if vacancy.get("company")})
+        vacancies_word = _pluralize(total, "вакансию", "вакансии", "вакансий")
+        companies_word = _pluralize(companies_count, "компании", "компаниях", "компаниях")
 
         if total == 0:
             zero_state_text = _get_zero_state_text(chat_id, db, effective_filters)
             edit_message(chat_id, message_id, zero_state_text, reply_markup=None)
             return
 
-        if total <= 10:
-            prompt = f"Нашёл {total} подходящих вакансий.\n\nПоказать все {total}?"
+        if total <= 5:
+            prompt = (
+                f"Нашёл {total} {vacancies_word}.\n\n"
+                "Это узкий срез рынка — мониторю компании каждый день и пришлю новые, как только появятся.\n\n"
+                "Ненужные компании можно отключить в /settings"
+            )
+            keyboard = {"inline_keyboard": [[{"text": "📬 Показать", "callback_data": "more:0"}]]}
         else:
-            prompt = f"Нашёл {total} подходящих вакансий.\n\nПоказать первые 10?"
+            prompt = (
+                f"Нашёл {total} {vacancies_word} в {companies_count} {companies_word}.\n\n"
+                "Сейчас показываю по дате — от свежих к старым. Умная сортировка и фильтрация шума — очень скоро!\n\n"
+                "Ненужные компании можно отключить в /settings"
+            )
+            keyboard = {
+                "inline_keyboard": [
+                    [
+                        {"text": "📬 Показать первые 10", "callback_data": "more:0"},
+                        {"text": "⚙️ Изменить фильтры", "callback_data": "st:menu"},
+                    ]
+                ]
+            }
 
         edit_message(
             chat_id,
             message_id,
             prompt,
-            reply_markup={
-                "inline_keyboard": [
-                    [
-                        {"text": "📬 Показать", "callback_data": "more:0"},
-                        {"text": "⚙️ Изменить фильтры", "callback_data": "st:menu"},
-                    ]
-                ]
-            },
+            reply_markup=keyboard,
         )
     except Exception:
         logging.exception("Ошибка при подготовке выдачи вакансий")
@@ -452,6 +487,12 @@ def handle_more_callback(data, chat_id, message_id, callback_message, db=None):
     db = db or SupabaseService()
 
     if data == "more:stop":
+        user = db.get_user(chat_id) or {}
+        filters = user.get("filters") or {}
+        undelivered = db.get_undelivered_vacancies(chat_id, limit=500)
+        filtered = filter_vacancies_for_user(undelivered, filters)
+        remaining_ids = [vacancy.get("id") for vacancy in filtered if vacancy.get("id")]
+        db.mark_announced(chat_id, remaining_ids)
         edit_message(
             chat_id,
             message_id,
@@ -465,8 +506,12 @@ def handle_more_callback(data, chat_id, message_id, callback_message, db=None):
         return
 
     try:
-        offset_part = data.split(":", 1)[1]
-        offset = int(offset_part)
+        is_all = False
+        if data.startswith("more:all:"):
+            offset = int(data.split(":", 2)[2])
+            is_all = True
+        else:
+            offset = int(data.split(":", 1)[1])
     except (ValueError, IndexError):
         edit_message(chat_id, message_id, "Не удалось обработать запрос. Попробуй ещё раз через /settings", reply_markup=None)
         return
@@ -475,7 +520,8 @@ def handle_more_callback(data, chat_id, message_id, callback_message, db=None):
         edit_message(chat_id, message_id, "⏳ Загружаю...", reply_markup=None)
         user = db.get_user(chat_id) or {}
         filters = user.get("filters") or {}
-        _send_vacancies_chunk(chat_id, message_id, db, filters, offset=offset)
+        chunk_size = None if is_all else 10
+        _send_vacancies_chunk(chat_id, message_id, db, filters, offset=offset, chunk_size=chunk_size)
     except Exception:
         logging.exception("Ошибка при обработке more callback")
         edit_message(

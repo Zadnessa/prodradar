@@ -569,16 +569,32 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
             return
 
         if step == "company":
-            companies_list = db.get_enabled_companies()
-            company = next(
-                (
-                    item
-                    for item in companies_list
-                    if str(item.get("slug") or item.get("id")) == callback_value
-                ),
-                None,
-            )
-            if not company:
+            rows = (reply_markup or {}).get("inline_keyboard", [])
+            company_name_by_slug = {}
+            is_active_company = None
+
+            for row in rows:
+                for button in row:
+                    callback_data = button.get("callback_data", "")
+                    if not callback_data.startswith("st:co:"):
+                        continue
+
+                    company_slug = callback_data.split(":", 2)[2]
+                    if company_slug.startswith("page:"):
+                        continue
+
+                    button_text = button.get("text", "")
+                    company_name = button_text.split(" ", 1)[1].strip() if " " in button_text else button_text.strip()
+                    company_name_by_slug[company_slug] = company_name
+
+                    if company_slug == callback_value:
+                        if button_text.startswith("🟢"):
+                            is_active_company = True
+                        elif button_text.startswith("🔴"):
+                            is_active_company = False
+
+            company_name = company_name_by_slug.get(callback_value)
+            if not company_name or is_active_company is None:
                 _edit_fallback(chat_id, message_id)
                 return
 
@@ -586,18 +602,27 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
             merged = dict(user.get("filters") or {})
             excluded_companies = [str(v).strip() for v in (merged.get("excluded_companies") or []) if str(v).strip()]
 
-            company_name = company.get("name")
-            if company_name in excluded_companies:
-                excluded_companies = [name for name in excluded_companies if name != company_name]
-            else:
+            if is_active_company:
                 excluded_companies.append(company_name)
+            else:
+                excluded_companies = [name for name in excluded_companies if name != company_name]
 
             merged["excluded_companies"] = sorted(set(excluded_companies), key=lambda name: name.lower())
             db.update_user_filters(chat_id, merged)
 
-            current_page = _extract_current_company_page(reply_markup, (callback_message or {}).get("text", ""))
-            text, step_markup = get_company_page(companies_list, merged, page=current_page)
-            edit_message(chat_id, message_id, text, reply_markup=step_markup)
+            toggled_markup = toggle_selection(
+                "company",
+                reply_markup,
+                callback_value,
+                all_company_names=None,
+                prefix="st",
+            )
+            edit_message(
+                chat_id,
+                message_id,
+                (callback_message or {}).get("text", "⚙️ Компании"),
+                reply_markup=toggled_markup,
+            )
             return
 
         toggled_markup = toggle_selection(

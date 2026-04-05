@@ -288,8 +288,8 @@ def get_company_page(companies_list, current_filters, page=0, page_size=8, prefi
         else:
             active_companies.append(company)
 
-    blocked_companies.sort(key=lambda company: company.get("name", "").lower())
-    active_companies.sort(key=lambda company: company.get("name", "").lower())
+    blocked_companies.sort(key=lambda company: company.get("sort_name", company.get("name", "")).lower())
+    active_companies.sort(key=lambda company: company.get("sort_name", company.get("name", "")).lower())
     sorted_companies = blocked_companies + active_companies
 
     total_pages = max(1, math.ceil(len(sorted_companies) / page_size))

@@ -41,7 +41,7 @@
 4. UX-блок (Stream 3C)
 5. Аналитика user_events (Stream 3D)
 6. [x] Chrome UA в env (Stream 3F)
-7. Единое логирование парсеров (Stream 3F)
+7. [x] Единое логирование парсеров (Stream 3F) — Реализовано: классификация ошибок и per-parser статистика в админ-отчёте. Детальное логирование внутри парсеров — Wave 6.
 8. Код-ревью от внешнего аудитора (Wave 4a)
 9. Фиксы по результатам код-ревью (Wave 4a)
 10. CJM-прогон и эмпатия (Wave 4b)
@@ -114,7 +114,7 @@
 - [x] Пагинация Yandex-парсера: сейчас page_size=100 без цикла, при >100 вакансий потеря данных
 
 Задачи:
-- [ ] Единое логирование парсеров: внедрить стандарт логирования для всех парсеров (parse: количество запросов, пагинация, результат; enrich: обогащено/пропущено/ошибки). Шаблон — browser.py + cian.py + sberhealth.py из PR fix/critical-logging.
+- [x] Единое логирование парсеров: Реализовано: классификация ошибок и per-parser статистика в админ-отчёте. Детальное логирование внутри парсеров — Wave 6.
 - [x] Автообновление Chrome UA: версия Chrome читается из переменной окружения `CHROME_VERSION` с дефолтом. UA собирается в `config.py`, `REQUEST_HEADERS` — единый источник для HTTP-клиентов.
 
 ## Wave 4 — Предрелизный аудит
@@ -167,6 +167,9 @@
 
 - [ ] Транспортный слой: единый модуль transport.py. HTTP-запросы через aiohttp, браузерные через Playwright. Retry с exponential backoff (до 3 попыток, tenacity). Таймауты (разные для list, detail, browser). Уважать Retry-After.
 - [ ] Типизированные исключения: TransientSourceError, BlockedByBotError, HtmlDriftError, PermanentParserError. Классификация в админ-отчёте: [TRANSIENT], [BLOCKED], [DRIFT], [BROKEN], [FALLBACK_USED].
+- [ ] self.logger в BaseParser: именованный логгер через logging.getLogger(self.__class__.__name__) в __init__, заменить ручные logging.warning/logger.warning в парсерах на self.logger.
+- [ ] Счётчики операций в BaseParser (self._stats): requests, pages, enriched, enrich_errors. Парсеры инкрементируют, обёртка в BaseParser логирует после parse() и enrich(). Добавить enrichment-статистику в админ-отчёт.
+- [ ] Retry с exponential backoff для enrichment-запросов (до 3 попыток, tenacity). Устраняет одноразовые сетевые падения enrichment без ручного подсчёта ошибок.
 - [ ] Debug-артефакты: при падении парсера сохранять HTML, JSON-ответ, скриншот (если browser), трассировку. Хранить как workflow artifacts в GitHub Actions.
 - [ ] Общий HTML-extractor: каскад извлечения описания (JSON-LD/microdata через extruct, semantic root main/article, извлечение секций без привязки к заголовкам, fallback на полный текст, site-specific алиасы как последний резорт). Возвращает description + description_source + quality_score.
 - [ ] Перевести хрупкие парсеры на общий extractor: T-Bank, Точка, VK, Avito (fallback), Циан.

@@ -143,12 +143,34 @@ def send_admin_report(
     changed_count=0,
     unchanged_count=0,
     deactivated_count=0,
+    parser_stats=None,
 ):
     admin_chat_id = config.ADMIN_CHAT_ID
     if not admin_chat_id:
         return
 
     errors_text = ", ".join(parser_errors) if parser_errors else "нет"
+    parser_stats_lines = []
+    if parser_stats:
+        successful_parsers = []
+        failed_parsers = []
+        for parser_name, parser_result in parser_stats.items():
+            if isinstance(parser_result, int):
+                successful_parsers.append((parser_name, parser_result))
+            else:
+                failed_parsers.append((parser_name, parser_result))
+
+        successful_parsers.sort(key=lambda item: (-item[1], item[0]))
+        failed_parsers.sort(key=lambda item: item[0])
+
+        parser_stats_lines.append("По парсерам:")
+        for parser_name, count in successful_parsers:
+            parser_stats_lines.append(f"{parser_name}: {count}")
+        for parser_name, error_text in failed_parsers:
+            parser_stats_lines.append(f"{parser_name}: {error_text}")
+    parser_stats_block = ""
+    if parser_stats_lines:
+        parser_stats_block = "\n".join(parser_stats_lines) + "\n"
 
     message = (
         "📊 Vacancy Radar — отчёт\n\n"
@@ -157,6 +179,7 @@ def send_admin_report(
         f"Изменённых: {changed_count}\n"
         f"Без изменений: {unchanged_count}\n"
         f"Деактивировано: {deactivated_count}\n"
+        f"{parser_stats_block}"
         f"Отправлено: {sent_count} сообщений на {users_count} подписчиков\n"
         f"На паузе: {paused_count}\n"
         f"Ошибки: {errors_text}"

@@ -90,8 +90,8 @@ def _build_more_keyboard(offset, remaining):
             [
                 {"text": more_text, "callback_data": f"more:{offset}"},
                 {"text": f"📦 Все ({remaining})", "callback_data": f"more:all:{offset}"},
-            ]
-            + [[{"text": "✕ Хватит", "callback_data": "more:stop"}]]
+            ],
+            [{"text": "✕ Хватит", "callback_data": "more:stop"}],
         ]
     }
 

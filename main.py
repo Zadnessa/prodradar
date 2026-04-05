@@ -53,6 +53,16 @@ def _classify_title(title: str) -> str | None:
     return None
 
 
+def _title_confidence(title: str) -> int:
+    zone = _classify_title(title)
+    confidence_map = {
+        "exact": 3,
+        "regex": 2,
+        "grey": 1,
+    }
+    return confidence_map.get(zone, 0)
+
+
 def _diagnose_blacklist(title: str) -> str | None:
     t = title.strip().lower()
     for pattern in TITLE_BLACKLIST_PATTERNS:
@@ -273,6 +283,11 @@ async def run():
         try:
             undelivered = db.get_undelivered_vacancies(chat_id, limit=200)
             filtered_vacancies = filter_vacancies_for_user(undelivered, user.get("filters") or {})
+            filtered_vacancies = sorted(
+                filtered_vacancies,
+                key=lambda v: (_title_confidence(v.get("title", "")), v.get("published_at") or ""),
+                reverse=True,
+            )
             announced_ids = db.get_announced_vacancy_ids(chat_id)
             announced_count = sum(1 for vacancy in filtered_vacancies if vacancy["id"] in announced_ids)
             new_count = len(filtered_vacancies) - announced_count

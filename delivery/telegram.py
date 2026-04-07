@@ -62,7 +62,7 @@ def format_company_emoji(company_meta):
 def build_redirect_url(vacancy, company_meta, chat_id, source):
     _ = company_meta
     try:
-        vercel_url = (os.getenv("VERCEL_URL") or "").strip()
+        vercel_url = (os.getenv("REDIRECT_BASE_URL") or "").strip()
         original_url = vacancy.get("url", "")
         if not vercel_url:
             return original_url

@@ -449,6 +449,13 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
             current_filters["cities"] = []
             db.update_user_filters(chat_id, current_filters)
             db.update_onboarding_step(chat_id, "work_format")
+            db.log_event(chat_id, "onboarding_step_completed", {
+                "completed_step": "city",
+                "next_step": "work_format",
+                "selected_values": [],
+                "selected_count": 0,
+                "available_count": len(CITY_OPTIONS),
+            })
             text, step_markup = get_step_message("work_format", current_filters)
             edit_message(chat_id, message_id, text, reply_markup=step_markup)
             return
@@ -691,6 +698,12 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
             merged = dict(user.get("filters") or {}) if user else {}
             merged["cities"] = []
             db.update_user_filters(chat_id, merged)
+            old_cities = (user.get("filters") or {}).get("cities") if user else None
+            db.log_event(chat_id, "filter_saved", {
+                "filter": "city",
+                "old_values": {"cities": old_cities},
+                "new_values": {"cities": []},
+            })
             refreshed_user = db.get_user(chat_id) or {}
             text, menu_markup = get_settings_menu(refreshed_user)
             edit_message(chat_id, message_id, text, reply_markup=menu_markup)

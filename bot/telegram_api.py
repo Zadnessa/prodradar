@@ -128,3 +128,17 @@ def build_inline_keyboard(buttons, columns=2):
         rows.append(current_row)
 
     return {"inline_keyboard": rows}
+
+
+def build_main_reply_keyboard():
+    return {
+        "keyboard": [
+            [{"text": "Вакансии"}, {"text": "Настройки"}],
+        ],
+        "resize_keyboard": True,
+        "input_field_placeholder": "Выбери действие",
+    }
+
+
+def build_reply_keyboard_remove():
+    return {"remove_keyboard": True}

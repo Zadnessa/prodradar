@@ -1,6 +1,5 @@
 """Обработка команд Telegram-бота."""
 
-import config
 import logging
 import re
 from bot.onboarding import (
@@ -27,6 +26,7 @@ from bot.settings import (
     get_stop_confirm,
 )
 from bot.telegram_api import delete_message, edit_message, send_message
+from bot.telegram_api import build_main_reply_keyboard, build_reply_keyboard_remove
 from database.supabase_client import SupabaseService
 from delivery.filters import filter_vacancies_for_user
 from delivery.telegram import format_company_emoji, format_vacancy_message
@@ -156,7 +156,7 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chu
             chat_id,
             "Это все подходящие вакансии. Проверяю новые утром и вечером — пришлю сразу.\n\n"
             "Фильтры — /settings",
-            reply_markup=None,
+            reply_markup=build_main_reply_keyboard(),
         )
         db.log_event(chat_id, "vacancy_exhausted", {"total_viewed": offset})
         return 0, 0
@@ -222,7 +222,7 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chu
             chat_id,
             "Это все подходящие вакансии. Проверяю новые утром и вечером — пришлю сразу.\n\n"
             "Фильтры — /settings",
-            reply_markup=None,
+            reply_markup=build_main_reply_keyboard(),
         )
         db.log_event(chat_id, "vacancy_exhausted", {"total_viewed": shown_count})
 
@@ -254,7 +254,7 @@ def _send_onboarding_batch(chat_id, message_id, db, filters):
 
     if total == 0:
         zero_state_text = _get_zero_state_text(chat_id, db, effective_filters)
-        edit_message(chat_id, message_id, zero_state_text, reply_markup=None)
+        edit_message(chat_id, message_id, zero_state_text, reply_markup=build_main_reply_keyboard())
         db.log_event(chat_id, "vacancy_empty_result", {"reason": _get_zero_reason(zero_state_text)})
         return
 
@@ -401,6 +401,7 @@ def handle_start(
 
     text, reply_markup = get_hub_message(user)
     send_message(chat_id, text, reply_markup=reply_markup)
+    send_message(chat_id, "Меню закреплено под полем ввода.", reply_markup=build_main_reply_keyboard())
     db.log_event(chat_id, "user_returned", {"was_paused": was_paused})
     if was_paused:
         send_message(chat_id, "Рассылка возобновлена — новые вакансии придут в ближайшую проверку.")
@@ -571,6 +572,7 @@ def handle_hub_callback(data, chat_id, message_id, callback_message, db=None):
         if step is None:
             text, reply_markup = get_hub_message(user)
             edit_message(chat_id, message_id, text, reply_markup=reply_markup)
+            send_message(chat_id, "Меню закреплено под полем ввода.", reply_markup=build_main_reply_keyboard())
             return
 
         if step == "welcome":
@@ -594,6 +596,29 @@ def handle_hub_callback(data, chat_id, message_id, callback_message, db=None):
         _edit_fallback(chat_id, message_id)
 
 
+def handle_main_keyboard_text(chat_id, text, db=None):
+    db = db or SupabaseService()
+    user = db.get_user(chat_id)
+    if not user:
+        send_message(chat_id, "Сначала подпишись через /start")
+        return True
+
+    normalized_text = (text or "").strip().lower()
+    if normalized_text == "вакансии":
+        loader = send_message(chat_id, "⏳ Подбираю вакансии...", reply_markup=None)
+        if loader and loader.get("message_id"):
+            _send_onboarding_batch(chat_id, loader["message_id"], db, filters=None)
+        else:
+            send_message(chat_id, "Не удалось запустить выдачу. Попробуй ещё раз.")
+        return True
+
+    if normalized_text == "настройки":
+        handle_settings(chat_id, db=db)
+        return True
+
+    return False
+
+
 def handle_more_callback(data, chat_id, message_id, callback_message, db=None):
     db = db or SupabaseService()
 
@@ -609,7 +634,7 @@ def handle_more_callback(data, chat_id, message_id, callback_message, db=None):
             message_id,
             "Остальные пришлю в ближайшей рассылке — проверяю утром и вечером.\n\n"
             "Ещё вакансии — /settings",
-            reply_markup=None,
+            reply_markup=build_main_reply_keyboard(),
         )
         db.log_event(chat_id, "vacancy_stopped", {"remaining": len(remaining_ids)})
         return
@@ -883,12 +908,17 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
 
     if data == "st:stop:yes":
         db.deactivate_user(chat_id)
-        edit_message(chat_id, message_id, "Ты отписался от рассылки. Чтобы вернуться — /start", reply_markup=None)
+        edit_message(
+            chat_id,
+            message_id,
+            "Ты отписался от рассылки. Чтобы вернуться — /start",
+            reply_markup=build_reply_keyboard_remove(),
+        )
         db.log_event(chat_id, "bot_stopped", {})
         return
 
     if data == "st:close":
-        edit_message(chat_id, message_id, "Настройки сохранены.", reply_markup=None)
+        edit_message(chat_id, message_id, "Настройки сохранены.", reply_markup=build_main_reply_keyboard())
         return
 
     if data in {"st:menu", "st:back"}:
@@ -899,44 +929,18 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
 
 
 def handle_stats(chat_id, db=None):
-    db = db or SupabaseService()
-    user = db.get_user(chat_id)
-
-    if not user:
-        send_message(chat_id, "Сначала подпишись через /start")
-        return
-
-    stats = db.get_vacancy_stats()
-    total = stats.get("total", 0)
-    by_company = stats.get("by_company") or {}
-
-    companies = db.get_enabled_companies()
-    companies_map = {company.get("name"): company for company in companies}
-
-    all_vacancies = db.get_undelivered_vacancies(chat_id, limit=500)
-    filtered_count = len(filter_vacancies_for_user(all_vacancies, user.get("filters") or {}))
-
-    company_lines = []
-    for company_name, count in sorted(by_company.items(), key=lambda item: item[1], reverse=True):
-        company_meta = companies_map.get(company_name, {})
-        emoji = format_company_emoji(company_meta)
-        company_lines.append(f"{emoji} {company_name}: {count}")
-
-    lines = "\n".join(company_lines) if company_lines else "Нет данных"
-    text = (
-        f"📊 Статистика вакансий (за {config.VACANCY_TTL_DAYS} дней)\n\n"
-        f"Всего на рынке: {total}\n"
-        f"Подходят под твои фильтры: {filtered_count}\n\n"
-        f"По компаниям:\n{lines}"
-    )
-    send_message(chat_id, text)
-    db.log_event(chat_id, "stats_viewed", {"total_market": total, "filtered_count": filtered_count})
+    _ = db
+    send_message(chat_id, "Статистика временно недоступна. Скоро вернём с улучшениями.")
 
 
 def handle_stop(chat_id, db=None):
     db = db or SupabaseService()
     db.deactivate_user(chat_id)
-    send_message(chat_id, "Ты отписался от рассылки. Чтобы подписаться снова — отправь /start")
+    send_message(
+        chat_id,
+        "Ты отписался от рассылки. Чтобы подписаться снова — отправь /start",
+        reply_markup=build_reply_keyboard_remove(),
+    )
     db.log_event(chat_id, "bot_stopped", {})
 
 
@@ -1096,6 +1100,11 @@ def handle_mute_callback(data, chat_id, message_id, db=None):
             chat_id,
             message_id,
             text,
+            reply_markup=build_main_reply_keyboard(),
+        )
+        send_message(
+            chat_id,
+            "Управлять компаниями можно в /settings.",
             reply_markup={
                 "inline_keyboard": [[
                     {"text": "Заблокировать другие компании", "callback_data": "st:edit:company"}
@@ -1132,6 +1141,11 @@ def handle_mute_callback(data, chat_id, message_id, db=None):
             chat_id,
             message_id,
             f"Готово, вакансии от {name} снова будут приходить.\n\nЗаблокированные: /blocked",
+            reply_markup=build_main_reply_keyboard(),
+        )
+        send_message(
+            chat_id,
+            "Можешь сразу посмотреть новые вакансии:",
             reply_markup={
                 "inline_keyboard": [[
                     {"text": f"📬 Показать вакансии от {name}", "callback_data": "st:deliver"}
@@ -1156,6 +1170,11 @@ def handle_mute_callback(data, chat_id, message_id, db=None):
             chat_id,
             message_id,
             "Все компании разблокированы.",
+            reply_markup=build_main_reply_keyboard(),
+        )
+        send_message(
+            chat_id,
+            "Можешь сразу посмотреть новые вакансии:",
             reply_markup={
                 "inline_keyboard": [[
                     {"text": "📬 Показать вакансии", "callback_data": "st:deliver"}

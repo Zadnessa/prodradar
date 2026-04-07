@@ -14,6 +14,7 @@ from bot.handlers import (
     handle_blocked,
     handle_callback,
     handle_hub_callback,
+    handle_main_keyboard_text,
     handle_mute,
     handle_mute_callback,
     handle_more_callback,
@@ -163,6 +164,8 @@ class handler(BaseHTTPRequestHandler):
                 elif text.startswith("/mute_"):
                     slug = text[len("/mute_"):].strip()
                     handle_mute(chat_id, slug, db=db)
+                elif handle_main_keyboard_text(chat_id, text, db=db):
+                    pass
                 else:
                     handle_unknown(chat_id)
 

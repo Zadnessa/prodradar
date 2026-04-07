@@ -96,10 +96,12 @@
 
 Цель: подготовить базовую событийную аналитику до релиза без влияния на UX и стабильность бота.
 
-- [ ] Определить список событий для логирования: onboarding_started, onboarding_step_completed, onboarding_finished, vacancies_requested, settings_opened, settings_changed, filter_applied, stop, restart
-- [ ] Выбрать хранилище: таблица user_events в Supabase (простейший вариант на старте) или внешний сервис (Amplitude/Mixpanel)
-- [ ] Принцип zero-impact: запись событий асинхронная, fire-and-forget; падение записи не блокирует пользователя
+- [x] Определить список событий для логирования: onboarding_started, onboarding_step_completed, onboarding_finished, vacancies_requested, settings_opened, settings_changed, filter_applied, stop, restart
+- [x] Выбрать хранилище: таблица user_events в Supabase (простейший вариант на старте) или внешний сервис (Amplitude/Mixpanel)
+- [x] Принцип zero-impact: запись событий асинхронная, fire-and-forget; падение записи не блокирует пользователя
 - [ ] Дашборд — отложить до VPS (Этап 8). На старте — SQL-запросы вручную.
+- [ ] Написать эталонные SQL-запросы для 9 продуктовых гипотез после появления первых данных.
+- [ ] Добавить столбцы language_code, is_premium, first_name, last_name в таблицу users (SQL-миграция).
 - [ ] Команда /broadcast для коммуникации с базой пользователей: возможность отправить сообщение всем активным пользователям (или сегменту). Сценарии: добавлена новая компания, новая фича, запрос фидбека с контактами или ссылкой на Google-форму. До релиза достаточно Colab-скрипта; полноценная admin-команда /broadcast — после релиза.
 
 ### Stream 3F: Критические фиксы пайплайна

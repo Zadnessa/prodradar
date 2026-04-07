@@ -4,6 +4,9 @@ import config
 import logging
 import re
 from bot.onboarding import (
+    CITY_OPTIONS,
+    GRADE_OPTIONS,
+    WORK_FORMAT_OPTIONS,
     advance_step,
     get_continue_message,
     get_company_page,
@@ -96,6 +99,23 @@ def _build_more_keyboard(offset, remaining):
     }
 
 
+def _build_grade_distribution(vacancies):
+    distribution = {}
+    for vacancy in vacancies:
+        grade = vacancy.get("grade") or "null"
+        distribution[grade] = distribution.get(grade, 0) + 1
+    return distribution
+
+
+def _get_zero_reason(zero_state_text):
+    text = (zero_state_text or "").lower()
+    if "нет активных вакансий" in text:
+        return "market_empty"
+    if "уже видел все" in text:
+        return "all_viewed"
+    return "filters_too_narrow"
+
+
 def _get_zero_state_text(chat_id, db, effective_filters):
     _ = effective_filters
 
@@ -138,6 +158,7 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chu
             "Фильтры — /settings",
             reply_markup=None,
         )
+        db.log_event(chat_id, "vacancy_exhausted", {"total_viewed": offset})
         return 0, 0
 
     sent_ids = []
@@ -157,6 +178,16 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chu
     sent_count = len(sent_ids)
     shown_count = offset + sent_count
     remaining = len(filtered) - sent_count
+    db.log_event(
+        chat_id,
+        "vacancy_page_viewed",
+        {
+            "offset": offset,
+            "method": "all" if chunk_size is None else "pagination",
+            "first_view": offset == 0,
+            "sent_count": sent_count,
+        },
+    )
 
     if total > shown_count and sent_count > 0:
         if offset == 0:
@@ -188,64 +219,68 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chu
             "Фильтры — /settings",
             reply_markup=None,
         )
+        db.log_event(chat_id, "vacancy_exhausted", {"total_viewed": shown_count})
 
     return sent_count, total
 
 
 def _send_onboarding_batch(chat_id, message_id, db, filters):
-    try:
-        edit_message(chat_id, message_id, "⏳ Подбираю вакансии...", reply_markup=None)
-        user = db.get_user(chat_id)
-        effective_filters = filters if filters is not None else (user or {}).get("filters") or {}
+    edit_message(chat_id, message_id, "⏳ Подбираю вакансии...", reply_markup=None)
+    user = db.get_user(chat_id)
+    effective_filters = filters if filters is not None else (user or {}).get("filters") or {}
 
-        undelivered = db.get_undelivered_vacancies(chat_id, limit=500)
-        filtered = filter_vacancies_for_user(undelivered, effective_filters)
-        total = len(filtered)
-        companies_count = len({vacancy.get("company") for vacancy in filtered if vacancy.get("company")})
-        vacancies_word = _pluralize(total, "вакансию", "вакансии", "вакансий")
-        companies_word = _pluralize(companies_count, "компании", "компаниях", "компаниях")
+    undelivered = db.get_undelivered_vacancies(chat_id, limit=500)
+    filtered = filter_vacancies_for_user(undelivered, effective_filters)
+    total = len(filtered)
+    companies_count = len({vacancy.get("company") for vacancy in filtered if vacancy.get("company")})
+    db.log_event(
+        chat_id,
+        "vacancy_summary_shown",
+        {
+            "total": total,
+            "companies_count": companies_count,
+            "source": "on_demand",
+            "scarcity": total <= 5,
+            "grade_distribution": _build_grade_distribution(filtered),
+        },
+    )
+    vacancies_word = _pluralize(total, "вакансию", "вакансии", "вакансий")
+    companies_word = _pluralize(companies_count, "компании", "компаниях", "компаниях")
 
-        if total == 0:
-            zero_state_text = _get_zero_state_text(chat_id, db, effective_filters)
-            edit_message(chat_id, message_id, zero_state_text, reply_markup=None)
-            return
+    if total == 0:
+        zero_state_text = _get_zero_state_text(chat_id, db, effective_filters)
+        edit_message(chat_id, message_id, zero_state_text, reply_markup=None)
+        db.log_event(chat_id, "vacancy_empty_result", {"reason": _get_zero_reason(zero_state_text)})
+        return
 
-        if total <= 5:
-            prompt = (
-                f"Нашёл {total} {vacancies_word}.\n\n"
-                "Это узкий срез рынка — мониторю компании каждый день и пришлю новые, как только появятся.\n\n"
-                "Ненужные компании можно отключить в /settings"
-            )
-            keyboard = {"inline_keyboard": [[{"text": "📬 Показать", "callback_data": "more:0"}]]}
-        else:
-            prompt = (
-                f"Нашёл {total} {vacancies_word} в {companies_count} {companies_word}.\n\n"
-                "Сейчас показываю по дате — от свежих к старым. Умная сортировка и фильтрация шума — очень скоро!\n\n"
-                "Ненужные компании можно отключить в /settings"
-            )
-            keyboard = {
-                "inline_keyboard": [
-                    [
-                        {"text": "📬 Показать первые 10", "callback_data": "more:0"},
-                        {"text": "⚙️ Изменить фильтры", "callback_data": "st:menu"},
-                    ]
+    if total <= 5:
+        prompt = (
+            f"Нашёл {total} {vacancies_word}.\n\n"
+            "Это узкий срез рынка — мониторю компании каждый день и пришлю новые, как только появятся.\n\n"
+            "Ненужные компании можно отключить в /settings"
+        )
+        keyboard = {"inline_keyboard": [[{"text": "📬 Показать", "callback_data": "more:0"}]]}
+    else:
+        prompt = (
+            f"Нашёл {total} {vacancies_word} в {companies_count} {companies_word}.\n\n"
+            "Сейчас показываю по дате — от свежих к старым. Умная сортировка и фильтрация шума — очень скоро!\n\n"
+            "Ненужные компании можно отключить в /settings"
+        )
+        keyboard = {
+            "inline_keyboard": [
+                [
+                    {"text": "📬 Показать первые 10", "callback_data": "more:0"},
+                    {"text": "⚙️ Изменить фильтры", "callback_data": "st:menu"},
                 ]
-            }
+            ]
+        }
 
-        edit_message(
-            chat_id,
-            message_id,
-            prompt,
-            reply_markup=keyboard,
-        )
-    except Exception:
-        logging.exception("Ошибка при подготовке выдачи вакансий")
-        edit_message(
-            chat_id,
-            message_id,
-            "Произошла ошибка при загрузке вакансий. Попробуй позже или нажми /settings",
-            reply_markup=None,
-        )
+    edit_message(
+        chat_id,
+        message_id,
+        prompt,
+        reply_markup=keyboard,
+    )
 
 
 def _handle_step_transition(chat_id, message_id, reply_markup, db):
@@ -282,25 +317,74 @@ def _handle_step_transition(chat_id, message_id, reply_markup, db):
 
     text, next_markup = get_step_message(next_step, next_filters, companies_list=companies_list)
     edit_message(chat_id, message_id, text, reply_markup=next_markup)
+    step_key_map = {
+        "grade": "grades",
+        "city": "cities",
+        "work_format": "work_formats",
+    }
+    available_count_map = {
+        "grade": len(GRADE_OPTIONS),
+        "city": len(CITY_OPTIONS),
+        "work_format": len(WORK_FORMAT_OPTIONS),
+    }
+    step_key = step_key_map.get(current_step)
+    selected_values = step_filter_fragment.get(step_key, []) if step_key else []
+    db.log_event(
+        chat_id,
+        "onboarding_step_completed",
+        {
+            "completed_step": current_step,
+            "next_step": next_step,
+            "selected_values": selected_values,
+            "selected_count": len(selected_values),
+            "available_count": available_count_map.get(current_step, 0),
+        },
+    )
+    return
 
 
-def handle_start(chat_id, username, db=None):
+def handle_start(
+    chat_id,
+    username,
+    db=None,
+    language_code=None,
+    is_premium=None,
+    first_name=None,
+    last_name=None,
+):
     db = db or SupabaseService()
     user = db.get_user(chat_id)
 
     if user is None or user.get("is_active") is False:
-        db.upsert_user(chat_id, username, bot_id="main")
+        db.upsert_user(
+            chat_id,
+            username,
+            bot_id="main",
+            language_code=language_code,
+            is_premium=is_premium,
+            first_name=first_name,
+            last_name=last_name,
+        )
         db.set_user_paused(chat_id, False)
         db.update_user_filters(chat_id, {})
         db.update_onboarding_step(chat_id, "welcome")
 
         text, reply_markup = get_welcome_message()
         send_message(chat_id, text, reply_markup=reply_markup)
+        db.log_event(chat_id, "onboarding_started", {})
         return
 
     was_paused = bool(user.get("paused"))
 
-    db.upsert_user(chat_id, username, bot_id="main")
+    db.upsert_user(
+        chat_id,
+        username,
+        bot_id="main",
+        language_code=language_code,
+        is_premium=is_premium,
+        first_name=first_name,
+        last_name=last_name,
+    )
     db.set_user_paused(chat_id, False)
 
     if user.get("onboarding_step") is not None:
@@ -312,6 +396,7 @@ def handle_start(chat_id, username, db=None):
 
     text, reply_markup = get_hub_message(user)
     send_message(chat_id, text, reply_markup=reply_markup)
+    db.log_event(chat_id, "user_returned", {"was_paused": was_paused})
     if was_paused:
         send_message(chat_id, "Рассылка возобновлена — новые вакансии придут в ближайшую проверку.")
 
@@ -323,13 +408,16 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
     if data == "ob:quick":
         db.update_user_filters(chat_id, {})
         db.update_onboarding_step(chat_id, None)
+        db.log_event(chat_id, "onboarding_completed", {"filters": {}, "strict_mode": False})
         _send_onboarding_batch(chat_id, message_id, db, filters={})
+        db.log_event(chat_id, "onboarding_path_chosen", {"path": "quick"})
         return
 
     if data == "ob:setup":
         db.update_onboarding_step(chat_id, "grade")
         text, step_markup = get_step_message("grade", {})
         edit_message(chat_id, message_id, text, reply_markup=step_markup)
+        db.log_event(chat_id, "onboarding_path_chosen", {"path": "step_by_step"})
         return
 
     if data.startswith("ob:g:"):
@@ -410,6 +498,11 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
         filters["strict_mode"] = False
         db.update_user_filters(chat_id, filters)
         db.update_onboarding_step(chat_id, None)
+        db.log_event(
+            chat_id,
+            "onboarding_completed",
+            {"filters": filters, "strict_mode": filters.get("strict_mode", False)},
+        )
         _send_onboarding_batch(chat_id, message_id, db, filters=filters)
         return
 
@@ -419,6 +512,11 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
         filters["strict_mode"] = True
         db.update_user_filters(chat_id, filters)
         db.update_onboarding_step(chat_id, None)
+        db.log_event(
+            chat_id,
+            "onboarding_completed",
+            {"filters": filters, "strict_mode": filters.get("strict_mode", False)},
+        )
         _send_onboarding_batch(chat_id, message_id, db, filters=filters)
         return
 
@@ -427,6 +525,7 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
         db.update_onboarding_step(chat_id, "grade")
         text, step_markup = get_step_message("grade", {})
         edit_message(chat_id, message_id, text, reply_markup=step_markup)
+        db.log_event(chat_id, "onboarding_restarted", {})
         return
 
     if data.startswith("ob:"):
@@ -500,6 +599,7 @@ def handle_more_callback(data, chat_id, message_id, callback_message, db=None):
             "Ещё вакансии — /settings",
             reply_markup=None,
         )
+        db.log_event(chat_id, "vacancy_stopped", {"remaining": len(remaining_ids)})
         return
 
     if not data.startswith("more:"):
@@ -546,6 +646,7 @@ def handle_settings(chat_id, db=None):
 
     text, reply_markup = get_settings_menu(user)
     send_message(chat_id, text, reply_markup=reply_markup)
+    db.log_event(chat_id, "settings_opened", {"source": "command"})
 
 
 def handle_settings_callback(data, chat_id, message_id, callback_message, db=None):
@@ -669,6 +770,15 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
                 (callback_message or {}).get("text", "⚙️ Компании"),
                 reply_markup=toggled_markup,
             )
+            db.log_event(
+                chat_id,
+                "company_toggled_in_settings",
+                {
+                    "company": company_name,
+                    "slug": callback_value,
+                    "action": "disable" if is_active_company else "enable",
+                },
+            )
             return
 
         toggled_markup = toggle_selection(
@@ -712,12 +822,22 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
 
         merged = dict(user.get("filters") or {})
         fragment = parse_selections_from_markup(step, reply_markup, companies_list=None, prefix="st")
+        old_fragment = {key: merged.get(key) for key in fragment}
         merged.update(fragment)
         db.update_user_filters(chat_id, merged)
 
         refreshed_user = db.get_user(chat_id) or {}
         text, menu_markup = get_settings_menu(refreshed_user)
         edit_message(chat_id, message_id, text, reply_markup=menu_markup)
+        db.log_event(
+            chat_id,
+            "filter_saved",
+            {
+                "filter": step,
+                "old_values": old_fragment,
+                "new_values": fragment,
+            },
+        )
         return
 
     if data == "st:deliver":
@@ -728,12 +848,14 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
         db.set_user_paused(chat_id, True)
         text, reply = get_pause_message()
         edit_message(chat_id, message_id, text, reply_markup=reply)
+        db.log_event(chat_id, "mailing_paused", {})
         return
 
     if data == "st:resume":
         db.set_user_paused(chat_id, False)
         text, reply = get_resume_message()
         edit_message(chat_id, message_id, text, reply_markup=reply)
+        db.log_event(chat_id, "mailing_resumed", {})
         return
 
     if data == "st:stop":
@@ -744,6 +866,7 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
     if data == "st:stop:yes":
         db.deactivate_user(chat_id)
         edit_message(chat_id, message_id, "Ты отписался от рассылки. Чтобы вернуться — /start", reply_markup=None)
+        db.log_event(chat_id, "bot_stopped", {})
         return
 
     if data == "st:close":
@@ -754,6 +877,7 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
         user = db.get_user(chat_id)
         text, menu_markup = get_settings_menu(user or {})
         edit_message(chat_id, message_id, text, reply_markup=menu_markup)
+        db.log_event(chat_id, "settings_opened", {"source": "hub"})
 
 
 def handle_stats(chat_id, db=None):
@@ -788,12 +912,14 @@ def handle_stats(chat_id, db=None):
         f"По компаниям:\n{lines}"
     )
     send_message(chat_id, text)
+    db.log_event(chat_id, "stats_viewed", {"total_market": total, "filtered_count": filtered_count})
 
 
 def handle_stop(chat_id, db=None):
     db = db or SupabaseService()
     db.deactivate_user(chat_id)
     send_message(chat_id, "Ты отписался от рассылки. Чтобы подписаться снова — отправь /start")
+    db.log_event(chat_id, "bot_stopped", {})
 
 
 def handle_mute(chat_id, slug, db=None):
@@ -958,6 +1084,11 @@ def handle_mute_callback(data, chat_id, message_id, db=None):
                 ]]
             },
         )
+        db.log_event(
+            chat_id,
+            "company_muted",
+            {"company": name, "slug": slug, "is_first_mute": not has_used_mute},
+        )
         return
 
     if data.startswith("unmute:"):
@@ -989,6 +1120,7 @@ def handle_mute_callback(data, chat_id, message_id, db=None):
                 ]]
             },
         )
+        db.log_event(chat_id, "company_unmuted", {"company": name, "slug": slug})
         return
 
     if data.startswith("unmute_all:"):
@@ -999,6 +1131,7 @@ def handle_mute_callback(data, chat_id, message_id, db=None):
 
         user = db.get_user(chat_id) or {}
         filters = dict(user.get("filters") or {})
+        excluded_count = len([str(v).strip() for v in (filters.get("excluded_companies") or []) if str(v).strip()])
         filters["excluded_companies"] = []
         db.update_user_filters(chat_id, filters)
         edit_message(
@@ -1011,6 +1144,7 @@ def handle_mute_callback(data, chat_id, message_id, db=None):
                 ]]
             },
         )
+        db.log_event(chat_id, "all_companies_unmuted", {"count": excluded_count})
 
 
 def handle_unknown(chat_id):

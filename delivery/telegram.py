@@ -63,7 +63,8 @@ def build_redirect_url(vacancy, company_meta, chat_id, source):
     _ = company_meta
     try:
         vercel_url = (os.getenv("REDIRECT_BASE_URL") or "").strip()
-        original_url = vacancy.get("url", "")
+        original_url = vacancy.get("url", "")        
+        logging.info("REDIRECT_BASE_URL=%s, original_url=%s, chat_id=%s", vercel_url, original_url, chat_id)
         if not vercel_url:
             return original_url
 

@@ -164,7 +164,12 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chu
     sent_ids = []
     for vacancy in batch:
         try:
-            message = format_vacancy_message(vacancy, companies_map.get(vacancy.get("company"), {}))
+            message = format_vacancy_message(
+                vacancy,
+                companies_map.get(vacancy.get("company"), {}),
+                chat_id=chat_id,
+                source="on_demand",
+            )
             result = send_message(chat_id, message)
             if result:
                 sent_ids.append(vacancy["id"])
@@ -408,9 +413,9 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
     if data == "ob:quick":
         db.update_user_filters(chat_id, {})
         db.update_onboarding_step(chat_id, None)
+        db.log_event(chat_id, "onboarding_path_chosen", {"path": "quick"})
         db.log_event(chat_id, "onboarding_completed", {"filters": {}, "strict_mode": False})
         _send_onboarding_batch(chat_id, message_id, db, filters={})
-        db.log_event(chat_id, "onboarding_path_chosen", {"path": "quick"})
         return
 
     if data == "ob:setup":

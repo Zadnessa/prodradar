@@ -1,6 +1,7 @@
 """Операции с Supabase в одном месте."""
 
 import hashlib
+import logging
 from datetime import datetime, timedelta, timezone
 
 from supabase import create_client
@@ -386,14 +387,42 @@ class SupabaseService:
             "by_company": by_company,
         }
 
-    def upsert_user(self, chat_id, username, bot_id="main"):
+    def upsert_user(
+        self,
+        chat_id,
+        username,
+        bot_id="main",
+        language_code=None,
+        is_premium=None,
+        first_name=None,
+        last_name=None,
+    ):
         payload = {
             "chat_id": chat_id,
             "username": username,
             "is_active": True,
             "bot_id": bot_id,
         }
+        if language_code is not None:
+            payload["language_code"] = language_code
+        if is_premium is not None:
+            payload["is_premium"] = is_premium
+        if first_name is not None:
+            payload["first_name"] = first_name
+        if last_name is not None:
+            payload["last_name"] = last_name
         self.client.table("users").upsert(payload).execute()
 
     def deactivate_user(self, chat_id):
         self.client.table("users").update({"is_active": False}).eq("chat_id", chat_id).execute()
+
+    def log_event(self, chat_id, event, properties=None):
+        try:
+            payload = {
+                "chat_id": chat_id,
+                "event": event,
+                "properties": properties or {},
+            }
+            self.client.table("user_events").insert(payload).execute()
+        except Exception as exc:
+            logging.warning("Не удалось записать user_event chat_id=%s event=%s: %s", chat_id, event, exc)

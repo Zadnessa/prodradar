@@ -100,8 +100,13 @@ class handler(BaseHTTPRequestHandler):
 
             message = update.get("message", {})
             chat = message.get("chat", {})
+            from_user = message.get("from") or {}
             chat_id = chat.get("id")
-            username = (message.get("from") or {}).get("username")
+            username = from_user.get("username")
+            language_code = from_user.get("language_code")
+            is_premium = from_user.get("is_premium")
+            first_name = from_user.get("first_name")
+            last_name = from_user.get("last_name")
             text = (message.get("text") or "").strip()
 
             if chat_id:
@@ -115,7 +120,15 @@ class handler(BaseHTTPRequestHandler):
                     return
 
                 if text == "/start":
-                    handle_start(chat_id, username, db=db)
+                    handle_start(
+                        chat_id,
+                        username,
+                        db=db,
+                        language_code=language_code,
+                        is_premium=is_premium,
+                        first_name=first_name,
+                        last_name=last_name,
+                    )
                 elif text == "/stop":
                     handle_stop(chat_id, db=db)
                 elif text == "/settings":

@@ -34,6 +34,14 @@ from parsers.browser import fetch_browser_secrets
 from parsers.utils import normalize_city
 
 
+def _build_grade_distribution(vacancies):
+    distribution = {}
+    for vacancy in vacancies:
+        grade = vacancy.get("grade") or "null"
+        distribution[grade] = distribution.get(grade, 0) + 1
+    return distribution
+
+
 def _classify_parser_error(parser_name: str, exc: Exception) -> str:
     tag = "[ERROR]"
 
@@ -317,12 +325,26 @@ async def run():
                 key=lambda v: (_title_confidence(v.get("title", "")), v.get("published_at") or ""),
                 reverse=True,
             )
+            db.log_event(
+                chat_id,
+                "vacancy_summary_shown",
+                {
+                    "total": len(filtered_vacancies),
+                    "companies_count": len(
+                        {vacancy.get("company") for vacancy in filtered_vacancies if vacancy.get("company")}
+                    ),
+                    "source": "scheduled",
+                    "scarcity": len(filtered_vacancies) <= 5,
+                    "grade_distribution": _build_grade_distribution(filtered_vacancies),
+                },
+            )
             announced_ids = db.get_announced_vacancy_ids(chat_id)
             announced_count = sum(1 for vacancy in filtered_vacancies if vacancy["id"] in announced_ids)
             new_count = len(filtered_vacancies) - announced_count
             batch = filtered_vacancies[:10]
 
             if not batch:
+                db.log_event(chat_id, "scheduled_delivery_empty", {"announced_available": announced_count > 0})
                 continue
 
             if new_count > 0 and announced_count > 0:
@@ -357,14 +379,24 @@ async def run():
                         ]
                     ]
                 }
+            db.mark_delivered(chat_id, delivered_ids, source="scheduled")
+            db.log_event(
+                chat_id,
+                "scheduled_delivery_sent",
+                {
+                    "new_count": new_count,
+                    "announced_count": announced_count,
+                    "delivered_count": len(delivered_ids),
+                    "remaining": remaining,
+                    "has_more_button": remaining > 0,
+                },
+            )
             send_message(
                 chat_id,
                 f"Показано {len(delivered_ids)} вакансий. {next_check_text}\n\nФильтры — /settings",
                 bot_id=bot_id,
                 reply_markup=reply_markup,
             )
-
-            db.mark_delivered(chat_id, delivered_ids, source="scheduled")
         except Exception as exc:
             failed_users.append(f"{chat_id}: {exc}")
             logging.exception("Ошибка отправки пользователю %s", chat_id)

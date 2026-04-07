@@ -99,6 +99,7 @@
 - [x] Определить список событий для логирования: onboarding_started, onboarding_step_completed, onboarding_finished, vacancies_requested, settings_opened, settings_changed, filter_applied, stop, restart
 - [x] Выбрать хранилище: таблица user_events в Supabase (простейший вариант на старте) или внешний сервис (Amplitude/Mixpanel)
 - [x] Принцип zero-impact: запись событий асинхронная, fire-and-forget; падение записи не блокирует пользователя
+- [x] Redirect-эндпоинт `api/go` для трекинга кликов по вакансиям: логирование события `vacancy_clicked` и HTTP 302 на оригинальный URL
 - [ ] Дашборд — отложить до VPS (Этап 8). На старте — SQL-запросы вручную.
 - [ ] Написать эталонные SQL-запросы для 9 продуктовых гипотез после появления первых данных.
 - [ ] Добавить столбцы language_code, is_premium, first_name, last_name в таблицу users (SQL-миграция).
@@ -162,6 +163,7 @@
 - [ ] Кластеризация похожих вакансий (company + normalized title + grade) в выдаче
 - [ ] Каталог с навигацией по кластерам вместо плоской пагинации
 - [ ] Дайджест как альтернативный формат выдачи
+- [ ] Верифицировать referer-policy карьерных сайтов при масштабировании (>100 пользователей)
 
 ## Wave 6 — Стабилизация парсеров
 

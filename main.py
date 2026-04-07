@@ -360,7 +360,12 @@ async def run():
 
             delivered_ids = []
             for vacancy in batch:
-                message = format_vacancy_message(vacancy, companies_map.get(vacancy.get("company"), {}))
+                message = format_vacancy_message(
+                    vacancy,
+                    companies_map.get(vacancy.get("company"), {}),
+                    chat_id=chat_id,
+                    source="scheduled",
+                )
                 result = send_message(chat_id, message, bot_id=bot_id)
                 if result:
                     delivered_ids.append(vacancy["id"])

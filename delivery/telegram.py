@@ -1,5 +1,8 @@
 """Отправка и форматирование сообщений в Telegram."""
 from datetime import datetime, timezone
+import logging
+import os
+import urllib.parse
 
 import config
 from bot.telegram_api import send_message
@@ -55,6 +58,33 @@ def format_company_emoji(company_meta):
 
     return fallback_emoji
 
+
+def build_redirect_url(vacancy, company_meta, chat_id, source):
+    _ = company_meta
+    try:
+        vercel_url = (os.getenv("VERCEL_URL") or "").strip()
+        original_url = vacancy.get("url", "")
+        if not vercel_url:
+            return original_url
+
+        base_url = f"https://{vercel_url}/api/go"
+        params = {
+            "url": original_url,
+            "vacancy_id": vacancy.get("id", ""),
+            "chat_id": str(chat_id),
+            "source": source,
+            "company": vacancy.get("company", ""),
+            "grade": vacancy.get("grade", ""),
+            "title_confidence": vacancy.get("title_confidence", ""),
+            "city": vacancy.get("city", ""),
+            "work_format": vacancy.get("work_format", ""),
+        }
+        return f"{base_url}?{urllib.parse.urlencode(params)}"
+    except Exception:
+        logging.warning("Не удалось собрать redirect URL для вакансии", exc_info=True)
+        return vacancy.get("url", "")
+
+
 def _format_published_at_label(vacancy):
     published_at = vacancy.get("published_at")
     published_datetime = _parse_vacancy_datetime(published_at)
@@ -86,7 +116,7 @@ def _format_published_at_label(vacancy):
     return f"{days_ago} {suffix} назад"
 
 
-def format_vacancy_message(vacancy, company_meta):
+def format_vacancy_message(vacancy, company_meta, chat_id=None, source="on_demand"):
     emoji = format_company_emoji(company_meta)
     lines = [
         f"{emoji} {vacancy.get('company', 'Компания')}",
@@ -124,6 +154,8 @@ def format_vacancy_message(vacancy, company_meta):
 
     lines.append("")
     url = vacancy.get("url", "")
+    if chat_id is not None:
+        url = build_redirect_url(vacancy, company_meta, chat_id, source)
     lines.append(f'<a href="{url}">Открыть вакансию</a>')
     slug = (company_meta or {}).get("slug")
     if slug:

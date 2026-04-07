@@ -3,8 +3,12 @@
 import json
 import logging
 import os
-import traceback
 from http.server import BaseHTTPRequestHandler
+
+import aiohttp
+import httpx
+import requests
+from postgrest.exceptions import APIError
 
 from bot.handlers import (
     handle_blocked,
@@ -24,6 +28,20 @@ from bot.handlers import (
 )
 from bot.telegram_api import answer_callback
 from database.supabase_client import SupabaseService
+
+
+TRANSIENT_EXCEPTIONS = (
+    TimeoutError,
+    ConnectionError,
+    requests.RequestException,
+    httpx.HTTPError,
+    aiohttp.ClientError,
+    APIError,
+)
+
+
+def _is_transient_error(exc):
+    return isinstance(exc, TRANSIENT_EXCEPTIONS)
 
 
 class handler(BaseHTTPRequestHandler):
@@ -152,10 +170,11 @@ class handler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             self.wfile.write(json.dumps({"ok": True}).encode("utf-8"))
-        except Exception:
-            logging.exception("Webhook error")
-            logging.error("Webhook traceback:\n%s", traceback.format_exc())
-            self.send_response(200)
+        except Exception as exc:
+            is_transient = _is_transient_error(exc)
+            error_type = type(exc).__name__
+            logging.exception("Webhook error type=%s transient=%s", error_type, is_transient)
+            self.send_response(500 if is_transient else 200)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             self.wfile.write(json.dumps({"ok": False}).encode("utf-8"))

@@ -11,11 +11,7 @@
 
 ## До релиза
 
-- [ ] Написание и тестирование парсеров (parsers/).
-- [ ] Для каждого нового парсера — INSERT в таблицу companies в Supabase (parsers/, database/).
 - [ ] Формат выдачи вакансий: довести трёхэтапную модель announced/delivered до полностью завершённого состояния (bot/handlers.py, delivery/telegram.py).
-- [ ] Stream 3C: ReplyKeyboardMarkup с двумя кнопками «Вакансии» и «Настройки» в постоянном UX-потоке (bot/handlers.py, bot/telegram_api.py).
-- [ ] Полная ревизия текстов бота — строго после функциональных тестов (bot/).
 - [ ] Ревизия quick-path текстов без strict_mode disclaimer и с честной сводкой «весь рынок» (bot/handlers.py).
 - [ ] `Начать заново` сбрасывает только фильтры, без очистки delivery-истории (bot/handlers.py, delivery/).
 - [ ] После onboarding/settings показывать выбор `N новых + M ранее просмотренных` → `Показать все` / `Только новые` (bot/handlers.py, delivery/telegram.py).
@@ -25,14 +21,9 @@
 - [ ] Stream 3F: Устойчивое сохранение — чанки, retry, поштучный fallback, finally для admin report (main.py, database/supabase_client.py).
 - [ ] Stream 3F: SELECT без source_json — убрать поле из runtime-запросов к vacancies (database/supabase_client.py).
 - [ ] Stream 3F: Контрактный тест — `vacancy.company` совпадает с `companies.name` (tests/, parsers/).
-- [ ] Stream 3F: MTS Link bearer-токен вынести в env, добавить обработку 401 и skip без падения пайплайна (parsers/mtslink.py, config.py).
 - [ ] Stream 3F: insert_vacancies заменить на upsert с чанками по 50 (database/supabase_client.py).
 - [ ] Stream 3F: Удалить вызов generate_summary() из _prepare_vacancy (main.py).
 - [ ] Stream 3F: MTS enrich — description только если новое длиннее текущего (parsers/mts.py).
-- [ ] Stream 3F: Добавить REDIRECT_BASE_URL в env блок collect.yml (.github/workflows/collect.yml).
-- [ ] Wave 4a: Код-ревью от внешнего аудитора (подготовить цели/промпт и провести аудит) (docs/, репозиторий).
-- [ ] Wave 4a: Фиксы по результатам код-ревью (репозиторий).
-- [ ] Wave 4a: Проверить необработанные исключения, способные уронить весь пайплайн (main.py, parsers/).
 - [ ] Wave 4a: Проверить соответствие main.py порядку из AGENTS.md (main.py, AGENTS.md).
 - [ ] Wave 4a: Проверить рассинхрон документации и кода (AGENTS.md, docs/context.md, код).
 - [ ] Wave 4a: Проверить контракт BaseParser — MTS нарушает, зафиксировать и исправить (parsers/mts.py).
@@ -44,8 +35,11 @@
 - [ ] Wave 4d: Критерий — все кнопки/тексты/колбэки работают без зависаний (bot/handlers.py).
 - [ ] Stream 3F: Scheduled-intro без «по твоим фильтрам» для quick-path пользователей (bot/handlers.py).
 
+- [ ] Полная ревизия текстов бота — строго после функциональных тестов (bot/).
+
 ## После релиза
 
+- [?] Stream 3F: MTS Link bearer-токен вынести в env, добавить обработку 401 и skip без падения пайплайна (parsers/mtslink.py, config.py).
 - [ ] On-demand витрина и ранжирование: первая пачка — витрина, дальше — релевантностное ранжирование (delivery/telegram.py, bot/handlers.py).
 - [ ] Сводка `N новых + M ранее просмотренных` в scheduled/выдаче (delivery/telegram.py, bot/handlers.py).
 - [ ] Scheduled: сценарий `new=0, announced>0` с action-oriented кнопками (bot/handlers.py).

@@ -1,276 +1,188 @@
 # Бэклог ProductRadar
 
-Этот файл — единственный источник правды по задачам проекта. При потере контекста (компрессия чата, новый сеанс) — начинай с чтения этого файла, docs/context.md и AGENTS.md.
+## Правила ведения:
 
-Статусы: [ ] — не начато, [x] — сделано, [~] — частично.
+- Документ имеет ровно 4 секции: «До релиза», «После релиза», «Бэклог», «Архив». Новые секции и подсекции не создаются без явного решения.
+- Секция «Бэклог» имеет фиксированные подзаголовки: Парсеры, AI, HH-сканер, Аналитика рынка, Инфра. Новые подзаголовки не создаются без явного решения.
+- Формат задачи: - [ ] Краткое описание (файлы). Одна строка, без вложенных списков, без абзацев.
+- Выполненная задача помечается [x] и переносится в «Архив». Удалять задачи запрещено.
+- Новые задачи добавляются в конец соответствующей секции. Порядок внутри секции не меняется без явного указания.
+- Статус [?] — задача с неопределённым состоянием, требует ручной проверки. Не трогать без явного указания.
 
-## Wave 1 — Cleanup (DONE)
+## До релиза
 
-Цель: убрать технический долг.
+- [ ] Написание и тестирование парсеров (parsers/).
+- [ ] Для каждого нового парсера — INSERT в таблицу companies в Supabase (parsers/, database/).
+- [ ] Формат выдачи вакансий: довести трёхэтапную модель announced/delivered до полностью завершённого состояния (bot/handlers.py, delivery/telegram.py).
+- [ ] Stream 3C: ReplyKeyboardMarkup с двумя кнопками «Вакансии» и «Настройки» в постоянном UX-потоке (bot/handlers.py, bot/telegram_api.py).
+- [ ] Полная ревизия текстов бота — строго после функциональных тестов (bot/).
+- [ ] Ревизия quick-path текстов без strict_mode disclaimer и с честной сводкой «весь рынок» (bot/handlers.py).
+- [ ] `Начать заново` сбрасывает только фильтры, без очистки delivery-истории (bot/handlers.py, delivery/).
+- [ ] После onboarding/settings показывать выбор `N новых + M ранее просмотренных` → `Показать все` / `Только новые` (bot/handlers.py, delivery/telegram.py).
+- [ ] В `/settings` показывать кнопку `Заблокированные (N)` только если `N > 0` (bot/handlers.py).
+- [ ] Stream 3F: BUG-067 — не передавать ReplyKeyboardMarkup в editMessageText (bot/handlers.py, bot/telegram_api.py).
+- [ ] Stream 3F: Толерантная обработка битых вакансий — skipped_count, не падать на одной записи (main.py).
+- [ ] Stream 3F: Устойчивое сохранение — чанки, retry, поштучный fallback, finally для admin report (main.py, database/supabase_client.py).
+- [ ] Stream 3F: SELECT без source_json — убрать поле из runtime-запросов к vacancies (database/supabase_client.py).
+- [ ] Stream 3F: Контрактный тест — `vacancy.company` совпадает с `companies.name` (tests/, parsers/).
+- [ ] Stream 3F: MTS Link bearer-токен вынести в env, добавить обработку 401 и skip без падения пайплайна (parsers/mtslink.py, config.py).
+- [ ] Stream 3F: insert_vacancies заменить на upsert с чанками по 50 (database/supabase_client.py).
+- [ ] Stream 3F: Удалить вызов generate_summary() из _prepare_vacancy (main.py).
+- [ ] Stream 3F: MTS enrich — description только если новое длиннее текущего (parsers/mts.py).
+- [ ] Stream 3F: Добавить REDIRECT_BASE_URL в env блок collect.yml (.github/workflows/collect.yml).
+- [ ] Wave 4a: Код-ревью от внешнего аудитора (подготовить цели/промпт и провести аудит) (docs/, репозиторий).
+- [ ] Wave 4a: Фиксы по результатам код-ревью (репозиторий).
+- [ ] Wave 4a: Проверить необработанные исключения, способные уронить весь пайплайн (main.py, parsers/).
+- [ ] Wave 4a: Проверить соответствие main.py порядку из AGENTS.md (main.py, AGENTS.md).
+- [ ] Wave 4a: Проверить рассинхрон документации и кода (AGENTS.md, docs/context.md, код).
+- [ ] Wave 4a: Проверить контракт BaseParser — MTS нарушает, зафиксировать и исправить (parsers/mts.py).
+- [ ] Wave 4c: SQL-проверки data integrity (Supabase).
+- [ ] Wave 4c: Проверить, что все companies.parser_name зарегистрированы в PARSER_REGISTRY (database/, parsers/__init__.py).
+- [ ] Wave 4c: Проверить отсутствие orphan-записей в user_vacancy_delivery (database/).
+- [ ] Wave 4c: Выполнить проверки после финального сброса и полного прогона парсеров (main.py, database/).
+- [ ] Wave 4d: Функциональные тесты всех основных сценариев (bot/handlers.py, delivery/, main.py).
+- [ ] Wave 4d: Критерий — все кнопки/тексты/колбэки работают без зависаний (bot/handlers.py).
+- [ ] Stream 3F: Scheduled-intro без «по твоим фильтрам» для quick-path пользователей (bot/handlers.py).
 
-- [x] Удалить мёртвый код: deliver_vacancies() и send_telegram_message() в delivery/telegram.py
-- [x] Удалить мёртвый код: mark_vacancies_notified() и get_unnotified_vacancies() в database/supabase_client.py
-- [x] Удалить мёртвый код: FINAL_TEXT в bot/handlers.py
-- [x] Переписать edit_message() в bot/telegram_api.py через _post(), убрать дублирование обработки ошибок
-- [x] Удалить salary из парсеров Alfa и Sber (решение: salary не хранится в БД, не извлекается парсерами; рыночная аналитика зарплат — отдельная задача AI-фазы или партнёрства)
-- [x] Переименовать short_description в description: колонка в БД + все ссылки в коде (ALTER TABLE vacancies RENAME COLUMN short_description TO description)
-- [x] Баг: _send_vacancies_chunk() в bot/handlers.py — проверять результат send_message() до добавления vacancy id в sent_ids (send_message может вернуть None без исключения)
-- [x] Webhook secret сделать обязательным: если TELEGRAM_WEBHOOK_SECRET не задан — возвращать 500 и логировать ошибку, не обрабатывать запрос
-- [x] Защита webhook от неизвестных chat_id: не создавать SupabaseService и не обрабатывать callback, если chat_id отсутствует в таблице users
-- [x] Деактивация вакансий per-company: при ошибке парсера компании X деактивировать только вакансии компаний, чьи парсеры успешно завершились; вакансии компании X не трогать
-- [x] Зафиксировать контракт enrich() в AGENTS.md: метод мутирует dict in-place, вызывается до normalizer, НЕ должен перезаписывать поля, которые уже заполнены (кроме short_description, где сравнивается длина)
-- [x] Привести docs/context.md в соответствие с текущим кодом (убрать устаревшие пункты из раздела «Принято к исполнению», перенести выполненные в отдельный раздел «Выполнено»)
+## После релиза
 
-## Wave 2 — Полировка (DONE)
+- [ ] On-demand витрина и ранжирование: первая пачка — витрина, дальше — релевантностное ранжирование (delivery/telegram.py, bot/handlers.py).
+- [ ] Сводка `N новых + M ранее просмотренных` в scheduled/выдаче (delivery/telegram.py, bot/handlers.py).
+- [ ] Scheduled: сценарий `new=0, announced>0` с action-oriented кнопками (bot/handlers.py).
+- [ ] Уплотнение служебных сообщений без дублей в mute/returning /start (bot/handlers.py).
+- [ ] Лонгрид Telegraph и ссылка из сводки перед первой выдачей (docs/, bot/handlers.py).
+- [ ] career_url в companies + гиперссылка на название компании (database/supabase_client.py, delivery/telegram.py).
+- [ ] Кластеризация похожих вакансий в выдаче (delivery/filters.py, delivery/telegram.py).
+- [ ] Каталог с навигацией по кластерам вместо плоской пагинации (bot/handlers.py, delivery/telegram.py).
+- [ ] Дайджест как альтернативный формат выдачи (delivery/telegram.py).
+- [ ] Верифицировать referer-policy карьерных сайтов при >100 пользователей (parsers/).
+- [ ] Песочница debug.yml (.github/workflows/).
+- [ ] CustDev: 5-7 интервью с целевыми пользователями (docs/).
+- [ ] Метрики: retention, time-to-first-relevant-vacancy (database/, docs/).
+- [ ] SQL-запросы для 9 продуктовых гипотез (после появления первых данных) (database/, docs/).
+- [ ] /broadcast: Colab-скрипт, затем полноценная команда (scripts/, bot/handlers.py).
+- [ ] /stats переработка: «всего на рынке», «под фильтры», «просмотрено», «новых» (bot/handlers.py, database/supabase_client.py).
+- [ ] Дашборд аналитики — отложить до VPS (docs/, infra/).
+- [ ] Аудит хардкода по всем парсерам: полный скан 28 парсеров, замена хардкода на конфиг/БД (parsers/).
+- [ ] Сбор фидбека по формату выдачи (карточки vs дайджест) (docs/).
+- [ ] Inline mute-кнопка на карточке вакансии (delivery/telegram.py, bot/handlers.py).
 
-Цель: косметические улучшения до начала основной работы.
+## Бэклог
 
-- [x] Кастомные эмодзи брендов из таблицы companies (custom_emoji_id + tg-emoji)
-- [x] Блок "опубликовано" только при реальном published_at, fallback на created_at удалён
-- [x] Сортировка выдачи: published_at DESC (NULL last), затем created_at DESC
+### Парсеры
 
-## Wave 3 — Расширение и подготовка к релизу (текущая)
+- [ ] Wave 6: Транспортный слой transport.py с retry/backoff/timeout и уважением Retry-After (parsers/transport.py, parsers/).
+- [ ] Wave 6: Типизированные исключения парсеров и классификация в админ-отчёте (parsers/, main.py).
+- [ ] Wave 6: self.logger в BaseParser и унификация логирования по парсерам (parsers/base_parser.py, parsers/).
+- [ ] Wave 6: Счётчики операций в BaseParser + enrichment-статистика в админ-отчёте (parsers/base_parser.py, main.py).
+- [ ] Wave 6: Retry/backoff для enrichment-запросов (parsers/).
+- [ ] Wave 6: Debug-артефакты (HTML/JSON/screenshot/trace) как GitHub Actions artifacts (parsers/, .github/workflows/).
+- [ ] Wave 6: Общий HTML-extractor с quality_score и источником description (parsers/, utils/).
+- [ ] Wave 6: Перевести хрупкие парсеры (T-Bank, Точка, VK, Avito, Циан) на общий extractor (parsers/).
+- [ ] Wave 6: CI-тест на хешированные CSS-селекторы (tests/, CI).
+- [ ] Wave 6: Автоэскалация http → browser по сигналам антибота/пустых данных (parsers/).
+- [ ] Wave 6: Наблюдаемость парсеров (parser_status, last_success_at, last_item_count, consecutive_failures, browser_fallback_used, enrichment_quality_score) (main.py, reporting/).
+- [ ] Wave 6: GenericJsonApiParser + parser_specs с JMESPath (parsers/, parser_specs/).
+- [ ] Wave 6: Onboarding-kit для новых компаний и docs/new_company_checklist.md (docs/, parsers/).
+- [ ] Wave 6: Fetcher-абстракция и fetch_method в companies (parsers/, database/).
+- [ ] Wave 6: description_source (database/, parsers/).
+- [ ] Wave 6: last_enriched_at (database/, parsers/).
+- [ ] Wave 6: Тестовый режим компании через status в companies (database/, parsers/).
+- [ ] Wave 6: sanitize_description как общая функция очистки HTML (utils/, parsers/).
+- [ ] Wave 6: Хардинг delivery pipeline по нагрузке (SQL anti-join, батчинг Telegram, параллелизация) (delivery/, database/).
+- [ ] Wave 6: Чистка хардкодов источников и общий extractor HTML-секций (parsers/).
+- [ ] Wave 6: MTS Link — автоматическое получение токена или переход на HH как fallback-источник (parsers/mtslink.py, parsers/hh.py).
+- [ ] Wave 6: Аудит всех парсеров на соблюдение контракта enrich() (parsers/).
+- [ ] Wave 6: Фикстуры parsers и минимальные контрактные тесты parse/enrich (fixtures/, tests/).
 
-Цель: 20+ компаний, отраслевая классификация, переработка UX, аналитика, критические фиксы пайплайна.
+### AI
 
-### Порядок выполнения
+- [ ] Создать архитектуру AI-фазы: таблица vacancy_ai_enrichment, LEFT JOIN при выдаче, kill switch (database/, delivery/, main.py).
+- [ ] Создать таблицу vacancy_ai_enrichment (database/).
+- [ ] Определение сегмента вакансии (B2B/B2C/e-com/fintech/classified) по описанию (ai/, prompts/).
+- [ ] Определение сегмента на уровне вакансии (не компании) внутри экосистем (ai/, delivery/filters.py).
+- [ ] Уточнение грейда по описанию (few-shot на Senior-выборке) (ai/).
+- [ ] Генерация краткого описания для карточки (1 абзац) (ai/, delivery/telegram.py).
+- [ ] Рыночная аналитика зарплат как отдельное AI/партнёрское направление (docs/, ai/).
+- [ ] CJE-вакансии: вернуть в выдачу после AI-классификации описаний (ai/, main.py).
+- [ ] Сбер: ловить PM-вакансии без продуктовых слов в заголовке через анализ description (ai/, parsers/sber.py).
+- [ ] Dodo: проверить полноту данных (description/grade) при появлении PM-вакансий (parsers/dodo.py, ai/).
+- [ ] Дедупликация описаний фирменный сайт vs HH через embeddings + cosine similarity (ai/, parsers/).
+- [ ] Добавить ai_is_product и перенести серую зону в AI-классификацию (database/, ai/, main.py).
+- [ ] Нормализация заголовков вакансий через LLM к формату `[Grade] [Функция] Product Manager` (ai/, main.py).
+- [ ] Gray-зона фильтрации: AI-классификация `is_product + confidence + reason` по `title + description` (ai/, main.py).
+- [ ] content_hash считать после enrichment и _prepare_vacancy (main.py).
+- [ ] re-enrichment для вакансий с пустым/коротким description (main.py, ai/).
+- [ ] Выделение raw-данных в отдельный журнал/таблицу (database/, main.py).
 
-1. [x] Семантическое ядро PM-заголовков (Stream 3A)
-2. [x] Трёхзонная фильтрация + рефакторинг main.py (Stream 3A)
-3. Отраслевая классификация (Stream 3B)
-4. UX-блок (Stream 3C)
-5. Аналитика user_events (Stream 3D)
-6. [x] Chrome UA в env (Stream 3F)
-7. [x] Единое логирование парсеров (Stream 3F) — Реализовано: классификация ошибок и per-parser статистика в админ-отчёте. Детальное логирование внутри парсеров — Wave 6.
-8. Код-ревью от внешнего аудитора (Wave 4a)
-9. Фиксы по результатам код-ревью (Wave 4a)
-10. CJM-прогон и эмпатия (Wave 4b)
-11. Фиксы по результатам CJM (Wave 4b)
-12. Data integrity проверки (Wave 4c)
-13. Функциональные тесты основных сценариев (Wave 4d)
-14. Ревизия текстов бота (Stream 3C) — строго после Wave 4d
-15. Лонгрид в Telegraph (Stream 3C) — после ревизии текстов
-16. Релиз (Wave 5)
+### HH-сканер
 
-### Stream 3A: Добавление компаний
+- [ ] Wave 8: Дедупликация вакансий через embeddings + cosine similarity (parsers/hh.py, ai/).
+- [ ] Wave 8: HH.ru как валидатор полноты фирменных источников по employer_id (parsers/hh.py, reports/).
+- [ ] Wave 8: Публичная документация HH API как источник ресерча (docs/).
+- [ ] Wave 8: Применить трёхзонную фильтрацию Stream 3A в HH-сканере (config.py, parsers/hh.py).
+- [ ] Wave 8: Единый HH-сканер с колонкой hh_employer_id в companies (database/, parsers/hh.py).
 
-Цель: актуализировать список компаний и завершить переход к единой логике фильтрации.
+### Аналитика рынка
 
-Текущие парсеры (25): 2ГИС, Alfa-Bank, Aviasales, Avito, Циан, Dodo, ДомКлик, HH (общий), Циан (HH), Касперский (HH), Звук (HH), Контур, Купер, Lamoda, МТС, МТС Линк, Ozon, Sber, СберЗдоровье, T-Bank, Точка, VK, Wildberries, X5 Group, Yandex.
+- [ ] Wave 9: Добавить deactivated_at в vacancies (database/).
+- [ ] Wave 9: Аналитика времени жизни вакансий (медиана по компаниям и отраслям) (analytics/, database/).
+- [ ] Wave 9: Динамика открытий/закрытий по неделям и месяцам (analytics/, database/).
+- [ ] Wave 9: Сезонность найма по отраслям (analytics/, database/).
+- [ ] Wave 9: Интеграция аналитики в /stats или отдельный дашборд (bot/handlers.py, analytics/).
 
-Выполнено:
-- [x] Касперский
-- [x] Циан (HH)
-- [x] Звук (HH)
+### Инфра
 
-Задачи:
-- [ ] Написание и тестирование парсеров
-- [ ] Для каждого нового парсера — INSERT в таблицу companies в Supabase
-- [x] Семантическое ядро PM-заголовков: через API hh.ru выгрузить все вакансии по PM-специализациям (professional_role_id). Собрать уникальные варианты написания заголовков продакт-менеджерских вакансий, включая руководящие позиции (Head of Product, CPO, лидер кластера, юнит-лид и т.д.). Построить whitelist и blacklist опытным путём: whitelist — заголовки, которые 100% являются продуктовыми; blacklist — заголовки, которые 100% не являются продуктовыми. Всё что между — серая зона. Этапы: (1) Colab-скрипт для выгрузки и группировки заголовков; (2) анализ и формирование whitelist/blacklist; (3) проверка через Supabase — что отсекается, что остаётся, какой объём серой зоны; (4) тест на реальных парсерах.
-- [x] Трёхзонная фильтрация заголовков вакансий: заменить текущий зоопарк per-company блоков в main.py (Сбер whitelist, ДомКлик whitelist, HH двухуровневый) на единую трёхзонную систему. Зона 1 (whitelist): заголовок совпадает с паттерном из единого whitelist — пропускаем, без проверки. Зона 2 (blacklist): заголовок совпадает с паттерном из TITLE_STOP_PATTERNS — отсекаем. Зона 3 (серая зона): не попало ни туда, ни туда. Временное решение до AI-фазы: определить по результатам анализа семантического ядра — пропускать или отсекать. В AI-фазе серая зона отправляется на классификацию LLM. Рефакторинг main.py: удалить отдельные блоки Сбер/ДомКлик/HH, заменить единым циклом. Удалить SBER_TITLE_WHITELIST, DOMCLICK_TITLE_WHITELIST, HH_TITLE_WHITELIST из config.py. Удалить is_product_role из парсеров и main.py. Зависимость: выполняется после задачи «Семантическое ядро PM-заголовков». AI-фаза для серой зоны отложена до Wave 7.
+- [ ] Wave 10: Переезд на VPS с бэкапами и планом замены webhook.py на FastAPI (infra/, webhook.py).
+- [ ] Wave 10: Довести ENV-based конфигурацию до конца (config.py, infra/).
+- [ ] Wave 10: Расшивка main.py на отдельные модули сбора/обогащения/доставки (main.py, modules/).
+- [ ] Wave 10: Расшивка bot/handlers.py на onboarding/settings/delivery модули (bot/handlers.py, bot/).
+- [ ] Wave 10: Расшивка SupabaseService на доменные репозитории (database/supabase_client.py, database/).
+- [ ] Wave 10: Дашборд аналитики (Metabase/Grafana) после переезда на VPS (infra/, analytics/).
 
-### Stream 3B: Отраслевая классификация
+## Архив
 
-- [x] Определить индустрии: PropTech, Media, IT, Финтех, E-commerce, Retail, SaaS, FoodTech, TravelTech, HR Tech, MedTech, Телеком, Классифайды
-- [x] Привязать каждую компанию к индустрии, проверить распределение вакансий (если одна категория содержит более 40% — она слишком широка)
-- [x] SQL-миграция: ALTER TABLE companies ADD COLUMN category text; UPDATE для каждой компании
-- [ ] Названия индустрий должны быть понятны продакт-менеджеру, не аналитику. Формат кнопок: "E-com (Ozon, WB)" с примерами (отложено, не блокирует релиз)
-
-### Stream 3C: UX-перепроектирование
-
-Цель: безупречный пользовательский опыт в рамках текущих возможностей без AI. Релиз планируется без AI-функций.
-
-До релиза:
-- [x] Убрать шаг «компании» из онбординга. Онбординг: grade -> city -> work_format -> confirm -> disclaimer. Компании настраиваются только через /settings
-- [x] Пагинированный список компаний в /settings с immediate write при toggle и сортировкой blocked-first
-- [~] Формат выдачи вакансий: по результатам виртуальной эмпатии принята модель статусов доставки (announced/delivered) и трёхэтапная выдача. (1) Сводка перед выдачей с количеством вакансий и компаний; текст scarcity при малом количестве; честная маркировка quick-path как режима без фильтров и CTA на /settings; первая пачка — витрина, последующие — релевантностное ранжирование. (2) Пагинация с подбадриванием только после первого on-demand запроса пользователя и тремя кнопками: Ещё 10, Все (N), Хватит. Кнопка Хватит помечает оставшиеся как announced. (3) Scheduled-рассылка с честным разделением новых и ранее анонсированных вакансий.
-- [x] F8: title_confidence для scheduled-выдачи — сортировка по уверенности заголовка (`exact > regex > grey`), внутри группы по `published_at DESC`; в on-demand пагинации первая пачка формируется как витрина, последующие страницы ранжируются по релевантности.
-- [x] ReplyKeyboard с двумя кнопками «Вакансии» и «Настройки»: после завершения онбординга показывать постоянную клавиатуру (ReplyKeyboardMarkup). Кнопка «Получить вакансии» переименована в «Вакансии». При нажатии «Вакансии» — on-demand выдача по фильтрам пользователя (сводка + пагинация). Обработчик текстового сообщения в bot/handlers.py.
-- [x] Виртуальная эмпатия по формату выдачи: проведена. Результат — модель статусов announced/delivered, сводка перед выдачей, подбадривание, scarcity, кластеризация и каталог отложены на post-release.
-- [x] Кнопка Получить вакансии после unmute/unmute_all: inline-кнопка «Показать вакансии от {name}» после unmute одной компании и «Показать вакансии» после unmute_all. Callback: `st:deliver`.
-- [ ] Полная ревизия текстов бота (выполняется строго после Wave 4d (функциональные тесты) и включает welcome-сообщение).
-- [ ] Ревизия quick-path текстов: быстрый старт остаётся без дополнительных шагов и без strict_mode disclaimer; первая сводка должна честно говорить, что это весь рынок без фильтров, а настройка под себя — через /settings.
-- [ ] On-demand витрина и новое ранжирование: первая пачка — витрина, дальше — релевантностное ранжирование вместо чистой хронологии.
-- [ ] `Начать заново` сбрасывает только фильтры и перезапускает онбординг; история delivery не очищается.
-- [ ] После завершения онбординга и после save в settings при изменённых фильтрах: если по новым фильтрам есть ранее просмотренные вакансии, показывать сводку `N новых + M ранее просмотренных` с выбором `Показать все` / `Только новые`.
-- [ ] Scheduled-сценарий `new=0, announced>0`: сообщение должно быть action-oriented, с кнопками `Посмотреть (M)` / `Не сейчас`.
-- [ ] Уплотнение служебных сообщений: подбадривание только для первого on-demand запроса, без дублей после mute и без повторяющегося текста для returning /start.
-- [ ] В `/settings` показывать кнопку `Заблокированные (N)` только если `N > 0`.
-- [ ] Scheduled-intro для quick-path пользователя без фильтров: если у пользователя пустые `filters.grades` / `filters.cities` / `filters.work_formats`, intro не должен говорить «по твоим фильтрам»; использовать нейтральную формулировку `N новых вакансий.`
-- [ ] Уплотнить все сценарии управления блокировками единообразно: mute, unmute, unmute_all должны завершаться одним итоговым сообщением с inline-действием, без второго дублирующего сообщения; изменение делать совместно с BUG-067.
-- [ ] Лонгрид в Telegraph: история проекта, целевая аудитория, value prop. Ссылка в сводке перед первой выдачей. Выполняется после ревизии текстов.
-
-### Stream 3D: Аналитика пользовательских действий
-
-Цель: подготовить базовую событийную аналитику до релиза без влияния на UX и стабильность бота.
-
-- [x] Определить список событий для логирования: onboarding_started, onboarding_step_completed, onboarding_finished, vacancies_requested, settings_opened, settings_changed, filter_applied, stop, restart
-- [x] Выбрать хранилище: таблица user_events в Supabase (простейший вариант на старте) или внешний сервис (Amplitude/Mixpanel)
-- [x] Принцип zero-impact: запись событий асинхронная, fire-and-forget; падение записи не блокирует пользователя
-- [x] Redirect-эндпоинт `api/go` для трекинга кликов по вакансиям: логирование события `vacancy_clicked` и HTTP 302 на оригинальный URL
-- [ ] Дашборд — отложить до VPS (Этап 8). На старте — SQL-запросы вручную.
-- [ ] Написать эталонные SQL-запросы для 9 продуктовых гипотез после появления первых данных.
-- [x] Добавить столбцы language_code, is_premium, first_name, last_name в таблицу users (SQL-миграция).
-- [ ] Команда /broadcast для коммуникации с базой пользователей: возможность отправить сообщение всем активным пользователям (или сегменту). Сценарии: добавлена новая компания, новая фича, запрос фидбека с контактами или ссылкой на Google-форму. До релиза достаточно Colab-скрипта; полноценная admin-команда /broadcast — после релиза.
-- [ ] Переработка /stats: разнести метрики «всего на рынке», «под фильтры», «просмотрено», «новых». Реализовать после релиза.
-
-### Stream 3F: Критические фиксы пайплайна
-
-Цель: исправить архитектурные проблемы, найденные при аудите, до релиза.
-
-Уже выполнено в рамках Wave 3:
-- [x] Пагинация Supabase: get_existing_vacancy_hashes() в database/supabase_client.py — лимит 1000 строк на запрос
-- [x] Пагинация Supabase: get_active_users() — аналогично
-- [x] Пагинация Supabase: get_vacancy_stats() — аналогично
-- [x] Пагинация Supabase: deactivate_missing_vacancies() ветка для больших наборов — аналогично
-- [x] Пагинация Yandex-парсера: сейчас page_size=100 без цикла, при >100 вакансий потеря данных
-
-Задачи:
-- [x] Единое логирование парсеров: Реализовано: классификация ошибок и per-parser статистика в админ-отчёте. Детальное логирование внутри парсеров — Wave 6.
-- [x] Автообновление Chrome UA: версия Chrome читается из переменной окружения `CHROME_VERSION` с дефолтом. UA собирается в `config.py`, `REQUEST_HEADERS` — единый источник для HTTP-клиентов.
-- [ ] BUG-067: не передавать ReplyKeyboardMarkup в editMessageText; в затронутых сценариях использовать edit/delete без reply keyboard + отдельный send с reply keyboard.
-- [ ] Толерантная обработка битых вакансий: skip на этапе валидации/фильтрации/_prepare_vacancy, без записи в БД; считать skipped_count и показывать его в админ-отчёте.
-- [ ] Устойчивое сохранение вакансий: insert/update чанками, retry для transient-ошибок, поштучный fallback для data error, try/except для touch/deactivate, отправка admin report в finally.
-- [ ] Runtime-чтение вакансий без source_json: заменить SELECT * на явный список колонок без source_json.
-- [ ] Контрактный тест: `vacancy.company` из парсера совпадает с `companies.name`.
-- [ ] MTS Link: вынести Bearer-токен из кода в env-переменную `MTSLINK_BEARER_TOKEN`; отсутствие или невалидность токена не должно валить общий прогон, источник должен пропускаться с понятной строкой в admin report.
-- [ ] insert_vacancies(): заменить `insert` на `upsert(on_conflict="id")` и разбить вставку на чанки по 50 записей.
-- [ ] Удалить runtime-вызов `generate_summary()` из `_prepare_vacancy` до AI-фазы.
-- [ ] Привести `parsers/mts.py` к общему контракту `enrich()`: `description` заменяется только если новое значение длиннее текущего.
-
-
-## Wave 4 — Предрелизный аудит
-
-Цель: убедиться, что всё работает перед запуском. Выполняется после завершения стримов 3A, 3B, 3C.
-
-### 4a — Code audit (фокусный)
-- [ ] Код-ревью от внешнего аудитора: подготовить цели и промпт для thinking-LLM, затем выполнить фокусный аудит.
-- [ ] Фиксы по результатам код-ревью от внешнего аудитора.
-- [ ] Аудит хардкода: города, компании, эмодзи (должны быть в конфиге или БД), названия HTML-секций в enrichment (должны быть устойчивы к изменению структуры страницы), маппинги experience/grade/work_format (должны быть в одном месте, не размазаны по парсерам). Делегировать thinking-модели полный скан репо.
-- [ ] Проверить: все парсеры следуют контракту BaseParser (parse + enrich)
-- [ ] Проверить: необработанные исключения, способные уронить весь пайплайн (а не один парсер)
-- [ ] Проверить: main.py соответствует порядку из AGENTS.md (parse, blacklist, whitelist, content_hash, enrich, normalize)
-- [ ] Проверить: нет рассинхрона между документацией (context.md, AGENTS.md) и реальным кодом
-- [ ] Создать fixtures/<company>/ с примерами list.json и detail.json/html для каждой компании.
-- [ ] Написать минимальные контрактные тесты: парсер возвращает список; у каждой вакансии есть id, title, url, company; id не пустые; enrich не обнуляет заполненные поля; description на фикстуре не пустой.
-
-### 4b — UX walkthrough
-- [ ] CJM-прогон: персона "активный соискатель" (PM, финтех, Москва, Middle+) — весь путь от /start до получения вакансий
-- [ ] CJM-прогон: персона "пассивный наблюдатель" (мониторит рынок, минимум шума) — весь путь
-- [ ] Критерий: если обе персоны проходят путь без затыков — ок. Не искать микро-улучшения.
-
-### 4c — Data integrity
-- [ ] SQL-проверки: вакансии с пустым title, дублирующимся id, is_active=true но last_seen_at старше TTL
-- [ ] Все компании из таблицы companies имеют рабочий parser_name в PARSER_REGISTRY
-- [ ] Нет orphan записей в user_vacancy_delivery
-- [ ] Выполняется после финального сброса и полного прогона всех парсеров
-
-### 4d — Функциональные тесты
-- [ ] Прогон всех основных сценариев в боте: /start (новый юзер), /start (returning), онбординг полный цикл, settings toggle, mute/unmute/unmute_all, пагинация (Ещё 10, Все, Хватит), scheduled-рассылка, /stats, /stop
-- [ ] Критерий: все кнопки отвечают, все тексты отображаются, нет зависших лоадеров, нет необработанных callback
-
-## Wave 5 — Релиз и первый фидбек
-
-Цель: запуск, сбор обратной связи, первые метрики.
-
-- [ ] Песочница debug.yml (перенесено из Stream 3F, не блокер релиза)
-- [ ] Запуск бота
-- [ ] CustDev: 5-7 интервью с целевыми пользователями
-- [ ] Метрики: retention, time-to-first-relevant-vacancy
-- [ ] Сбор фидбека по формату выдачи (карточки vs дайджест)
-- [ ] Добавить career_url в таблицу companies: URL карьерной страницы компании. В карточке вакансии название компании становится гиперссылкой на career_url. SQL: ALTER TABLE companies ADD COLUMN career_url text. В delivery/telegram.py: если career_url заполнен, оборачивать название компании в тег a href.
-- [ ] Кластеризация похожих вакансий (company + normalized title + grade) в выдаче
-- [ ] Каталог с навигацией по кластерам вместо плоской пагинации
-- [ ] Дайджест как альтернативный формат выдачи
-- [ ] Верифицировать referer-policy карьерных сайтов при масштабировании (>100 пользователей)
-- [ ] Inline mute-кнопка на карточке вакансии — Wave 5.
-
-## Wave 6 — Стабилизация парсеров
-
-Цель: устранить хрупкость, стандартизировать процесс добавления компаний, добавить наблюдаемость. Выполняется после релиза.
-
-- [ ] Транспортный слой: единый модуль transport.py. HTTP-запросы через aiohttp, браузерные через Playwright. Retry с exponential backoff (до 3 попыток, tenacity). Таймауты (разные для list, detail, browser). Уважать Retry-After.
-- [ ] Типизированные исключения: TransientSourceError, BlockedByBotError, HtmlDriftError, PermanentParserError. Классификация в админ-отчёте: [TRANSIENT], [BLOCKED], [DRIFT], [BROKEN], [FALLBACK_USED].
-- [ ] self.logger в BaseParser: именованный логгер через logging.getLogger(self.__class__.__name__) в __init__, заменить ручные logging.warning/logger.warning в парсерах на self.logger.
-- [ ] Счётчики операций в BaseParser (self._stats): requests, pages, enriched, enrich_errors. Парсеры инкрементируют, обёртка в BaseParser логирует после parse() и enrich(). Добавить enrichment-статистику в админ-отчёт.
-- [ ] Retry с exponential backoff для enrichment-запросов (до 3 попыток, tenacity). Устраняет одноразовые сетевые падения enrichment без ручного подсчёта ошибок.
-- [ ] Debug-артефакты: при падении парсера сохранять HTML, JSON-ответ, скриншот (если browser), трассировку. Хранить как workflow artifacts в GitHub Actions.
-- [ ] Общий HTML-extractor: каскад извлечения описания (JSON-LD/microdata через extruct, semantic root main/article, извлечение секций без привязки к заголовкам, fallback на полный текст, site-specific алиасы как последний резорт). Возвращает description + description_source + quality_score.
-- [ ] Перевести хрупкие парсеры на общий extractor: T-Bank, Точка, VK, Avito (fallback), Циан.
-- [ ] CI-тест на хешированные CSS-селекторы: автоматическая проверка, что в новом коде нет точных селекторов по хешированным классам CSS Modules.
-- [ ] Автоматическая эскалация http к browser: по сигналам (не JSON, challenge-page, 403/429, пустой контент, отсутствие structured data).
-- [ ] Наблюдаемость парсеров: поля parser_status, last_success_at, last_item_count, consecutive_failures, browser_fallback_used, enrichment_quality_score в админ-отчёте.
-- [ ] GenericJsonApiParser: декларативные спецификации для простых JSON API. Папка parser_specs/, формат YAML/JSON, маппинг полей через JMESPath.
-- [ ] Onboarding-kit для новых компаний: чеклист, шаблон парсера, шаблон фикстур, контрактные тесты, docs/new_company_checklist.md.
-- [ ] Fetcher-абстракция: парсеры получают контент через fetcher, не ходят в сеть напрямую. Колонка fetch_method в таблице companies.
-- [ ] description_source — фиксировать откуда пришло описание
-- [ ] last_enriched_at
-- [ ] Тестовый режим компании (status в таблице companies)
-- [ ] sanitize_description: вынести общую функцию очистки HTML
-- [ ] Хардинг delivery pipeline по сигналам нагрузки: параллелизация, SQL anti-join вместо клиентского NOT IN, батчинг Telegram-отправки — Wave 6.
-- [ ] Чистка хардкодов источников и общий extractor HTML-секций — Wave 6.
-- [ ] MTS Link: исследовать автоматическое получение токена без хардкода и без ручного env. Порядок вариантов: Playwright/network intercept, regex по HTML/JS, перехват auth-ответа; если не работает — рассмотреть переход на HH как источник вакансий MTS Link — Wave 6.
-- [ ] Аудит всех парсеров на соблюдение контракта enrich() из AGENTS.md: не перезаписывать уже заполненные поля; `description` менять только если новое значение длиннее — Wave 6.
-
-## Wave 7 — AI-фаза
-
-Цель: уточнение данных вакансий через LLM.
-
-Архитектурные решения:
-- AI-результаты хранятся в отдельной таблице vacancy_ai_enrichment (vacancy_id FK, ai_grade, ai_segment, ai_card_summary, ai_model, ai_prompt_version, ai_generated_at, ai_status, ai_error). Таблица vacancies не меняется.
-- При выдаче вакансии — LEFT JOIN: если AI-запись есть и ai_status=success, берём AI-поля; если нет — берём из vacancies.
-- Kill switch: возможность отключить AI целиком (не делать JOIN) или по отдельному полю (игнорировать ai_grade, но брать ai_segment).
-- AI-шаг в пайплайне: после enrich() и _prepare_vacancy(), но до финального сохранения. Отдельная функция ai_enrich(vacancy), не внутри парсеров.
-- Идемпотентность: хеш AI-input (description + title + grade + company), повторный прогон LLM только при смене входных данных или версии промпта.
-
-Задачи:
-- [ ] Создать таблицу vacancy_ai_enrichment
-- [ ] Определение сегмента вакансии (B2B/B2C/e-com/fintech/classified) по описанию — ключевая задача, т.к. внутри экосистем (Сбер, Яндекс, МТС) разные команды относятся к разным отраслям
-- [ ] Определение сегмента на уровне вакансии (не компании): внутри экосистем одна команда может быть e-com, другая — fintech. Временный маппинг category на уровне companies — костыль до AI-фазы.
-- [ ] Уточнение грейда по описанию (few-shot на выборке Senior-вакансий)
-- [ ] Генерация краткого описания для карточки (1 абзац)
-- [ ] Рыночная аналитика зарплат (партнёрство или сбор данных — отдельное исследование)
-- [ ] CJE-вакансии: вернуть в выдачу после AI-классификации описаний (по подстроковому фильтру невозможно — 2 из 5 оказались продуктовыми)
-- [ ] Сбер: PM-вакансии без продуктовых слов в заголовке (например, SB019 Лидер направления по AI). Ловятся только через анализ description
-- [ ] Dodo: enrichment для description доступен (HTML-блоки vacancy_text/vacancy_expectation/vacancy_you_will/vacancy_benefits), но grade в detail endpoint может быть пустым. Проверить полноту данных при появлении PM-вакансий
-- [ ] Дедупликация описаний вакансий между фирменным джоббордом и HH.ru: синтаксические различия (маркеры списков, пробелы, форматирование) делают строковое сравнение ненадёжным. Решение — embeddings + cosine similarity в рамках AI-фазы.
-- [ ] TITLE_STOP_PATTERNS и per-company whitelist удалены в рамках Stream 3A. TITLE_BLACKLIST_PATTERNS используется для диагностики. Задача Wave 7: добавить ai_is_product (bool) в vacancy_ai_enrichment и перенести серую зону на AI-классификацию.
-- [ ] Нормализация заголовков вакансий через LLM: приведение к формату "[Grade] [Функция] Product Manager". Примеры: "Младший менеджер продукта в Маршрутизацию" -> "Junior Growth Product Manager". Функция (growth, technical, AI, platform и т.д.) определяется из описания вакансии.
-- [ ] Gray-зона фильтрации: серая зона из трёхзонной фильтрации (Wave 3) отправляется на AI-классификацию. На вход: title + description. На выход: is_product (bool) + confidence + reason. Убрать паттерн is_product_role — фильтры API не используются как самостоятельный механизм классификации.
-- [ ] content_hash считать после enrichment и _prepare_vacancy
-- [ ] re-enrichment для вакансий с пустым/коротким description
-- [ ] Выделение raw-данных в отдельный журнал / таблицу — Wave 7.
-
-## Wave 8 — HH.ru как источник и валидатор
-
-Цель: использовать HH.ru в двух ролях — как источник вакансий и как валидатор полноты фирменных джоббордов.
-
-- [x] Парсер HH.ru по employer_id (API: api.hh.ru, у каждой компании свой employer_id)
-- [x] Парсер HH по employer_id=1455 реализован в Wave 3A (feat/parser-hh).
-- [ ] Дедупликация через embeddings + cosine similarity (без AI — ненадёжно, fuzzy match по title+company даёт ложные срабатывания)
-- [x] Решение по HH принято: HH используется как единственный источник для компаний без доступного карьерного сайта (parser_name с префиксом hh_) и как валидатор/дообогащение для компаний с фирменным парсером (единый HH-сканер, не отдельные парсеры)
-- [ ] HH.ru как валидатор: для каждой компании сравнивать список вакансий с фирменного сайта и с HH по employer_id. Если вакансия есть на HH, но нет на сайте — сигнал о пропуске.
-- [ ] Публичная документация HH API (api.hh.ru) — использовать для ресерча, не нужно ловить запросы в DevTools.
-- [ ] Трёхзонная фильтрация реализована в Stream 3A (TITLE_EXACT_WHITELIST + TITLE_REGEX_PATTERNS + TITLE_GREY_PATTERNS + TITLE_BLACKLIST_PATTERNS). Для HH-сканера используются те же паттерны из config.py. Серая зона временно включена в whitelist до AI-фазы (Wave 7).
-- [ ] Единый HH-сканер с колонкой hh_employer_id в таблице companies.
-
-## Wave 9 — Рыночная аналитика
-
-Цель: аналитика рынка PM-вакансий на основе накопленных данных.
-
-- [ ] Добавить колонку deactivated_at в таблицу vacancies (фиксировать точный момент закрытия вакансии)
-- [ ] Аналитика времени жизни вакансий: медиана по компаниям и отраслям
-- [ ] Динамика открытий/закрытий по неделям и месяцам
-- [ ] Сезонность найма по отраслям
-- [ ] Интеграция в /stats или отдельный дашборд (Metabase/Grafana на VPS)
-
-## Wave 10 — Инфраструктура
-
-Цель: подготовка к переезду на VPS, расшивка монолитов.
-
-- [ ] Переезд на VPS с бэкапами (когда Vercel станет узким местом; webhook.py заменяется на FastAPI за 20 минут)
-- [ ] ENV-based конфигурация — уже частично реализована, довести до конца
-- [ ] Расшивка main.py: сбор, обогащение, доставка — отдельные модули (естественная необходимость при добавлении AI-шага)
-- [ ] Расшивка bot/handlers.py: onboarding, settings, delivery — отдельные модули
-- [ ] Расшивка SupabaseService на мелкие репозитории по доменам (vacancies, users, delivery)
-- [ ] Дашборд аналитики (Metabase/Grafana) — после переезда на VPS
+- [x] Wave 1: Удалить мёртвый код deliver_vacancies() и send_telegram_message() (delivery/telegram.py).
+- [x] Wave 1: Удалить мёртвый код mark_vacancies_notified() и get_unnotified_vacancies() (database/supabase_client.py).
+- [x] Wave 1: Удалить FINAL_TEXT (bot/handlers.py).
+- [x] Wave 1: Переписать edit_message() через _post() (bot/telegram_api.py).
+- [x] Wave 1: Удалить salary из парсеров Alfa и Sber (parsers/).
+- [x] Wave 1: Переименовать short_description в description (database/, код).
+- [x] Wave 1: Исправить _send_vacancies_chunk() — проверять send_message() перед sent_ids (bot/handlers.py).
+- [x] Wave 1: Сделать TELEGRAM_WEBHOOK_SECRET обязательным (webhook.py).
+- [x] Wave 1: Игнорировать webhook/callback для неизвестных chat_id (webhook.py, database/).
+- [x] Wave 1: Деактивация вакансий per-company при ошибке парсера (main.py).
+- [x] Wave 1: Зафиксировать контракт enrich() в AGENTS.md (AGENTS.md).
+- [x] Wave 1: Привести docs/context.md в актуальное состояние (docs/context.md).
+- [x] Wave 2: Кастомные эмодзи брендов из companies.custom_emoji_id (database/, delivery/telegram.py).
+- [x] Wave 2: Блок «опубликовано» только при реальном published_at (delivery/telegram.py).
+- [x] Wave 2: Сортировка выдачи published_at DESC, затем created_at DESC (database/supabase_client.py).
+- [x] Stream 3A: Добавить Касперский (HH) (parsers/).
+- [x] Stream 3A: Добавить Циан (HH) (parsers/).
+- [x] Stream 3A: Добавить Звук (HH) (parsers/).
+- [x] Stream 3A: Семантическое ядро PM-заголовков, whitelist/blacklist/grey-zone (config.py, scripts/, docs/).
+- [x] Stream 3A: Единая трёхзонная фильтрация и рефакторинг main.py (main.py, config.py).
+- [x] Stream 3B: Определить индустрии (docs/, database/).
+- [x] Stream 3B: Привязать компании к индустриям и проверить распределение (database/).
+- [x] Stream 3B: SQL-миграция category в companies (database/).
+- [x] Stream 3C: Убрать шаг «компании» из онбординга (bot/handlers.py).
+- [x] Stream 3C: Пагинированный /settings со списком компаний и blocked-first (bot/handlers.py).
+- [x] Stream 3C: F8 title_confidence и сортировка выдачи (delivery/, database/).
+- [x] Stream 3C: Виртуальная эмпатия по формату выдачи проведена (docs/).
+- [x] Stream 3C: Кнопка «Показать вакансии» после unmute/unmute_all (`st:deliver`) (bot/handlers.py).
+- [x] Stream 3D: Определить список событий аналитики (bot/handlers.py, database/).
+- [x] Stream 3D: Выбрать хранилище user_events в Supabase (database/).
+- [x] Stream 3D: Zero-impact fire-and-forget логирование событий (database/supabase_client.py, bot/handlers.py).
+- [x] Stream 3D: Redirect `api/go` для vacancy_clicked + 302 (api/go, database/).
+- [x] Stream 3D: Добавить language_code/is_premium/first_name/last_name в users (database/).
+- [x] Stream 3F: Пагинация get_existing_vacancy_hashes() (database/supabase_client.py).
+- [x] Stream 3F: Пагинация get_active_users() (database/supabase_client.py).
+- [x] Stream 3F: Пагинация get_vacancy_stats() (database/supabase_client.py).
+- [x] Stream 3F: Пагинация deactivate_missing_vacancies() для больших наборов (database/supabase_client.py).
+- [x] Stream 3F: Пагинация Yandex-парсера (parsers/yandex.py).
+- [x] Stream 3F: Единое логирование парсеров и per-parser статистика в админ-отчёте (main.py).
+- [x] Stream 3F: Автообновление Chrome UA из CHROME_VERSION (config.py).
+- [x] Wave 4b: CJM-прогон — зафиксировать как выполненный этап (docs/backlog.md).
+- [x] Wave 8: Парсер HH.ru по employer_id (parsers/hh.py).
+- [x] Wave 8: Реализован HH-парсер employer_id=1455 (parsers/hh.py).
+- [x] Wave 8: Решение — HH как источник для hh_* и валидатор для фирменных парсеров (docs/, parsers/hh.py).

@@ -494,3 +494,10 @@
 Было: в ветках mute/unmute/unmute_all, more:stop и st:close использовался `edit_message(..., reply_markup=build_main_reply_keyboard())`, что нарушает контракт Telegram API для `editMessageText`.
 Стало: в этих сценариях выполняется `delete_message` (в try/except), затем отправляется одно `send_message` с тем же текстом; для mute/unmute/unmute_all inline-действие объединено в это же сообщение.
 Причина: ReplyKeyboardMarkup нельзя передавать в editMessageText, а главное reply-меню уже закреплено у пользователя после онбординга и не требует повторной отправки.
+
+### BUG-070: grade_priority не учитывал грейд пользователя
+Файлы: bot/handlers.py, main.py
+Было: _grade_priority возвращала фиксированный приоритет грейда вакансии без учёта пользовательских предпочтений; scheduled delivery вообще не учитывал grade при сортировке.
+Стало: grade_score вычисляет релевантность на основе расстояния до пользовательских грейдов; rank_vacancies используется как единая точка сортировки в on-demand и scheduled.
+Причина: фиксированная шкала ставила Lead+ выше всех для любого пользователя, даже если он выбрал Junior/Middle.
+

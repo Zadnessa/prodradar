@@ -638,7 +638,6 @@ def handle_hub_callback(data, chat_id, message_id, callback_message, db=None):
     if data == "hub:reset":
         db.update_user_filters(chat_id, {})
         db.update_onboarding_step(chat_id, "grade")
-        db.clear_delivery_history(chat_id)
         text, reply_markup = get_step_message("grade", {})
         edit_message(chat_id, message_id, text, reply_markup=reply_markup)
         return
@@ -959,6 +958,14 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
 
     if data == "st:deliver":
         _send_onboarding_batch(chat_id, message_id, db, filters=None)
+        return
+
+    if data == "st:blocked":
+        try:
+            delete_message(chat_id, message_id)
+        except Exception:
+            logging.exception("Не удалось удалить settings-сообщение перед открытием списка blocked")
+        handle_blocked(chat_id, db=db)
         return
 
     if data == "st:pause":

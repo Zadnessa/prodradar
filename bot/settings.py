@@ -56,6 +56,12 @@ def get_settings_menu(user):
             {"text": "Формат", "callback_data": "st:edit:wf"},
             {"text": "Компании", "callback_data": "st:edit:company"},
         ],
+    ])
+
+    if excluded_companies:
+        keyboard.append([{"text": f"Заблокированные ({len(excluded_companies)})", "callback_data": "st:blocked"}])
+
+    keyboard.extend([
         [
             {
                 "text": "▶️ Возобновить" if paused else "⏸ Пауза",

@@ -21,7 +21,6 @@ from bot.telegram_api import send_message
 from database.supabase_client import SupabaseService, compute_content_hash
 from delivery.filters import filter_vacancies_for_user
 from delivery.telegram import format_vacancy_message, send_admin_report
-from enrichment.ai_summary import generate_summary
 from enrichment.normalizer import (
     experience_from_grade,
     grade_from_experience,
@@ -123,8 +122,6 @@ def _prepare_vacancy(vacancy, city_mappings):
             break
     if vacancy.get("city") == "Не указан" and "Удалёнка" in vacancy.get("work_format", ""):
         vacancy["city"] = "Удалёнка"
-    if not vacancy.get("description"):
-        vacancy["description"] = generate_summary(vacancy)
     return vacancy
 
 
@@ -261,171 +258,199 @@ async def run():
         new_vacancies = []
         changed_vacancies = []
         touch_ids = []
+        skipped_count = 0
 
         for vacancy in all_collected:
-            content_hash = compute_content_hash(vacancy)
-            existing_hash = existing_hashes.get(vacancy["id"])
+            try:
+                content_hash = compute_content_hash(vacancy)
+                existing_hash = existing_hashes.get(vacancy["id"])
 
-            if vacancy["id"] in existing_hashes and existing_hash == content_hash:
-                touch_ids.append(vacancy["id"])
+                if vacancy["id"] in existing_hashes and existing_hash == content_hash:
+                    touch_ids.append(vacancy["id"])
+                    continue
+
+                parser = parsers_by_company.get(vacancy.get("company"))
+                if parser:
+                    vacancy = await parser.enrich(session, vacancy)
+
+                _prepare_vacancy(vacancy, city_mappings)
+                vacancy["content_hash"] = content_hash
+
+                if vacancy["id"] in existing_hashes:
+                    changed_vacancies.append(vacancy)
+                else:
+                    new_vacancies.append(vacancy)
+            except Exception as exc:
+                skipped_count += 1
+                logging.warning("Пропущена битая вакансия %s: %s", vacancy.get("id"), exc)
                 continue
 
-            parser = parsers_by_company.get(vacancy.get("company"))
-            if parser:
-                try:
-                    vacancy = await parser.enrich(session, vacancy)
-                except Exception as exc:
-                    logging.warning("Ошибка enrichment для %s: %s", vacancy.get("id"), exc)
-
-            _prepare_vacancy(vacancy, city_mappings)
-            vacancy["content_hash"] = content_hash
-
-            if vacancy["id"] in existing_hashes:
-                changed_vacancies.append(vacancy)
-            else:
-                new_vacancies.append(vacancy)
-
-    db.insert_vacancies(new_vacancies)
-    db.touch_vacancies(touch_ids)
-    db.update_vacancies(changed_vacancies)
-
-    deactivated_count = db.deactivate_missing_vacancies(
-        all_collected_ids,
-        companies=sorted(successful_companies),
-    )
-
-    unchanged_count = len(touch_ids)
-    logging.info(
-        "Новых: %s, изменённых: %s, без изменений: %s, деактивировано: %s",
-        len(new_vacancies),
-        len(changed_vacancies),
-        unchanged_count,
-        deactivated_count,
-    )
-
-    users = db.get_active_users(bot_id="main")
-    companies_map = {c.get("name"): c for c in companies}
-
+    unchanged_count = 0
+    deactivated_count = 0
+    users = []
     sent_count = 0
     failed_users = []
     paused_users = 0
 
-    for user in users:
-        if user.get("paused"):
-            paused_users += 1
-            continue
-
-        chat_id = user.get("chat_id")
-        bot_id = user.get("bot_id") or "main"
+    try:
         try:
-            undelivered = db.get_undelivered_vacancies(chat_id, limit=200)
-            filtered_vacancies = filter_vacancies_for_user(undelivered, user.get("filters") or {})
-            filtered_vacancies = sorted(
-                filtered_vacancies,
-                key=lambda v: (_title_confidence(v.get("title", "")), v.get("published_at") or ""),
-                reverse=True,
-            )
-            db.log_event(
-                chat_id,
-                "vacancy_summary_shown",
-                {
-                    "total": len(filtered_vacancies),
-                    "companies_count": len(
-                        {vacancy.get("company") for vacancy in filtered_vacancies if vacancy.get("company")}
-                    ),
-                    "source": "scheduled",
-                    "scarcity": len(filtered_vacancies) <= 5,
-                    "grade_distribution": _build_grade_distribution(filtered_vacancies),
-                },
-            )
-            announced_ids = db.get_announced_vacancy_ids(chat_id)
-            announced_count = sum(1 for vacancy in filtered_vacancies if vacancy["id"] in announced_ids)
-            new_count = len(filtered_vacancies) - announced_count
-            batch = filtered_vacancies[:10]
+            db.insert_vacancies(new_vacancies)
+        except Exception as exc:
+            logging.exception("Ошибка DB insert_vacancies")
+            parser_errors.append(f"DB insert_vacancies: {exc}")
 
-            if not batch:
-                db.log_event(chat_id, "scheduled_delivery_empty", {"announced_available": announced_count > 0})
-                continue
+        try:
+            db.touch_vacancies(touch_ids)
+        except Exception as exc:
+            logging.exception("Ошибка DB touch_vacancies")
+            parser_errors.append(f"DB touch_vacancies: {exc}")
 
-            if new_count > 0 and announced_count > 0:
-                intro_text = f"{new_count} новых вакансий. Ещё {announced_count} из прошлого выпуска."
-            elif new_count > 0:
-                intro_text = f"{new_count} новых вакансий по твоим фильтрам."
-            else:
-                intro_text = f"Новых вакансий пока нет. {announced_count} из прошлого выпуска всё ещё доступны."
-                send_message(chat_id, intro_text, bot_id=bot_id)
-                continue
+        try:
+            db.update_vacancies(changed_vacancies)
+        except Exception as exc:
+            logging.exception("Ошибка DB update_vacancies")
+            parser_errors.append(f"DB update_vacancies: {exc}")
 
-            send_message(chat_id, intro_text, bot_id=bot_id)
-
-            delivered_ids = []
-            for vacancy in batch:
-                message = format_vacancy_message(
-                    vacancy,
-                    companies_map.get(vacancy.get("company"), {}),
-                    chat_id=chat_id,
-                    source="scheduled",
-                )
-                result = send_message(chat_id, message, bot_id=bot_id)
-                if result:
-                    delivered_ids.append(vacancy["id"])
-                    sent_count += 1
-
-            moscow_now = datetime.now(timezone.utc) + timedelta(hours=3)
-            next_check_text = "Следующая проверка вечером." if moscow_now.hour < 15 else "Следующая проверка утром."
-            remaining = len(filtered_vacancies) - len(delivered_ids)
-            reply_markup = None
-            if remaining > 0:
-                reply_markup = {
-                    "inline_keyboard": [
-                        [
-                            {"text": "📬 Ещё 10", "callback_data": f"more:{len(delivered_ids)}"},
-                            {"text": "✕ Хватит", "callback_data": "more:stop"},
-                        ]
-                    ]
-                }
-            db.mark_delivered(chat_id, delivered_ids, source="scheduled")
-            db.log_event(
-                chat_id,
-                "scheduled_delivery_sent",
-                {
-                    "new_count": new_count,
-                    "announced_count": announced_count,
-                    "delivered_count": len(delivered_ids),
-                    "remaining": remaining,
-                    "has_more_button": remaining > 0,
-                },
-            )
-            send_message(
-                chat_id,
-                f"Показано {len(delivered_ids)} вакансий. {next_check_text}\n\nФильтры — /settings",
-                bot_id=bot_id,
-                reply_markup=reply_markup,
+        try:
+            deactivated_count = db.deactivate_missing_vacancies(
+                all_collected_ids,
+                companies=sorted(successful_companies),
             )
         except Exception as exc:
-            failed_users.append(f"{chat_id}: {exc}")
-            logging.exception("Ошибка отправки пользователю %s", chat_id)
+            logging.exception("Ошибка DB deactivate_missing_vacancies")
+            parser_errors.append(f"DB deactivate_missing_vacancies: {exc}")
 
-    send_admin_report(
-        total=len(all_collected),
-        new_count=len(new_vacancies),
-        changed_count=len(changed_vacancies),
-        unchanged_count=unchanged_count,
-        deactivated_count=deactivated_count,
-        sent_count=sent_count,
-        users_count=len(users),
-        paused_count=paused_users,
-        parser_stats=parser_stats,
-        parser_errors=parser_errors + failed_users,
-    )
+        unchanged_count = len(touch_ids)
+        logging.info(
+            "Новых: %s, изменённых: %s, без изменений: %s, деактивировано: %s, пропущено битых: %s",
+            len(new_vacancies),
+            len(changed_vacancies),
+            unchanged_count,
+            deactivated_count,
+            skipped_count,
+        )
+
+        users = db.get_active_users(bot_id="main")
+        companies_map = {c.get("name"): c for c in companies}
+
+        for user in users:
+            if user.get("paused"):
+                paused_users += 1
+                continue
+
+            chat_id = user.get("chat_id")
+            bot_id = user.get("bot_id") or "main"
+            try:
+                undelivered = db.get_undelivered_vacancies(chat_id, limit=200)
+                filtered_vacancies = filter_vacancies_for_user(undelivered, user.get("filters") or {})
+                filtered_vacancies = sorted(
+                    filtered_vacancies,
+                    key=lambda v: (_title_confidence(v.get("title", "")), v.get("published_at") or ""),
+                    reverse=True,
+                )
+                db.log_event(
+                    chat_id,
+                    "vacancy_summary_shown",
+                    {
+                        "total": len(filtered_vacancies),
+                        "companies_count": len(
+                            {vacancy.get("company") for vacancy in filtered_vacancies if vacancy.get("company")}
+                        ),
+                        "source": "scheduled",
+                        "scarcity": len(filtered_vacancies) <= 5,
+                        "grade_distribution": _build_grade_distribution(filtered_vacancies),
+                    },
+                )
+                announced_ids = db.get_announced_vacancy_ids(chat_id)
+                announced_count = sum(1 for vacancy in filtered_vacancies if vacancy["id"] in announced_ids)
+                new_count = len(filtered_vacancies) - announced_count
+                batch = filtered_vacancies[:10]
+
+                if not batch:
+                    db.log_event(chat_id, "scheduled_delivery_empty", {"announced_available": announced_count > 0})
+                    continue
+
+                if new_count > 0 and announced_count > 0:
+                    intro_text = f"{new_count} новых вакансий. Ещё {announced_count} из прошлого выпуска."
+                elif new_count > 0:
+                    intro_text = f"{new_count} новых вакансий по твоим фильтрам."
+                else:
+                    intro_text = f"Новых вакансий пока нет. {announced_count} из прошлого выпуска всё ещё доступны."
+                    send_message(chat_id, intro_text, bot_id=bot_id)
+                    continue
+
+                send_message(chat_id, intro_text, bot_id=bot_id)
+
+                delivered_ids = []
+                for vacancy in batch:
+                    message = format_vacancy_message(
+                        vacancy,
+                        companies_map.get(vacancy.get("company"), {}),
+                        chat_id=chat_id,
+                        source="scheduled",
+                    )
+                    result = send_message(chat_id, message, bot_id=bot_id)
+                    if result:
+                        delivered_ids.append(vacancy["id"])
+                        sent_count += 1
+
+                moscow_now = datetime.now(timezone.utc) + timedelta(hours=3)
+                next_check_text = "Следующая проверка вечером." if moscow_now.hour < 15 else "Следующая проверка утром."
+                remaining = len(filtered_vacancies) - len(delivered_ids)
+                reply_markup = None
+                if remaining > 0:
+                    reply_markup = {
+                        "inline_keyboard": [
+                            [
+                                {"text": "📬 Ещё 10", "callback_data": f"more:{len(delivered_ids)}"},
+                                {"text": "✕ Хватит", "callback_data": "more:stop"},
+                            ]
+                        ]
+                    }
+                db.mark_delivered(chat_id, delivered_ids, source="scheduled")
+                db.log_event(
+                    chat_id,
+                    "scheduled_delivery_sent",
+                    {
+                        "new_count": new_count,
+                        "announced_count": announced_count,
+                        "delivered_count": len(delivered_ids),
+                        "remaining": remaining,
+                        "has_more_button": remaining > 0,
+                    },
+                )
+                send_message(
+                    chat_id,
+                    f"Показано {len(delivered_ids)} вакансий. {next_check_text}\n\nФильтры — /settings",
+                    bot_id=bot_id,
+                    reply_markup=reply_markup,
+                )
+            except Exception as exc:
+                failed_users.append(f"{chat_id}: {exc}")
+                logging.exception("Ошибка отправки пользователю %s", chat_id)
+    finally:
+        send_admin_report(
+            total=len(all_collected),
+            new_count=len(new_vacancies),
+            changed_count=len(changed_vacancies),
+            unchanged_count=unchanged_count,
+            deactivated_count=deactivated_count,
+            skipped_count=skipped_count,
+            sent_count=sent_count,
+            users_count=len(users),
+            paused_count=paused_users,
+            parser_stats=parser_stats,
+            parser_errors=parser_errors + failed_users,
+        )
 
     logging.info(
-        "Итог: собрано=%s, новые=%s, изменённые=%s, без изменений=%s, деактивировано=%s, разослано=%s, подписчики=%s, пауза=%s, ошибок=%s",
+        "Итог: собрано=%s, новые=%s, изменённые=%s, без изменений=%s, деактивировано=%s, пропущено битых=%s, разослано=%s, подписчики=%s, пауза=%s, ошибок=%s",
         len(all_collected),
         len(new_vacancies),
         len(changed_vacancies),
         unchanged_count,
         deactivated_count,
+        skipped_count,
         sent_count,
         len(users),
         paused_users,

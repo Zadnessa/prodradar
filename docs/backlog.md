@@ -19,12 +19,12 @@
 - [ ] T-004 Сводка новых vs просмотренных: при любом входе в «Вакансии» (on-demand, after onboarding, after settings save) если есть и новые, и ранее announced вакансии — показывать «N новых + M ранее просмотренных» с кнопками «Показать все» / «Только новые» (bot/handlers.py, database/supabase_client.py).
 - [ ] T-005 В меню /settings показывать кнопку «Заблокированные (N)» только если excluded_companies не пуст; по нажатию вызывать handle_blocked — список замьюченных компаний с /unmute-командами (bot/handlers.py, bot/settings.py).
 - [ ] T-006 BUG-067 — не передавать ReplyKeyboardMarkup в editMessageText (bot/handlers.py, bot/telegram_api.py).
-- [ ] T-007 Толерантная обработка битых вакансий: try/except вокруг _prepare_vacancy для каждой вакансии; битая запись пропускается без сохранения в БД; skipped_count агрегируется и выводится в admin report (main.py).
-- [ ] T-008 Устойчивое сохранение: insert/update/touch/deactivate чанками по 50; retry при transient-ошибках Supabase; при data error в чанке — поштучный fallback с логированием проблемной записи; admin report отправляется в finally даже при частичном падении пайплайна (main.py, database/supabase_client.py).
-- [ ] T-009 SELECT без source_json — убрать поле из runtime-запросов к vacancies (database/supabase_client.py).
+- [x] T-007 Толерантная обработка битых вакансий: try/except вокруг _prepare_vacancy для каждой вакансии; битая запись пропускается без сохранения в БД; skipped_count агрегируется и выводится в admin report (main.py).
+- [x] T-008 Устойчивое сохранение: insert/update/touch/deactivate чанками по 50; retry при transient-ошибках Supabase; при data error в чанке — поштучный fallback с логированием проблемной записи; admin report отправляется в finally даже при частичном падении пайплайна (main.py, database/supabase_client.py).
+- [x] T-009 SELECT без source_json — убрать поле из runtime-запросов к vacancies (database/supabase_client.py).
 - [ ] T-010 Контрактный тест: для каждого парсера из PARSER_REGISTRY прогнать parse() на фикстуре и проверить, что все vacancy["company"] присутствуют в companies.name; тест падает при рассинхроне (tests/, parsers/, fixtures/).
-- [ ] T-011 insert_vacancies заменить на upsert с чанками по 50 (database/supabase_client.py).
-- [ ] T-012 Удалить вызов generate_summary() из _prepare_vacancy (main.py).
+- [x] T-011 insert_vacancies заменить на upsert с чанками по 50 (database/supabase_client.py).
+- [x] T-012 Удалить вызов generate_summary() из _prepare_vacancy (main.py).
 - [ ] T-013 MTS enrich — description только если новое длиннее текущего (parsers/mts.py).
 - [ ] T-014 Ручная проверка: порядок этапов в main.py (parse → blacklist → whitelist → content_hash → enrich → normalize) соответствует AGENTS.md; при расхождении — зафиксировать задачу на фикс (main.py, AGENTS.md).
 - [ ] T-015 Ручная проверка: callback-префиксы, архитектурные правила и контракты в AGENTS.md и context.md соответствуют реальному коду; устаревшие пункты — удалить или обновить (AGENTS.md, docs/context.md).
@@ -137,6 +137,11 @@
 
 ## Архив
 
+- [x] Толерантная обработка битых вакансий: try/except вокруг _prepare_vacancy для каждой вакансии; битая запись пропускается без сохранения в БД; skipped_count агрегируется и выводится в admin report (main.py).
+- [x] Устойчивое сохранение: insert/update/touch/deactivate чанками по 50; retry при transient-ошибках Supabase; при data error в чанке — поштучный fallback с логированием проблемной записи; admin report отправляется в finally даже при частичном падении пайплайна (main.py, database/supabase_client.py).
+- [x] SELECT без source_json — убрать поле из runtime-запросов к vacancies (database/supabase_client.py).
+- [x] insert_vacancies заменить на upsert с чанками по 50 (database/supabase_client.py).
+- [x] Удалить вызов generate_summary() из _prepare_vacancy (main.py).
 - [x] Удалить мёртвый код deliver_vacancies() и send_telegram_message() (delivery/telegram.py).
 - [x] Удалить мёртвый код mark_vacancies_notified() и get_unnotified_vacancies() (database/supabase_client.py).
 - [x] Удалить FINAL_TEXT (bot/handlers.py).

@@ -176,6 +176,7 @@ def send_admin_report(
     changed_count=0,
     unchanged_count=0,
     deactivated_count=0,
+    skipped_count=0,
     parser_stats=None,
 ):
     admin_chat_id = config.ADMIN_CHAT_ID
@@ -212,6 +213,7 @@ def send_admin_report(
         f"Изменённых: {changed_count}\n"
         f"Без изменений: {unchanged_count}\n"
         f"Деактивировано: {deactivated_count}\n"
+        f"Пропущено (битые): {skipped_count}\n"
         f"{parser_stats_block}"
         f"Отправлено: {sent_count} сообщений на {users_count} подписчиков\n"
         f"На паузе: {paused_count}\n"

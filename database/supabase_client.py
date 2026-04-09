@@ -85,7 +85,8 @@ class SupabaseService:
 
         last_seen_at = datetime.now(timezone.utc).isoformat()
         payload = [{**vacancy, "last_seen_at": last_seen_at, "is_active": True} for vacancy in vacancies]
-        self.client.table("vacancies").insert(payload).execute()
+        for chunk in self._chunked(payload, 50):
+            self.client.table("vacancies").upsert(chunk, on_conflict="id").execute()
         return len(payload)
 
     def touch_vacancies(self, vacancy_ids):
@@ -176,7 +177,13 @@ class SupabaseService:
                 break
             delivery_offset += page_size
 
-        query = self.client.table("vacancies").select("*").eq("is_active", True)
+        query = (
+            self.client.table("vacancies")
+            .select(
+                "id,title,company,grade,city,work_format,experience,description,url,published_at,created_at,is_active,content_hash,title_confidence"
+            )
+            .eq("is_active", True)
+        )
         if delivered_ids:
             query = query.not_.in_("id", list(delivered_ids))
 

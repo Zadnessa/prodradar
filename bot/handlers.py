@@ -2,6 +2,7 @@
 
 import logging
 import re
+from collections import defaultdict
 from bot.onboarding import (
     CITY_OPTIONS,
     GRADE_OPTIONS,
@@ -30,6 +31,7 @@ from bot.telegram_api import build_main_reply_keyboard, build_reply_keyboard_rem
 from database.supabase_client import SupabaseService
 from delivery.filters import filter_vacancies_for_user
 from delivery.telegram import format_company_emoji, format_vacancy_message
+from config import TITLE_BOOST_GROUPS
 
 
 def _pluralize(number, one, few, many):
@@ -146,6 +148,78 @@ def _has_active_core_filters(filters):
     return any(bool(filters.get(key)) for key in ("grades", "cities", "work_formats"))
 
 
+def _title_boost(title):
+    lowered_title = (title or "").lower()
+    for boost in (3, 2, 1):
+        for pattern in TITLE_BOOST_GROUPS.get(boost, []):
+            if pattern in lowered_title:
+                return boost
+    return 0
+
+
+def _grade_priority(grade):
+    normalized = (grade or "").strip().lower()
+    priorities = {
+        "lead+": 6,
+        "senior": 5,
+        "middle+": 4,
+        "middle-senior": 3,
+        "middle": 2,
+        "junior": 1,
+    }
+    return priorities.get(normalized, 0)
+
+
+def _vacancy_sort_key(vacancy):
+    return (
+        _title_boost(vacancy.get("title")),
+        vacancy.get("title_confidence") or 0,
+        _grade_priority(vacancy.get("grade")),
+        vacancy.get("published_at") or "",
+    )
+
+
+def _build_showcase_batch(vacancies, limit=10):
+    grouped_vacancies = defaultdict(list)
+    for vacancy in vacancies:
+        grouped_vacancies[vacancy.get("company")].append(vacancy)
+
+    company_representatives = [max(company_vacancies, key=_vacancy_sort_key) for company_vacancies in grouped_vacancies.values()]
+    company_representatives.sort(key=_vacancy_sort_key, reverse=True)
+
+    showcase = company_representatives[:limit]
+    selected_ids = {vacancy.get("id") for vacancy in showcase if vacancy.get("id")}
+    if len(showcase) >= limit:
+        return showcase
+
+    remaining_vacancies = []
+    for company_vacancies in grouped_vacancies.values():
+        sorted_company_vacancies = sorted(company_vacancies, key=_vacancy_sort_key, reverse=True)
+        remaining_vacancies.extend(
+            vacancy for vacancy in sorted_company_vacancies if vacancy.get("id") not in selected_ids
+        )
+
+    remaining_vacancies.sort(key=_vacancy_sort_key, reverse=True)
+    for vacancy in remaining_vacancies:
+        if len(showcase) >= limit:
+            break
+        showcase.append(vacancy)
+
+    return showcase
+
+
+def _count_delivered_before_request(db, chat_id):
+    result = (
+        db.client.table("user_vacancy_delivery")
+        .select("vacancy_id", count="exact")
+        .eq("user_chat_id", chat_id)
+        .eq("status", "delivered")
+        .limit(1)
+        .execute()
+    )
+    return result.count or 0
+
+
 def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chunk_size=10, only_new=False):
     companies_list = db.get_enabled_companies()
     companies_map = {company.get("name"): company for company in companies_list}
@@ -155,7 +229,15 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chu
     if only_new:
         announced_ids = db.get_announced_vacancy_ids(chat_id)
         filtered = [vacancy for vacancy in filtered if vacancy.get("id") not in announced_ids]
-    batch = filtered if chunk_size is None else filtered[:chunk_size]
+
+    delivered_count_before_request = _count_delivered_before_request(db, chat_id)
+    sorted_filtered = sorted(filtered, key=_vacancy_sort_key, reverse=True)
+    if offset == 0:
+        ranked_batch = _build_showcase_batch(sorted_filtered)
+    else:
+        ranked_batch = sorted_filtered
+
+    batch = ranked_batch if chunk_size is None else ranked_batch[:chunk_size]
 
     if not batch:
         try:
@@ -206,12 +288,19 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chu
 
     if total > shown_count and sent_count > 0:
         if offset == 0:
-            navigation_text = (
-                f"Показано {shown_count} из {total}\n\n"
-                "Если пока не нашёл нужное — в следующих может быть «та самая» вакансия. "
-                "Я мониторю эти компании каждый день и пришлю новые, как только появятся.\n\n"
-                "Что дальше?"
-            )
+            if delivered_count_before_request > 0:
+                navigation_text = (
+                    f"Показано {shown_count} из {total}\n\n"
+                    "Продолжаю мониторить рынок два раза в день и автоматически пришлю всё новое.\n\n"
+                    "Что дальше?"
+                )
+            else:
+                navigation_text = (
+                    f"Показано {shown_count} из {total}\n\n"
+                    "Я мониторю рынок два раза в день и автоматически пришлю новые вакансии.\n"
+                    "Если пока не нашёл нужное — не останавливайся, дальше может быть именно твоя роль.\n\n"
+                    "Что дальше?"
+                )
         else:
             navigation_text = f"Показано {shown_count} из {total}"
         try:
@@ -304,7 +393,7 @@ def _send_onboarding_batch(chat_id, message_id, db, filters):
     elif has_active_filters:
         prompt = (
             f"Нашёл {total} {vacancies_word} в {companies_count} {companies_word}.\n\n"
-            "Сейчас показываю по дате — от свежих к старым. Умная сортировка и фильтрация шума — очень скоро!\n\n"
+            "Сначала покажу витрину: по одной самой релевантной вакансии от компании.\n\n"
             "Ненужные компании можно отключить в /settings"
         )
         keyboard = {
@@ -319,7 +408,7 @@ def _send_onboarding_batch(chat_id, message_id, db, filters):
         prompt = (
             f"Нашёл {total} {vacancies_word} в {companies_count} {companies_word} по всему рынку — "
             "фильтры сейчас выключены.\n\n"
-            "Сейчас показываю по дате — от свежих к старым.\n\n"
+            "Сначала покажу витрину: по одной самой релевантной вакансии от компании.\n\n"
             "Если хочешь точнее, настраивай фильтры в /settings."
         )
         keyboard = {

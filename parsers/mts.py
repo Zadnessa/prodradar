@@ -193,6 +193,10 @@ class MtsParser(BaseParser):
                 blocks.append(value)
 
         if blocks:
-            vacancy["description"] = "\n\n".join(blocks)
+            new_description = "\n\n".join(blocks)
+            current_description = vacancy.get("description") or ""
+            if len(new_description) > len(current_description):
+                vacancy["description"] = new_description
 
         return vacancy
+

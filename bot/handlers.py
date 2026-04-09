@@ -31,6 +31,7 @@ from bot.telegram_api import build_main_reply_keyboard, build_reply_keyboard_rem
 from database.supabase_client import SupabaseService
 from delivery.filters import filter_vacancies_for_user
 from delivery.telegram import format_company_emoji, format_vacancy_message
+from delivery.ranking import title_confidence
 from config import TITLE_BOOST_GROUPS
 
 
@@ -173,7 +174,7 @@ def _grade_priority(grade):
 def _vacancy_sort_key(vacancy):
     return (
         _title_boost(vacancy.get("title")),
-        vacancy.get("title_confidence") or 0,
+        title_confidence(vacancy.get("title", "")),
         _grade_priority(vacancy.get("grade")),
         vacancy.get("published_at") or "",
     )
@@ -746,7 +747,19 @@ def handle_main_keyboard_text(chat_id, text, db=None):
     if normalized_text == "вакансии":
         loader = send_message(chat_id, "⏳ Подбираю вакансии...", reply_markup=None)
         if loader and loader.get("message_id"):
-            _send_onboarding_batch(chat_id, loader["message_id"], db, filters=None)
+            try:
+                _send_onboarding_batch(chat_id, loader["message_id"], db, filters=None)
+            except Exception:
+                logging.exception("Не удалось выполнить on-demand выдачу из главной клавиатуры")
+                try:
+                    edit_message(
+                        chat_id,
+                        loader["message_id"],
+                        "Не удалось загрузить вакансии. Попробуй ещё раз.",
+                        reply_markup=None,
+                    )
+                except Exception:
+                    logging.exception("Не удалось обновить лоадер после ошибки on-demand выдачи")
         else:
             send_message(chat_id, "Не удалось запустить выдачу. Попробуй ещё раз.")
         return True

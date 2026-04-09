@@ -204,6 +204,18 @@
 Стало: названия приведены к русским значениям, совпадающим со справочником компаний.
 Причина: значения в парсерах и справочнике Supabase не были синхронизированы.
 
+### BUG-068: title_confidence всегда NULL в on-demand выдаче
+Файл: database/supabase_client.py, bot/handlers.py
+Было: get_undelivered_vacancies запрашивал колонку title_confidence, которой нет в таблице vacancies; _vacancy_sort_key получал NULL и сортировка по confidence не работала.
+Стало: title_confidence вычисляется on-the-fly через classify_title из delivery/ranking.py; колонка убрана из SELECT.
+Причина: при реализации витрины (T-001) функция ранжирования ожидала значение из БД, но запись title_confidence в словарь вакансии при upsert не была добавлена.
+
+### BUG-069: лоадер зависает при ошибке в handle_main_keyboard_text
+Файл: bot/handlers.py
+Было: handle_main_keyboard_text вызывал _send_onboarding_batch без try/except; при исключении сообщение "Подбираю вакансии..." оставалось навсегда.
+Стало: вызов обёрнут в try/except; при ошибке лоадер редактируется в сообщение об ошибке.
+Причина: защитная обёртка BUG-032 покрывала внутренность _send_onboarding_batch, но не внешний вызов из handle_main_keyboard_text.
+
 ## Шаблон для новых записей
 
 ### BUG-NNN: краткий заголовок

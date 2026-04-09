@@ -476,3 +476,9 @@
 Было: inline_keyboard собирался через конкатенацию списков, и кнопка «Хватит» попадала вложенным списком в ряд кнопок.
 Стало: keyboard разделён на два отдельных ряда: (1) «Ещё 10/Показать оставшиеся N» + «Все (N)», (2) «Хватит».
 Причина: Telegram API ожидает массив рядов, где каждый ряд — список кнопок-словарей без дополнительной вложенности.
+
+### BUG-067: ReplyKeyboardMarkup передавался в editMessageText в callback-сценариях
+Файл: bot/handlers.py
+Было: в ветках mute/unmute/unmute_all, more:stop и st:close использовался `edit_message(..., reply_markup=build_main_reply_keyboard())`, что нарушает контракт Telegram API для `editMessageText`.
+Стало: в этих сценариях выполняется `delete_message` (в try/except), затем отправляется одно `send_message` с тем же текстом; для mute/unmute/unmute_all inline-действие объединено в это же сообщение.
+Причина: ReplyKeyboardMarkup нельзя передавать в editMessageText, а главное reply-меню уже закреплено у пользователя после онбординга и не требует повторной отправки.

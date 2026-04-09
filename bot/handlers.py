@@ -254,7 +254,7 @@ def _send_onboarding_batch(chat_id, message_id, db, filters):
 
     if total == 0:
         zero_state_text = _get_zero_state_text(chat_id, db, effective_filters)
-        edit_message(chat_id, message_id, zero_state_text, reply_markup=build_main_reply_keyboard())
+        edit_message(chat_id, message_id, zero_state_text, reply_markup=None)
         db.log_event(chat_id, "vacancy_empty_result", {"reason": _get_zero_reason(zero_state_text)})
         return
 
@@ -629,12 +629,15 @@ def handle_more_callback(data, chat_id, message_id, callback_message, db=None):
         filtered = filter_vacancies_for_user(undelivered, filters)
         remaining_ids = [vacancy.get("id") for vacancy in filtered if vacancy.get("id")]
         db.mark_announced(chat_id, remaining_ids)
-        edit_message(
+        try:
+            delete_message(chat_id, message_id)
+        except Exception:
+            logging.exception("Не удалось удалить сообщение more:stop перед финальным ответом")
+        send_message(
             chat_id,
-            message_id,
             "Остальные пришлю в ближайшей рассылке — проверяю утром и вечером.\n\n"
             "Ещё вакансии — /settings",
-            reply_markup=build_main_reply_keyboard(),
+            reply_markup=None,
         )
         db.log_event(chat_id, "vacancy_stopped", {"remaining": len(remaining_ids)})
         return
@@ -918,7 +921,11 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
         return
 
     if data == "st:close":
-        edit_message(chat_id, message_id, "Настройки сохранены.", reply_markup=build_main_reply_keyboard())
+        try:
+            delete_message(chat_id, message_id)
+        except Exception:
+            logging.exception("Не удалось удалить settings-сообщение перед закрытием")
+        send_message(chat_id, "Настройки сохранены.", reply_markup=None)
         return
 
     if data in {"st:menu", "st:back"}:
@@ -1096,18 +1103,16 @@ def handle_mute_callback(data, chat_id, message_id, db=None):
         else:
             text = f"Готово, {name} заблокирована.\n\nЗаблокированные: /blocked"
 
-        edit_message(
-            chat_id,
-            message_id,
-            text,
-            reply_markup=build_main_reply_keyboard(),
-        )
+        try:
+            delete_message(chat_id, message_id)
+        except Exception:
+            logging.exception("Не удалось удалить mute-сообщение перед финальным ответом")
         send_message(
             chat_id,
-            "Управлять компаниями можно в /settings.",
+            text,
             reply_markup={
                 "inline_keyboard": [[
-                    {"text": "Заблокировать другие компании", "callback_data": "st:edit:company"}
+                    {"text": "Управление компаниями", "callback_data": "st:edit:company"}
                 ]]
             },
         )
@@ -1137,15 +1142,13 @@ def handle_mute_callback(data, chat_id, message_id, db=None):
         filters["excluded_companies"] = [company_name for company_name in excluded_companies if company_name != name]
         db.update_user_filters(chat_id, filters)
 
-        edit_message(
-            chat_id,
-            message_id,
-            f"Готово, вакансии от {name} снова будут приходить.\n\nЗаблокированные: /blocked",
-            reply_markup=build_main_reply_keyboard(),
-        )
+        try:
+            delete_message(chat_id, message_id)
+        except Exception:
+            logging.exception("Не удалось удалить unmute-сообщение перед финальным ответом")
         send_message(
             chat_id,
-            "Можешь сразу посмотреть новые вакансии:",
+            f"Готово, вакансии от {name} снова будут приходить.\n\nЗаблокированные: /blocked",
             reply_markup={
                 "inline_keyboard": [[
                     {"text": f"📬 Показать вакансии от {name}", "callback_data": "st:deliver"}
@@ -1166,15 +1169,13 @@ def handle_mute_callback(data, chat_id, message_id, db=None):
         excluded_count = len([str(v).strip() for v in (filters.get("excluded_companies") or []) if str(v).strip()])
         filters["excluded_companies"] = []
         db.update_user_filters(chat_id, filters)
-        edit_message(
-            chat_id,
-            message_id,
-            "Все компании разблокированы.",
-            reply_markup=build_main_reply_keyboard(),
-        )
+        try:
+            delete_message(chat_id, message_id)
+        except Exception:
+            logging.exception("Не удалось удалить unmute_all-сообщение перед финальным ответом")
         send_message(
             chat_id,
-            "Можешь сразу посмотреть новые вакансии:",
+            "Все компании разблокированы.",
             reply_markup={
                 "inline_keyboard": [[
                     {"text": "📬 Показать вакансии", "callback_data": "st:deliver"}

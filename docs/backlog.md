@@ -18,7 +18,7 @@
 - [ ] T-003 hub:reset: убрать вызов clear_delivery_history(); сброс обнуляет только фильтры и перезапускает онбординг, ранее доставленные вакансии остаются в user_vacancy_delivery (bot/handlers.py).
 - [ ] T-004 Сводка новых vs просмотренных: при любом входе в «Вакансии» (on-demand, after onboarding, after settings save) если есть и новые, и ранее announced вакансии — показывать «N новых + M ранее просмотренных» с кнопками «Показать все» / «Только новые» (bot/handlers.py, database/supabase_client.py).
 - [ ] T-005 В меню /settings показывать кнопку «Заблокированные (N)» только если excluded_companies не пуст; по нажатию вызывать handle_blocked — список замьюченных компаний с /unmute-командами (bot/handlers.py, bot/settings.py).
-- [ ] T-006 BUG-067 — не передавать ReplyKeyboardMarkup в editMessageText (bot/handlers.py, bot/telegram_api.py).
+- [x] T-006 BUG-067 — не передавать ReplyKeyboardMarkup в editMessageText (bot/handlers.py, bot/telegram_api.py).
 - [x] T-007 Толерантная обработка битых вакансий: try/except вокруг _prepare_vacancy для каждой вакансии; битая запись пропускается без сохранения в БД; skipped_count агрегируется и выводится в admin report (main.py).
 - [x] T-008 Устойчивое сохранение: insert/update/touch/deactivate чанками по 50; retry при transient-ошибках Supabase; при data error в чанке — поштучный fallback с логированием проблемной записи; admin report отправляется в finally даже при частичном падении пайплайна (main.py, database/supabase_client.py).
 - [x] T-009 SELECT без source_json — убрать поле из runtime-запросов к vacancies (database/supabase_client.py).
@@ -35,7 +35,7 @@
 - [ ] T-020 Выполнить проверки после финального сброса и полного прогона парсеров (main.py, database/).
 - [ ] T-021 Ручной тест-прогон: пройти сценарии /start (новый), /start (returning), онбординг полный цикл, quick-path, settings toggle, mute/unmute/unmute_all, /blocked, пагинация (Ещё 10, Все, Хватит), scheduled-рассылка, /stats, /stop; чеклист составляется отдельно перед прогоном (bot/, delivery/, main.py).
 - [ ] T-022 Scheduled-intro без «по твоим фильтрам» для quick-path пользователей (bot/handlers.py).
-- [ ] T-023 Уплотнить mute/unmute/unmute_all: каждый сценарий завершается одним сообщением (edit) с inline-кнопкой действия, без второго дублирующего send_message; делать совместно с BUG-067 (bot/handlers.py).
+- [x] T-023 Уплотнить mute/unmute/unmute_all: каждый сценарий завершается одним сообщением (edit) с inline-кнопкой действия, без второго дублирующего send_message; делать совместно с BUG-067 (bot/handlers.py).
 - [ ] T-024 Полная ревизия текстов бота — строго после функциональных тестов (bot/).
 
 ## После релиза
@@ -182,6 +182,8 @@
 - [x] Пагинация Yandex-парсера (parsers/yandex.py).
 - [x] Единое логирование парсеров и per-parser статистика в админ-отчёте (main.py).
 - [x] Автообновление Chrome UA из CHROME_VERSION (config.py).
+- [x] BUG-067 — не передавать ReplyKeyboardMarkup в editMessageText (bot/handlers.py, bot/telegram_api.py).
+- [x] Уплотнить mute/unmute/unmute_all: каждый сценарий завершается одним сообщением (edit) с inline-кнопкой действия, без второго дублирующего send_message; делать совместно с BUG-067 (bot/handlers.py).
 - [x] CJM-прогон — зафиксировать как выполненный этап (docs/backlog.md).
 - [x] Парсер HH.ru по employer_id (parsers/hh.py).
 - [x] Реализован HH-парсер employer_id=1455 (parsers/hh.py).

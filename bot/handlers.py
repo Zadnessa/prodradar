@@ -31,7 +31,7 @@ from bot.telegram_api import build_main_reply_keyboard, build_reply_keyboard_rem
 from database.supabase_client import SupabaseService
 from delivery.filters import filter_vacancies_for_user
 from delivery.telegram import format_company_emoji, format_vacancy_message
-from delivery.ranking import title_confidence
+from delivery.ranking import grade_score, rank_vacancies
 from config import TITLE_BOOST_GROUPS
 
 
@@ -158,35 +158,24 @@ def _title_boost(title):
     return 0
 
 
-def _grade_priority(grade):
-    normalized = (grade or "").strip().lower()
-    priorities = {
-        "lead+": 6,
-        "senior": 5,
-        "middle+": 4,
-        "middle-senior": 3,
-        "middle": 2,
-        "junior": 1,
-    }
-    return priorities.get(normalized, 0)
 
-
-def _vacancy_sort_key(vacancy):
-    return (
-        _title_boost(vacancy.get("title")),
-        title_confidence(vacancy.get("title", "")),
-        _grade_priority(vacancy.get("grade")),
-        vacancy.get("published_at") or "",
-    )
-
-
-def _build_showcase_batch(vacancies, limit=10):
+def _build_showcase_batch(vacancies, user_grades, limit=10):
     grouped_vacancies = defaultdict(list)
     for vacancy in vacancies:
         grouped_vacancies[vacancy.get("company")].append(vacancy)
 
-    company_representatives = [max(company_vacancies, key=_vacancy_sort_key) for company_vacancies in grouped_vacancies.values()]
-    company_representatives.sort(key=_vacancy_sort_key, reverse=True)
+    company_representatives = []
+    for company_vacancies in grouped_vacancies.values():
+        company_vacancies = sorted(
+            company_vacancies,
+            key=lambda vacancy: grade_score(vacancy.get("grade"), user_grades),
+            reverse=True,
+        )
+        ranked_company_vacancies = rank_vacancies(company_vacancies, user_grades, title_boost_fn=_title_boost)
+        if ranked_company_vacancies:
+            company_representatives.append(ranked_company_vacancies[0])
+
+    company_representatives = rank_vacancies(company_representatives, user_grades, title_boost_fn=_title_boost)
 
     showcase = company_representatives[:limit]
     selected_ids = {vacancy.get("id") for vacancy in showcase if vacancy.get("id")}
@@ -195,12 +184,17 @@ def _build_showcase_batch(vacancies, limit=10):
 
     remaining_vacancies = []
     for company_vacancies in grouped_vacancies.values():
-        sorted_company_vacancies = sorted(company_vacancies, key=_vacancy_sort_key, reverse=True)
+        company_vacancies = sorted(
+            company_vacancies,
+            key=lambda vacancy: grade_score(vacancy.get("grade"), user_grades),
+            reverse=True,
+        )
+        ranked_company_vacancies = rank_vacancies(company_vacancies, user_grades, title_boost_fn=_title_boost)
         remaining_vacancies.extend(
-            vacancy for vacancy in sorted_company_vacancies if vacancy.get("id") not in selected_ids
+            vacancy for vacancy in ranked_company_vacancies if vacancy.get("id") not in selected_ids
         )
 
-    remaining_vacancies.sort(key=_vacancy_sort_key, reverse=True)
+    remaining_vacancies = rank_vacancies(remaining_vacancies, user_grades, title_boost_fn=_title_boost)
     for vacancy in remaining_vacancies:
         if len(showcase) >= limit:
             break
@@ -232,9 +226,11 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chu
         filtered = [vacancy for vacancy in filtered if vacancy.get("id") not in announced_ids]
 
     delivered_count_before_request = _count_delivered_before_request(db, chat_id)
-    sorted_filtered = sorted(filtered, key=_vacancy_sort_key, reverse=True)
+    user = db.get_user(chat_id) or {}
+    user_grades = ((user.get("filters") or {}).get("grades")) or []
+    sorted_filtered = rank_vacancies(filtered, user_grades, title_boost_fn=_title_boost)
     if offset == 0:
-        ranked_batch = _build_showcase_batch(sorted_filtered)
+        ranked_batch = _build_showcase_batch(sorted_filtered, user_grades)
     else:
         ranked_batch = sorted_filtered
 

@@ -13,7 +13,7 @@
 
 ## До релиза
 
-- [ ] T-001 Витрина: заменить _grade_priority на grade_score по матрице пользовательского грейда; синхронизировать ранжирование on-demand и scheduled через delivery/ranking.py (delivery/ranking.py, bot/handlers.py, main.py).
+- [x] Витрина: заменить _grade_priority на grade_score по матрице пользовательского грейда; синхронизировать ранжирование on-demand и scheduled через delivery/ranking.py (delivery/ranking.py, bot/handlers.py, main.py).
 - [x] T-002 Quick-path сводка: после ob:quick первая сводка явно сообщает «показываю весь рынок без фильтров» и предлагает /settings для настройки; strict_mode disclaimer не показывается quick-path пользователям (bot/handlers.py, bot/onboarding.py).
 - [x] T-004 Сводка новых vs просмотренных: при любом входе в «Вакансии» (on-demand, after onboarding, after settings save) если есть и новые, и ранее announced вакансии — показывать «N новых + M ранее просмотренных» с кнопками «Показать все» / «Только новые» (bot/handlers.py, database/supabase_client.py).
 - [x] T-006 BUG-067 — не передавать ReplyKeyboardMarkup в editMessageText (bot/handlers.py, bot/telegram_api.py).
@@ -134,6 +134,7 @@
 
 ## Архив
 
+- [x] Витрина: заменить _grade_priority на grade_score по матрице пользовательского грейда; синхронизировать ранжирование on-demand и scheduled через delivery/ranking.py (delivery/ranking.py, bot/handlers.py, main.py).
 - [x] hub:reset: убрать вызов clear_delivery_history(); сброс обнуляет только фильтры и перезапускает онбординг, ранее доставленные вакансии остаются в user_vacancy_delivery (bot/handlers.py).
 - [x] В меню /settings показывать кнопку «Заблокированные (N)» только если excluded_companies не пуст; по нажатию вызывать handle_blocked — список замьюченных компаний с /unmute-командами (bot/handlers.py, bot/settings.py).
 - [x] Толерантная обработка битых вакансий: try/except вокруг _prepare_vacancy для каждой вакансии; битая запись пропускается без сохранения в БД; skipped_count агрегируется и выводится в admin report (main.py).

@@ -13,7 +13,7 @@ from config import GRADE_OVERRIDE_PATTERNS, TITLE_BLACKLIST_PATTERNS, TITLE_PREF
 from bot.telegram_api import send_message
 from database.supabase_client import SupabaseService, compute_content_hash
 from delivery.filters import filter_vacancies_for_user
-from delivery.ranking import classify_title, title_confidence
+from delivery.ranking import classify_title, rank_vacancies
 from delivery.telegram import format_vacancy_message, send_admin_report
 from enrichment.normalizer import (
     experience_from_grade,
@@ -311,12 +311,10 @@ async def run():
             bot_id = user.get("bot_id") or "main"
             try:
                 undelivered = db.get_undelivered_vacancies(chat_id, limit=200)
-                filtered_vacancies = filter_vacancies_for_user(undelivered, user.get("filters") or {})
-                filtered_vacancies = sorted(
-                    filtered_vacancies,
-                    key=lambda v: (title_confidence(v.get("title", "")), v.get("published_at") or ""),
-                    reverse=True,
-                )
+                user_filters = user.get("filters") or {}
+                user_grades = user_filters.get("grades") or []
+                filtered_vacancies = filter_vacancies_for_user(undelivered, user_filters)
+                filtered_vacancies = rank_vacancies(filtered_vacancies, user_grades)
                 db.log_event(
                     chat_id,
                     "vacancy_summary_shown",

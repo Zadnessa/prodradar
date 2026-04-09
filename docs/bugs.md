@@ -506,3 +506,27 @@
 Было: _grade_priority возвращала фиксированный приоритет грейда вакансии без учёта пользовательских предпочтений; scheduled delivery вообще не учитывал grade при сортировке.
 Стало: grade_score вычисляет релевантность на основе расстояния до пользовательских грейдов; rank_vacancies используется как единая точка сортировки в on-demand и scheduled.
 Причина: фиксированная шкала ставила Lead+ выше всех для любого пользователя, даже если он выбрал Junior/Middle.
+
+### BUG-074: Незащищённые вызовы _send_onboarding_batch оставляли вечный лоадер при ошибке DB
+Файл: bot/handlers.py
+Было: в ветках `ob:quick`, `ob:strict:off`, `ob:strict:on`, `hub:vacancies`, `st:deliver` вызов `_send_onboarding_batch` не был обёрнут в `try/except`; при исключении после установки лоадера сообщение зависало с текстом «⏳ Подбираю вакансии...». 
+Стало: все пять вызовов обёрнуты в `try/except` с `logging.exception` и fallback через `edit_message`.
+Причина: ошибка БД внутри `_send_onboarding_batch` не перехватывалась в обработчике callback.
+
+### BUG-075: Переход ob:next оставлял лоадер при сбое _handle_step_transition
+Файл: bot/handlers.py
+Было: вызов `_handle_step_transition` в ветке `ob:next` выполнялся без `try/except`; при ошибке после лоадера «⏳ Применяю настройки...» пользователь оставался без финального сообщения.
+Стало: вызов `_handle_step_transition` обёрнут в `try/except` с `logging.exception` и fallback через `edit_message`.
+Причина: исключение из DB-операций перехода шага не обрабатывалось на уровне callback-ветки.
+
+### BUG-076: st:edit:company оставлял лоадер при падении get_enabled_companies
+Файл: bot/handlers.py
+Было: в ветке `st:edit:company` лоадер «⏳ Загружаю список компаний...» ставился до `db.get_enabled_companies()` без защиты.
+Стало: блок лоадера и `db.get_enabled_companies()` обёрнут в `try/except` с `logging.exception` и fallback через `edit_message`.
+Причина: ошибка БД прерывала сценарий после скрытия кнопок, и пользователь оставался на зависшем экране.
+
+### BUG-077: ReplyKeyboardRemove в edit_message вызывал HTTP 400 в st:stop:yes
+Файл: bot/handlers.py
+Было: ветка `st:stop:yes` вызывала `edit_message(..., reply_markup=build_reply_keyboard_remove())`, что невалидно для `editMessageText` и приводило к HTTP 400.
+Стало: `edit_message` вызывается с `reply_markup=None`, а удаление постоянной клавиатуры вынесено в отдельный `send_message(..., reply_markup=build_reply_keyboard_remove())`.
+Причина: Telegram API принимает в `editMessageText` только inline-разметку, а `ReplyKeyboardRemove` допустим только в `sendMessage`.

@@ -52,6 +52,15 @@ def _edit_fallback(chat_id, message_id):
     edit_message(chat_id, message_id, text, reply_markup=None)
 
 
+def _edit_loader_error_fallback(chat_id, message_id):
+    edit_message(
+        chat_id,
+        message_id,
+        "Не удалось загрузить вакансии. Попробуй ещё раз.",
+        reply_markup=build_main_reply_keyboard(),
+    )
+
+
 def _extract_current_company_page(reply_markup, message_text):
     rows = (reply_markup or {}).get("inline_keyboard", [])
     for row in rows:
@@ -535,7 +544,11 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
         db.update_onboarding_step(chat_id, None)
         db.log_event(chat_id, "onboarding_path_chosen", {"path": "quick"})
         db.log_event(chat_id, "onboarding_completed", {"filters": {}, "strict_mode": False})
-        _send_onboarding_batch(chat_id, message_id, db, filters={})
+        try:
+            _send_onboarding_batch(chat_id, message_id, db, filters={})
+        except Exception:
+            logging.exception("Не удалось выполнить on-demand выдачу в ob:quick")
+            _edit_loader_error_fallback(chat_id, message_id)
         return
 
     if data == "ob:setup":
@@ -599,7 +612,16 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
         return
 
     if data == "ob:next":
-        _handle_step_transition(chat_id, message_id, reply_markup, db)
+        try:
+            _handle_step_transition(chat_id, message_id, reply_markup, db)
+        except Exception:
+            logging.exception("Не удалось обработать переход шага в ob:next")
+            edit_message(
+                chat_id,
+                message_id,
+                "Произошла ошибка при сохранении настроек. Попробуй ещё раз.",
+                reply_markup=None,
+            )
         return
 
     if data == "ob:back":
@@ -635,7 +657,11 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
             "onboarding_completed",
             {"filters": filters, "strict_mode": filters.get("strict_mode", False)},
         )
-        _send_onboarding_batch(chat_id, message_id, db, filters=filters)
+        try:
+            _send_onboarding_batch(chat_id, message_id, db, filters=filters)
+        except Exception:
+            logging.exception("Не удалось выполнить on-demand выдачу в ob:strict:off")
+            _edit_loader_error_fallback(chat_id, message_id)
         return
 
     if data == "ob:strict:on":
@@ -649,7 +675,11 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
             "onboarding_completed",
             {"filters": filters, "strict_mode": filters.get("strict_mode", False)},
         )
-        _send_onboarding_batch(chat_id, message_id, db, filters=filters)
+        try:
+            _send_onboarding_batch(chat_id, message_id, db, filters=filters)
+        except Exception:
+            logging.exception("Не удалось выполнить on-demand выдачу в ob:strict:on")
+            _edit_loader_error_fallback(chat_id, message_id)
         return
 
     if data == "ob:restart":
@@ -668,7 +698,11 @@ def handle_hub_callback(data, chat_id, message_id, callback_message, db=None):
     db = db or SupabaseService()
 
     if data == "hub:vacancies":
-        _send_onboarding_batch(chat_id, message_id, db, filters=None)
+        try:
+            _send_onboarding_batch(chat_id, message_id, db, filters=None)
+        except Exception:
+            logging.exception("Не удалось выполнить on-demand выдачу в hub:vacancies")
+            _edit_loader_error_fallback(chat_id, message_id)
         return
 
     if data == "hub:settings":
@@ -859,8 +893,18 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
 
         companies_list = None
         if step == "company":
-            edit_message(chat_id, message_id, "⏳ Загружаю список компаний...", reply_markup=None)
-            companies_list = db.get_enabled_companies()
+            try:
+                edit_message(chat_id, message_id, "⏳ Загружаю список компаний...", reply_markup=None)
+                companies_list = db.get_enabled_companies()
+            except Exception:
+                logging.exception("Не удалось загрузить список компаний в st:edit:company")
+                edit_message(
+                    chat_id,
+                    message_id,
+                    "Произошла ошибка при загрузке списка компаний. Попробуй ещё раз.",
+                    reply_markup=None,
+                )
+                return
 
         text, step_markup = get_settings_step(step, user.get("filters") or {}, companies_list=companies_list)
         edit_message(chat_id, message_id, text, reply_markup=step_markup)
@@ -1037,7 +1081,11 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
         return
 
     if data == "st:deliver":
-        _send_onboarding_batch(chat_id, message_id, db, filters=None)
+        try:
+            _send_onboarding_batch(chat_id, message_id, db, filters=None)
+        except Exception:
+            logging.exception("Не удалось выполнить on-demand выдачу в st:deliver")
+            _edit_loader_error_fallback(chat_id, message_id)
         return
 
     if data == "st:blocked":
@@ -1073,8 +1121,9 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
             chat_id,
             message_id,
             "Ты отписался от рассылки. Чтобы вернуться — /start",
-            reply_markup=build_reply_keyboard_remove(),
+            reply_markup=None,
         )
+        send_message(chat_id, "Клавиатура скрыта.", reply_markup=build_reply_keyboard_remove())
         db.log_event(chat_id, "bot_stopped", {})
         return
 

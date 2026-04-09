@@ -41,6 +41,11 @@ def _build_grade_distribution(vacancies):
     return distribution
 
 
+def _has_active_core_filters(filters):
+    filters = filters or {}
+    return any(bool(filters.get(key)) for key in ("grades", "cities", "work_formats"))
+
+
 def _classify_parser_error(parser_name: str, exc: Exception) -> str:
     tag = "[ERROR]"
 
@@ -373,7 +378,10 @@ async def run():
                 if new_count > 0 and announced_count > 0:
                     intro_text = f"{new_count} новых вакансий. Ещё {announced_count} из прошлого выпуска."
                 elif new_count > 0:
-                    intro_text = f"{new_count} новых вакансий по твоим фильтрам."
+                    if _has_active_core_filters(user.get("filters")):
+                        intro_text = f"{new_count} новых вакансий по твоим фильтрам."
+                    else:
+                        intro_text = f"{new_count} новых вакансий."
                 else:
                     intro_text = f"Новых вакансий пока нет. {announced_count} из прошлого выпуска всё ещё доступны."
                     send_message(chat_id, intro_text, bot_id=bot_id)

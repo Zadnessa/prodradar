@@ -20,7 +20,6 @@
 - [x] T-007 Толерантная обработка битых вакансий: try/except вокруг _prepare_vacancy для каждой вакансии; битая запись пропускается без сохранения в БД; skipped_count агрегируется и выводится в admin report (main.py).
 - [x] T-008 Устойчивое сохранение: insert/update/touch/deactivate чанками по 50; retry при transient-ошибках Supabase; при data error в чанке — поштучный fallback с логированием проблемной записи; admin report отправляется в finally даже при частичном падении пайплайна (main.py, database/supabase_client.py).
 - [x] T-009 SELECT без source_json — убрать поле из runtime-запросов к vacancies (database/supabase_client.py).
-- [ ] T-010 Контрактный тест: для каждого парсера из PARSER_REGISTRY прогнать parse() на фикстуре и проверить, что все vacancy["company"] присутствуют в companies.name; тест падает при рассинхроне (tests/, parsers/, fixtures/).
 - [x] T-011 insert_vacancies заменить на upsert с чанками по 50 (database/supabase_client.py).
 - [x] T-012 Удалить вызов generate_summary() из _prepare_vacancy (main.py).
 - [ ] T-014 Ручная проверка: порядок этапов в main.py (parse → blacklist → whitelist → content_hash → enrich → normalize) соответствует AGENTS.md; при расхождении — зафиксировать задачу на фикс (main.py, AGENTS.md).
@@ -36,8 +35,8 @@
 - [ ] T-024 Полная ревизия текстов бота — строго после функциональных тестов (bot/).
 
 ## После релиза
-
-- [?] T-025 MTS Link bearer-токен вынести в env, добавить обработку 401 и skip без падения пайплайна (parsers/mtslink.py, config.py).
+- [ ] T-010 Контрактный тест: для каждого парсера из PARSER_REGISTRY прогнать parse() на фикстуре и проверить, что все vacancy["company"] присутствуют в companies.name; тест падает при рассинхроне (tests/, parsers/, fixtures/).
+- [ ] T-025 MTS Link bearer-токен вынести в env, добавить обработку 401 и skip без падения пайплайна (parsers/mtslink.py, config.py).
 - [ ] T-026 On-demand витрина и ранжирование: первая пачка — витрина, дальше — релевантностное ранжирование (delivery/telegram.py, bot/handlers.py).
 - [ ] T-027 Сводка `N новых + M ранее просмотренных` в scheduled/выдаче (delivery/telegram.py, bot/handlers.py).
 - [ ] T-028 Scheduled: сценарий `new=0, announced>0` с action-oriented кнопками (bot/handlers.py).

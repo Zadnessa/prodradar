@@ -11,29 +11,29 @@
 
 ## До релиза
 
-- [ ] Формат выдачи вакансий: довести трёхэтапную модель announced/delivered до полностью завершённого состояния (bot/handlers.py, delivery/telegram.py).
-- [ ] Ревизия quick-path текстов без strict_mode disclaimer и с честной сводкой «весь рынок» (bot/handlers.py).
-- [ ] `Начать заново` сбрасывает только фильтры, без очистки delivery-истории (bot/handlers.py, delivery/).
-- [ ] После onboarding/settings показывать выбор `N новых + M ранее просмотренных` → `Показать все` / `Только новые` (bot/handlers.py, delivery/telegram.py).
-- [ ] В `/settings` показывать кнопку `Заблокированные (N)` только если `N > 0` (bot/handlers.py).
+- [ ] On-demand витрина: первая пачка — топ по title_confidence, последующие — релевантностное ранжирование вместо хронологии; подбадривание показывается только после первого on-demand запроса пользователя (bot/handlers.py, delivery/telegram.py).
+- [ ] Quick-path сводка: после ob:quick первая сводка явно сообщает «показываю весь рынок без фильтров» и предлагает /settings для настройки; strict_mode disclaimer не показывается quick-path пользователям (bot/handlers.py, bot/onboarding.py).
+- [ ] hub:reset: убрать вызов clear_delivery_history(); сброс обнуляет только фильтры и перезапускает онбординг, ранее доставленные вакансии остаются в user_vacancy_delivery (bot/handlers.py).
+- [ ] Сводка новых vs просмотренных: при любом входе в «Вакансии» (on-demand, after onboarding, after settings save) если есть и новые, и ранее announced вакансии — показывать «N новых + M ранее просмотренных» с кнопками «Показать все» / «Только новые» (bot/handlers.py, database/supabase_client.py).
+- [ ] В меню /settings показывать кнопку «Заблокированные (N)» только если excluded_companies не пуст; по нажатию вызывать handle_blocked — список замьюченных компаний с /unmute-командами (bot/handlers.py, bot/settings.py).
 - [ ] Stream 3F: BUG-067 — не передавать ReplyKeyboardMarkup в editMessageText (bot/handlers.py, bot/telegram_api.py).
-- [ ] Stream 3F: Толерантная обработка битых вакансий — skipped_count, не падать на одной записи (main.py).
-- [ ] Stream 3F: Устойчивое сохранение — чанки, retry, поштучный fallback, finally для admin report (main.py, database/supabase_client.py).
+- [ ] Толерантная обработка битых вакансий: try/except вокруг _prepare_vacancy для каждой вакансии; битая запись пропускается без сохранения в БД; skipped_count агрегируется и выводится в admin report (main.py).
+- [ ] Устойчивое сохранение: insert/update/touch/deactivate чанками по 50; retry при transient-ошибках Supabase; при data error в чанке — поштучный fallback с логированием проблемной записи; admin report отправляется в finally даже при частичном падении пайплайна (main.py, database/supabase_client.py).
 - [ ] Stream 3F: SELECT без source_json — убрать поле из runtime-запросов к vacancies (database/supabase_client.py).
-- [ ] Stream 3F: Контрактный тест — `vacancy.company` совпадает с `companies.name` (tests/, parsers/).
+- [ ] Контрактный тест: для каждого парсера из PARSER_REGISTRY прогнать parse() на фикстуре и проверить, что все vacancy["company"] присутствуют в companies.name; тест падает при рассинхроне (tests/, parsers/, fixtures/).
 - [ ] Stream 3F: insert_vacancies заменить на upsert с чанками по 50 (database/supabase_client.py).
 - [ ] Stream 3F: Удалить вызов generate_summary() из _prepare_vacancy (main.py).
 - [ ] Stream 3F: MTS enrich — description только если новое длиннее текущего (parsers/mts.py).
-- [ ] Wave 4a: Проверить соответствие main.py порядку из AGENTS.md (main.py, AGENTS.md).
-- [ ] Wave 4a: Проверить рассинхрон документации и кода (AGENTS.md, docs/context.md, код).
-- [ ] Wave 4a: Проверить контракт BaseParser — MTS нарушает, зафиксировать и исправить (parsers/mts.py).
+- [ ] Ручная проверка: порядок этапов в main.py (parse → blacklist → whitelist → content_hash → enrich → normalize) соответствует AGENTS.md; при расхождении — зафиксировать задачу на фикс (main.py, AGENTS.md).
+- [ ] Ручная проверка: callback-префиксы, архитектурные правила и контракты в AGENTS.md и context.md соответствуют реальному коду; устаревшие пункты — удалить или обновить (AGENTS.md, docs/context.md).
+- [ ] Проверка контракта enrich(): прогнать все парсеры с enrich-методом и убедиться, что ни один не перезаписывает заполненные поля и заменяет description только если новое длиннее; MTS — известное нарушение, исправляется задачей 13 (parsers/).
 - [ ] Wave 4c: SQL-проверки data integrity (Supabase).
 - [ ] Wave 4c: Проверить, что все companies.parser_name зарегистрированы в PARSER_REGISTRY (database/, parsers/__init__.py).
 - [ ] Wave 4c: Проверить отсутствие orphan-записей в user_vacancy_delivery (database/).
 - [ ] Wave 4c: Выполнить проверки после финального сброса и полного прогона парсеров (main.py, database/).
-- [ ] Wave 4d: Функциональные тесты всех основных сценариев (bot/handlers.py, delivery/, main.py).
-- [ ] Wave 4d: Критерий — все кнопки/тексты/колбэки работают без зависаний (bot/handlers.py).
+- [ ] Ручной тест-прогон: пройти сценарии /start (новый), /start (returning), онбординг полный цикл, quick-path, settings toggle, mute/unmute/unmute_all, /blocked, пагинация (Ещё 10, Все, Хватит), scheduled-рассылка, /stats, /stop; чеклист составляется отдельно перед прогоном (bot/, delivery/, main.py).
 - [ ] Stream 3F: Scheduled-intro без «по твоим фильтрам» для quick-path пользователей (bot/handlers.py).
+- [ ] Уплотнить mute/unmute/unmute_all: каждый сценарий завершается одним сообщением (edit) с inline-кнопкой действия, без второго дублирующего send_message; делать совместно с BUG-067 (bot/handlers.py).
 
 - [ ] Полная ревизия текстов бота — строго после функциональных тестов (bot/).
 

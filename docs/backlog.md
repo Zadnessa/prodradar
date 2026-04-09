@@ -13,7 +13,6 @@
 
 ## До релиза
 
-- [ ] T-001 On-demand витрина: первая пачка — топ по title_confidence, последующие — релевантностное ранжирование вместо хронологии; подбадривание показывается только после первого on-demand запроса пользователя (bot/handlers.py, delivery/telegram.py).
 - [x] T-002 Quick-path сводка: после ob:quick первая сводка явно сообщает «показываю весь рынок без фильтров» и предлагает /settings для настройки; strict_mode disclaimer не показывается quick-path пользователям (bot/handlers.py, bot/onboarding.py).
 - [x] T-004 Сводка новых vs просмотренных: при любом входе в «Вакансии» (on-demand, after onboarding, after settings save) если есть и новые, и ранее announced вакансии — показывать «N новых + M ранее просмотренных» с кнопками «Показать все» / «Только новые» (bot/handlers.py, database/supabase_client.py).
 - [x] T-006 BUG-067 — не передавать ReplyKeyboardMarkup в editMessageText (bot/handlers.py, bot/telegram_api.py).
@@ -191,3 +190,4 @@
 - [x] Quick-path сводка: после ob:quick первая сводка явно сообщает «показываю весь рынок без фильтров» и предлагает /settings для настройки; strict_mode disclaimer не показывается quick-path пользователям (bot/handlers.py, bot/onboarding.py).
 - [x] Сводка новых vs просмотренных: при любом входе в «Вакансии» (on-demand, after onboarding, after settings save) если есть и новые, и ранее announced вакансии — показывать «N новых + M ранее просмотренных» с кнопками «Показать все» / «Только новые» (bot/handlers.py, database/supabase_client.py).
 - [x] Scheduled-intro без «по твоим фильтрам» для quick-path пользователей (bot/handlers.py).
+- [x] On-demand витрина: первая пачка — топ по title_confidence, последующие — релевантностное ранжирование вместо хронологии; подбадривание показывается только после первого on-demand запроса пользователя (bot/handlers.py, delivery/telegram.py).

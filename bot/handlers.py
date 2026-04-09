@@ -31,7 +31,7 @@ from bot.telegram_api import build_main_reply_keyboard, build_reply_keyboard_rem
 from database.supabase_client import SupabaseService
 from delivery.filters import filter_vacancies_for_user
 from delivery.telegram import format_company_emoji, format_vacancy_message
-from delivery.ranking import grade_score, rank_vacancies
+from delivery.ranking import rank_vacancies
 from config import TITLE_BOOST_GROUPS
 
 
@@ -166,11 +166,6 @@ def _build_showcase_batch(vacancies, user_grades, limit=10):
 
     company_representatives = []
     for company_vacancies in grouped_vacancies.values():
-        company_vacancies = sorted(
-            company_vacancies,
-            key=lambda vacancy: grade_score(vacancy.get("grade"), user_grades),
-            reverse=True,
-        )
         ranked_company_vacancies = rank_vacancies(company_vacancies, user_grades, title_boost_fn=_title_boost)
         if ranked_company_vacancies:
             company_representatives.append(ranked_company_vacancies[0])
@@ -184,11 +179,6 @@ def _build_showcase_batch(vacancies, user_grades, limit=10):
 
     remaining_vacancies = []
     for company_vacancies in grouped_vacancies.values():
-        company_vacancies = sorted(
-            company_vacancies,
-            key=lambda vacancy: grade_score(vacancy.get("grade"), user_grades),
-            reverse=True,
-        )
         ranked_company_vacancies = rank_vacancies(company_vacancies, user_grades, title_boost_fn=_title_boost)
         remaining_vacancies.extend(
             vacancy for vacancy in ranked_company_vacancies if vacancy.get("id") not in selected_ids
@@ -204,15 +194,7 @@ def _build_showcase_batch(vacancies, user_grades, limit=10):
 
 
 def _count_delivered_before_request(db, chat_id):
-    result = (
-        db.client.table("user_vacancy_delivery")
-        .select("vacancy_id", count="exact")
-        .eq("user_chat_id", chat_id)
-        .eq("status", "delivered")
-        .limit(1)
-        .execute()
-    )
-    return result.count or 0
+    return db.count_delivered(chat_id)
 
 
 def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chunk_size=10, only_new=False):

@@ -9,17 +9,11 @@ from datetime import datetime, timedelta, timezone
 import aiohttp
 
 import config
-from config import (
-    GRADE_OVERRIDE_PATTERNS,
-    TITLE_BLACKLIST_PATTERNS,
-    TITLE_EXACT_WHITELIST,
-    TITLE_PREFILTER_REJECT,
-    TITLE_GREY_PATTERNS,
-    TITLE_REGEX_PATTERNS,
-)
+from config import GRADE_OVERRIDE_PATTERNS, TITLE_BLACKLIST_PATTERNS, TITLE_PREFILTER_REJECT
 from bot.telegram_api import send_message
 from database.supabase_client import SupabaseService, compute_content_hash
 from delivery.filters import filter_vacancies_for_user
+from delivery.ranking import classify_title, title_confidence
 from delivery.telegram import format_vacancy_message, send_admin_report
 from enrichment.normalizer import (
     experience_from_grade,
@@ -68,36 +62,6 @@ def _classify_parser_error(parser_name: str, exc: Exception) -> str:
         short_error = "без деталей"
 
     return f"{parser_name} {tag}: {short_error}"
-
-
-def _classify_title(title: str) -> str | None:
-    t = title.strip().lower()
-    for pattern in TITLE_PREFILTER_REJECT:
-        if pattern in t:
-            return None
-    for pattern in TITLE_EXACT_WHITELIST:
-        if pattern in t:
-            return "exact"
-    for pattern in TITLE_REGEX_PATTERNS:
-        if re.search(pattern, t):
-            return "regex"
-    for pattern, is_regex in TITLE_GREY_PATTERNS:
-        if is_regex:
-            if re.search(pattern, t):
-                return "grey"
-        elif pattern in t:
-            return "grey"
-    return None
-
-
-def _title_confidence(title: str) -> int:
-    zone = _classify_title(title)
-    confidence_map = {
-        "exact": 3,
-        "regex": 2,
-        "grey": 1,
-    }
-    return confidence_map.get(zone, 0)
 
 
 def _diagnose_blacklist(title: str) -> str | None:
@@ -205,7 +169,7 @@ async def run():
         regex_blacklist_rejected = 0
         grey_blacklist_rejected = 0
         for vacancy in all_collected:
-            zone = _classify_title(vacancy["title"])
+            zone = classify_title(vacancy["title"])
             if zone is None:
                 title_normalized = vacancy["title"].strip().lower()
                 if any(pattern in title_normalized for pattern in TITLE_PREFILTER_REJECT):
@@ -350,7 +314,7 @@ async def run():
                 filtered_vacancies = filter_vacancies_for_user(undelivered, user.get("filters") or {})
                 filtered_vacancies = sorted(
                     filtered_vacancies,
-                    key=lambda v: (_title_confidence(v.get("title", "")), v.get("published_at") or ""),
+                    key=lambda v: (title_confidence(v.get("title", "")), v.get("published_at") or ""),
                     reverse=True,
                 )
                 db.log_event(

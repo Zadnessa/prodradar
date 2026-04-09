@@ -13,6 +13,7 @@
 
 ## До релиза
 
+- [ ] T-001 Витрина: заменить _grade_priority на grade_score по матрице пользовательского грейда; синхронизировать ранжирование on-demand и scheduled через delivery/ranking.py (delivery/ranking.py, bot/handlers.py, main.py).
 - [x] T-002 Quick-path сводка: после ob:quick первая сводка явно сообщает «показываю весь рынок без фильтров» и предлагает /settings для настройки; strict_mode disclaimer не показывается quick-path пользователям (bot/handlers.py, bot/onboarding.py).
 - [x] T-004 Сводка новых vs просмотренных: при любом входе в «Вакансии» (on-demand, after onboarding, after settings save) если есть и новые, и ранее announced вакансии — показывать «N новых + M ранее просмотренных» с кнопками «Показать все» / «Только новые» (bot/handlers.py, database/supabase_client.py).
 - [x] T-006 BUG-067 — не передавать ReplyKeyboardMarkup в editMessageText (bot/handlers.py, bot/telegram_api.py).
@@ -22,7 +23,6 @@
 - [ ] T-010 Контрактный тест: для каждого парсера из PARSER_REGISTRY прогнать parse() на фикстуре и проверить, что все vacancy["company"] присутствуют в companies.name; тест падает при рассинхроне (tests/, parsers/, fixtures/).
 - [x] T-011 insert_vacancies заменить на upsert с чанками по 50 (database/supabase_client.py).
 - [x] T-012 Удалить вызов generate_summary() из _prepare_vacancy (main.py).
-- [ ] T-013 MTS enrich — description только если новое длиннее текущего (parsers/mts.py).
 - [ ] T-014 Ручная проверка: порядок этапов в main.py (parse → blacklist → whitelist → content_hash → enrich → normalize) соответствует AGENTS.md; при расхождении — зафиксировать задачу на фикс (main.py, AGENTS.md).
 - [ ] T-015 Ручная проверка: callback-префиксы, архитектурные правила и контракты в AGENTS.md и context.md соответствуют реальному коду; устаревшие пункты — удалить или обновить (AGENTS.md, docs/context.md).
 - [ ] T-016 Проверка контракта enrich(): прогнать все парсеры с enrich-методом и убедиться, что ни один не перезаписывает заполненные поля и заменяет description только если новое длиннее; MTS — известное нарушение, исправляется задачей 13 (parsers/).
@@ -191,3 +191,6 @@
 - [x] Сводка новых vs просмотренных: при любом входе в «Вакансии» (on-demand, after onboarding, after settings save) если есть и новые, и ранее announced вакансии — показывать «N новых + M ранее просмотренных» с кнопками «Показать все» / «Только новые» (bot/handlers.py, database/supabase_client.py).
 - [x] Scheduled-intro без «по твоим фильтрам» для quick-path пользователей (bot/handlers.py).
 - [x] On-demand витрина: первая пачка — топ по title_confidence, последующие — релевантностное ранжирование вместо хронологии; подбадривание показывается только после первого on-demand запроса пользователя (bot/handlers.py, delivery/telegram.py).
+- [x] MTS enrich — description только если новое длиннее текущего (parsers/mts.py).
+- [x] Вынести classify_title и title_confidence в delivery/ranking.py; вычислять on-the-fly вместо чтения из БД; убрать title_confidence из SELECT get_undelivered_vacancies (delivery/ranking.py, bot/handlers.py, main.py, database/supabase_client.py).
+- [x] Обернуть _send_onboarding_batch в handle_main_keyboard_text в try/except; при ошибке — edit лоадера в сообщение об ошибке (bot/handlers.py).

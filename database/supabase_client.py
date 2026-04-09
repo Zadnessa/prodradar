@@ -180,7 +180,7 @@ class SupabaseService:
         query = (
             self.client.table("vacancies")
             .select(
-                "id,title,company,grade,city,work_format,experience,description,url,published_at,created_at,is_active,content_hash,title_confidence"
+                "id,title,company,grade,city,work_format,experience,description,url,published_at,created_at,is_active,content_hash"
             )
             .eq("is_active", True)
         )

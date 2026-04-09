@@ -15,9 +15,7 @@
 
 - [ ] T-001 On-demand витрина: первая пачка — топ по title_confidence, последующие — релевантностное ранжирование вместо хронологии; подбадривание показывается только после первого on-demand запроса пользователя (bot/handlers.py, delivery/telegram.py).
 - [x] T-002 Quick-path сводка: после ob:quick первая сводка явно сообщает «показываю весь рынок без фильтров» и предлагает /settings для настройки; strict_mode disclaimer не показывается quick-path пользователям (bot/handlers.py, bot/onboarding.py).
-- [ ] T-003 hub:reset: убрать вызов clear_delivery_history(); сброс обнуляет только фильтры и перезапускает онбординг, ранее доставленные вакансии остаются в user_vacancy_delivery (bot/handlers.py).
 - [x] T-004 Сводка новых vs просмотренных: при любом входе в «Вакансии» (on-demand, after onboarding, after settings save) если есть и новые, и ранее announced вакансии — показывать «N новых + M ранее просмотренных» с кнопками «Показать все» / «Только новые» (bot/handlers.py, database/supabase_client.py).
-- [ ] T-005 В меню /settings показывать кнопку «Заблокированные (N)» только если excluded_companies не пуст; по нажатию вызывать handle_blocked — список замьюченных компаний с /unmute-командами (bot/handlers.py, bot/settings.py).
 - [x] T-006 BUG-067 — не передавать ReplyKeyboardMarkup в editMessageText (bot/handlers.py, bot/telegram_api.py).
 - [x] T-007 Толерантная обработка битых вакансий: try/except вокруг _prepare_vacancy для каждой вакансии; битая запись пропускается без сохранения в БД; skipped_count агрегируется и выводится в admin report (main.py).
 - [x] T-008 Устойчивое сохранение: insert/update/touch/deactivate чанками по 50; retry при transient-ошибках Supabase; при data error в чанке — поштучный fallback с логированием проблемной записи; admin report отправляется в finally даже при частичном падении пайплайна (main.py, database/supabase_client.py).
@@ -137,6 +135,8 @@
 
 ## Архив
 
+- [x] hub:reset: убрать вызов clear_delivery_history(); сброс обнуляет только фильтры и перезапускает онбординг, ранее доставленные вакансии остаются в user_vacancy_delivery (bot/handlers.py).
+- [x] В меню /settings показывать кнопку «Заблокированные (N)» только если excluded_companies не пуст; по нажатию вызывать handle_blocked — список замьюченных компаний с /unmute-командами (bot/handlers.py, bot/settings.py).
 - [x] Толерантная обработка битых вакансий: try/except вокруг _prepare_vacancy для каждой вакансии; битая запись пропускается без сохранения в БД; skipped_count агрегируется и выводится в admin report (main.py).
 - [x] Устойчивое сохранение: insert/update/touch/deactivate чанками по 50; retry при transient-ошибках Supabase; при data error в чанке — поштучный fallback с логированием проблемной записи; admin report отправляется в finally даже при частичном падении пайплайна (main.py, database/supabase_client.py).
 - [x] SELECT без source_json — убрать поле из runtime-запросов к vacancies (database/supabase_client.py).

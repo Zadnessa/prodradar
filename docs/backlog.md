@@ -32,6 +32,7 @@
 - [ ] T-021 Ручной тест-прогон: пройти сценарии /start (новый), /start (returning), онбординг полный цикл, quick-path, settings toggle, mute/unmute/unmute_all, /blocked, пагинация (Ещё 10, Все, Хватит), scheduled-рассылка, /stats, /stop; чеклист составляется отдельно перед прогоном (bot/, delivery/, main.py).
 - [x] T-022 Scheduled-intro без «по твоим фильтрам» для quick-path пользователей (bot/handlers.py).
 - [x] T-023 Уплотнить mute/unmute/unmute_all: каждый сценарий завершается одним сообщением (edit) с inline-кнопкой действия, без второго дублирующего send_message; делать совместно с BUG-067 (bot/handlers.py).
+- [x] T-048 Убрать прямой db.client.table из _count_delivered_before_request; использовать метод SupabaseService.count_delivered (bot/handlers.py, database/supabase_client.py).
 - [ ] T-024 Полная ревизия текстов бота — строго после функциональных тестов (bot/).
 
 ## После релиза
@@ -194,3 +195,4 @@
 - [x] MTS enrich — description только если новое длиннее текущего (parsers/mts.py).
 - [x] Вынести classify_title и title_confidence в delivery/ranking.py; вычислять on-the-fly вместо чтения из БД; убрать title_confidence из SELECT get_undelivered_vacancies (delivery/ranking.py, bot/handlers.py, main.py, database/supabase_client.py).
 - [x] Обернуть _send_onboarding_batch в handle_main_keyboard_text в try/except; при ошибке — edit лоадера в сообщение об ошибке (bot/handlers.py).
+- [x] Убрать прямой db.client.table из _count_delivered_before_request; использовать метод SupabaseService.count_delivered (bot/handlers.py, database/supabase_client.py).

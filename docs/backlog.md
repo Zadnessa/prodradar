@@ -36,6 +36,8 @@
 - [ ] T-024 Полная ревизия текстов бота — строго после функциональных тестов (bot/).
 - [x] T-053 После успешного _send_onboarding_batch в ob:quick/ob:strict:off/ob:strict:on отправлять "Меню закреплено под полем ввода." с reply keyboard; готово когда новый пользователь после онбординга видит кнопки "Вакансии"/"Настройки" (bot/handlers.py).
 - [x] T-054 Добавить grade override для "руководитель группы продуктового менеджмента" через паттерны руководитель группы/group product до директор.*продукт; готово когда целевой тайтл получает Lead+ (config.py).
+- [x] T-055 BUG-077: /stop показывает prompt с паузой перед отпиской; готово когда в prompt есть кнопки st:pause, st:stop:yes и st:menu (bot/settings.py, bot/handlers.py).
+- [x] T-056 BUG-078: добавить команду /pause с постановкой рассылки на паузу; готово когда /pause обрабатывается в webhook и вызывает handle_pause (bot/handlers.py, api/webhook.py).
 
 ## После релиза
 - [ ] T-052 Создать песочницу: второй проект Vercel на тот же репозиторий, env-переменные старого бота (@ProductRadar_bot), отдельная база Supabase (free tier), установить webhook; документировать два окружения в README (infra/, README.md).
@@ -208,3 +210,5 @@
 - [x] BUG-073: в витрине сначала показывать компании с релевантным grade_score>0, затем добирать нерелевантными представителями до лимита (bot/handlers.py).
 - [x] После успешного _send_onboarding_batch в ob:quick/ob:strict:off/ob:strict:on отправлять "Меню закреплено под полем ввода." с reply keyboard; готово когда новый пользователь после онбординга видит кнопки "Вакансии"/"Настройки" (bot/handlers.py).
 - [x] Добавить grade override для "руководитель группы продуктового менеджмента" через паттерны руководитель группы/group product до директор.*продукт; готово когда целевой тайтл получает Lead+ (config.py).
+- [x] BUG-077: /stop показывает prompt с паузой перед отпиской; готово когда в prompt есть кнопки st:pause, st:stop:yes и st:menu (bot/settings.py, bot/handlers.py).
+- [x] BUG-078: добавить команду /pause с постановкой рассылки на паузу; готово когда /pause обрабатывается в webhook и вызывает handle_pause (bot/handlers.py, api/webhook.py).

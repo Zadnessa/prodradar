@@ -126,15 +126,16 @@ def get_resume_message():
     )
 
 
-def get_stop_confirm():
+def get_stop_prompt():
     return (
-        "Рассылка будет остановлена. Фильтры сохранятся — если вернёшься через /start, продолжим с ними.",
+        "Полностью отписываться необязательно — можно поставить рассылку на паузу и возобновить, когда придёт время.",
         {
             "inline_keyboard": [
+                [{"text": "⏸ Поставить на паузу", "callback_data": "st:pause"}],
                 [
-                    {"text": "Да, отписаться", "callback_data": "st:stop:yes"},
+                    {"text": "🚫 Всё равно отписаться", "callback_data": "st:stop:yes"},
                     {"text": "Отмена", "callback_data": "st:menu"},
-                ]
+                ],
             ]
         },
     )

@@ -24,7 +24,7 @@ from bot.settings import (
     get_resume_message,
     get_settings_menu,
     get_settings_step,
-    get_stop_confirm,
+    get_stop_prompt,
 )
 from bot.telegram_api import delete_message, edit_message, send_message
 from bot.telegram_api import build_main_reply_keyboard, build_reply_keyboard_remove
@@ -1140,7 +1140,7 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
         return
 
     if data == "st:stop":
-        text, reply = get_stop_confirm()
+        text, reply = get_stop_prompt()
         edit_message(chat_id, message_id, text, reply_markup=reply)
         return
 
@@ -1178,13 +1178,27 @@ def handle_stats(chat_id, db=None):
 
 def handle_stop(chat_id, db=None):
     db = db or SupabaseService()
-    db.deactivate_user(chat_id)
-    send_message(
-        chat_id,
-        "Ты отписался от рассылки. Чтобы подписаться снова — отправь /start",
-        reply_markup=build_reply_keyboard_remove(),
-    )
-    db.log_event(chat_id, "bot_stopped", {})
+    text, reply = get_stop_prompt()
+    send_message(chat_id, text, reply_markup=reply)
+
+
+def handle_pause(chat_id, db=None):
+    db = db or SupabaseService()
+    user = db.get_user(chat_id)
+
+    if not user:
+        send_message(chat_id, "Сначала подпишись через /start")
+        return
+
+    if user.get("paused"):
+        text, reply = get_resume_message()
+        send_message(chat_id, text, reply_markup=reply)
+        return
+
+    db.set_user_paused(chat_id, True)
+    text, reply = get_pause_message()
+    send_message(chat_id, text, reply_markup=reply)
+    db.log_event(chat_id, "mailing_paused", {"source": "command"})
 
 
 def handle_mute(chat_id, slug, db=None):

@@ -555,3 +555,15 @@
 Было: ветка `st:stop:yes` вызывала `edit_message(..., reply_markup=build_reply_keyboard_remove())`, что невалидно для `editMessageText` и приводило к HTTP 400.
 Стало: `edit_message` вызывается с `reply_markup=None`, а удаление постоянной клавиатуры вынесено в отдельный `send_message(..., reply_markup=build_reply_keyboard_remove())`.
 Причина: Telegram API принимает в `editMessageText` только inline-разметку, а `ReplyKeyboardRemove` допустим только в `sendMessage`.
+
+### BUG-075: После онбординга не появлялась reply keyboard у нового пользователя
+Файл: bot/handlers.py
+Было: в ветках `ob:quick`, `ob:strict:off`, `ob:strict:on` после успешного `_send_onboarding_batch` не отправлялось сообщение с `build_main_reply_keyboard()`, поэтому кнопки «Вакансии» и «Настройки» не закреплялись.
+Стало: после успешного `_send_onboarding_batch` в каждой ветке отправляется `send_message(chat_id, "Меню закреплено под полем ввода.", reply_markup=build_main_reply_keyboard())`.
+Причина: закрепление постоянной клавиатуры было реализовано для returning user, но пропущено в пост-онбординг ветках.
+
+### BUG-076: «Руководитель группы продуктового менеджмента» получал Senior вместо Lead+
+Файл: config.py
+Было: `GRADE_OVERRIDE_PATTERNS` не содержал паттернов для «руководитель группы» и `group product`, поэтому срабатывал только маппинг experience-to-grade с результатом Senior.
+Стало: в `GRADE_OVERRIDE_PATTERNS` добавлены `(r"руководитель группы.{0,20}продукт", "Lead+")` и `(r"group product", "Lead+")` перед `директор.*продукт`.
+Причина: отсутствовал явный override для руководителя группы продуктового направления.

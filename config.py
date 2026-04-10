@@ -164,6 +164,8 @@ GRADE_OVERRIDE_PATTERNS = [
     (r"head of product", "Lead+"),
     (r"chief product", "Lead+"),
     (r"\bcpo\b", "Lead+"),
+    (r"руководитель группы.{0,20}продукт", "Lead+"),
+    (r"group product", "Lead+"),
     (r"директор.{0,40}продукт", "Lead+"),
     (r"лидер.{0,40}продукт", "Lead+"),
     (r"лид.{0,40}продукт", "Lead+"),

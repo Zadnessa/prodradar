@@ -22,12 +22,12 @@
 - [x] T-009 SELECT без source_json — убрать поле из runtime-запросов к vacancies (database/supabase_client.py).
 - [x] T-011 insert_vacancies заменить на upsert с чанками по 50 (database/supabase_client.py).
 - [x] T-012 Удалить вызов generate_summary() из _prepare_vacancy (main.py).
-- [ ] T-014 Ручная проверка: порядок этапов в main.py (parse → blacklist → whitelist → content_hash → enrich → normalize) соответствует AGENTS.md; при расхождении — зафиксировать задачу на фикс (main.py, AGENTS.md).
-- [ ] T-015 Ручная проверка: callback-префиксы, архитектурные правила и контракты в AGENTS.md и context.md соответствуют реальному коду; устаревшие пункты — удалить или обновить (AGENTS.md, docs/context.md).
-- [ ] T-016 Проверка контракта enrich(): прогнать все парсеры с enrich-методом и убедиться, что ни один не перезаписывает заполненные поля и заменяет description только если новое длиннее; MTS — известное нарушение, исправляется задачей 13 (parsers/).
-- [ ] T-017 SQL-проверки data integrity (Supabase).
-- [ ] T-018 Проверить, что все companies.parser_name зарегистрированы в PARSER_REGISTRY (database/, parsers/__init__.py).
-- [ ] T-019 Проверить отсутствие orphan-записей в user_vacancy_delivery (database/).
+- [x] T-014 Ручная проверка: порядок этапов в main.py (parse → blacklist → whitelist → content_hash → enrich → normalize) соответствует AGENTS.md; при расхождении — зафиксировать задачу на фикс (main.py, AGENTS.md).
+- [x] T-015 Ручная проверка: callback-префиксы, архитектурные правила и контракты в AGENTS.md и context.md соответствуют реальному коду; устаревшие пункты — удалить или обновить (AGENTS.md, docs/context.md).
+- [x] T-016 Проверка контракта enrich(): прогнать все парсеры с enrich-методом и убедиться, что ни один не перезаписывает заполненные поля и заменяет description только если новое длиннее; MTS — известное нарушение, исправляется задачей 13 (parsers/).
+- [x] T-017 SQL-проверки data integrity (Supabase).
+- [x] T-018 Проверить, что все companies.parser_name зарегистрированы в PARSER_REGISTRY (database/, parsers/__init__.py).
+- [x] T-019 Проверить отсутствие orphan-записей в user_vacancy_delivery (database/).
 - [ ] T-020 Выполнить проверки после финального сброса и полного прогона парсеров (main.py, database/).
 - [ ] T-021 Ручной тест-прогон: пройти сценарии /start (новый), /start (returning), онбординг полный цикл, quick-path, settings toggle, mute/unmute/unmute_all, /blocked, пагинация (Ещё 10, Все, Хватит), scheduled-рассылка, /stats, /stop; чеклист составляется отдельно перед прогоном (bot/, delivery/, main.py).
 - [x] T-022 Scheduled-intro без «по твоим фильтрам» для quick-path пользователей (bot/handlers.py).
@@ -58,7 +58,11 @@
 - [ ] T-043 Аудит хардкода по всем парсерам: полный скан 28 парсеров, замена хардкода на конфиг/БД (parsers/).
 - [ ] T-044 Сбор фидбека по формату выдачи (карточки vs дайджест) (docs/).
 - [ ] T-045 Inline mute-кнопка на карточке вакансии (delivery/telegram.py, bot/handlers.py).
+- [ ] T-049 VK enrich: добавить проверку existing значений grade и description перед перезаписью; description заменять только если len(new) > len(current) (parsers/vk.py).
+- [ ] T-050 AGENTS.md: добавить callback-префиксы more:new:, more:new:all:, more:new:stop в документацию (AGENTS.md).
+- [ ] T-051 Вернуть технические PM-вакансии после AI-классификации по категориям (классик, growth, tech, AI/ML); до AI-фазы отсекать blacklist-ом (config.py, ai/).
 
+ 
 ## Бэклог
 
 ### Парсеры

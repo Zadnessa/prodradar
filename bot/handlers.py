@@ -217,6 +217,27 @@ def _count_delivered_before_request(db, chat_id):
     return db.count_delivered(chat_id)
 
 
+def _build_exhausted_message_payload(user):
+    base_text = (
+        "Это все подходящие вакансии. Проверяю новые утром и вечером — пришлю сразу.\n\n"
+        "Фильтры — /settings"
+    )
+    filters = (user or {}).get("filters") or {}
+    strict_mode = bool(filters.get("strict_mode"))
+    if not strict_mode:
+        return base_text, build_main_reply_keyboard()
+
+    strict_hint = (
+        "Кстати, у тебя скрыты вакансии без заполненных полей —\n"
+        "грейда, города или формата. Их могло быть больше."
+    )
+    text = f"{base_text}\n\n{strict_hint}"
+    reply_markup = {
+        "inline_keyboard": [[{"text": "🟢 Показывать все вакансии", "callback_data": "st:strict:toggle:exhaust"}]]
+    }
+    return text, reply_markup
+
+
 def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chunk_size=10, only_new=False):
     companies_list = db.get_enabled_companies()
     companies_map = {company.get("name"): company for company in companies_list}
@@ -243,11 +264,11 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chu
             delete_message(chat_id, loader_message_id)
         except Exception:
             logging.exception("Не удалось удалить лоадер перед финальным сообщением")
+        exhausted_text, exhausted_markup = _build_exhausted_message_payload(user)
         send_message(
             chat_id,
-            "Это все подходящие вакансии. Проверяю новые утром и вечером — пришлю сразу.\n\n"
-            "Фильтры — /settings",
-            reply_markup=build_main_reply_keyboard(),
+            exhausted_text,
+            reply_markup=exhausted_markup,
         )
         db.log_event(chat_id, "vacancy_exhausted", {"total_viewed": offset})
         return 0, 0
@@ -316,11 +337,11 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chu
             delete_message(chat_id, loader_message_id)
         except Exception:
             logging.exception("Не удалось удалить лоадер перед финальным сообщением")
+        exhausted_text, exhausted_markup = _build_exhausted_message_payload(user)
         send_message(
             chat_id,
-            "Это все подходящие вакансии. Проверяю новые утром и вечером — пришлю сразу.\n\n"
-            "Фильтры — /settings",
-            reply_markup=build_main_reply_keyboard(),
+            exhausted_text,
+            reply_markup=exhausted_markup,
         )
         db.log_event(chat_id, "vacancy_exhausted", {"total_viewed": shown_count})
 
@@ -903,6 +924,58 @@ def handle_settings(chat_id, db=None):
 def handle_settings_callback(data, chat_id, message_id, callback_message, db=None):
     db = db or SupabaseService()
     reply_markup = (callback_message or {}).get("reply_markup")
+
+    if data == "st:strict:toggle":
+        user = db.get_user(chat_id)
+        if not user:
+            edit_message(chat_id, message_id, "Сначала подпишись через /start", reply_markup=None)
+            return
+
+        merged = dict(user.get("filters") or {})
+        old_strict_mode = bool(merged.get("strict_mode"))
+        new_strict_mode = not old_strict_mode
+        merged["strict_mode"] = new_strict_mode
+        db.update_user_filters(chat_id, merged)
+
+        refreshed_user = db.get_user(chat_id) or {}
+        text, menu_markup = get_settings_menu(refreshed_user)
+        edit_message(chat_id, message_id, text, reply_markup=menu_markup)
+        db.log_event(
+            chat_id,
+            "filter_saved",
+            {
+                "filter": "strict_mode",
+                "old_values": {"strict_mode": old_strict_mode},
+                "new_values": {"strict_mode": new_strict_mode},
+            },
+        )
+        return
+
+    if data == "st:strict:toggle:exhaust":
+        user = db.get_user(chat_id)
+        if not user:
+            edit_message(chat_id, message_id, "Сначала подпишись через /start", reply_markup=None)
+            return
+
+        merged = dict(user.get("filters") or {})
+        old_strict_mode = bool(merged.get("strict_mode"))
+        merged["strict_mode"] = False
+        db.update_user_filters(chat_id, merged)
+        send_message(
+            chat_id,
+            "Готово, теперь показываю все вакансии.\nНажми «Вакансии», чтобы посмотреть что добавилось.",
+            reply_markup=build_main_reply_keyboard(),
+        )
+        db.log_event(
+            chat_id,
+            "filter_saved",
+            {
+                "filter": "strict_mode",
+                "old_values": {"strict_mode": old_strict_mode},
+                "new_values": {"strict_mode": False},
+            },
+        )
+        return
 
     if data in {"st:edit:grade", "st:edit:city", "st:edit:wf", "st:edit:company"}:
         step_map = {

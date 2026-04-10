@@ -22,6 +22,7 @@ def get_settings_menu(user):
     grades = filters.get("grades") or []
     cities = filters.get("cities") or []
     work_formats = filters.get("work_formats") or []
+    strict_mode = bool(filters.get("strict_mode"))
     excluded_companies = [str(v).strip() for v in (filters.get("excluded_companies") or []) if str(v).strip()]
 
     grades_text = ", ".join(grades) if grades else "Все"
@@ -46,6 +47,14 @@ def get_settings_menu(user):
     )
 
     keyboard = [[{"text": "📬 Получить вакансии", "callback_data": "st:deliver"}]]
+    keyboard.append(
+        [
+            {
+                "text": "🔴 Неполные вакансии: скрываю" if strict_mode else "🟢 Неполные вакансии: показываю",
+                "callback_data": "st:strict:toggle",
+            }
+        ]
+    )
 
     keyboard.extend([
         [

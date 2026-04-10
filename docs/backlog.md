@@ -28,8 +28,8 @@
 - [x] T-017 SQL-проверки data integrity (Supabase).
 - [x] T-018 Проверить, что все companies.parser_name зарегистрированы в PARSER_REGISTRY (database/, parsers/__init__.py).
 - [x] T-019 Проверить отсутствие orphan-записей в user_vacancy_delivery (database/).
-- [ ] T-020 Выполнить проверки после финального сброса и полного прогона парсеров (main.py, database/).
-- [ ] T-021 Ручной тест-прогон: пройти сценарии /start (новый), /start (returning), онбординг полный цикл, quick-path, settings toggle, mute/unmute/unmute_all, /blocked, пагинация (Ещё 10, Все, Хватит), scheduled-рассылка, /stats, /stop; чеклист составляется отдельно перед прогоном (bot/, delivery/, main.py).
+- [x] T-020 Выполнить проверки после финального сброса и полного прогона парсеров (main.py, database/).
+- [x] T-021 Ручной тест-прогон: пройти сценарии /start (новый), /start (returning), онбординг полный цикл, quick-path, settings toggle, mute/unmute/unmute_all, /blocked, пагинация (Ещё 10, Все, Хватит), scheduled-рассылка, /stats, /stop; чеклист составляется отдельно перед прогоном (bot/, delivery/, main.py).
 - [x] T-022 Scheduled-intro без «по твоим фильтрам» для quick-path пользователей (bot/handlers.py).
 - [x] T-023 Уплотнить mute/unmute/unmute_all: каждый сценарий завершается одним сообщением (edit) с inline-кнопкой действия, без второго дублирующего send_message; делать совместно с BUG-067 (bot/handlers.py).
 - [x] T-048 Убрать прямой db.client.table из _count_delivered_before_request; использовать метод SupabaseService.count_delivered (bot/handlers.py, database/supabase_client.py).

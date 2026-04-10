@@ -560,6 +560,12 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
         except Exception:
             logging.exception("Не удалось выполнить on-demand выдачу в ob:quick")
             _edit_loader_error_fallback(chat_id, message_id)
+        else:
+            send_message(
+                chat_id,
+                "Меню закреплено под полем ввода.",
+                reply_markup=build_main_reply_keyboard(),
+            )
         return
 
     if data == "ob:setup":
@@ -673,6 +679,12 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
         except Exception:
             logging.exception("Не удалось выполнить on-demand выдачу в ob:strict:off")
             _edit_loader_error_fallback(chat_id, message_id)
+        else:
+            send_message(
+                chat_id,
+                "Меню закреплено под полем ввода.",
+                reply_markup=build_main_reply_keyboard(),
+            )
         return
 
     if data == "ob:strict:on":
@@ -691,6 +703,12 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
         except Exception:
             logging.exception("Не удалось выполнить on-demand выдачу в ob:strict:on")
             _edit_loader_error_fallback(chat_id, message_id)
+        else:
+            send_message(
+                chat_id,
+                "Меню закреплено под полем ввода.",
+                reply_markup=build_main_reply_keyboard(),
+            )
         return
 
     if data == "ob:restart":

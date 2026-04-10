@@ -200,3 +200,6 @@
 - [x] Вынести classify_title и title_confidence в delivery/ranking.py; вычислять on-the-fly вместо чтения из БД; убрать title_confidence из SELECT get_undelivered_vacancies (delivery/ranking.py, bot/handlers.py, main.py, database/supabase_client.py).
 - [x] Обернуть _send_onboarding_batch в handle_main_keyboard_text в try/except; при ошибке — edit лоадера в сообщение об ошибке (bot/handlers.py).
 - [x] Убрать прямой db.client.table из _count_delivered_before_request; использовать метод SupabaseService.count_delivered (bot/handlers.py, database/supabase_client.py).
+- [x] BUG-071: добавить в TITLE_BLACKLIST_PATTERNS паттерны "процесс", "техническ", "technical" для отсечения технических и процессных PM-вакансий (config.py).
+- [x] BUG-072: при фильтре только Lead+ отсекать вакансии с пустым grade независимо от strict_mode; для остальных комбинаций грейдов оставить прежнее поведение (delivery/filters.py).
+- [x] BUG-073: в витрине сначала показывать компании с релевантным grade_score>0, затем добирать нерелевантными представителями до лимита (bot/handlers.py).

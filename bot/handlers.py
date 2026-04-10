@@ -31,7 +31,7 @@ from bot.telegram_api import build_main_reply_keyboard, build_reply_keyboard_rem
 from database.supabase_client import SupabaseService
 from delivery.filters import filter_vacancies_for_user
 from delivery.telegram import format_company_emoji, format_vacancy_message
-from delivery.ranking import rank_vacancies
+from delivery.ranking import grade_score, rank_vacancies
 from config import TITLE_BOOST_GROUPS
 
 
@@ -173,15 +173,26 @@ def _build_showcase_batch(vacancies, user_grades, limit=10):
     for vacancy in vacancies:
         grouped_vacancies[vacancy.get("company")].append(vacancy)
 
-    company_representatives = []
+    group_a = []
+    group_b = []
     for company_vacancies in grouped_vacancies.values():
         ranked_company_vacancies = rank_vacancies(company_vacancies, user_grades, title_boost_fn=_title_boost)
-        if ranked_company_vacancies:
-            company_representatives.append(ranked_company_vacancies[0])
+        if not ranked_company_vacancies:
+            continue
 
-    company_representatives = rank_vacancies(company_representatives, user_grades, title_boost_fn=_title_boost)
+        representative = ranked_company_vacancies[0]
+        if grade_score(representative.get("grade"), user_grades) > 0:
+            group_a.append(representative)
+        else:
+            group_b.append(representative)
 
-    showcase = company_representatives[:limit]
+    ranked_group_a = rank_vacancies(group_a, user_grades, title_boost_fn=_title_boost)
+    ranked_group_b = rank_vacancies(group_b, user_grades, title_boost_fn=_title_boost)
+
+    showcase = ranked_group_a[:limit]
+    if len(showcase) < limit:
+        showcase.extend(ranked_group_b[: limit - len(showcase)])
+
     selected_ids = {vacancy.get("id") for vacancy in showcase if vacancy.get("id")}
     if len(showcase) >= limit:
         return showcase

@@ -136,6 +136,9 @@ TITLE_BLACKLIST_PATTERNS = [
     "методолог",
     "поддержк",
     "сопровожден",
+    "процесс",
+    "техническ",
+    "technical",
 ]
 TITLE_BOOST_GROUPS = {
     3: [

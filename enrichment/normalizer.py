@@ -158,21 +158,44 @@ def normalize_grade(raw_value):
     if not value:
         return None
 
+    grade_tokens = "Junior|Middle|Senior|Lead|Head|Cpo"
+    value = re.sub(
+        rf"(?i)\b({grade_tokens})\s+({grade_tokens})\b",
+        lambda m: f"{m.group(1)}-{m.group(2)}",
+        value,
+    )
+
     normalized_parts = []
     for raw_part in value.split(","):
         part = raw_part.strip()
         if not part:
             continue
 
-        normalized = part.title()
-        if normalized in {"Lead", "Head", "Cpo"}:
-            normalized = "Lead+"
+        subparts = [token.strip() for token in part.replace("–", "-").split("-") if token.strip()]
+        if not subparts:
+            subparts = [part]
 
-        if normalized not in normalized_parts:
-            normalized_parts.append(normalized)
+        normalized_tokens = []
+        for token in subparts:
+            normalized = token.title()
+            if normalized in {"Lead", "Head", "Cpo"}:
+                normalized = "Lead+"
+            if normalized not in normalized_tokens:
+                normalized_tokens.append(normalized)
+
+        normalized_joined = "-".join(normalized_tokens)
+        if normalized_joined and normalized_joined not in normalized_parts:
+            normalized_parts.append(normalized_joined)
 
     if not normalized_parts:
         return None
-    if len(normalized_parts) == 1:
-        return normalized_parts[0]
-    return "-".join(normalized_parts)
+
+    flattened = []
+    for part in normalized_parts:
+        for token in part.split("-"):
+            if token and token not in flattened:
+                flattened.append(token)
+
+    if len(flattened) == 1:
+        return flattened[0]
+    return "-".join(flattened)

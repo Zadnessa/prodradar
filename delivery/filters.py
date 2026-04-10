@@ -50,8 +50,12 @@ def filter_vacancies_for_user(vacancies, user_filters):
         ]
 
     strict_mode = bool(user_filters.get("strict_mode", False))
-    grades_filter = [str(v).strip().lower() for v in (user_filters.get("grades") or []) if str(v).strip()]
-    grades_filter = _expand_grade_filters(grades_filter)
+    original_grades_filter = [
+        str(v).strip().lower() for v in (user_filters.get("grades") or []) if str(v).strip()
+    ]
+    only_lead_plus_selected = set(original_grades_filter) == {"lead+"}
+
+    grades_filter = _expand_grade_filters(original_grades_filter)
     grades_filter_set = set(grades_filter)
     cities_filter = [str(v).strip() for v in (user_filters.get("cities") or []) if str(v).strip()]
     work_formats_filter = [str(v).strip().lower() for v in (user_filters.get("work_formats") or []) if str(v).strip()]
@@ -67,7 +71,10 @@ def filter_vacancies_for_user(vacancies, user_filters):
         grade = vacancy.get("grade")
         if grades_filter:
             if _is_missing(grade):
-                grade_ok = not strict_mode
+                if only_lead_plus_selected:
+                    grade_ok = False
+                else:
+                    grade_ok = not strict_mode
             else:
                 grade_parts = [part.strip() for part in str(grade).split(",") if part.strip()]
                 if not grade_parts:

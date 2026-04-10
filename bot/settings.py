@@ -36,14 +36,15 @@ def get_settings_menu(user):
             blocked_list = f"{', '.join(excluded_companies[:3])} и ещё {len(excluded_companies) - 3}"
         blocked_summary = f"Заблокировано: {blocked_list}\n"
 
+    strict_note = "сейчас не попадают" if strict_mode else "тоже попадают"
     text = (
-        "⚙️ Настройки\n\n"
+        "⚙️ <b>Настройки</b>\n\n"
         f"Грейд: {grades_text}\n"
         f"Город: {cities_text}\n"
         f"Формат: {work_formats_text}\n"
         f"{blocked_summary}\n"
         "Что хочешь изменить?"
-        "\n\n<i>Не все компании указывают грейд и город — такие вакансии тоже попадают в выдачу.</i>"
+        f"\n\n<i>Не все компании указывают грейд и город – такие вакансии {strict_note} в выдачу.</i>"
     )
 
     keyboard = [[{"text": "📬 Получить вакансии", "callback_data": "st:deliver"}]]
@@ -109,9 +110,8 @@ def get_settings_step(step, current_filters, companies_list=None):
     markup["inline_keyboard"] = rows
 
     title = _STEP_TITLES.get(step, step)
-    settings_text = text
-    if "—" in text:
-        settings_text = f"⚙️ Настройка: {title}\n\n" + text.split("\n\n", 1)[1]
+    body = text.split("\n\n", 1)[1] if "\n\n" in text else text
+    settings_text = f"⚙️ <b>Настройка: {title}</b>\n\n{body}"
 
     return settings_text, markup
 
@@ -137,7 +137,7 @@ def get_resume_message():
 
 def get_stop_prompt():
     return (
-        "Полностью отписываться необязательно — можно поставить рассылку на паузу и возобновить, когда придёт время.",
+        "Полностью отписываться необязательно – можно поставить рассылку на паузу и возобновить подписку, когда понадоблюсь.",
         {
             "inline_keyboard": [
                 [{"text": "⏸ Поставить на паузу", "callback_data": "st:pause"}],

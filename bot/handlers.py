@@ -34,6 +34,8 @@ from delivery.telegram import format_company_emoji, format_vacancy_message
 from delivery.ranking import grade_score, rank_vacancies
 from config import TITLE_BOOST_GROUPS
 
+LOADER_EMOJI = '<tg-emoji emoji-id="5451732530048802485">⏱️</tg-emoji>'
+
 
 def _pluralize(number, one, few, many):
     number = abs(number) % 100
@@ -148,14 +150,29 @@ def _get_zero_state_text(chat_id, db, effective_filters):
         )
 
     return (
-        f"По твоим фильтрам сейчас ничего нет, но на рынке есть {total_active} активных вакансий. "
-        "Попробуй расширить фильтры в /settings — может, найдётся что-то интересное."
+        f"По твоим фильтрам сейчас ничего нет, но всего есть {total_active} активных вакансий. "
+        "Попробуй расширить фильтры в настройках ⚙ – может, найдётся что-то интересное."
     )
 
 
 def _has_active_core_filters(filters):
     filters = filters or {}
     return any(bool(filters.get(key)) for key in ("grades", "cities", "work_formats"))
+
+
+def _get_disclaimer_counts(chat_id, db, filters):
+    base_filters = dict(filters or {})
+    undelivered = db.get_undelivered_vacancies(chat_id, limit=500)
+
+    relaxed_filters = dict(base_filters)
+    relaxed_filters["strict_mode"] = False
+    strict_filters = dict(base_filters)
+    strict_filters["strict_mode"] = True
+
+    show_count = len(filter_vacancies_for_user(undelivered, relaxed_filters))
+    strict_count = len(filter_vacancies_for_user(undelivered, strict_filters))
+    hidden_count = max(show_count - strict_count, 0)
+    return hidden_count, show_count, strict_count
 
 
 def _title_boost(title):
@@ -213,28 +230,29 @@ def _build_showcase_batch(vacancies, user_grades, limit=10):
     return showcase
 
 
-def _count_delivered_before_request(db, chat_id):
-    return db.count_delivered(chat_id)
-
-
-def _build_exhausted_message_payload(user):
-    base_text = (
-        "Это все подходящие вакансии. Проверяю новые утром и вечером — пришлю сразу.\n\n"
-        "Фильтры — /settings"
-    )
+def _build_exhausted_message_payload(user, is_single_screen=False):
+    if is_single_screen:
+        base_text = (
+            "Это все подходящие вакансии на текущий момент. Проверяю новые утром и вечером – пришлю сразу.\n\n"
+            "Поменять фильтры можно любой момент в настройках ⚙"
+        )
+    else:
+        base_text = (
+            "Это все подходящие вакансии. Проверяю новые утром и вечером – пришлю сразу.\n\n"
+            "Поменять фильтры в настройках ⚙"
+        )
     filters = (user or {}).get("filters") or {}
     strict_mode = bool(filters.get("strict_mode"))
+    base_keyboard = [[{"text": "⚙️ Фильтры", "callback_data": "st:menu"}]]
     if not strict_mode:
-        return base_text, build_main_reply_keyboard()
+        return base_text, {"inline_keyboard": base_keyboard}
 
     strict_hint = (
-        "Кстати, у тебя скрыты вакансии без заполненных полей —\n"
+        "Кстати, у тебя скрыты вакансии без заполненных полей –\n"
         "грейда, города или формата. Их могло быть больше."
     )
     text = f"{base_text}\n\n{strict_hint}"
-    reply_markup = {
-        "inline_keyboard": [[{"text": "🟢 Показывать все вакансии", "callback_data": "st:strict:toggle:exhaust"}]]
-    }
+    reply_markup = {"inline_keyboard": base_keyboard + [[{"text": "🟢 Показывать все вакансии", "callback_data": "st:strict:toggle:exhaust"}]]}
     return text, reply_markup
 
 
@@ -248,7 +266,6 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chu
         announced_ids = db.get_announced_vacancy_ids(chat_id)
         filtered = [vacancy for vacancy in filtered if vacancy.get("id") not in announced_ids]
 
-    delivered_count_before_request = _count_delivered_before_request(db, chat_id)
     user = db.get_user(chat_id) or {}
     user_grades = ((user.get("filters") or {}).get("grades")) or []
     sorted_filtered = rank_vacancies(filtered, user_grades, title_boost_fn=_title_boost)
@@ -264,7 +281,7 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chu
             delete_message(chat_id, loader_message_id)
         except Exception:
             logging.exception("Не удалось удалить лоадер перед финальным сообщением")
-        exhausted_text, exhausted_markup = _build_exhausted_message_payload(user)
+        exhausted_text, exhausted_markup = _build_exhausted_message_payload(user, is_single_screen=(offset == 0))
         send_message(
             chat_id,
             exhausted_text,
@@ -308,19 +325,12 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chu
 
     if total > shown_count and sent_count > 0:
         if offset == 0:
-            if delivered_count_before_request > 0:
-                navigation_text = (
-                    f"Показано {shown_count} из {total}\n\n"
-                    "Продолжаю мониторить рынок два раза в день и автоматически пришлю всё новое.\n\n"
-                    "Что дальше?"
-                )
-            else:
-                navigation_text = (
-                    f"Показано {shown_count} из {total}\n\n"
-                    "Я мониторю рынок два раза в день и автоматически пришлю новые вакансии.\n"
-                    "Если пока не нашёл нужное — не останавливайся, дальше может быть именно твоя роль.\n\n"
-                    "Что дальше?"
-                )
+            navigation_text = (
+                f"Показано {shown_count} из {total}\n\n"
+                "Я мониторю рынок два раза в день и автоматически пришлю новые вакансии.\n\n"
+                "Если пока не нашлось нужное – не останавливайся, дальше может быть именно твоя роль.\n\n"
+                "Показываю следующие?"
+            )
         else:
             navigation_text = f"Показано {shown_count} из {total}"
         try:
@@ -337,7 +347,7 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chu
             delete_message(chat_id, loader_message_id)
         except Exception:
             logging.exception("Не удалось удалить лоадер перед финальным сообщением")
-        exhausted_text, exhausted_markup = _build_exhausted_message_payload(user)
+        exhausted_text, exhausted_markup = _build_exhausted_message_payload(user, is_single_screen=(offset == 0))
         send_message(
             chat_id,
             exhausted_text,
@@ -349,7 +359,7 @@ def _send_vacancies_chunk(chat_id, loader_message_id, db, filters, offset=0, chu
 
 
 def _send_onboarding_batch(chat_id, message_id, db, filters):
-    edit_message(chat_id, message_id, "⏳ Подбираю вакансии...", reply_markup=None)
+    edit_message(chat_id, message_id, f"{LOADER_EMOJI} Подбираю вакансии...", reply_markup=None)
     user = db.get_user(chat_id)
     effective_filters = filters if filters is not None else (user or {}).get("filters") or {}
 
@@ -371,16 +381,18 @@ def _send_onboarding_batch(chat_id, message_id, db, filters):
             "grade_distribution": _build_grade_distribution(filtered),
         },
     )
-    vacancies_word = _pluralize(total, "вакансию", "вакансии", "вакансий")
-    companies_word = _pluralize(companies_count, "компании", "компаниях", "компаниях")
     new_word = _pluralize(new_count, "новая", "новые", "новых")
     announced_word = _pluralize(announced_count, "просмотренная", "просмотренные", "просмотренных")
     has_active_filters = _has_active_core_filters(effective_filters)
 
     if total == 0:
         zero_state_text = _get_zero_state_text(chat_id, db, effective_filters)
-        edit_message(chat_id, message_id, zero_state_text, reply_markup=None)
-        db.log_event(chat_id, "vacancy_empty_result", {"reason": _get_zero_reason(zero_state_text)})
+        zero_reason = _get_zero_reason(zero_state_text)
+        zero_markup = None
+        if zero_reason == "filters_too_narrow":
+            zero_markup = {"inline_keyboard": [[{"text": "⚙️ Фильтры", "callback_data": "st:menu"}]]}
+        edit_message(chat_id, message_id, zero_state_text, reply_markup=zero_markup)
+        db.log_event(chat_id, "vacancy_empty_result", {"reason": zero_reason})
         return
 
     if new_count > 0 and announced_count > 0:
@@ -400,42 +412,55 @@ def _send_onboarding_batch(chat_id, message_id, db, filters):
     elif total <= 5:
         if has_active_filters:
             prompt = (
-                f"Нашёл {total} {vacancies_word}.\n\n"
-                "Это узкий срез рынка — мониторю компании каждый день и пришлю новые, как только появятся.\n\n"
-                "Ненужные компании можно отключить в /settings"
+                f"Нашёл {total} вакансий.\n\n"
+                "Получился довольно узкий срез, но я мониторю компании каждый день и пришлю новые, как только появятся.\n\n"
+                "Поменять фильтры можно любой момент в настройках ⚙"
             )
         else:
             prompt = (
-                f"Нашёл {total} {vacancies_word} по всему рынку — фильтры сейчас выключены.\n\n"
+                f"Нашёл {total} вакансий в {companies_count} компаниях – фильтры сейчас выключены.\n\n"
                 "Если хочешь точнее, настраивай фильтры в /settings."
             )
-        keyboard = {"inline_keyboard": [[{"text": "📬 Показать", "callback_data": "more:0"}]]}
+        if has_active_filters:
+            keyboard = {
+                "inline_keyboard": [[
+                    {"text": "📬 Показать", "callback_data": "more:0"},
+                    {"text": "⚙️ Фильтры", "callback_data": "st:menu"},
+                ]]
+            }
+        else:
+            keyboard = {
+                "inline_keyboard": [[
+                    {"text": "📬 Первые 10", "callback_data": "more:0"},
+                    {"text": "⚙️ Фильтры", "callback_data": "st:menu"},
+                ]]
+            }
     elif has_active_filters:
+        strict_mode = bool(effective_filters.get("strict_mode"))
         prompt = (
-            f"Нашёл {total} {vacancies_word} в {companies_count} {companies_word}.\n\n"
-            "Сначала покажу витрину: по одной самой релевантной вакансии от компании.\n\n"
-            "Ненужные компании можно отключить в /settings"
+            f"Нашёл <b>{total}</b> вакансий в <b>{companies_count}</b> компаниях.\n\n"
+            "Фильтры и компании можно будет настроить в любой момент – кнопка ⚙️ рядом."
         )
+        if strict_mode:
+            prompt += "\nСтрогий режим включён – часть вакансий скрыта."
         keyboard = {
             "inline_keyboard": [
                 [
-                    {"text": "📬 Показать первые 10", "callback_data": "more:0"},
-                    {"text": "⚙️ Изменить фильтры", "callback_data": "st:menu"},
+                    {"text": "📬 Первые 10", "callback_data": "more:0"},
+                    {"text": "⚙️ Фильтры", "callback_data": "st:menu"},
                 ]
             ]
         }
     else:
         prompt = (
-            f"Нашёл {total} {vacancies_word} в {companies_count} {companies_word} по всему рынку — "
-            "фильтры сейчас выключены.\n\n"
-            "Сначала покажу витрину: по одной самой релевантной вакансии от компании.\n\n"
+            f"Нашёл {total} вакансий в {companies_count} компаниях – фильтры сейчас выключены.\n\n"
             "Если хочешь точнее, настраивай фильтры в /settings."
         )
         keyboard = {
             "inline_keyboard": [
                 [
-                    {"text": "📬 Показать первые 10", "callback_data": "more:0"},
-                    {"text": "⚙️ Настроить фильтры", "callback_data": "st:menu"},
+                    {"text": "📬 Первые 10", "callback_data": "more:0"},
+                    {"text": "⚙️ Фильтры", "callback_data": "st:menu"},
                 ]
             ]
         }
@@ -475,7 +500,7 @@ def _handle_step_transition(chat_id, message_id, reply_markup, db):
 
     companies_list = None
     if next_step == "confirm":
-        edit_message(chat_id, message_id, "⏳ Применяю настройки...", reply_markup=None)
+        edit_message(chat_id, message_id, f"{LOADER_EMOJI} Применяю настройки...", reply_markup=None)
 
     db.update_user_filters(chat_id, next_filters)
     db.update_onboarding_step(chat_id, next_step)
@@ -679,7 +704,10 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
         return
 
     if data == "ob:done":
-        text, disclaimer_markup = get_disclaimer_message()
+        user = db.get_user(chat_id) or {}
+        filters = user.get("filters") or {}
+        hidden_count, show_count, strict_count = _get_disclaimer_counts(chat_id, db, filters)
+        text, disclaimer_markup = get_disclaimer_message(hidden_count, show_count, strict_count)
         edit_message(chat_id, message_id, text, reply_markup=disclaimer_markup)
         return
 
@@ -805,7 +833,7 @@ def handle_main_keyboard_text(chat_id, text, db=None):
 
     normalized_text = (text or "").strip().lower()
     if normalized_text == "вакансии":
-        loader = send_message(chat_id, "⏳ Подбираю вакансии...", reply_markup=None)
+        loader = send_message(chat_id, f"{LOADER_EMOJI} Подбираю вакансии...", reply_markup=None)
         if loader and loader.get("message_id"):
             try:
                 _send_onboarding_batch(chat_id, loader["message_id"], db, filters=None)
@@ -851,8 +879,8 @@ def handle_more_callback(data, chat_id, message_id, callback_message, db=None):
             logging.exception("Не удалось удалить сообщение more:stop перед финальным ответом")
         send_message(
             chat_id,
-            "Остальные пришлю в ближайшей рассылке — проверяю утром и вечером.\n\n"
-            "Ещё вакансии — /settings",
+            "Остальные пришлю в ближайшей рассылке – проверяю утром и вечером.\n\n"
+            "Ещё вакансии – /settings",
             reply_markup=None,
         )
         db.log_event(chat_id, "vacancy_stopped", {"remaining": len(remaining_ids)})
@@ -881,7 +909,7 @@ def handle_more_callback(data, chat_id, message_id, callback_message, db=None):
         return
 
     try:
-        edit_message(chat_id, message_id, "⏳ Загружаю...", reply_markup=None)
+        edit_message(chat_id, message_id, f"{LOADER_EMOJI} Загружаю...", reply_markup=None)
         user = db.get_user(chat_id) or {}
         filters = user.get("filters") or {}
         chunk_size = None if is_all else 10
@@ -994,7 +1022,7 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
         companies_list = None
         if step == "company":
             try:
-                edit_message(chat_id, message_id, "⏳ Загружаю список компаний...", reply_markup=None)
+                edit_message(chat_id, message_id, f"{LOADER_EMOJI} Загружаю список компаний...", reply_markup=None)
                 companies_list = db.get_enabled_companies()
             except Exception:
                 logging.exception("Не удалось загрузить список компаний в st:edit:company")

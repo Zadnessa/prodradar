@@ -20,11 +20,11 @@ WORK_FORMAT_CALLBACK_TO_FILTER = {item["callback_value"]: item["filter_value"] f
 
 def get_welcome_message():
     text = (
-        "Привет! Я — <b>ProductRadar</b>.\n\n"
-        "Слежу за вакансиями для продакт-менеджеров напрямую на сайтах Яндекса, Озона, Т-Банка и ещё 5 компаний. "
-        "Никаких агрегаторов — только первоисточники.\n\n"
-        "Присылаю новые позиции дважды в день.\n\n"
-        "Можешь настроить фильтры под себя или начать сразу — потом всё легко поменять через /settings."
+        "Привет!\n"
+        "Я помогаю продакт-менеджерам найти релевантные вакансии и мониторю появление новых предложений дважды в день.\n"
+        "⚡ <b>Быстрый старт</b> – сразу попробовать посмотреть, как тут все устроено.\n"
+        "⚙️ <b>Настроить</b> – пройти онбординг, сделать пару полезных фильтров и увеличить релевантность выдачи.\n\n"
+        "Удачи!"
     )
     reply_markup = {
         "inline_keyboard": [
@@ -108,8 +108,8 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
 
     if step == "grade":
         text = (
-            "<b>Шаг 1 из 4 — Грейд</b>\n\n"
-            "Какой уровень позиций тебе интересен? Можно выбрать несколько — покажу вакансии по всем отмеченным."
+            "<b>Шаг 1 из 4</b> – Грейд\n\n"
+            "Какой уровень позиций тебя интересует? Можно выбрать несколько – покажу вакансии по каждому."
         )
         selected = set(current_filters.get("grades") or [])
         buttons = [
@@ -125,9 +125,10 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
 
     if step == "city":
         text = (
-            "<b>Шаг 2 из 4 — Город</b>\n\n"
-            "В каком городе ищешь?\n\n"
-            "Формат работы (удалёнка, офис) будет на следующем шаге."
+            "<b>Шаг 2 из 4</b> – Город\n\n\n"
+            "В каком городе ищешь? Можно выбрать несколько.\n"
+            "«Любой город» означает буквально любой: может попасться Минск, Алматы и прочие интересные места.\n\n"
+            "⚠ Формат работы (удалёнка, офис) будет на следующем шаге."
         )
         selected = set(current_filters.get("cities") or [])
         buttons = [
@@ -146,8 +147,8 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
 
     if step == "work_format":
         text = (
-            "<b>Шаг 3 из 4 — Формат работы</b>\n\n"
-            "Какой формат подходит? Если у вакансии формат не указан — я всё равно её покажу, чтобы ты ничего не пропустил."
+            "<b>Шаг 3 из 4</b> – Формат работы\n\n"
+            "Какой формат ищешь? Можно выбрать несколько."
         )
         selected = set(current_filters.get("work_formats") or [])
         buttons = [
@@ -171,13 +172,12 @@ def get_step_message(step, current_filters, companies_list=None, prefix="ob"):
         work_formats_text = ", ".join(work_formats) if work_formats else "Все"
 
         text = (
-            "<b>Шаг 4 из 4 — Проверь настройки</b>\n\n"
+            "<b>Шаг 4 из 4</b> – Проверь настройки\n\n"
             f"• Грейды: {grades_text}\n"
             f"• Города: {cities_text}\n"
             f"• Формат: {work_formats_text}\n"
             "\n"
             "Изменить фильтры можно в любой момент через /settings."
-            "\n<i>Не все компании указывают грейд и город — такие вакансии тоже попадут в выдачу.</i>"
         )
         reply_markup = {
             "inline_keyboard": [
@@ -326,7 +326,7 @@ def get_company_page(companies_list, current_filters, page=0, page_size=8, prefi
         {"text": "◀️ Назад", "callback_data": f"{prefix}:back"},
     ])
 
-    text = f"⚙️ Компании ({safe_page + 1}/{total_pages})\n\n🔴 — заблокированные, 🟢 — активные"
+    text = f"⚙️ <b>Компании</b> ({safe_page + 1}/{total_pages})\n\n🔴 – заблокированные, 🟢 – активные"
     return text, {"inline_keyboard": rows}
 
 
@@ -353,18 +353,18 @@ def get_fallback_message():
     return "Сессия настройки устарела. Нажми /start, чтобы начать заново.", None
 
 
-def get_disclaimer_message():
+def get_disclaimer_message(hidden_count, show_count, strict_count):
     text = (
         "<b>Последний момент</b>\n\n"
-        "Не все компании указывают грейд, город и формат работы в API. "
-        "Из-за этого часть вакансий приходит с пустыми полями.\n\n"
-        "Что делать с такими вакансиями?"
+        "⚠ Не все компании указывают грейд, город и формат работы. Из-за этого часть вакансий приходит с пустыми полями. "
+        "Тут ничего не поделать, но я пытался.\n\n"
+        f"В строгом режиме будет на {hidden_count} вакансий меньше. Что делать с такими?"
     )
     reply_markup = {
         "inline_keyboard": [
             [
-                {"text": "Показывать все", "callback_data": "ob:strict:off"},
-                {"text": "Только полные", "callback_data": "ob:strict:on"},
+                {"text": f"Показать ({show_count})", "callback_data": "ob:strict:off"},
+                {"text": f"Скрыть ({strict_count})", "callback_data": "ob:strict:on"},
             ]
         ]
     }

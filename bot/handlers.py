@@ -540,7 +540,6 @@ def handle_start(
 
     text, reply_markup = get_hub_message(user)
     send_message(chat_id, text, reply_markup=reply_markup)
-    send_message(chat_id, "Меню закреплено под полем ввода.", reply_markup=build_main_reply_keyboard())
     db.log_event(chat_id, "user_returned", {"was_paused": was_paused})
     if was_paused:
         send_message(chat_id, "Рассылка возобновлена — новые вакансии придут в ближайшую проверку.")
@@ -754,7 +753,6 @@ def handle_hub_callback(data, chat_id, message_id, callback_message, db=None):
         if step is None:
             text, reply_markup = get_hub_message(user)
             edit_message(chat_id, message_id, text, reply_markup=reply_markup)
-            send_message(chat_id, "Меню закреплено под полем ввода.", reply_markup=build_main_reply_keyboard())
             return
 
         if step == "welcome":
@@ -1127,15 +1125,27 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
 
     if data == "st:pause":
         db.set_user_paused(chat_id, True)
-        text, reply = get_pause_message()
-        edit_message(chat_id, message_id, text, reply_markup=reply)
+        text, _ = get_pause_message()
+        previous_text = (callback_message or {}).get("text")
+        if previous_text:
+            try:
+                edit_message(chat_id, message_id, previous_text, reply_markup=None)
+            except Exception:
+                logging.exception("Не удалось убрать inline-кнопки у старого settings-сообщения (pause)")
+        send_message(chat_id, text, reply_markup=build_main_reply_keyboard())
         db.log_event(chat_id, "mailing_paused", {})
         return
 
     if data == "st:resume":
         db.set_user_paused(chat_id, False)
-        text, reply = get_resume_message()
-        edit_message(chat_id, message_id, text, reply_markup=reply)
+        text, _ = get_resume_message()
+        previous_text = (callback_message or {}).get("text")
+        if previous_text:
+            try:
+                edit_message(chat_id, message_id, previous_text, reply_markup=None)
+            except Exception:
+                logging.exception("Не удалось убрать inline-кнопки у старого settings-сообщения (resume)")
+        send_message(chat_id, text, reply_markup=build_main_reply_keyboard())
         db.log_event(chat_id, "mailing_resumed", {})
         return
 

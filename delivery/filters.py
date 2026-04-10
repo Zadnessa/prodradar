@@ -92,6 +92,10 @@ def filter_vacancies_for_user(vacancies, user_filters):
                 else:
                     city_parts = [part.strip() for part in city_value.split(",") if part.strip()]
                     city_ok = any(part in cities_filter for part in city_parts)
+            if not city_ok and "удалёнка" in work_formats_filter:
+                work_format_value = str(vacancy.get("work_format") or "").lower()
+                if "удалёнка" in work_format_value:
+                    city_ok = True
 
         work_format = vacancy.get("work_format")
         if work_formats_filter:

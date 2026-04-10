@@ -18,6 +18,7 @@ from bot.handlers import (
     handle_mute,
     handle_mute_callback,
     handle_more_callback,
+    handle_pause,
     handle_settings,
     handle_settings_callback,
     handle_start,
@@ -152,6 +153,8 @@ class handler(BaseHTTPRequestHandler):
                     handle_stop(chat_id, db=db)
                 elif text == "/settings":
                     handle_settings(chat_id, db=db)
+                elif text == "/pause":
+                    handle_pause(chat_id, db=db)
                 elif text == "/stats":
                     handle_stats(chat_id, db=db)
                 elif text == "/blocked":

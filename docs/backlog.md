@@ -11,34 +11,6 @@
 - Статус `[?]` — задача с неопределённым состоянием, требует ручной проверки. Не трогать без явного указания.
 
 
-## До релиза
-
-- [x] Витрина: заменить _grade_priority на grade_score по матрице пользовательского грейда; синхронизировать ранжирование on-demand и scheduled через delivery/ranking.py (delivery/ranking.py, bot/handlers.py, main.py).
-- [x] T-002 Quick-path сводка: после ob:quick первая сводка явно сообщает «показываю весь рынок без фильтров» и предлагает /settings для настройки; strict_mode disclaimer не показывается quick-path пользователям (bot/handlers.py, bot/onboarding.py).
-- [x] T-004 Сводка новых vs просмотренных: при любом входе в «Вакансии» (on-demand, after onboarding, after settings save) если есть и новые, и ранее announced вакансии — показывать «N новых + M ранее просмотренных» с кнопками «Показать все» / «Только новые» (bot/handlers.py, database/supabase_client.py).
-- [x] T-006 BUG-067 — не передавать ReplyKeyboardMarkup в editMessageText (bot/handlers.py, bot/telegram_api.py).
-- [x] T-007 Толерантная обработка битых вакансий: try/except вокруг _prepare_vacancy для каждой вакансии; битая запись пропускается без сохранения в БД; skipped_count агрегируется и выводится в admin report (main.py).
-- [x] T-008 Устойчивое сохранение: insert/update/touch/deactivate чанками по 50; retry при transient-ошибках Supabase; при data error в чанке — поштучный fallback с логированием проблемной записи; admin report отправляется в finally даже при частичном падении пайплайна (main.py, database/supabase_client.py).
-- [x] T-009 SELECT без source_json — убрать поле из runtime-запросов к vacancies (database/supabase_client.py).
-- [x] T-011 insert_vacancies заменить на upsert с чанками по 50 (database/supabase_client.py).
-- [x] T-012 Удалить вызов generate_summary() из _prepare_vacancy (main.py).
-- [x] T-014 Ручная проверка: порядок этапов в main.py (parse → blacklist → whitelist → content_hash → enrich → normalize) соответствует AGENTS.md; при расхождении — зафиксировать задачу на фикс (main.py, AGENTS.md).
-- [x] T-015 Ручная проверка: callback-префиксы, архитектурные правила и контракты в AGENTS.md и context.md соответствуют реальному коду; устаревшие пункты — удалить или обновить (AGENTS.md, docs/context.md).
-- [x] T-016 Проверка контракта enrich(): прогнать все парсеры с enrich-методом и убедиться, что ни один не перезаписывает заполненные поля и заменяет description только если новое длиннее; MTS — известное нарушение, исправляется задачей 13 (parsers/).
-- [x] T-017 SQL-проверки data integrity (Supabase).
-- [x] T-018 Проверить, что все companies.parser_name зарегистрированы в PARSER_REGISTRY (database/, parsers/__init__.py).
-- [x] T-019 Проверить отсутствие orphan-записей в user_vacancy_delivery (database/).
-- [x] T-020 Выполнить проверки после финального сброса и полного прогона парсеров (main.py, database/).
-- [x] T-021 Ручной тест-прогон: пройти сценарии /start (новый), /start (returning), онбординг полный цикл, quick-path, settings toggle, mute/unmute/unmute_all, /blocked, пагинация (Ещё 10, Все, Хватит), scheduled-рассылка, /stats, /stop; чеклист составляется отдельно перед прогоном (bot/, delivery/, main.py).
-- [x] T-022 Scheduled-intro без «по твоим фильтрам» для quick-path пользователей (bot/handlers.py).
-- [x] T-023 Уплотнить mute/unmute/unmute_all: каждый сценарий завершается одним сообщением (edit) с inline-кнопкой действия, без второго дублирующего send_message; делать совместно с BUG-067 (bot/handlers.py).
-- [x] T-048 Убрать прямой db.client.table из _count_delivered_before_request; использовать метод SupabaseService.count_delivered (bot/handlers.py, database/supabase_client.py).
-- [ ] T-024 Полная ревизия текстов бота — строго после функциональных тестов (bot/).
-- [x] T-053 После успешного _send_onboarding_batch в ob:quick/ob:strict:off/ob:strict:on отправлять "Меню закреплено под полем ввода." с reply keyboard; готово когда новый пользователь после онбординга видит кнопки "Вакансии"/"Настройки" (bot/handlers.py).
-- [x] T-054 Добавить grade override для "руководитель группы продуктового менеджмента" через паттерны руководитель группы/group product до директор.*продукт; готово когда целевой тайтл получает Lead+ (config.py).
-- [x] T-055 BUG-077: /stop показывает prompt с паузой перед отпиской; готово когда в prompt есть кнопки st:pause, st:stop:yes и st:menu (bot/settings.py, bot/handlers.py).
-- [x] T-056 BUG-078: добавить команду /pause с постановкой рассылки на паузу; готово когда /pause обрабатывается в webhook и вызывает handle_pause (bot/handlers.py, api/webhook.py).
-
 ## После релиза
 - [ ] T-052 Создать песочницу: второй проект Vercel на тот же репозиторий, env-переменные старого бота (@ProductRadar_bot), отдельная база Supabase (free tier), установить webhook; документировать два окружения в README (infra/, README.md).
 - [ ] T-010 Контрактный тест: для каждого парсера из PARSER_REGISTRY прогнать parse() на фикстуре и проверить, что все vacancy["company"] присутствуют в companies.name; тест падает при рассинхроне (tests/, parsers/, fixtures/).
@@ -212,3 +184,28 @@
 - [x] Добавить grade override для "руководитель группы продуктового менеджмента" через паттерны руководитель группы/group product до директор.*продукт; готово когда целевой тайтл получает Lead+ (config.py).
 - [x] BUG-077: /stop показывает prompt с паузой перед отпиской; готово когда в prompt есть кнопки st:pause, st:stop:yes и st:menu (bot/settings.py, bot/handlers.py).
 - [x] BUG-078: добавить команду /pause с постановкой рассылки на паузу; готово когда /pause обрабатывается в webhook и вызывает handle_pause (bot/handlers.py, api/webhook.py).
+- [x] Витрина: заменить _grade_priority на grade_score по матрице пользовательского грейда; синхронизировать ранжирование on-demand и scheduled через delivery/ranking.py (delivery/ranking.py, bot/handlers.py, main.py).
+- [x] T-002 Quick-path сводка: после ob:quick первая сводка явно сообщает «показываю весь рынок без фильтров» и предлагает /settings для настройки; strict_mode disclaimer не показывается quick-path пользователям (bot/handlers.py, bot/onboarding.py).
+- [x] T-004 Сводка новых vs просмотренных: при любом входе в «Вакансии» (on-demand, after onboarding, after settings save) если есть и новые, и ранее announced вакансии — показывать «N новых + M ранее просмотренных» с кнопками «Показать все» / «Только новые» (bot/handlers.py, database/supabase_client.py).
+- [x] T-006 BUG-067 — не передавать ReplyKeyboardMarkup в editMessageText (bot/handlers.py, bot/telegram_api.py).
+- [x] T-007 Толерантная обработка битых вакансий: try/except вокруг _prepare_vacancy для каждой вакансии; битая запись пропускается без сохранения в БД; skipped_count агрегируется и выводится в admin report (main.py).
+- [x] T-008 Устойчивое сохранение: insert/update/touch/deactivate чанками по 50; retry при transient-ошибках Supabase; при data error в чанке — поштучный fallback с логированием проблемной записи; admin report отправляется в finally даже при частичном падении пайплайна (main.py, database/supabase_client.py).
+- [x] T-009 SELECT без source_json — убрать поле из runtime-запросов к vacancies (database/supabase_client.py).
+- [x] T-011 insert_vacancies заменить на upsert с чанками по 50 (database/supabase_client.py).
+- [x] T-012 Удалить вызов generate_summary() из _prepare_vacancy (main.py).
+- [x] T-014 Ручная проверка: порядок этапов в main.py (parse → blacklist → whitelist → content_hash → enrich → normalize) соответствует AGENTS.md; при расхождении — зафиксировать задачу на фикс (main.py, AGENTS.md).
+- [x] T-015 Ручная проверка: callback-префиксы, архитектурные правила и контракты в AGENTS.md и context.md соответствуют реальному коду; устаревшие пункты — удалить или обновить (AGENTS.md, docs/context.md).
+- [x] T-016 Проверка контракта enrich(): прогнать все парсеры с enrich-методом и убедиться, что ни один не перезаписывает заполненные поля и заменяет description только если новое длиннее; MTS — известное нарушение, исправляется задачей 13 (parsers/).
+- [x] T-017 SQL-проверки data integrity (Supabase).
+- [x] T-018 Проверить, что все companies.parser_name зарегистрированы в PARSER_REGISTRY (database/, parsers/__init__.py).
+- [x] T-019 Проверить отсутствие orphan-записей в user_vacancy_delivery (database/).
+- [x] T-020 Выполнить проверки после финального сброса и полного прогона парсеров (main.py, database/).
+- [x] T-021 Ручной тест-прогон: пройти сценарии /start (новый), /start (returning), онбординг полный цикл, quick-path, settings toggle, mute/unmute/unmute_all, /blocked, пагинация (Ещё 10, Все, Хватит), scheduled-рассылка, /stats, /stop; чеклист составляется отдельно перед прогоном (bot/, delivery/, main.py).
+- [x] T-022 Scheduled-intro без «по твоим фильтрам» для quick-path пользователей (bot/handlers.py).
+- [x] T-023 Уплотнить mute/unmute/unmute_all: каждый сценарий завершается одним сообщением (edit) с inline-кнопкой действия, без второго дублирующего send_message; делать совместно с BUG-067 (bot/handlers.py).
+- [x] T-048 Убрать прямой db.client.table из _count_delivered_before_request; использовать метод SupabaseService.count_delivered (bot/handlers.py, database/supabase_client.py).
+- [x] T-024 Полная ревизия текстов бота — строго после функциональных тестов (bot/).
+- [x] T-053 После успешного _send_onboarding_batch в ob:quick/ob:strict:off/ob:strict:on отправлять "Меню закреплено под полем ввода." с reply keyboard; готово когда новый пользователь после онбординга видит кнопки "Вакансии"/"Настройки" (bot/handlers.py).
+- [x] T-054 Добавить grade override для "руководитель группы продуктового менеджмента" через паттерны руководитель группы/group product до директор.*продукт; готово когда целевой тайтл получает Lead+ (config.py).
+- [x] T-055 BUG-077: /stop показывает prompt с паузой перед отпиской; готово когда в prompt есть кнопки st:pause, st:stop:yes и st:menu (bot/settings.py, bot/handlers.py).
+- [x] T-056 BUG-078: добавить команду /pause с постановкой рассылки на паузу; готово когда /pause обрабатывается в webhook и вызывает handle_pause (bot/handlers.py, api/webhook.py).

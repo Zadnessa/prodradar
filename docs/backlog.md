@@ -38,6 +38,7 @@
 - [ ] T-049 VK enrich: добавить проверку existing значений grade и description перед перезаписью; description заменять только если len(new) > len(current) (parsers/vk.py).
 - [ ] T-050 AGENTS.md: добавить callback-префиксы more:new:, more:new:all:, more:new:stop в документацию (AGENTS.md).
 - [ ] T-051 Вернуть технические PM-вакансии после AI-классификации по категориям (классик, growth, tech, AI/ML); до AI-фазы отсекать blacklist-ом (config.py, ai/).
+- [x] T-057 BUG-079: on-demand zero-state показывает кнопку просмотренных, если новых нет и все подходящие вакансии уже delivered; готово когда в zero-state есть CTA `more:reseen:0`, а пагинация работает через `more:reseen:*` (bot/handlers.py, database/supabase_client.py, docs/).
 
  
 ## Бэклог
@@ -209,3 +210,4 @@
 - [x] T-054 Добавить grade override для "руководитель группы продуктового менеджмента" через паттерны руководитель группы/group product до директор.*продукт; готово когда целевой тайтл получает Lead+ (config.py).
 - [x] T-055 BUG-077: /stop показывает prompt с паузой перед отпиской; готово когда в prompt есть кнопки st:pause, st:stop:yes и st:menu (bot/settings.py, bot/handlers.py).
 - [x] T-056 BUG-078: добавить команду /pause с постановкой рассылки на паузу; готово когда /pause обрабатывается в webhook и вызывает handle_pause (bot/handlers.py, api/webhook.py).
+- [x] BUG-079: on-demand zero-state показывает кнопку просмотренных, если новых нет и все подходящие вакансии уже delivered; готово когда в zero-state есть CTA `more:reseen:0`, а пагинация работает через `more:reseen:*` (bot/handlers.py, database/supabase_client.py, docs/).

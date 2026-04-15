@@ -202,6 +202,18 @@ class SupabaseService:
         result = query.order("published_at", desc=True).order("created_at", desc=True).range(offset, end).execute()
         return result.data or []
 
+    def get_active_vacancies_for_filter_check(self, limit=500, offset=0):
+        query = (
+            self.client.table("vacancies")
+            .select(
+                "id,title,company,grade,city,work_format,experience,description,url,published_at,created_at,is_active,content_hash"
+            )
+            .eq("is_active", True)
+        )
+        end = offset + limit - 1
+        result = query.order("published_at", desc=True).order("created_at", desc=True).range(offset, end).execute()
+        return result.data or []
+
     def mark_delivered(self, chat_id, vacancy_ids, source="scheduled"):
         if not vacancy_ids:
             return

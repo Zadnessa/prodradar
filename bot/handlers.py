@@ -131,6 +131,8 @@ def _get_zero_reason(zero_state_text):
     text = (zero_state_text or "").lower()
     if "нет активных вакансий" in text:
         return "market_empty"
+    if "ранее просмотренных" in text:
+        return "all_viewed_reseen"
     if "уже видел все" in text:
         return "all_viewed"
     return "filters_too_narrow"
@@ -145,16 +147,17 @@ def _get_zero_state_text(chat_id, db, effective_filters):
             0,
         )
 
+    all_active = db.get_active_vacancies_for_filter_check(limit=500)
+    reseen_filtered = filter_vacancies_for_user(all_active, effective_filters)
+    reseen_count = len(reseen_filtered)
+    if reseen_count > 0:
+        return (
+            f"Новых вакансий пока нет, но {reseen_count} ранее просмотренных подходят под текущие фильтры.",
+            reseen_count,
+        )
+
     all_undelivered = db.get_undelivered_vacancies(chat_id, limit=1)
     if not all_undelivered:
-        all_active = db.get_active_vacancies_for_filter_check(limit=500)
-        reseen_filtered = filter_vacancies_for_user(all_active, effective_filters)
-        reseen_count = len(reseen_filtered)
-        if reseen_count > 0:
-            return (
-                f"Новых вакансий пока нет, но {reseen_count} ранее просмотренных подходят под текущие фильтры.",
-                reseen_count,
-            )
         return (
             "Ты уже видел все подходящие вакансии — молодец! "
             "Новые проверяю утром и вечером, пришлю сразу.",
@@ -420,14 +423,25 @@ def _send_onboarding_batch(chat_id, message_id, db, filters):
         zero_state_text, reseen_count = _get_zero_state_text(chat_id, db, effective_filters)
         zero_reason = _get_zero_reason(zero_state_text)
         zero_markup = None
-        if zero_reason == "filters_too_narrow":
-            zero_markup = {"inline_keyboard": [[{"text": "⚙️ Фильтры", "callback_data": "st:menu"}]]}
-        elif reseen_count > 0:
-            zero_markup = {
-                "inline_keyboard": [
-                    [{"text": f"📬 Показать просмотренные ({reseen_count})", "callback_data": "more:reseen:0"}]
-                ]
-            }
+        reseen_button = {
+            "text": f"📬 Показать просмотренные ({reseen_count})",
+            "callback_data": "more:reseen:0",
+        }
+        filters_button = {"text": "⚙️ Фильтры", "callback_data": "st:menu"}
+
+        if zero_reason == "market_empty":
+            zero_markup = None
+        elif zero_reason == "all_viewed_reseen":
+            zero_markup = {"inline_keyboard": [[reseen_button], [filters_button]]}
+        elif zero_reason == "all_viewed":
+            if reseen_count > 0:
+                zero_markup = {"inline_keyboard": [[reseen_button]]}
+        elif zero_reason == "filters_too_narrow":
+            if reseen_count > 0:
+                zero_markup = {"inline_keyboard": [[reseen_button], [filters_button]]}
+            else:
+                zero_markup = {"inline_keyboard": [[filters_button]]}
+
         edit_message(chat_id, message_id, zero_state_text, reply_markup=zero_markup)
         db.log_event(chat_id, "vacancy_empty_result", {"reason": zero_reason})
         return

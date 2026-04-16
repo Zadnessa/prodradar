@@ -131,10 +131,10 @@ def _get_zero_reason(zero_state_text):
     text = (zero_state_text or "").lower()
     if "нет активных вакансий" in text:
         return "market_empty"
-    if "ранее просмотренных" in text:
-        return "all_viewed_reseen"
     if "уже видел все" in text:
         return "all_viewed"
+    if "просмотренных ранее" in text:
+        return "has_reseen"
     return "filters_too_narrow"
 
 
@@ -147,28 +147,36 @@ def _get_zero_state_text(chat_id, db, effective_filters):
             0,
         )
 
+    all_undelivered = db.get_undelivered_vacancies(chat_id, limit=1)
     all_active = db.get_active_vacancies_for_filter_check(limit=500)
     reseen_filtered = filter_vacancies_for_user(all_active, effective_filters)
     reseen_count = len(reseen_filtered)
-    if reseen_count > 0:
-        return (
-            f"Новых вакансий пока нет, но {reseen_count} ранее просмотренных подходят под текущие фильтры.",
-            reseen_count,
-        )
 
-    all_undelivered = db.get_undelivered_vacancies(chat_id, limit=1)
     if not all_undelivered:
+        if reseen_count > 0:
+            return (
+                f"Новых вакансий пока нет, но {reseen_count} из просмотренных ранее "
+                "подходят под текущие фильтры — можно пересмотреть по кнопке ниже.",
+                reseen_count,
+            )
         return (
             "Ты уже видел все подходящие вакансии — молодец! "
             "Новые проверяю утром и вечером, пришлю сразу.",
             0,
         )
 
-    return (
+    base_text = (
         f"По твоим фильтрам сейчас ничего нет, но всего есть {total_active} активных вакансий. "
         "Попробуй расширить фильтры в настройках ⚙ – может, найдётся что-то интересное.",
-        0,
     )
+    if reseen_count > 0:
+        return (
+            f"{base_text}\n\n{reseen_count} из просмотренных ранее подходят под текущие фильтры — "
+            "можно пересмотреть по кнопке ниже.",
+            reseen_count,
+        )
+
+    return base_text, 0
 
 
 def _has_active_core_filters(filters):
@@ -423,24 +431,20 @@ def _send_onboarding_batch(chat_id, message_id, db, filters):
         zero_state_text, reseen_count = _get_zero_state_text(chat_id, db, effective_filters)
         zero_reason = _get_zero_reason(zero_state_text)
         zero_markup = None
-        reseen_button = {
-            "text": f"📬 Показать просмотренные ({reseen_count})",
-            "callback_data": "more:reseen:0",
-        }
-        filters_button = {"text": "⚙️ Фильтры", "callback_data": "st:menu"}
-
-        if zero_reason == "market_empty":
-            zero_markup = None
-        elif zero_reason == "all_viewed_reseen":
-            zero_markup = {"inline_keyboard": [[reseen_button], [filters_button]]}
-        elif zero_reason == "all_viewed":
-            if reseen_count > 0:
-                zero_markup = {"inline_keyboard": [[reseen_button]]}
-        elif zero_reason == "filters_too_narrow":
-            if reseen_count > 0:
-                zero_markup = {"inline_keyboard": [[reseen_button], [filters_button]]}
-            else:
-                zero_markup = {"inline_keyboard": [[filters_button]]}
+        rows = []
+        if reseen_count > 0:
+            rows.append(
+                [
+                    {
+                        "text": f"📬 Показать просмотренные ({reseen_count})",
+                        "callback_data": "more:reseen:0",
+                    }
+                ]
+            )
+        if zero_reason in ("filters_too_narrow", "has_reseen"):
+            rows.append([{"text": "⚙️ Фильтры", "callback_data": "st:menu"}])
+        if rows:
+            zero_markup = {"inline_keyboard": rows}
 
         edit_message(chat_id, message_id, zero_state_text, reply_markup=zero_markup)
         db.log_event(chat_id, "vacancy_empty_result", {"reason": zero_reason})

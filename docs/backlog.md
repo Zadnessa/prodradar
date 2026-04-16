@@ -40,6 +40,7 @@
 - [ ] T-051 Вернуть технические PM-вакансии после AI-классификации по категориям (классик, growth, tech, AI/ML); до AI-фазы отсекать blacklist-ом (config.py, ai/).
 - [x] T-057 BUG-079: on-demand zero-state показывает кнопку просмотренных, если новых нет и все подходящие вакансии уже delivered; готово когда в zero-state есть CTA `more:reseen:0`, а пагинация работает через `more:reseen:*` (bot/handlers.py, database/supabase_client.py, docs/).
 - [x] T-058 BUG-080: reseen-кнопка при пустой on-demand выдаче после смены фильтров или исчерпания пула; готово когда _get_zero_state_text всегда считает reseen, а zero-state показывает комбинацию CTA «Показать просмотренные» + «Фильтры» (bot/handlers.py, docs/bugs.md, docs/backlog.md).
+- [x] T-059 BUG-080: reseen-кнопка и текст при пустой выдаче после исчерпания пула; готово когда _get_zero_state_text всегда считает reseen, zero-state текст сохраняет базовое сообщение и дополняется reseen-блоком, а кнопки «Показать просмотренные» и «Фильтры» показываются вместе в корректном порядке (bot/handlers.py, docs/bugs.md, docs/backlog.md).
 
  
 ## Бэклог
@@ -213,3 +214,4 @@
 - [x] T-056 BUG-078: добавить команду /pause с постановкой рассылки на паузу; готово когда /pause обрабатывается в webhook и вызывает handle_pause (bot/handlers.py, api/webhook.py).
 - [x] BUG-079: on-demand zero-state показывает кнопку просмотренных, если новых нет и все подходящие вакансии уже delivered; готово когда в zero-state есть CTA `more:reseen:0`, а пагинация работает через `more:reseen:*` (bot/handlers.py, database/supabase_client.py, docs/).
 - [x] BUG-080: reseen-кнопка при пустой on-demand выдаче после смены фильтров или исчерпания пула; готово когда _get_zero_state_text всегда считает reseen, а zero-state показывает комбинацию CTA «Показать просмотренные» + «Фильтры» (bot/handlers.py, docs/bugs.md, docs/backlog.md).
+- [x] BUG-080: reseen-кнопка и текст при пустой выдаче после исчерпания пула; готово когда _get_zero_state_text всегда считает reseen, zero-state текст сохраняет базовое сообщение и дополняется reseen-блоком, а кнопки «Показать просмотренные» и «Фильтры» показываются вместе в корректном порядке (bot/handlers.py, docs/bugs.md, docs/backlog.md).

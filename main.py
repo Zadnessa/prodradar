@@ -3,6 +3,7 @@
 import asyncio
 import json
 import logging
+import random
 import re
 from datetime import datetime, timedelta, timezone
 
@@ -25,6 +26,9 @@ from enrichment.normalizer import (
 from parsers import PARSER_REGISTRY
 from parsers.browser import fetch_browser_secrets
 from parsers.utils import normalize_city
+
+
+HH_PARSER_NAMES = {"hh", "hh_cian", "hh_kaspersky", "hh_zvuk"}
 
 
 def _build_grade_distribution(vacancies):
@@ -135,8 +139,22 @@ async def run():
         seen_parser_names.add(parser_name)
         unique_parser_names.append(parser_name)
 
+    hh_names = [name for name in unique_parser_names if name in HH_PARSER_NAMES]
+    other_names = [name for name in unique_parser_names if name not in HH_PARSER_NAMES]
+    random.shuffle(hh_names)
+    ordered_parser_names = other_names + hh_names
+
     async with aiohttp.ClientSession() as session:
-        for parser_name in unique_parser_names:
+        hh_captcha_detected = False
+
+        for index, parser_name in enumerate(ordered_parser_names):
+            if hh_captcha_detected and parser_name in HH_PARSER_NAMES:
+                skipped_message = f"{parser_name} [SKIPPED]: captcha на предыдущем HH-парсере"
+                parser_errors.append(skipped_message)
+                parser_stats[parser_name] = skipped_message.replace(f"{parser_name} ", "", 1)
+                continue
+
+            parser = None
             try:
                 parser_cls = PARSER_REGISTRY.get(parser_name)
                 if not parser_cls:
@@ -153,11 +171,23 @@ async def run():
                     parsers_by_company[vacancy_company] = parser
                 successful_companies.update(parser_companies)
                 logging.info("%s: собрано %s", parser_name, len(vacancies))
+
+                if parser_name in HH_PARSER_NAMES and getattr(parser, "captcha_hit", False):
+                    hh_captcha_detected = True
+                    logging.warning("HH captcha detected, пропускаем оставшиеся HH-парсеры")
             except Exception as exc:
                 classified_error = _classify_parser_error(parser_name, exc)
                 parser_errors.append(classified_error)
                 parser_stats[parser_name] = classified_error.replace(f"{parser_name} ", "", 1)
                 logging.exception("Ошибка парсера %s", parser_name)
+
+            next_parser_name = ordered_parser_names[index + 1] if index + 1 < len(ordered_parser_names) else None
+            if (
+                parser_name in HH_PARSER_NAMES
+                and next_parser_name in HH_PARSER_NAMES
+                and not hh_captcha_detected
+            ):
+                await asyncio.sleep(random.uniform(2.0, 4.0))
 
         before_filter = len(all_collected)
         filtered = []

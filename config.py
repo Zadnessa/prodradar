@@ -185,6 +185,8 @@ REQUEST_HEADERS = {
     "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
 }
 
+HH_USER_AGENT = "ProductRadar/1.0 (prodradar.ru)"
+
 BOTS = {
     "main": {
         "token_env": "TELEGRAM_BOT_TOKEN",

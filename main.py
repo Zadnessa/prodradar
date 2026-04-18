@@ -100,6 +100,8 @@ def _prepare_vacancy(vacancy, city_mappings):
 
 async def run():
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("httpcore").setLevel(logging.WARNING)
 
     db = SupabaseService()
     companies = db.get_enabled_companies()
@@ -150,7 +152,7 @@ async def run():
         for index, parser_name in enumerate(ordered_parser_names):
             if hh_captcha_detected and parser_name in HH_PARSER_NAMES:
                 skipped_message = f"{parser_name} [SKIPPED]: captcha на предыдущем HH-парсере"
-                parser_errors.append(skipped_message)
+                parser_errors.append(skipped_message[:150])
                 parser_stats[parser_name] = skipped_message.replace(f"{parser_name} ", "", 1)
                 continue
 
@@ -177,9 +179,9 @@ async def run():
                     logging.warning("HH captcha detected, пропускаем оставшиеся HH-парсеры")
             except Exception as exc:
                 classified_error = _classify_parser_error(parser_name, exc)
-                parser_errors.append(classified_error)
+                parser_errors.append(classified_error[:150])
                 parser_stats[parser_name] = classified_error.replace(f"{parser_name} ", "", 1)
-                logging.exception("Ошибка парсера %s", parser_name)
+                logging.error("Ошибка парсера %s: %s", parser_name, str(exc)[:500])
 
             next_parser_name = ordered_parser_names[index + 1] if index + 1 < len(ordered_parser_names) else None
             if (
@@ -426,8 +428,8 @@ async def run():
                     reply_markup=reply_markup,
                 )
             except Exception as exc:
-                failed_users.append(f"{chat_id}: {exc}")
-                logging.exception("Ошибка отправки пользователю %s", chat_id)
+                failed_users.append(f"{chat_id}: {str(exc)[:200]}")
+                logging.error("Ошибка отправки пользователю %s: %s", chat_id, str(exc)[:500])
     finally:
         send_admin_report(
             total=len(all_collected),
@@ -440,7 +442,7 @@ async def run():
             users_count=len(users),
             paused_count=paused_users,
             parser_stats=parser_stats,
-            parser_errors=parser_errors + failed_users,
+            parser_errors=[error[:150] for error in parser_errors + failed_users],
         )
 
     logging.info(

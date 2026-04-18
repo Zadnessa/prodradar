@@ -621,3 +621,9 @@
 Было: UA "VacancyBot/1.0" заблокирован; нет пауз между парсерами; нет retry; тело 403 не читается; детерминированный порядок запросов.
 Стало: новый UA из config.HH_USER_AGENT; рандомизированные паузы между запросами и парсерами; один retry с backoff 30s; парсинг тела ответа и логирование request_id; остановка при captcha; общий базовый класс HHBaseParser.
 Причина: HH ужесточил антибот-защиту; комбинация заблокированного UA, облачного IP и машинного паттерна запросов привела к стабильной блокировке.
+
+### BUG-082: Лог раздут до 1.6M токенов, admin report не отправляется (HTTP 413)
+Файл: main.py, delivery/telegram.py
+Было: httpx логировал полные тела HTTP-ответов Supabase на уровне INFO; postgrest APIError включал полный JSON-дамп вакансий в exception message; logging.exception печатал мегабайтные traceback; admin report превышал лимит Telegram 4096 символов.
+Стало: httpx/httpcore переведены на WARNING; exception messages обрезаются до 500 символов; parser_errors обрезаются до 150 символов; admin report обрезается до 4000 символов.
+Причина: touch_vacancies и get_undelivered_vacancies возвращают полные записи с description на кириллице; postgrest-py включает тело ответа в исключение.

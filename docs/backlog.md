@@ -216,3 +216,4 @@
 - [x] BUG-080: reseen-кнопка при пустой on-demand выдаче после смены фильтров или исчерпания пула; готово когда _get_zero_state_text всегда считает reseen, а zero-state показывает комбинацию CTA «Показать просмотренные» + «Фильтры» (bot/handlers.py, docs/bugs.md, docs/backlog.md).
 - [x] BUG-080: reseen-кнопка и текст при пустой выдаче после исчерпания пула; готово когда _get_zero_state_text всегда считает reseen, zero-state текст сохраняет базовое сообщение и дополняется reseen-блоком, а кнопки «Показать просмотренные» и «Фильтры» показываются вместе в корректном порядке (bot/handlers.py, docs/bugs.md, docs/backlog.md).
 - [x] BUG-081: устойчивость HH-парсеров — новый UA, джиттер, retry, диагностика 403, captcha-stop, базовый класс HHBaseParser (parsers/hh_base.py, parsers/hh*.py, main.py, config.py).
+- [x] BUG-082: обрезка логов Supabase, защита admin report от 413, truncate exception messages (main.py, delivery/telegram.py).

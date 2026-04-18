@@ -183,6 +183,7 @@ def send_admin_report(
     if not admin_chat_id:
         return
 
+    parser_errors = [(str(error)[:150]) for error in (parser_errors or [])]
     errors_text = ", ".join(parser_errors) if parser_errors else "нет"
     parser_stats_lines = []
     if parser_stats:
@@ -206,7 +207,7 @@ def send_admin_report(
     if parser_stats_lines:
         parser_stats_block = "\n".join(parser_stats_lines) + "\n"
 
-    message = (
+    base_message = (
         "📊 Vacancy Radar — отчёт\n\n"
         f"Собрано: {total} вакансий\n"
         f"Новых: {new_count}\n"
@@ -217,6 +218,19 @@ def send_admin_report(
         f"{parser_stats_block}"
         f"Отправлено: {sent_count} сообщений на {users_count} подписчиков\n"
         f"На паузе: {paused_count}\n"
-        f"Ошибки: {errors_text}"
+        "Ошибки: "
     )
+    message = base_message + errors_text
+
+    if len(message) > 4000:
+        remaining = max(0, 4000 - len(base_message))
+        if remaining > 3:
+            errors_text = f"{errors_text[:remaining - 3]}..."
+        else:
+            errors_text = errors_text[:remaining]
+        message = base_message + errors_text
+
+    if len(message) > 4000:
+        message = message[:4000]
+
     send_message(admin_chat_id, message)

@@ -299,6 +299,7 @@ async def run():
     sent_count = 0
     failed_users = []
     paused_users = 0
+    skipped_onboarding = 0
 
     try:
         try:
@@ -348,6 +349,12 @@ async def run():
 
             chat_id = user.get("chat_id")
             bot_id = user.get("bot_id") or "main"
+
+            user_detail = db.get_user(chat_id)
+            if (user_detail or {}).get("onboarding_step") is not None:
+                skipped_onboarding += 1
+                continue
+
             try:
                 undelivered = db.get_undelivered_vacancies(chat_id, limit=200)
                 user_filters = user.get("filters") or {}
@@ -438,6 +445,7 @@ async def run():
                 failed_users.append(f"{chat_id}: {str(exc)[:200]}")
                 logging.error("Ошибка отправки пользователю %s: %s", chat_id, str(exc)[:500])
     finally:
+        parser_stats["skipped_onboarding"] = skipped_onboarding
         send_admin_report(
             total=len(all_collected),
             new_count=len(new_vacancies),
@@ -453,7 +461,7 @@ async def run():
         )
 
     logging.info(
-        "Итог: собрано=%s, новые=%s, изменённые=%s, без изменений=%s, деактивировано=%s, пропущено битых=%s, разослано=%s, подписчики=%s, пауза=%s, ошибок=%s",
+        "Итог: собрано=%s, новые=%s, изменённые=%s, без изменений=%s, деактивировано=%s, пропущено битых=%s, разослано=%s, подписчики=%s, пауза=%s, пропущено онбординг=%s, ошибок=%s",
         len(all_collected),
         len(new_vacancies),
         len(changed_vacancies),
@@ -463,6 +471,7 @@ async def run():
         sent_count,
         len(users),
         paused_users,
+        skipped_onboarding,
         len(parser_errors) + len(failed_users),
     )
 

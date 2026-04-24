@@ -655,6 +655,7 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
         db.update_onboarding_step(chat_id, None)
         db.log_event(chat_id, "onboarding_path_chosen", {"path": "quick"})
         db.log_event(chat_id, "onboarding_completed", {"filters": {}, "strict_mode": False})
+        db.log_event(chat_id, "filter_saved", {"filter_type": "onboarding", "filters": {}})
         try:
             _send_onboarding_batch(chat_id, message_id, db, filters={})
         except Exception:
@@ -777,6 +778,7 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
             "onboarding_completed",
             {"filters": filters, "strict_mode": filters.get("strict_mode", False)},
         )
+        db.log_event(chat_id, "filter_saved", {"filter_type": "onboarding", "filters": filters})
         try:
             _send_onboarding_batch(chat_id, message_id, db, filters=filters)
         except Exception:
@@ -801,6 +803,7 @@ def handle_callback(data, chat_id, message_id, callback_message, db=None):
             "onboarding_completed",
             {"filters": filters, "strict_mode": filters.get("strict_mode", False)},
         )
+        db.log_event(chat_id, "filter_saved", {"filter_type": "onboarding", "filters": filters})
         try:
             _send_onboarding_batch(chat_id, message_id, db, filters=filters)
         except Exception:
@@ -1041,6 +1044,7 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
             chat_id,
             "filter_saved",
             {
+                "filter_type": "strict_mode",
                 "filter": "strict_mode",
                 "old_values": {"strict_mode": old_strict_mode},
                 "new_values": {"strict_mode": new_strict_mode},
@@ -1067,6 +1071,7 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
             chat_id,
             "filter_saved",
             {
+                "filter_type": "strict_mode",
                 "filter": "strict_mode",
                 "old_values": {"strict_mode": old_strict_mode},
                 "new_values": {"strict_mode": False},
@@ -1119,6 +1124,7 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
             db.update_user_filters(chat_id, merged)
             old_cities = (user.get("filters") or {}).get("cities") if user else None
             db.log_event(chat_id, "filter_saved", {
+                "filter_type": "cities",
                 "filter": "city",
                 "old_values": {"cities": old_cities},
                 "new_values": {"cities": []},
@@ -1266,10 +1272,12 @@ def handle_settings_callback(data, chat_id, message_id, callback_message, db=Non
         refreshed_user = db.get_user(chat_id) or {}
         text, menu_markup = get_settings_menu(refreshed_user)
         edit_message(chat_id, message_id, text, reply_markup=menu_markup)
+        _step_to_filter_type = {"grade": "grades", "city": "cities", "work_format": "work_formats"}
         db.log_event(
             chat_id,
             "filter_saved",
             {
+                "filter_type": _step_to_filter_type.get(step, step),
                 "filter": step,
                 "old_values": old_fragment,
                 "new_values": fragment,

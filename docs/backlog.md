@@ -218,3 +218,5 @@
 - [x] BUG-081: устойчивость HH-парсеров — новый UA, джиттер, retry, диагностика 403, captcha-stop, базовый класс HHBaseParser (parsers/hh_base.py, parsers/hh*.py, main.py, config.py).
 - [x] BUG-082: обрезка логов Supabase, защита admin report от 413, truncate exception messages (main.py, delivery/telegram.py).
 - [x] BUG-083 Авторизация HH API и рефакторинг docs/bugs.md (parsers/hh_base.py, config.py, main.py, docs/bugs.md)
+- [x] BUG-084: Scheduled delivery отправляется пользователям, не завершившим онбординг; готово когда scheduled delivery фильтрует users с onboarding_step IS NOT NULL и счётчик skipped_onboarding попадает в admin report (main.py).
+- [x] BUG-085: filter_saved без filter_type в properties; готово когда каждый filter_saved содержит filter_type в properties (bot/handlers.py).

@@ -186,6 +186,7 @@ REQUEST_HEADERS = {
 }
 
 HH_USER_AGENT = "ProductRadar/1.0 (prodradar.ru)"
+HH_ACCESS_TOKEN = os.environ.get("HH_ACCESS_TOKEN", "")
 
 BOTS = {
     "main": {

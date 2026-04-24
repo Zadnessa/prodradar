@@ -6,7 +6,7 @@ import random
 
 from bs4 import BeautifulSoup
 
-from config import HH_USER_AGENT
+from config import HH_ACCESS_TOKEN, HH_USER_AGENT
 from parsers.base import BaseParser
 from parsers.utils import normalize_city
 
@@ -25,7 +25,10 @@ class HHBaseParser(BaseParser):
         self.captcha_hit = False
 
     def _build_headers(self):
-        return {"HH-User-Agent": HH_USER_AGENT}
+        headers = {"HH-User-Agent": HH_USER_AGENT}
+        if HH_ACCESS_TOKEN:
+            headers["Authorization"] = f"Bearer {HH_ACCESS_TOKEN}"
+        return headers
 
     async def _read_error_payload(self, response):
         error_type = "unknown"
@@ -69,6 +72,9 @@ class HHBaseParser(BaseParser):
                             request_id,
                             str(response.url),
                         )
+                        if any(kw in error_type for kw in ("oauth", "token", "unauthorized")):
+                            logger.error("HH OAuth ошибка: %s — проверьте HH_ACCESS_TOKEN", error_type)
+                            return vacancies
                         if error_type == "captcha_required":
                             if captcha_url:
                                 logger.warning("HH captcha_url: %s", captcha_url)

@@ -10,7 +10,7 @@ from datetime import datetime, timedelta, timezone
 import aiohttp
 
 import config
-from config import GRADE_OVERRIDE_PATTERNS, TITLE_BLACKLIST_PATTERNS, TITLE_PREFILTER_REJECT
+from config import GRADE_OVERRIDE_PATTERNS, HH_ACCESS_TOKEN, TITLE_BLACKLIST_PATTERNS, TITLE_PREFILTER_REJECT
 from bot.telegram_api import send_message
 from database.supabase_client import SupabaseService, compute_content_hash
 from delivery.filters import filter_vacancies_for_user
@@ -141,6 +141,9 @@ async def run():
         seen_parser_names.add(parser_name)
         unique_parser_names.append(parser_name)
 
+    if any(name in HH_PARSER_NAMES for name in unique_parser_names) and not HH_ACCESS_TOKEN:
+        logging.warning("HH_ACCESS_TOKEN не задан — HH-парсеры могут вернуть 403")
+
     hh_names = [name for name in unique_parser_names if name in HH_PARSER_NAMES]
     other_names = [name for name in unique_parser_names if name not in HH_PARSER_NAMES]
     random.shuffle(hh_names)
@@ -168,6 +171,10 @@ async def run():
                 all_collected.extend(vacancies)
                 all_collected_ids.update(vacancy["id"] for vacancy in vacancies)
                 parser_stats[parser_name] = len(vacancies)
+                if not vacancies and parser_name in HH_PARSER_NAMES:
+                    error_msg = f"{parser_name}: 0 вакансий (возможно 403)"
+                    parser_errors.append(error_msg[:150])
+                    parser_stats[parser_name] = "0 вакансий (возможно 403)"
                 parser_companies = {vacancy.get("company") for vacancy in vacancies if vacancy.get("company")}
                 for vacancy_company in parser_companies:
                     parsers_by_company[vacancy_company] = parser

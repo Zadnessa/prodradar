@@ -31,3 +31,4 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
           REDIRECT_BASE_URL: ${{ secrets.REDIRECT_BASE_URL }}
+          HH_ACCESS_TOKEN: ${{ secrets.HH_ACCESS_TOKEN }}

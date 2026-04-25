@@ -11,7 +11,7 @@ import aiohttp
 
 import config
 from config import GRADE_OVERRIDE_PATTERNS, HH_ACCESS_TOKEN, TITLE_BLACKLIST_PATTERNS, TITLE_PREFILTER_REJECT
-from bot.telegram_api import send_message
+from bot.telegram_api import send_message, TelegramForbiddenError, TelegramRateLimitError
 from database.supabase_client import SupabaseService, compute_content_hash
 from delivery.filters import filter_vacancies_for_user
 from delivery.ranking import classify_title, rank_vacancies
@@ -300,6 +300,8 @@ async def run():
     failed_users = []
     paused_users = 0
     skipped_onboarding = 0
+    blocked_users = 0
+    rate_limited_users = 0
 
     try:
         try:
@@ -398,6 +400,8 @@ async def run():
                 send_message(chat_id, intro_text, bot_id=bot_id)
 
                 delivered_ids = []
+                delivery_stopped = False
+
                 for vacancy in batch:
                     message = format_vacancy_message(
                         vacancy,
@@ -405,10 +409,27 @@ async def run():
                         chat_id=chat_id,
                         source="scheduled",
                     )
-                    result = send_message(chat_id, message, bot_id=bot_id)
-                    if result:
-                        delivered_ids.append(vacancy["id"])
-                        sent_count += 1
+                    try:
+                        result = send_message(chat_id, message, bot_id=bot_id)
+                    except TelegramForbiddenError:
+                        db.deactivate_user(chat_id)
+                        blocked_users += 1
+                        delivery_stopped = True
+                        break
+                    except TelegramRateLimitError:
+                        rate_limited_users += 1
+                        delivery_stopped = True
+                        break
+                    if result is None:
+                        delivery_stopped = True
+                        break
+                    delivered_ids.append(vacancy["id"])
+                    sent_count += 1
+
+                if delivery_stopped:
+                    if delivered_ids:
+                        db.mark_delivered(chat_id, delivered_ids, source="scheduled")
+                    continue
 
                 moscow_now = datetime.now(timezone.utc) + timedelta(hours=3)
                 next_check_text = "Следующая проверка вечером." if moscow_now.hour < 15 else "Следующая проверка утром."
@@ -445,19 +466,18 @@ async def run():
                 failed_users.append(f"{chat_id}: {str(exc)[:200]}")
                 logging.error("Ошибка отправки пользователю %s: %s", chat_id, str(exc)[:500])
     finally:
-        parser_stats["skipped_onboarding"] = skipped_onboarding
+        total_active = db.count_active_vacancies()
         send_admin_report(
-            total=len(all_collected),
             new_count=len(new_vacancies),
-            changed_count=len(changed_vacancies),
-            unchanged_count=unchanged_count,
             deactivated_count=deactivated_count,
-            skipped_count=skipped_count,
             sent_count=sent_count,
             users_count=len(users),
             paused_count=paused_users,
-            parser_stats=parser_stats,
-            parser_errors=[error[:150] for error in parser_errors + failed_users],
+            parser_errors=[error[:150] for error in parser_errors],
+            total_active=total_active,
+            blocked_users=blocked_users,
+            rate_limited_users=rate_limited_users,
+            skipped_onboarding=skipped_onboarding,
         )
 
     logging.info(

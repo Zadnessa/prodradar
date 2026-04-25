@@ -444,7 +444,10 @@ class SupabaseService:
         self.client.table("users").upsert(payload).execute()
 
     def deactivate_user(self, chat_id):
-        self.client.table("users").update({"is_active": False}).eq("chat_id", chat_id).execute()
+        try:
+            self.client.table("users").update({"is_active": False}).eq("chat_id", chat_id).execute()
+        except Exception as exc:
+            logging.warning("Не удалось деактивировать пользователя chat_id=%s: %s", chat_id, exc)
 
     def log_event(self, chat_id, event, properties=None):
         try:

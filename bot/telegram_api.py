@@ -12,6 +12,14 @@ import config
 _API_TIMEOUT = 20
 
 
+class TelegramForbiddenError(Exception):
+    """Telegram вернул 403 — бот заблокирован пользователем."""
+
+
+class TelegramRateLimitError(Exception):
+    """Telegram вернул 429 после неудачного retry."""
+
+
 def _get_bot_token(bot_id="main"):
     token_env = config.BOTS[bot_id]["token_env"]
     return os.getenv(token_env, "")
@@ -39,8 +47,8 @@ def _post(method, payload, bot_id="main", allow_retry=True, suppress_not_modifie
         return None
 
     if response.status_code == 403:
-        logging.warning("Telegram %s: 403 для chat_id=%s", method, payload.get("chat_id"))
-        return None
+        chat_id = payload.get("chat_id")
+        raise TelegramForbiddenError(f"403 для chat_id={chat_id}")
 
     if response.status_code == 429:
         try:
@@ -57,8 +65,8 @@ def _post(method, payload, bot_id="main", allow_retry=True, suppress_not_modifie
                 allow_retry=False,
                 suppress_not_modified=suppress_not_modified,
             )
-        logging.warning("Telegram %s: повторный 429, chat_id=%s", method, payload.get("chat_id"))
-        return None
+        chat_id = payload.get("chat_id")
+        raise TelegramRateLimitError(f"429 для chat_id={chat_id}")
 
     if response.status_code >= 400:
         logging.error("Telegram %s: HTTP %s, body=%s", method, response.status_code, response.text)

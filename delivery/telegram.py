@@ -2,6 +2,7 @@
 from datetime import datetime, timezone
 import logging
 import os
+import re
 import urllib.parse
 
 import config
@@ -166,69 +167,88 @@ def format_vacancy_message(vacancy, company_meta, chat_id=None, source="on_deman
     return "\n".join(lines)
 
 
+_ERROR_TAG_MAP = {
+    "[BLOCKED]": "заблокирован источником",
+    "[TIMEOUT]": "таймаут соединения",
+    "[NOT_JSON]": "битый ответ (не JSON)",
+    "[HTTP_401]": "401 ошибка авторизации",
+    "[HTTP_403]": "403 доступ запрещён",
+    "[HTTP_404]": "404 эндпоинт не найден",
+    "[HTTP_429]": "429 слишком много запросов",
+    "[HTTP_500]": "500 ошибка сервера",
+    "[HTTP_502]": "502 bad gateway",
+    "[HTTP_503]": "503 сервис недоступен",
+    "[VALUE_ERROR]": "ошибка данных",
+    "[ERROR]": "неизвестная ошибка",
+}
+
+
+def _format_parser_error(error):
+    parts = error.split(" ", 1)
+    parser_name = parts[0].rstrip(":")
+    description = parts[1] if len(parts) > 1 else error
+
+    for tag, readable in _ERROR_TAG_MAP.items():
+        if tag in description:
+            description = description.replace(tag, readable, 1)
+            break
+    else:
+        http_match = re.search(r'\[HTTP_(\d+)\]', description)
+        if http_match:
+            code = http_match.group(1)
+            description = description.replace(f"[HTTP_{code}]", f"HTTP {code}", 1)
+
+    if len(description) > 100:
+        description = description[:97] + "..."
+
+    return f"<b>{_escape_html(parser_name)}:</b> {_escape_html(description)}"
+
+
 def send_admin_report(
-    total,
     new_count,
+    deactivated_count,
     sent_count,
     users_count,
     parser_errors,
     paused_count=0,
-    changed_count=0,
-    unchanged_count=0,
-    deactivated_count=0,
-    skipped_count=0,
-    parser_stats=None,
+    total_active=0,
+    blocked_users=0,
+    rate_limited_users=0,
+    skipped_onboarding=0,
 ):
     admin_chat_id = config.ADMIN_CHAT_ID
     if not admin_chat_id:
         return
 
-    parser_errors = [(str(error)[:150]) for error in (parser_errors or [])]
-    errors_text = ", ".join(parser_errors) if parser_errors else "нет"
-    parser_stats_lines = []
-    if parser_stats:
-        successful_parsers = []
-        failed_parsers = []
-        for parser_name, parser_result in parser_stats.items():
-            if isinstance(parser_result, int):
-                successful_parsers.append((parser_name, parser_result))
-            else:
-                failed_parsers.append((parser_name, parser_result))
+    total_eligible = users_count - skipped_onboarding
+    delivery_target = total_eligible - paused_count
 
-        successful_parsers.sort(key=lambda item: (-item[1], item[0]))
-        failed_parsers.sort(key=lambda item: item[0])
+    lines = [
+        "📊 <b>Vacancy Radar</b>",
+        "",
+        f"<b>Вакансий:</b> {total_active} активных, +{new_count} новых, -{deactivated_count} снято",
+        f"<b>Подписчиков:</b> {total_eligible} <i>({delivery_target} получают, {paused_count} на паузе)</i>",
+    ]
 
-        parser_stats_lines.append("По парсерам:")
-        for parser_name, count in successful_parsers:
-            parser_stats_lines.append(f"{parser_name}: {count}")
-        for parser_name, error_text in failed_parsers:
-            parser_stats_lines.append(f"{parser_name}: {error_text}")
-    parser_stats_block = ""
-    if parser_stats_lines:
-        parser_stats_block = "\n".join(parser_stats_lines) + "\n"
+    delivery_line = f"<b>Доставка:</b> {sent_count} сообщений"
+    if blocked_users == 0 and rate_limited_users == 0:
+        delivery_line += " ✓"
+    lines.append(delivery_line)
 
-    base_message = (
-        "📊 Vacancy Radar — отчёт\n\n"
-        f"Собрано: {total} вакансий\n"
-        f"Новых: {new_count}\n"
-        f"Изменённых: {changed_count}\n"
-        f"Без изменений: {unchanged_count}\n"
-        f"Деактивировано: {deactivated_count}\n"
-        f"Пропущено (битые): {skipped_count}\n"
-        f"{parser_stats_block}"
-        f"Отправлено: {sent_count} сообщений на {users_count} подписчиков\n"
-        f"На паузе: {paused_count}\n"
-        "Ошибки: "
-    )
-    message = base_message + errors_text
+    if blocked_users > 0:
+        lines.append(f"🚫 {blocked_users} заблокировали бота (деактивированы)")
+    if rate_limited_users > 0:
+        lines.append(f"⏳ {rate_limited_users} пропущены (rate limit)")
 
-    if len(message) > 4000:
-        remaining = max(0, 4000 - len(base_message))
-        if remaining > 3:
-            errors_text = f"{errors_text[:remaining - 3]}..."
-        else:
-            errors_text = errors_text[:remaining]
-        message = base_message + errors_text
+    lines.append("")
+
+    clean_errors = [str(e) for e in (parser_errors or []) if e]
+    if clean_errors:
+        lines.append("<b>Проблемы сбора:</b>")
+        for error in clean_errors:
+            lines.append(_format_parser_error(error))
+
+    message = "\n".join(lines)
 
     if len(message) > 4000:
         message = message[:4000]

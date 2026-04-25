@@ -220,3 +220,6 @@
 - [x] BUG-083 Авторизация HH API и рефакторинг docs/bugs.md (parsers/hh_base.py, config.py, main.py, docs/bugs.md)
 - [x] BUG-084: Scheduled delivery отправляется пользователям, не завершившим онбординг; готово когда scheduled delivery фильтрует users с onboarding_step IS NOT NULL и счётчик skipped_onboarding попадает в admin report (main.py).
 - [x] BUG-085: filter_saved без filter_type в properties; готово когда каждый filter_saved содержит filter_type в properties (bot/handlers.py).
+- [x] BUG-086: Scheduled delivery не прерывает отправку при 403/429 от Telegram; готово когда при первой ошибке доставки выполняется break по юзеру, при 403 — деактивация is_active=false (main.py, bot/telegram_api.py, database/supabase_client.py).
+- [x] BUG-087: Админ-отчёт содержит нечитаемую статистику по парсерам и не отражает проблемы доставки; готово когда отчёт показывает только проблемы сбора, статус доставки и счётчики 403/429 (delivery/telegram.py, main.py).
+- [x] BUG-088: HH_ACCESS_TOKEN отсутствует в collect.yml; готово когда секрет пробрасывается в env шага python main.py (.github/workflows/collect.yml).

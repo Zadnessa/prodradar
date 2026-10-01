@@ -30,9 +30,10 @@ async def inspect():
     async with aiohttp.ClientSession(trust_env=True, headers=config.REQUEST_HEADERS,
                                     timeout=aiohttp.ClientTimeout(total=30)) as session:
         url = 'https://www.tbank.ru/pfpjobs/papi/getVacancies'
-        for name, filters in [('unfiltered', {}),
+        for name, filters in [('current_direction', {'direction': ['it']}),
+                              ('unfiltered', {}),
                               ('current_filter', {'tcareer_it_profession': ['product-management']})]:
-            payload = {'filters': filters, 'pagination': {'it': {'limit': 100, 'offset': 0}}}
+            payload = {'filters': filters, 'pagination': {'limit': 100, 'offset': 0}}
             body = None
             for attempt in range(3):
                 async with session.post(url, json=payload, ssl=source_ssl_context(url)) as response:
@@ -64,6 +65,11 @@ async def inspect():
                                                    for tag in soup.select('script[type="application/json"]')],
                                   'vacancy_links': [{'url': a.get('href'), 'text': a.get_text(' ', strip=True)}
                                                     for a in soup.select('a[href*="/vacancy/"]')][:100]}
+                state_tag = soup.find('script', id='__TRAMVAI_STATE__')
+                if state_tag:
+                    stores = json.loads(state_tag.string or '{}').get('stores') or {}
+                    result['page']['public_filters'] = stores.get('filtersStore')
+                    result['page']['public_pagination'] = (stores.get('vacanciesStore') or {}).get('nextPagination')
             else:
                 result['page'] = {'status': response.status}
     return result

@@ -103,12 +103,15 @@ class TBankParser(BaseParser):
     async def parse(self, session, existing_ids, city_mappings):
         del existing_ids
         url = "https://www.tbank.ru/pfpjobs/papi/getVacancies"
-        pagination = {"it": {"limit": 100, "offset": 0}}
+        pagination = {"limit": 100, "offset": 0}
         collected = []
+        seen_ids = set()
 
         while True:
             payload = {
-                "filters": {"tcareer_it_profession": ["product-management"]},
+                # Текущий каталог использует direction и плоскую пагинацию.
+                # Роли отбирает общий pipeline: старый profession-фильтр даёт [].
+                "filters": {"direction": ["it"]},
                 "pagination": pagination,
             }
 
@@ -117,18 +120,32 @@ class TBankParser(BaseParser):
                 response.raise_for_status()
                 result = await response.json()
 
-            body = result.get("payload", {})
-            collected.extend(body.get("vacancies", []))
-
-            next_pagination = ((body.get("nextPagination") or {}).get("it") or {})
-            if next_pagination.get("isFinished", True):
+            body = result.get("payload")
+            if result.get("resultCode") != "OK" or not isinstance(body, dict):
+                raise ValueError("T-Bank: API не подтвердил успешный список")
+            items = body.get("vacancies")
+            next_pagination = body.get("nextPagination")
+            if not isinstance(items, list) or not isinstance(next_pagination, dict):
+                raise ValueError("T-Bank: неверный контракт списка/пагинации")
+            for item in items:
+                raw_id = item.get("urlSlug")
+                if not raw_id or raw_id in seen_ids:
+                    raise ValueError("T-Bank: отсутствующий или повторяющийся id страницы")
+                seen_ids.add(raw_id)
+            collected.extend(items)
+            total = next_pagination.get("totalCount")
+            finished = next_pagination.get("isFinished")
+            if not isinstance(total, int) or not isinstance(finished, bool):
+                raise ValueError("T-Bank: API не подтвердил totalCount/isFinished")
+            if finished:
+                if len(collected) != total:
+                    raise ValueError("T-Bank: неполный список относительно totalCount")
                 break
-            pagination = {
-                "it": {
-                    "limit": pagination["it"]["limit"],
-                    "offset": next_pagination.get("offset", pagination["it"]["offset"]),
-                }
-            }
+            offset = next_pagination.get("offset")
+            if not items or not isinstance(offset, int) or offset <= pagination["offset"]:
+                raise ValueError("T-Bank: пагинация не продвигается")
+            pagination = {"limit": pagination["limit"], "offset": offset}
+            await asyncio.sleep(1)
 
         vacancies_by_key = {}
         ordered_keys = []

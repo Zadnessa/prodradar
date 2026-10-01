@@ -19,6 +19,7 @@ from parsers.mtslink import MtsLinkParser
 from parsers.aviasales import AviasalesParser
 from parsers.dodo import DodoParser
 from parsers.domclick import DomClickParser
+from parsers.tbank import TBankParser
 from scripts.backup_database import backup_database
 from scripts.backup_schema import render_schema
 from scripts.collect_test import check_target
@@ -69,8 +70,32 @@ class Session:
         self.calls.append((url, kwargs))
         return next(self.responses)
 
+    post = get
+
 
 class ParserTests(unittest.IsolatedAsyncioTestCase):
+    async def test_tbank_flat_pagination_reads_every_page_before_city_deduplication(self):
+        def page(raw_id, offset, finished):
+            return {'resultCode': 'OK', 'payload': {'vacancies': [
+                {'title': 'Product Manager', 'urlSlug': raw_id, 'seoSlug': 'product-manager',
+                 'regionId': raw_id}], 'nextPagination': {
+                    'offset': offset, 'isFinished': finished, 'totalCount': 2}}}
+        session = Session(Response(page('1', 1, False)), Response(page('2', 2, True)))
+        with patch('parsers.tbank.asyncio.sleep', return_value=None):
+            result = await TBankParser().parse(session, set(), {('tbank_region', '1'): 'Москва',
+                                                               ('tbank_region', '2'): 'Казань'})
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['city'], 'Москва, Казань')
+        self.assertEqual(session.calls[1][1]['json']['pagination']['offset'], 1)
+        self.assertEqual(session.calls[0][1]['json']['filters'], {'direction': ['it']})
+
+    async def test_tbank_rejects_non_advancing_pagination_and_incomplete_total(self):
+        for items, pagination in [([{'urlSlug': '1'}], {'offset': 0, 'isFinished': False, 'totalCount': 2}),
+                                  ([], {'offset': 0, 'isFinished': True, 'totalCount': 2})]:
+            session = Session(Response({'resultCode': 'OK', 'payload': {
+                'vacancies': items, 'nextPagination': pagination}}))
+            with self.assertRaises(ValueError):
+                await TBankParser().parse(session, set(), {})
     async def test_domclick_current_api_paginates_and_reads_full_detail_by_slug(self):
         def item(raw_id):
             return {'id': raw_id, 'slug': f'product-{raw_id}', 'title': ' Product Owner ',

@@ -61,13 +61,15 @@ jobs:
       - name: Inspect bank API contracts and filters without writes
         run: python scripts/inspect_bank_api.py --output bank-api-check.json
       - name: Check all bank product descriptions without writes
-        run: python scripts/audit_sources.py --sources alfa tochka --enrich-limit 999 --no-browser --output bank-descriptions-check.json
+        run: python scripts/audit_sources.py --sources alfa tochka tbank --enrich-limit 999 --no-browser --output bank-descriptions-check.json
         env:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       - name: Inspect official vacancy pages and browser network requests
+        if: always()
         run: python scripts/inspect_source_browser.py --source-ca --output browser-sources-check.json
       - name: Audit enabled parsers and descriptions without writes
+        if: always()
         run: python scripts/audit_sources.py --enrich-limit 3 --output sources-check.json
         env:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}

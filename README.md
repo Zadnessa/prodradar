@@ -202,6 +202,9 @@ HTTP-проверка и тест пользовательского флоу в
 - ДомКлик использует текущий API `/api/v1/vacancy/` с пагинацией и
   `/api/v1/vacancy/detail/{slug}/` для полного описания; нужны Referer/Sec-Fetch.
 - Dodo получает backend из публичного Nuxt config при каждом запуске.
+- Альфа, Точка и Т-Банк используют дополнительную официальную цепочку CA только
+  для своих hosts. Т-Банк читает IT-каталог с плоскими limit/offset, проверяя
+  totalCount; прежняя вложенная пагинация давала ложный пустой ответ.
 - `python scripts/inspect_source_browser.py --output reports/browser.json`
   собирает DevTools-метаданные страниц без сохранения значений cookies/токенов.
   Такой же отчёт сохраняется в read-only Actions audit.

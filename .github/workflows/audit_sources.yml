@@ -39,6 +39,28 @@ jobs:
           name: original-collector-check
           path: original-collector-check.json
           retention-days: 14
+  bank_contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: prodradar-test
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -v
+      - name: Check every bank product description independently of browser installation
+        run: python scripts/audit_sources.py --sources alfa tochka tbank --enrich-limit 999 --no-browser --output bank-sources-check.json
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bank-source-audit
+          path: bank-sources-check.json
+          retention-days: 14
   audit:
     runs-on: ubuntu-latest
     timeout-minutes: 15

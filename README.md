@@ -193,6 +193,8 @@ HTTP-проверка и тест пользовательского флоу в
   `--full-enrich-sources alfa tochka tbank domclick aviasales` проверяет все
   product-описания этих источников в единственном сборе; Т-Банк дополнительно
   подтверждает полные HTML-секции и включает «Мы предлагаем» в description.
+  Отдельный job `bank_contracts` проверяет все описания банков с `--no-browser`,
+  чтобы установка Chromium не блокировала проверку их публичных API.
 - `python scripts/backup_database.py /path/outside/repository/snapshot` выгружает
   шесть таблиц в NDJSON, OpenAPI и manifest с количеством строк и SHA-256.
   Используйте ключ, видящий пользовательские таблицы. Выгрузка ограничивает

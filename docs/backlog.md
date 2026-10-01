@@ -115,6 +115,7 @@
 - [ ] Расшивка bot/handlers.py на onboarding/settings/delivery модули (bot/handlers.py, bot/).
 - [ ] Расшивка SupabaseService на доменные репозитории (database/supabase_client.py, database/).
 - [ ] Дашборд аналитики (Metabase/Grafana) после переезда на VPS (infra/, analytics/).
+- [ ] Проверить новые секреты среды Codex и выполнить HTTP-тест webhook `@ProdRadar_bot`; готово когда Vercel и HH проходят реальные API-проверки, а настроенный обработчик принимает аутентифицированный запрос (scripts/check_environment.py, api/webhook.py, README.md).
 
 ## Архив
 

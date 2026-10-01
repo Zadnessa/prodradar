@@ -140,6 +140,44 @@ prodradar/
 - **Vercel** — принимает webhook от Telegram.
 - **GitHub Actions** — запускает cron-сбор вакансий дважды в день.
 
+### Проверка тестового окружения
+
+Для рефреша используется бот `@ProdRadar_bot` и отдельное окружение GitHub Actions
+`prodradar-test`. Настройки существующего сборщика остаются в его прежнем окружении.
+
+В `Settings → Environments → prodradar-test` заполнить:
+
+| Раздел | Имена |
+| --- | --- |
+| Environment variables | `SUPABASE_URL`, `ADMIN_CHAT_ID` |
+| Environment secrets | `SUPABASE_KEY`, `TELEGRAM_BOT_TOKEN`, `HH_ACCESS_TOKEN` |
+
+Workflow `Check Test Environment` читает URL и ID через `vars`, ключи и токены —
+через `secrets`. Дубли URL/ID в secrets не используются. Запуск выполняет только
+SELECT в Supabase (включая проверку доступа к `description`), Telegram
+`getMe`/`getWebhookInfo`/`getChat` и один запрос вакансий HH. Он не меняет webhook,
+не записывает данные и не отправляет сообщения. Безопасный JSON-отчёт сохраняется
+как artifact на 7 дней; значения ключей и тексты вакансий в отчёт не попадают.
+
+Локальная проверка с переменными текущего процесса:
+
+```bash
+python scripts/check_environment.py --require-hh
+```
+
+Для проверки управления размещением добавить в среду Codex сетевой секрет
+`VERCEL_TOKEN` с доменом `api.vercel.com` и выполнить:
+
+```bash
+python scripts/check_environment.py --require-hh --require-vercel
+```
+
+Vercel проверяется только если передан токен; GitHub-диагностика его не требует.
+Отсутствующий обязательный доступ или неуспешный API-запрос дают exit code 1.
+Наличие webhook в Telegram не подтверждает работоспособность его обработчика:
+HTTP-проверка и тест пользовательского флоу выполняются отдельно после настройки
+размещения. `TELEGRAM_WEBHOOK_SECRET` для этих read-only проверок не требуется.
+
 ## Статус
 
 Бот работает в тестовом режиме. Текущая фаза — Wave 3: расширение до 22+ компаний, отраслевая классификация, переработка UX, критические фиксы пайплайна. Следующая фаза — AI-обогащение вакансий (Wave 7).

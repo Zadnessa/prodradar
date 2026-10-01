@@ -26,6 +26,30 @@ browser runtime
 
 ### Приоритет следующей сессии
 
+**GitHub настроен, проверено агентом 2 октября 2026.** Пользователь добавил
+bootstrap environment secret PRODRADAR_GITHUB_TOKEN и явно поручил агенту
+проверку. Автоматическая команда configure-github завершена полностью:
+- export-key: [36932808570](https://github.com/Zadnessa/prodradar/actions/runs/36932808570), success;
+- apply: [36932843737](https://github.com/Zadnessa/prodradar/actions/runs/36932843737), success;
+- read-only check: [36932886519](https://github.com/Zadnessa/prodradar/actions/runs/36932886519), success.
+
+Обновлены только variables SUPABASE_URL, ADMIN_CHAT_ID и secrets SUPABASE_KEY,
+TELEGRAM_BOT_TOKEN в prodradar-test; HH_ACCESS_TOKEN сохранён. PAT доступен
+новому Actions job независимо от snapshot Codex. Проверки companies,
+city_mappings, users, user_vacancy_delivery проходят; vacancies=135,
+descriptions=135; getMe=ProdRadar_bot, webhook зарегистрирован, pending=0,
+ошибок нет; admin chat ready; HH HTTP 200. VERCEL_TOKEN в Actions не переносился
+и является optional. Реальные test значения получены в память через Management
+и test Vercel; перенесены sealed box, plaintext не сохранялся.
+
+**Парсеры, сбор и доставка остаются на паузе по поручению пользователя.**
+Collector и diagnose во всех setup/check запусках skipped, сообщения не
+отправлялись. Исходный TELEGRAM_BOT_TOKEN не использовался, repo Secrets и
+production не изменены. Полный успешный сбор источников пока не подтверждён.
+Дальнейшее восстановление парсеров продолжать после возобновления пользователем.
+Ниже сохранена история первоначального блокера и подготовки автоматизации;
+требование вручную добавить bootstrap secret уже выполнено.
+
 **Проверка bootstrap автоматизации:** Actions 36932011864 запущен
 из bdb8307, setup job дошёл до экспорта public key и вернул точное сообщение
 «Добавьте environment secret PRODRADAR_GITHUB_TOKEN в prodradar-test».
@@ -35,7 +59,7 @@ browser runtime
 artifact оставлен для просмотра. Это устраняет зависимость автоматизации от
 недоступного в текущем proxy временного blob host логов/artifacts.
 
-**Актуальное ограничение и автоматизация GitHub (2 октября 2026).**
+**История ограничения и автоматизации GitHub (2 октября 2026).**
 Пользователь приостановил парсеры/сбор/доставку и попросил сначала разобраться с
 GitHub, автоматизируя всё доступное. Аудиты 36930639922 и 36930607479 отменены.
 Контролируемые запросы /user с явным PAT, без Authorization и с заведомо
@@ -56,8 +80,8 @@ ADMIN_CHAT_ID, SUPABASE_KEY и TELEGRAM_BOT_TOKEN в prodradar-test, прове�
 PRODRADAR_GITHUB_TOKEN в **prodradar-test** через GitHub UI. Пользователь уже
 имеет соответствующий PAT; интеграция Codex не может создать этот секрет сама.
 Тесты проверяют sealed-box roundtrip и отказ до записи при чужом environment,
-исходной БД, смене key_id, лишних/незашифрованных секретах. Результат полного
-переноса ещё не подтверждён: не объявлять environment настроенным до check.
+исходной БД, смене key_id, лишних/незашифрованных секретах. Первоначально результат полного переноса не был подтверждён; теперь его
+подтверждают три успешных Actions run, указанных выше.
 
 **Продолжение 2 октября 2026, текущая сессия.** TEST_* проходят реальные
 read-only проверки: test ref, @ProdRadar_bot, webhook pending=0, admin chat,

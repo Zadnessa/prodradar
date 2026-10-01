@@ -9,8 +9,11 @@ chatgpt-codex-connector без Environments permission. Настройка ав�
 через отдельный Actions setup job, которому нужен одноимённый environment
 secret PRODRADAR_GITHUB_TOKEN, добавляемый один раз через GitHub UI;
 configure-github получает публичный ключ, передаёт sealed-box test реквизиты,
-обновляет только prodradar-test и запускает read-only check. Полнота исполнения
-будет подтверждена после добавления bootstrap secret. Все прочие работы
+обновляет только prodradar-test и запускает read-only check. Полное исполнение
+подтверждено агентом 2 октября 2026 после добавления bootstrap secret:
+export-key 36932808570, apply 36932843737, check 36932886519 — success.
+Test БД доступна, 135 вакансий/описаний, @ProdRadar_bot, webhook pending=0,
+admin chat ready, HH HTTP 200. Collector/diagnose skipped, сообщений не было. Все прочие работы
 приостановлены пользователем. До этого read-only диагностика фирменных API
 в Actions может получать только справочники тестовой БД через input без секретов.
 
@@ -19,8 +22,8 @@ configure-github получает публичный ключ, передаёт 
 ## Продуктовые решения
 
 - Настройки Codex разделяются явными TEST_* и будущими PROD_*; существующие
-  общие переменные сохраняются. Новый чат сначала проверяет добавленные секреты
-  и реализует выбор профиля до импорта config, без fallback теста на исходную БД.
+  общие переменные сохраняются. Новый чат использует реализованный выбор профиля до импорта config,
+  без fallback теста на исходную БД.
   Доставка в production и включение cron не входят в текущую задачу парсеров.
 
 - Тестовый @ProdRadar_bot подключён к отдельным Supabase

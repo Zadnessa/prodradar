@@ -147,7 +147,9 @@ async def inspect_sources(names):
                         # Только чтение следующей страницы; формы отклика не используются.
                         more = page.get_by_role('button', name=re.compile(r'Показать (ещё|еще)'))
                         if await more.count():
-                            await more.first.click(timeout=5000)
+                            # Первый одноимённый элемент раскрывает фильтры;
+                            # последний под списком загружает вакансии.
+                            await more.last.click(timeout=5000)
                             await asyncio.sleep(5)
                             result['pagination_clicked'] = True
                     if links:

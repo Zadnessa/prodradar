@@ -153,6 +153,8 @@ class TBankParser(BaseParser):
             if finished:
                 if len(collected) != total:
                     raise ValueError("T-Bank: неполный список относительно totalCount")
+                if not collected and (stores.get('vacanciesStore') or {}).get('vacancies'):
+                    raise ValueError('T-Bank: API пуст, хотя публичный каталог содержит вакансии')
                 break
             offset = next_pagination.get("offset")
             if not items or not isinstance(offset, int) or offset <= pagination["offset"]:

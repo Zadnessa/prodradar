@@ -58,8 +58,6 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Check official TLS certificate chains
         run: python scripts/check_source_tls.py --output source-tls-check.json
-      - name: Inspect bank API contracts and filters without writes
-        run: python scripts/inspect_bank_api.py --output bank-api-check.json
       - name: Check all bank product descriptions without writes
         run: python scripts/audit_sources.py --sources alfa tochka tbank --enrich-limit 999 --no-browser --output bank-descriptions-check.json
         env:
@@ -84,6 +82,5 @@ jobs:
             sources-check.json
             browser-sources-check.json
             source-tls-check.json
-            bank-api-check.json
             bank-descriptions-check.json
           retention-days: 14

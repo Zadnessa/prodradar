@@ -22,8 +22,6 @@ class DomClickParser(BaseParser):
         }
 
         async with session.get(url, headers=headers) as response:
-            if response.status == 404:
-                return []
             response.raise_for_status()
             payload = await response.json()
 

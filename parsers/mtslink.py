@@ -1,6 +1,7 @@
 """Парсер вакансий МТС Линк."""
 
 import re
+import os
 
 from parsers.base import BaseParser
 
@@ -12,7 +13,6 @@ class MtsLinkParser(BaseParser):
     DETAIL_URL_TEMPLATE = "https://mts-link.ru/api/huntflow/vacancy/{raw_id}"
     LIST_PARAMS = {"categoryId": 221722}
     REQUEST_HEADERS = {
-        "Authorization": "Bearer 2|2wCaeLyzKYCbM4H7qq8pS10pmP5rdolUJM0em2D6",
         "Origin": "https://job.mts-link.ru",
         "Referer": "https://job.mts-link.ru/",
         "Accept": "*/*",
@@ -20,6 +20,12 @@ class MtsLinkParser(BaseParser):
 
     def __init__(self):
         self._raw_ids = {}
+
+    def _build_headers(self):
+        token = os.getenv("MTSLINK_BEARER_TOKEN")
+        if not token:
+            raise ValueError("МТС Линк: MTSLINK_BEARER_TOKEN не задан")
+        return {**self.REQUEST_HEADERS, "Authorization": f"Bearer {token}"}
 
     @staticmethod
     def _build_published_at(created):
@@ -48,7 +54,7 @@ class MtsLinkParser(BaseParser):
         async with session.get(
             self.LIST_URL,
             params=self.LIST_PARAMS,
-            headers=self.REQUEST_HEADERS,
+            headers=self._build_headers(),
         ) as response:
             response.raise_for_status()
             items = await response.json()
@@ -89,7 +95,7 @@ class MtsLinkParser(BaseParser):
             return vacancy
 
         detail_url = self.DETAIL_URL_TEMPLATE.format(raw_id=raw_id)
-        async with session.get(detail_url, headers=self.REQUEST_HEADERS) as response:
+        async with session.get(detail_url, headers=self._build_headers()) as response:
             response.raise_for_status()
             detail = await response.json()
 

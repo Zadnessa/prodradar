@@ -74,16 +74,16 @@ class HHBaseParser(BaseParser):
                         )
                         if any(kw in error_type for kw in ("oauth", "token", "unauthorized")):
                             logger.error("HH OAuth ошибка: %s — проверьте HH_ACCESS_TOKEN", error_type)
-                            return vacancies
+                            response.raise_for_status()
                         if error_type == "captcha_required":
                             if captcha_url:
                                 logger.warning("HH captcha_url: %s", captcha_url)
                             self.captcha_hit = True
-                            return vacancies
+                            response.raise_for_status()
                         if attempt == 1:
                             await asyncio.sleep(30)
                             continue
-                        return vacancies
+                        response.raise_for_status()
 
                     response.raise_for_status()
                     payload = await response.json()

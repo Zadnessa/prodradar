@@ -149,7 +149,7 @@ async def run():
     random.shuffle(hh_names)
     ordered_parser_names = other_names + hh_names
 
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(trust_env=True, timeout=aiohttp.ClientTimeout(total=60)) as session:
         hh_captcha_detected = False
 
         for index, parser_name in enumerate(ordered_parser_names):
@@ -185,6 +185,8 @@ async def run():
                     hh_captcha_detected = True
                     logging.warning("HH captcha detected, пропускаем оставшиеся HH-парсеры")
             except Exception as exc:
+                if parser_name in HH_PARSER_NAMES and getattr(parser, "captcha_hit", False):
+                    hh_captcha_detected = True
                 classified_error = _classify_parser_error(parser_name, exc)
                 parser_errors.append(classified_error[:150])
                 parser_stats[parser_name] = classified_error.replace(f"{parser_name} ", "", 1)
@@ -494,6 +496,8 @@ async def run():
         skipped_onboarding,
         len(parser_errors) + len(failed_users),
     )
+    if parser_errors or failed_users:
+        raise RuntimeError("Прогон завершён с ошибками; подробности в отчёте и логах")
 
 
 if __name__ == "__main__":

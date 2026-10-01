@@ -1,0 +1,57 @@
+name: Audit Sources (Read Only)
+
+on:
+  push:
+    branches: ['codex/restore-test-bot']
+    paths:
+      - '.github/workflows/audit_sources.yml'
+      - 'scripts/audit_sources.py'
+      - 'parsers/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: prodradar-test
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: playwright install chromium --with-deps
+      - name: Check parser regression tests
+        run: python -m unittest discover -s tests -v
+      - name: Check original collector credentials without writes
+        id: original
+        continue-on-error: true
+        run: python scripts/check_environment.py --expected-bot findproductjob_bot --require-hh --output original-collector-check.json
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
+          HH_ACCESS_TOKEN: ${{ secrets.HH_ACCESS_TOKEN }}
+      - name: Audit enabled parsers and descriptions without writes
+        run: python scripts/audit_sources.py --enrich-limit 3 --output sources-check.json
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          HH_ACCESS_TOKEN: ${{ secrets.HH_ACCESS_TOKEN }}
+          MTSLINK_BEARER_TOKEN: ${{ secrets.MTSLINK_BEARER_TOKEN }}
+      - name: Save diagnostic reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-audit
+          path: |
+            sources-check.json
+            original-collector-check.json
+          retention-days: 14

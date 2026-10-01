@@ -14,7 +14,6 @@
 ## После релиза
 - [ ] T-052 Создать песочницу: второй проект Vercel на тот же репозиторий, env-переменные старого бота (@ProductRadar_bot), отдельная база Supabase (free tier), установить webhook; документировать два окружения в README (infra/, README.md).
 - [ ] T-010 Контрактный тест: для каждого парсера из PARSER_REGISTRY прогнать parse() на фикстуре и проверить, что все vacancy["company"] присутствуют в companies.name; тест падает при рассинхроне (tests/, parsers/, fixtures/).
-- [ ] T-025 MTS Link bearer-токен вынести в env, добавить обработку 401 и skip без падения пайплайна (parsers/mtslink.py, config.py).
 - [ ] T-026 On-demand витрина и ранжирование: первая пачка — витрина, дальше — релевантностное ранжирование (delivery/telegram.py, bot/handlers.py).
 - [ ] T-027 Сводка `N новых + M ранее просмотренных` в scheduled/выдаче (delivery/telegram.py, bot/handlers.py).
 - [ ] T-028 Scheduled: сценарий `new=0, announced>0` с action-oriented кнопками (bot/handlers.py).
@@ -226,3 +225,5 @@
 - [x] BUG-088: HH_ACCESS_TOKEN отсутствует в collect.yml; готово когда секрет пробрасывается в env шага python main.py (.github/workflows/collect.yml).
 - [x] Добавить безопасную диагностику тестового окружения: CLI и GitHub workflow проверяют Supabase, доступ к description, бот и админский чат Telegram, HH и при наличии токена Vercel; URL/ID читаются из variables, ключи из secrets, отчёт не содержит секретов и проверки не меняют данные (scripts/check_environment.py, .github/workflows/check_test_environment.yml, README.md).
 - [x] Зафиксировать контекст рефреша, реальные результаты диагностики, неизвестные связи инфраструктуры, семь фаз с критериями завершения, сохранение продуктового флоу, нового бота для одного проджект-менеджера с mute и отдельной ревизией функций; следующему чату поручена только фаза 1 (docs/refresh_plan.md, docs/context.md, README.md).
+
+- [x] MTS Link bearer-токен вынести в env, добавить обработку 401 и skip без падения пайплайна (parsers/mtslink.py, config.py).

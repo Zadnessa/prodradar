@@ -42,8 +42,7 @@ class AviasalesParser(BaseParser):
             payload = await response.json()
 
         if not isinstance(payload, list):
-            logging.warning("Aviasales: неожиданный формат ответа списка вакансий")
-            return []
+            raise ValueError("Aviasales: неожиданный формат ответа списка вакансий")
 
         workplace_count = sum(1 for item in payload if item.get("workPlace") is not None)
         if workplace_count > 0:

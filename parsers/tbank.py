@@ -1,6 +1,7 @@
 """Парсер вакансий T-Bank."""
 
 import asyncio
+import json
 import logging
 
 from bs4 import BeautifulSoup, NavigableString, Tag
@@ -102,6 +103,18 @@ class TBankParser(BaseParser):
 
     async def parse(self, session, existing_ids, city_mappings):
         del existing_ids
+        page_url = 'https://www.tbank.ru/career/it/'
+        async with session.get(page_url, headers=config.REQUEST_HEADERS,
+                               ssl=source_ssl_context(page_url)) as response:
+            response.raise_for_status()
+            soup = BeautifulSoup(await response.text(), 'html.parser')
+        state_tag = soup.find('script', id='__TRAMVAI_STATE__')
+        if not state_tag:
+            raise ValueError('T-Bank: публичное состояние каталога не найдено')
+        stores = json.loads(state_tag.string or '{}').get('stores') or {}
+        directions = (stores.get('filtersStore') or {}).get('direction')
+        if not isinstance(directions, list) or not directions:
+            raise ValueError('T-Bank: публичный каталог не подтвердил направления')
         url = "https://www.tbank.ru/pfpjobs/papi/getVacancies"
         pagination = {"limit": 100, "offset": 0}
         collected = []
@@ -111,7 +124,7 @@ class TBankParser(BaseParser):
             payload = {
                 # Текущий каталог использует direction и плоскую пагинацию.
                 # Роли отбирает общий pipeline: старый profession-фильтр даёт [].
-                "filters": {"direction": ["it"]},
+                "filters": {"direction": directions, "category": [], "cityId": []},
                 "pagination": pagination,
             }
 

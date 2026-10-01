@@ -80,19 +80,24 @@ class ParserTests(unittest.IsolatedAsyncioTestCase):
                 {'title': 'Product Manager', 'urlSlug': raw_id, 'seoSlug': 'product-manager',
                  'regionId': raw_id}], 'nextPagination': {
                     'offset': offset, 'isFinished': finished, 'totalCount': 2}}}
-        session = Session(Response(page('1', 1, False)), Response(page('2', 2, True)))
+        state = '<script id="__TRAMVAI_STATE__" type="application/json">' + json.dumps({
+            'stores': {'filtersStore': {'direction': ['produkt-i-marketing'], 'cityId': ['default-city']}}}) + '</script>'
+        session = Session(Response(text=state), Response(page('1', 1, False)), Response(page('2', 2, True)))
         with patch('parsers.tbank.asyncio.sleep', return_value=None):
             result = await TBankParser().parse(session, set(), {('tbank_region', '1'): 'Москва',
                                                                ('tbank_region', '2'): 'Казань'})
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]['city'], 'Москва, Казань')
-        self.assertEqual(session.calls[1][1]['json']['pagination']['offset'], 1)
-        self.assertEqual(session.calls[0][1]['json']['filters'], {'direction': ['it']})
+        self.assertEqual(session.calls[2][1]['json']['pagination']['offset'], 1)
+        self.assertEqual(session.calls[1][1]['json']['filters'], {
+            'direction': ['produkt-i-marketing'], 'category': [], 'cityId': []})
 
     async def test_tbank_rejects_non_advancing_pagination_and_incomplete_total(self):
         for items, pagination in [([{'urlSlug': '1'}], {'offset': 0, 'isFinished': False, 'totalCount': 2}),
                                   ([], {'offset': 0, 'isFinished': True, 'totalCount': 2})]:
-            session = Session(Response({'resultCode': 'OK', 'payload': {
+            state = '<script id="__TRAMVAI_STATE__">' + json.dumps({
+                'stores': {'filtersStore': {'direction': ['produkt-i-marketing']}}}) + '</script>'
+            session = Session(Response(text=state), Response({'resultCode': 'OK', 'payload': {
                 'vacancies': items, 'nextPagination': pagination}}))
             with self.assertRaises(ValueError):
                 await TBankParser().parse(session, set(), {})

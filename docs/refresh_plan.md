@@ -156,6 +156,12 @@ totalCount; прежнее вложение it получает OK/0 даже б
 Публичный Tramvai state страницы содержит filtersStore direction/category/cityId
 и 10 SSR-вакансий. Парсер Т-Банка обновлён на direction=it и плоскую пагинацию,
 21 регрессия проходит; live подтверждение нового сбора ещё требуется.
+Actions 36912995992 показал, что literal direction=it тоже устарел: SSR хранит
+finansy-bezopasnost-i-yurisprudenciya / it-razrabotka / analitika-i-dannye /
+produkt-i-marketing. Парсер берёт массив из публичного Tramvai state при каждом
+запуске, снимает city/category ограничения и проверяет весь каталог.
+DevTools нажимает только «Показать ещё» для подтверждения реального POST;
+пользователь явно разрешил исследование кнопок вакансий, формы отклика запрещены.
 
 Локальный полный audit до установки Chromium не подтверждал МТС/VK/СберЗдоровье
 (503, proxy 403, отсутствующий браузер); не отменять прежний успешный Actions

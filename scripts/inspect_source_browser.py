@@ -88,12 +88,24 @@ async def inspect_sources(names):
                             'request_header_names': sorted(request.headers),
                             'content_type': response.headers.get('content-type', '')}
                     network.append(item)
+                    if '/getVacancies' in response.url:
+                        try:
+                            posted = request.post_data_json
+                            item['post_data_keys'] = sorted(posted)
+                            # Публичные параметры каталога; auth/csrf/session не сохраняются.
+                            item['catalog_request'] = {key: posted[key] for key in ('filters', 'pagination')
+                                                       if key in posted}
+                        except Exception:
+                            item['catalog_request_unreadable'] = True
                     if 'json' in item['content_type']:
                         try:
                             payload = await response.json()
                             item['json_type'] = type(payload).__name__
                             if isinstance(payload, dict):
                                 item['json_keys'] = sorted(payload)
+                                if '/getVacancies' in response.url and isinstance(payload.get('payload'), dict):
+                                    item['catalog_count'] = len(payload['payload'].get('vacancies') or [])
+                                    item['catalog_pagination'] = payload['payload'].get('nextPagination')
                                 result_payload = payload.get('result')
                                 if isinstance(result_payload, dict):
                                     item['result_keys'] = sorted(result_payload)
@@ -129,6 +141,15 @@ async def inspect_sources(names):
                     links = [urljoin(page.url, a['href']) for a in soup.select('a[href]')
                              if '/vacanc' in a['href'] or '/vakans' in a['href']]
                     result['vacancy_links'] = [url_metadata(url) for url in dict.fromkeys(links)][:12]
+                    if name == 'tbank':
+                        result['button_labels'] = [b.get_text(' ', strip=True) for b in soup.select('button')][:30]
+                        # Пользователь разрешил диагностику через браузер и кнопки вакансий.
+                        # Только чтение следующей страницы; формы отклика не используются.
+                        more = page.get_by_role('button', name=re.compile(r'Показать (ещё|еще)'))
+                        if await more.count():
+                            await more.first.click(timeout=5000)
+                            await asyncio.sleep(5)
+                            result['pagination_clicked'] = True
                     if links:
                         # Переход по первой карточке даёт detail-запрос без кликов/форм.
                         same_host = [url for url in links if urlsplit(url).netloc == urlsplit(page.url).netloc

@@ -29,8 +29,17 @@ async def inspect():
     result = {}
     async with aiohttp.ClientSession(trust_env=True, headers=config.REQUEST_HEADERS,
                                     timeout=aiohttp.ClientTimeout(total=30)) as session:
+        page_url = 'https://www.tbank.ru/career/it/'
+        async with session.get(page_url, ssl=source_ssl_context(page_url)) as response:
+            response.raise_for_status()
+            soup = BeautifulSoup(await response.text(), 'html.parser')
+        stores = json.loads(soup.find('script', id='__TRAMVAI_STATE__').string)['stores']
+        filters = stores['filtersStore']
+        result['public_catalog'] = {'filters': filters, 'pagination': stores['vacanciesStore']['nextPagination'],
+                                   'api_paths': {key: value for key, value in stores['environment'].items()
+                                                 if key in ('VACANCIES_PUBLIC_API', 'VACANCIES_API', 'PUBLISHER_PUBLIC_API')}}
         url = 'https://www.tbank.ru/pfpjobs/papi/getVacancies'
-        for name, filters in [('current_direction', {'direction': ['it']}),
+        for name, filters in [('current_direction', {'direction': filters['direction'], 'category': [], 'cityId': []}),
                               ('unfiltered', {}),
                               ('current_filter', {'tcareer_it_profession': ['product-management']})]:
             payload = {'filters': filters, 'pagination': {'limit': 100, 'offset': 0}}

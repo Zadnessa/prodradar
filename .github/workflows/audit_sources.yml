@@ -20,29 +20,6 @@ permissions:
   contents: read
 
 jobs:
-  original:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: pip install requests supabase
-      - name: Check original collector credentials without writes
-        run: python scripts/check_environment.py --expected-bot findproductjob_bot --require-hh --output original-collector-check.json
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
-          HH_ACCESS_TOKEN: ${{ secrets.HH_ACCESS_TOKEN }}
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: original-collector-check
-          path: original-collector-check.json
-          retention-days: 14
   bank_contracts:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -55,10 +32,11 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python -m unittest discover -s tests -v
       - name: Check every bank product description independently of browser installation
-        run: python scripts/audit_sources.py --sources alfa tochka tbank --enrich-limit 999 --no-browser --output bank-sources-check.json
+        run: python scripts/run_profile.py --profile test audit --sources alfa tochka tbank --enrich-limit 999 --no-browser --output bank-sources-check.json
         env:
-          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          TEST_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          TEST_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          TEST_TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -86,10 +64,11 @@ jobs:
         run: python scripts/check_source_tls.py --output source-tls-check.json
       - name: Audit enabled parsers and descriptions without writes
         if: always()
-        run: python scripts/audit_sources.py --exclude-sources tbank --enrich-limit 3 --full-enrich-sources alfa tochka domclick aviasales --output sources-check.json
+        run: python scripts/run_profile.py --profile test audit --exclude-sources tbank --enrich-limit 3 --full-enrich-sources alfa tochka domclick aviasales --output sources-check.json
         env:
-          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          TEST_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          TEST_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          TEST_TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           HH_ACCESS_TOKEN: ${{ secrets.HH_ACCESS_TOKEN }}
       - name: Inspect official vacancy pages and browser network requests
         if: always()

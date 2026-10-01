@@ -43,6 +43,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project-ref", required=True)
     args = parser.parse_args()
+    if os.getenv("PRODRADAR_PROFILE") != "test":
+        print("Запустите сбор через scripts/run_profile.py --profile test collect")
+        return 1
     # До проверки нельзя вызывать run(): он сохраняет вакансии и отправляет сообщения.
     logging.disable(logging.CRITICAL)
     try:

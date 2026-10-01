@@ -17,9 +17,9 @@ jobs:
     environment: prodradar-test
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      SUPABASE_URL: ${{ vars.SUPABASE_URL }}
-      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TEST_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      TEST_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      TEST_TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       ADMIN_CHAT_ID: ${{ vars.ADMIN_CHAT_ID }}
       HH_ACCESS_TOKEN: ${{ secrets.HH_ACCESS_TOKEN }}
       REDIRECT_BASE_URL: prodradar-test.vercel.app
@@ -32,4 +32,4 @@ jobs:
       - run: playwright install chromium --with-deps
       - run: python -m unittest discover -s tests -v
       - name: Verify isolation, then collect into the test database
-        run: python scripts/collect_test.py --project-ref jmsdxgylyjxwdwmdrmxw
+        run: python scripts/run_profile.py --profile test collect --project-ref jmsdxgylyjxwdwmdrmxw

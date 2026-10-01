@@ -34,15 +34,22 @@ def selected(vacancy):
 
 
 async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_browser=True,
-                        full_enrich_sources=(), exclude_sources=()):
+                        full_enrich_sources=(), exclude_sources=(), catalog=None, vacancies_output=None):
     logging.disable(logging.CRITICAL)
-    db = SupabaseService()
-    companies = db.get_enabled_companies()
-    city_mappings = db.get_city_mappings()
+    if catalog is None:
+        db = SupabaseService()
+        companies = db.get_enabled_companies()
+        city_mappings = db.get_city_mappings()
+    else:
+        # Справочники передаются из тестовой БД без реквизитов и пользовательских данных.
+        companies = [row for row in catalog["companies"] if row.get("is_enabled")]
+        city_mappings = {(row["source"], row["raw_value"]): row["normalized"]
+                         for row in catalog["city_mappings"]}
     expected_companies = {c["name"] for c in companies}
     enabled = list(dict.fromkeys(c["parser_name"] for c in companies))
     requested = [name for name in (names or enabled) if name not in exclude_sources]
     report = {"created_at": datetime.now(timezone.utc).isoformat(), "read_only": True, "sources": {}}
+    export = {}
     browser_secrets = {}
     if use_browser:
         try:
@@ -85,6 +92,7 @@ async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_
                         issues.add("duplicate_ids")
                     product_vacancies = [v for v in vacancies if selected(v)]
                     samples = []
+                    enriched = []
                     sample_limit = len(product_vacancies) if name in full_enrich_sources else enrichment_limit
                     for vacancy in product_vacancies[:sample_limit]:
                         before = dict(vacancy)
@@ -96,6 +104,7 @@ async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_
                             for field in ("grade", "city", "work_format", "experience"):
                                 if before.get(field) not in (None, "", "Не указан", "не указан") and before[field] != vacancy.get(field):
                                     issues.add("overwritten:" + field)
+                            enriched.append(dict(vacancy))
                             _prepare_vacancy(vacancy, city_mappings)
                             samples.append({key: vacancy.get(key) for key in
                                             ("id", "title", "company", "url", "grade", "city", "work_format")})
@@ -109,6 +118,8 @@ async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_
                                 issues.add("missing_description")
                         except Exception as exc:
                             issues.add("enrich_error:" + type(exc).__name__)
+                    if vacancies_output is not None:
+                        export[name] = {"vacancies": enriched, "raw_ids": ids}
                     result.update({"status": "contract_failed" if issues else "ready" if vacancies else "empty",
                                    "raw_count": len(vacancies), "product_count": len(product_vacancies),
                                    "issues": sorted(issues), "samples": samples})
@@ -137,6 +148,8 @@ async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_
     for name in requested:
         if name.startswith("hh"):
             await audit(name)
+    if vacancies_output is not None:
+        vacancies_output.write_text(json.dumps(export, ensure_ascii=False, indent=2) + "\n")
     report["ok"] = all(item["status"] in {"ready", "empty"} for item in report["sources"].values())
     return report
 
@@ -144,6 +157,8 @@ async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sources", nargs="+")
+    parser.add_argument("--catalog-env", help="Имя env с JSON справочников для аудита без доступа к БД")
+    parser.add_argument("--vacancies-output", type=Path, help="Публичные вакансии для сверки полного enrichment")
     parser.add_argument("--exclude-sources", nargs="+", default=[],
                         help="Не повторять источники, проверяемые отдельным job")
     parser.add_argument("--output", type=Path, required=True)
@@ -152,8 +167,15 @@ def main():
     parser.add_argument("--full-enrich-sources", nargs='+', default=[],
                         help="Проверить описания всех product-вакансий указанных источников")
     args = parser.parse_args()
+    catalog = None
+    if args.catalog_env:
+        import os
+        catalog = json.loads(os.environ[args.catalog_env])
+    if args.vacancies_output and not args.full_enrich_sources:
+        parser.error("Экспорт вакансий требует явного --full-enrich-sources")
     report = asyncio.run(audit_sources(args.sources, args.enrich_limit, use_browser=not args.no_browser,
-                                       full_enrich_sources=args.full_enrich_sources, exclude_sources=args.exclude_sources))
+                                       full_enrich_sources=args.full_enrich_sources, exclude_sources=args.exclude_sources,
+                                       catalog=catalog, vacancies_output=args.vacancies_output))
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     return 0 if report["ok"] else 1

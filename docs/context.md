@@ -1,3 +1,11 @@
+<!-- Актуализация восстановления: 2 октября 2026 -->
+Явные профили реализованы в runtime_profiles.py и scripts/run_profile.py:
+выбор TEST_* / PROD_* до config, проверка ref и Telegram identity, отдельный
+redirect, без fallback на общие реквизиты. Исходный TELEGRAM_BOT_TOKEN не
+используется при test. GitHub environment API в текущем экземпляре всё ещё
+возвращает 403 для PRODRADAR_GITHUB_TOKEN; read-only диагностика фирменных API
+в Actions может получать только справочники тестовой БД через input без секретов.
+
 # Контекст проекта ProductRadar
 
 ## Продуктовые решения

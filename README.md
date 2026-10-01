@@ -280,3 +280,34 @@ Vercel-проекта отключена SSO-защита размещения �
 прежний флоу; в БД один пользователь и 22 записи delivered без потерянных
 vacancy_id. Песочница T-052 завершена, полный сбор источников остаётся открытым.
 Актуальная передача и критерии находятся в [docs/refresh_plan.md](docs/refresh_plan.md).
+
+
+### Явные профили test/prod
+
+Команды Codex запускаются через `scripts/run_profile.py` до импорта `config`:
+
+```bash
+python scripts/run_profile.py --profile test check --require-hh
+python scripts/run_profile.py --profile test audit --sources alfa tbank vk --full-enrich-sources alfa tbank vk --output reports/sources.json
+python scripts/run_profile.py --profile test collect --project-ref jmsdxgylyjxwdwmdrmxw
+```
+
+Профиль `test` требует `TEST_SUPABASE_URL`, `TEST_SUPABASE_KEY` и
+`TEST_TELEGRAM_BOT_TOKEN`, проверяет БД `jmsdxgylyjxwdwmdrmxw` и identity
+`@ProdRadar_bot`. Redirect устанавливается в `prodradar-test.vercel.app`.
+`ADMIN_CHAT_ID` и HH остаются общими. Общие реквизиты БД/Telegram не используются
+при отсутствии TEST_*. Выбор влияет только на дочерний процесс.
+
+Будущий `prod` требует отдельные `PROD_SUPABASE_URL`, `PROD_SUPABASE_KEY`,
+`PROD_TELEGRAM_BOT_TOKEN`, БД `ykbtejjedefibdgyfgov` и `@findproductjob_bot`.
+Команда `collect-prod` предназначена для явно выбранного production;
+в текущем восстановлении она не запускается. Переключение после импорта config
+запрещено. Прямой тестовый collector без выбранного профиля отказывается работать.
+Vercel webhook сохраняет установленную конфигурацию своего проекта.
+
+`Check Test Environment` также имеет отдельный ручной `audit_sources=true`:
+публичные справочники передаются JSON input `source_catalog` из тестовой БД.
+Этот job не получает ключ БД или Telegram token, не сохраняет данные и не
+отправляет сообщения. Полные публичные product-вакансии и raw IDs выгружаются
+в artifact для проверки описаний. Обычный collector по-прежнему требует
+обновлённый environment, успешный check и отдельный `collect_test=true`.

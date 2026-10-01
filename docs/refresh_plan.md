@@ -26,6 +26,20 @@ browser runtime
 
 ### Приоритет следующей сессии
 
+**Продолжение 2 октября 2026, текущая сессия.** TEST_* проходят реальные
+read-only проверки: test ref, @ProdRadar_bot, webhook pending=0, admin chat,
+135 вакансий / 135 описаний и HH HTTP 200. Реализованы явные профили в
+runtime_profiles.py и scripts/run_profile.py; без fallback, с проверкой ref,
+identity и redirect до команды. PROD_* отсутствуют и не используются.
+PRODRADAR_GITHUB_TOKEN проверен через /user (Zadnessa) и Actions (200), но
+variables/secrets/public-key environment всё ещё отвечают 403 с требованием
+`environments=read`. Пользователь подтвердил, что Environments read/write
+выдано; несоответствие ещё не разрешено. Общий TELEGRAM_BOT_TOKEN не вызывался.
+Пока environment нельзя обновить, подготовлен отдельный ручной read-only
+`audit_sources=true` в зарегистрированном Check Test Environment: input содержит
+только справочники test БД, job не получает DB/Telegram credentials. Это аудит,
+не успешный collector. Результаты и доставка будут дописаны после проверки.
+
 **Передача после настройки секретов (2 октября 2026).** Пользователь переходит
 в новую сессию: текущая не используется для проверки добавленных env. Продолжить
 в `codex/restore-test-bot`, PR #129, без новых проектов/PR и без слияния в main.

@@ -12,7 +12,6 @@
 
 
 ## После релиза
-- [ ] T-052 Завершить песочницу @ProdRadar_bot: настроить пустую БД jmsdxgylyjxwdwmdrmxw и Vercel prodradar-test, перенести только тестовый webhook, проверить прежний флоу; готово когда изоляция и delivery подтверждены, ресурсы и проверки описаны в refresh_plan (scripts/, .github/workflows/collect_test.yml, README.md, docs/refresh_plan.md).
 - [ ] T-010 Контрактный тест: для каждого парсера из PARSER_REGISTRY прогнать parse() на фикстуре и проверить, что все vacancy["company"] присутствуют в companies.name; тест падает при рассинхроне (tests/, parsers/, fixtures/).
 - [ ] T-026 On-demand витрина и ранжирование: первая пачка — витрина, дальше — релевантностное ранжирование (delivery/telegram.py, bot/handlers.py).
 - [ ] T-027 Сводка `N новых + M ранее просмотренных` в scheduled/выдаче (delivery/telegram.py, bot/handlers.py).
@@ -230,3 +229,4 @@
 
 - [x] MTS Link — автоматическое получение токена или переход на HH как fallback-источник; фирменный list/detail теперь публичный и не требует Bearer, восстановлен прямой сбор без categoryId, подтверждены 11 вакансий и ответ detail (parsers/mtslink.py, tests/test_refresh.py, docs/refresh_plan.md).
 - [x] Проверить новые секреты среды Codex и выполнить HTTP-тест webhook `@ProdRadar_bot`; готово когда Vercel и HH проходят реальные API-проверки, а настроенный обработчик принимает аутентифицированный запрос (scripts/check_environment.py, api/webhook.py, README.md).
+- [x] Завершить песочницу @ProdRadar_bot: настроить пустую БД jmsdxgylyjxwdwmdrmxw и Vercel prodradar-test, перенести только тестовый webhook, проверить прежний флоу; готово когда изоляция и delivery подтверждены, ресурсы и проверки описаны в refresh_plan (scripts/, .github/workflows/collect_test.yml, README.md, docs/refresh_plan.md).

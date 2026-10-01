@@ -1,13 +1,11 @@
 """Автоматически настроить prodradar-test через Actions и проверить реальные API."""
 
-import io
 import json
 import os
 from pathlib import Path
 import sys
 import time
 import uuid
-import zipfile
 
 import requests
 
@@ -20,7 +18,7 @@ WORKFLOW = 372368844
 REF = "codex/restore-test-bot"
 
 
-def api_request(method, path, body=None, binary=False):
+def api_request(method, path, body=None):
     token = os.environ["PRODRADAR_GITHUB_TOKEN"]
     response = requests.request(method, API + path,
                                 headers={"Authorization": f"Bearer {token}",
@@ -28,8 +26,6 @@ def api_request(method, path, body=None, binary=False):
                                 json=body, timeout=30)
     if not response.ok:
         raise SetupError(f"GitHub HTTP {response.status_code}; {method} {path}")
-    if binary:
-        return response.content
     return response.json() if response.content else None
 
 
@@ -73,14 +69,15 @@ def dispatch(phase, encrypted_settings=None):
 
 
 def download_public_key(run_id):
-    artifacts = api_request("GET", f"/actions/runs/{run_id}/artifacts")["artifacts"]
-    matches = [row for row in artifacts if row["name"] == "github-environment-public-key" and not row["expired"]]
+    jobs = api_request("GET", f"/actions/runs/{run_id}/jobs")["jobs"]
+    matches = [job for job in jobs if job["name"] == "setup_github" and job["conclusion"] == "success"]
     if len(matches) != 1:
-        raise SetupError("Не найден однозначный artifact публичного ключа")
-    data = api_request("GET", f"/actions/artifacts/{matches[0]['id']}/zip", binary=True)
-    # Из ZIP читается только ожидаемый публичный файл, без распаковки путей на диск.
-    with zipfile.ZipFile(io.BytesIO(data)) as archive:
-        return json.loads(archive.read("github-environment-key.json"))
+        raise SetupError("Не найден однозначный job публичного ключа")
+    annotations = api_request("GET", f"/check-runs/{matches[0]['id']}/annotations?per_page=100")
+    keys = [row["message"] for row in annotations if row.get("title") == "prodradar-test-public-key"]
+    if len(keys) != 1:
+        raise SetupError("Не найден однозначный публичный ключ в annotation Actions")
+    return json.loads(keys[0])
 
 
 def main():

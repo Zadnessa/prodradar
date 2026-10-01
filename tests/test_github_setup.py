@@ -7,6 +7,7 @@ import unittest
 from unittest.mock import patch
 
 from scripts.prepare_test_github import encrypt_settings
+from scripts.configure_test_github import download_public_key
 from scripts.setup_test_github import ENVIRONMENT, PROJECT_REF, REPOSITORY, SetupError, apply_settings, validate_settings
 
 
@@ -39,6 +40,17 @@ class GithubSetupTests(unittest.TestCase):
                 with self.assertRaises(SetupError):
                     apply_settings('dummy', settings)
                 api.assert_not_called()
+
+    def test_public_key_is_read_from_github_api_without_blob_redirects(self):
+        import json
+        public = {**self.public_key, 'repository': REPOSITORY, 'environment': ENVIRONMENT, 'key': 'public'}
+        with patch('scripts.configure_test_github.api_request', side_effect=[
+            {'jobs': [{'id': 123, 'name': 'setup_github', 'conclusion': 'success'}]},
+            [{'title': 'prodradar-test-public-key', 'message': json.dumps(public)}],
+        ]) as api:
+            self.assertEqual(download_public_key(456), public)
+        self.assertEqual([args[1] for args, _ in api.call_args_list],
+                         ['/actions/runs/456/jobs', '/check-runs/123/annotations?per_page=100'])
 
     def test_plaintext_secrets_are_rejected(self):
         self.settings['secrets']['SUPABASE_KEY'] = 'plaintext'

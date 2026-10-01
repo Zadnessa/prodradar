@@ -26,6 +26,15 @@ browser runtime
 
 ### Приоритет следующей сессии
 
+**Проверка bootstrap автоматизации:** Actions 36932011864 запущен
+из bdb8307, setup job дошёл до экспорта public key и вернул точное сообщение
+«Добавьте environment secret PRODRADAR_GITHUB_TOKEN в prodradar-test».
+Данных не записано, collector пропущен. Live подготовка реальных test
+реквизитов через Management/test Vercel, identity/ref и шифрование проверены
+без записи plaintext. Публичный ключ передаётся через annotation GitHub API;
+artifact оставлен для просмотра. Это устраняет зависимость автоматизации от
+недоступного в текущем proxy временного blob host логов/artifacts.
+
 **Актуальное ограничение и автоматизация GitHub (2 октября 2026).**
 Пользователь приостановил парсеры/сбор/доставку и попросил сначала разобраться с
 GitHub, автоматизируя всё доступное. Аудиты 36930639922 и 36930607479 отменены.
@@ -38,7 +47,7 @@ GitHub, автоматизируя всё доступное. Аудиты 36930
 отдельный Actions job с PAT из environment secret, вне proxy Codex.
 
 Подготовлена `scripts/run_profile.py --profile test configure-github`: Actions
-экспортирует только public key, Codex получает реальные test реквизиты через
+экспортирует только public key в annotation/artifact, Codex получает реальные test реквизиты через
 Supabase Management/test Vercel, проверяет identity/ref, шифрует в памяти и
 отправляет ciphertext второму setup job. Job обновляет только SUPABASE_URL,
 ADMIN_CHAT_ID, SUPABASE_KEY и TELEGRAM_BOT_TOKEN в prodradar-test, проверяет

@@ -335,7 +335,7 @@ python scripts/run_profile.py --profile test configure-github
 
 Команда автоматически:
 1. Запускает `Check Test Environment` с `setup_github=export-key` и получает
-   публичный ключ тестового environment через artifact.
+   публичный ключ тестового environment через annotation GitHub API.
 2. Берёт реальный test service_role из Supabase Management API и test bot token
    из существующего Vercel `prodradar-test`, проверяет доступ к тестовой БД и
    identity `@ProdRadar_bot`, шифрует значения в памяти sealed box GitHub.

@@ -103,12 +103,14 @@ def main():
         parser.error("Выберите ровно одну операцию")
     token = os.getenv("GH_TOKEN", "")
     if not token:
-        print("Добавьте environment secret PRODRADAR_GITHUB_TOKEN в prodradar-test", file=sys.stderr)
+        print("::error title=Missing bootstrap PAT::Добавьте environment secret PRODRADAR_GITHUB_TOKEN в prodradar-test", file=sys.stderr)
         return 1
     try:
         if args.export_key:
             public_key = get_public_key(token)
             args.export_key.write_text(json.dumps(public_key, indent=2) + "\n")
+            # Ключ публичный; annotation доступна через GitHub API без временного blob URL.
+            print("::notice title=prodradar-test-public-key::" + json.dumps(public_key, separators=(",", ":")))
             print("Публичный ключ prodradar-test получен; секретные значения не выгружаются")
         else:
             apply_settings(token, json.loads(os.environ[args.settings_env]))

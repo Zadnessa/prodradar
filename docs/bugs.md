@@ -159,20 +159,22 @@ ERR_CERT_AUTHORITY_INVALID до выполнения JavaScript. Гипотез�
 Actions 36911140341 подтвердил цепочку для всех трёх банков и успешные API
 Альфы/Точки; у Т-Банка выявлена отдельная проблема пустого списка после 200.
 
-### Т-Банк молча принимает устаревшую форму пагинации (BUG-096)
-Суть: getVacancies теперь использует плоские limit/offset и nextPagination с
-totalCount; старое вложение it возвращает OK с 0, хотя страница содержит вакансии.
-Текущий публичный Tramvai filtersStore использует direction/category/cityId.
-Правило: запросить общий IT-каталог с direction и плоской пагинацией, роли
-отбирать pipeline; проверить прогресс offset, уникальность исходных id и
-точное совпадение с totalCount до объединения одинаковых ролей по городам.
-Направления извлекать при запуске из публичного Tramvai state: literal it
-больше не соответствует актуальным directions. City/category не ограничивают
-сбор; default city страницы не должен сужать вакансии до Москвы.
-Уточнение из реального DevTools POST: API принимает filters.generatedGraphQL;
-direction/category/cityId относятся к UI-state. Использовать публичную GraphQL
-модель запроса каталога, убрать searchFiasIds Москвы, API base взять из public
-environment.VACANCIES_PUBLIC_API. Полный текст включает «Мы предлагаем»;
-аудит проверяет html_sections, а не только наличие shortDescription.
-В query выбираются IT/back-office; в audit фиксируются число полученных API
-строк и totalCount до city-dedup, включая неуспешный/прерванный сбор.
+### Т-Банк молча принимает устаревший запрос (BUG-096)
+Суть: прежний tcareer_it_profession=product-management и вложенная pagination.it
+возвращают OK с пустым списком. Актуальный DevTools POST использует
+filters.generatedGraphQL и плоские limit/offset/nextPagination с totalCount.
+Правило: HTTP-сбор IT/back-office по текущему контракту, без ограничения Москвой;
+проверять продвижение offset, уникальность id и totalCount до city-dedup.
+API base берётся из public environment.VACANCIES_PUBLIC_API. В Actions
+36917545369 подтверждены все 385/385 API строк: 234 после city-dedup, 25 product.
+Полное описание, как и раньше, читается обычным HTTP из HTML; «Мы предлагаем»
+также включается в итоговый текст. Браузер вакансии не выгружает.
+
+### Дублирующий аудит и слишком короткий timeout повторов (BUG-097)
+Суть: два job одновременно собирали Т-Банк, а timeout enrichment 45 секунд
+обрывал разрешённые повторы 429 с ожиданиями 30/60 секунд. В live-проверке
+полный список получен, но восемь HTML-описаний встретили 429.
+Правило: Т-Банк собирается только bank_contracts; общий audit исключает его.
+Предыдущий audit ветки отменяется через concurrency. Пауза HTML GET — 5 секунд,
+audit enrichment timeout — 150 секунд. DevTools POST вызывается только явным
+флагом диагностического скрипта. Положительный результат требует всех описаний.

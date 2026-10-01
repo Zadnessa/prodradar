@@ -101,14 +101,14 @@
 
 ## T-Bank
 - Метод: POST
-- URL: https://www.tbank.ru/pfpjobs/papi/getVacancies
+- URL: {VACANCIES_PUBLIC_API}/getVacancies; base из публичного __TRAMVAI_STATE__.stores.environment. На 2026-10-01 — https://www.tbank.ru/pfpjobs/papi/getVacancies
 - Content-Type: application/json
-- Фильтр: {"filters": {"tcareer_it_profession": ["product-management"]}}
+- Фильтр реального DevTools POST (2026-10-01): filters.generatedGraphQL с type=T_CAREER, status=ACTIVE, userGroup={groups:[Control],type:SPECIFIC}, or по category=tcareer_work_with_clients/tcareer_it/tcareer_back_office, includeSeoAndPcPublications=false, includeInternshipPublications=true, collapsePredstavitelPublications=true. Runtime снимает searchFiasIds Москвы. direction/category/cityId в filtersStore — UI-state; отправлять их напрямую нельзя. Runtime выбирает только tcareer_it/tcareer_back_office. Actions 36917545369 подтвердил 385/385 API строк (234 после city-dedup, 25 product); все описания ещё не подтверждены из-за 429.
 - Путь к вакансиям: payload.vacancies
-- Пагинация: payload.nextPagination.it (offset, isFinished)
-- Поля: urlSlug (str), title (str), shortDescription (str — содержит HTML-теги, очищать), regionId (str, FIAS UUID — источник города), seoSlug (str — компонент URL), category (str), backend (str), tags (array[str] — грейд: Middle, Senior, Head), source (str), specialty (str), cities (array[str], фактически всегда пустой массив и не используется как источник города)
+- Пагинация: плоские limit/offset в request.pagination; response.payload.nextPagination содержит offset/isFinished/totalCount. Прежнее вложение it устарело. Проверить totalCount до city-dedup; empty при непустом SSR-каталоге — ошибка.
+- Поля: urlSlug (str), title (str), shortDescription (str — содержит HTML-теги, очищать), regionId (str, FIAS UUID — источник города), seoSlug (str — компонент URL), category (str), backend (str), tags (array[str] — грейд: Middle, Senior, Head), source (str), specialty (str), cities (array[str], на новой странице может быть непустым; прежний parser использует regionId и city mappings)
 - Ссылка: https://www.tbank.ru/career/it/vacancy/{city_slug}/{seoSlug}/{urlSlug}/
-- Описание: shortDescription из API (краткое, нужна очистка HTML)
+- Описание: shortDescription — preview; полный текст из HTML-секций Описание/Обязанности/Требования/Мы предлагаем. Audit требует html_sections для подтверждения enrichment.
 - Справочные эндпоинты:
   - POST getFiltersV3 (группы tcareer_it_profession, tcareer_it_specialization, tcareer_it_experience, tcareer_it_work_format, tcareer_adm_vacancies_cities)
   - POST getFiltersActivity
@@ -157,6 +157,7 @@
 - Отсутствующие поля: grade, experience (извлекается regex из requirements), work_format (извлекается из conditions)
 
 ## Alfa-Bank
+- TLS: официальная российская CA-цепочка через parsers/tls.py только для job.alfabank.ru; hostname/CERT_REQUIRED сохраняются. Проверено 2026-10-01: 30 raw / 23 product, все 23 описания.
 - Метод: GET
 - URL: https://job.alfabank.ru/api/vacancies
 - Путь к вакансиям: items
@@ -170,11 +171,11 @@
 
 ## Aviasales
 - Метод: GET
-- URL: https://vacancies-app.aviasales.ru/api/vacancies?specializations=Product+managment&language=ru
+- URL: https://vacancies-app.aviasales.ru/api/vacancies?language=ru
 - Обязательные заголовки: нет (стандартные)
 - Путь к вакансиям: корень (JSON-массив)
 - Пагинация: отсутствует, все вакансии в одном ответе
-- Фильтр: specializations=Product+managment (серверный)
+- Фильтр: общий список; старый specializations=Product+managment возвращает ложный []. Роли отбирает pipeline (проверено 2026-10-01).
 - Поля: id (int), position (str), tags (array str), team.name (str), workPlace (null у всех, заглушка remote)
 - Ссылка: https://aviasales.ru/about/vacancies/{id}
 - Описание: НЕТ в списке, полное через HTML-карточку (SSR)
@@ -205,13 +206,13 @@
 
 ## Dodo
 - Метод: GET
-- URL списка: https://career-api.dodoteam.ru/api/v1/vacancies
+- URL списка: {apiURL}/api/v1/vacancies; apiURL извлекается при запуске из публичного window.__NUXT__.config.public.apiURL. На 2026-10-01 это https://job-site-backend.dodo-ai-platform.io; backend отвечает 503 в runtime и Actions, успешный новый контракт ещё не проверен.
 - Путь к вакансиям: data[*].items (массив групп, у каждой поле items)
 - Пагинация: отсутствует, все вакансии в одном ответе
 - Поля списка: id (int), position (str), vacancy_location (str), work_format (array str), subspeciality (str), brand (str)
 - Фильтр: subspeciality содержит "product" (клиентская фильтрация)
-- Ссылка: https://dodoteam.ru/vacancy/{id}
-- URL detail: https://career-api.dodoteam.ru/api/v1/pages/vacancy/{id}
+- Ссылка: https://dodoteam.ru/vacancy?vacancyId={id}
+- URL detail: {apiURL}/api/v1/pages/vacancy/{id}; route подтверждён текущим JavaScript фронтенда.
 - Enrichment: grade из data.page.content[type=vacancy_main].data.grade; description из склейки data.text блоков vacancy_text, vacancy_expectation, vacancy_you_will, vacancy_benefits (HTML, очистка через BS4)
 - Ловушки: массив вакансий не плоский (двойной цикл); vacancy_location часто пустая строка; work_format может быть пустым массивом; grade отсутствует в списке, только в detail
 
@@ -299,24 +300,22 @@
 - Ловушки: HTML содержит &amp;nbsp;, пустые <br>, <p><br></p>; slug содержит слэш; вакансия "Технолог процессов ПВЗ" попадает в направление продуктов, но не является PM-ролью
 
 ## ДомКлик
+- Проверено: Chromium и HTTP, 2026-10-01; 31 raw / 8 product, все восемь полных описаний.
 - Метод: GET
-- URL: https://rabota-bff.domclick.ru/api/v1/vacancies
-- Обязательные заголовки: Referer: https://career.domclick.ru/
-- Путь к вакансиям: data
-- Пагинация: отсутствует, все вакансии в одном ответе
-- Фильтр: без серверного фильтра; клиентская фильтрация через DOMCLICK_TITLE_WHITELIST в main.py
-- Поля: id (str, HH ID), name (str), area.name (str, город), schedule.name (str, формат работы), experience.name (str, читаемая строка), slug (str, компонент URL)
+- URL: https://career.domclick.ru/api/v1/vacancy/
+- Заголовки: Referer=https://career.domclick.ru/vacancies, Accept=application/json, Sec-Fetch-Site=same-origin, Sec-Fetch-Mode=cors, Sec-Fetch-Dest=empty. API не требует cookies в проверенных средах; HTML получает qrator_ssid2.
+- Путь к вакансиям: result (массив), success=true.
+- Пагинация: limit/offset, pagination.limit/offset/total; total может быть null. Проверены limit=1 и offset=0/1/31. Учитывать серверный limit и уникальность id.
+- Фильтр: общий список; клиентская фильтрация pipeline.
+- Поля: id (str), title, slug, area.name, experience.name, vacancycontent.work_format (array: ON_SITE/REMOTE/HYBRID).
 - Ссылка: https://career.domclick.ru/vacancy/{slug}
-- Описание: только сниппеты в списке, полное через detail endpoint
-- Ловушки: keywords работает только по латинице и ищет по всему тексту; параметры пагинации/фильтрации игнорируются сервером; HTTP 404 при пустом результате (не JSON); хештеги в конце description — отрезать; два разных ID (id — HH ID, vacancyId — внутренний)
+- Старый rabota-bff.domclick.ru/api/v1/vacancies возвращает 404.
 
 ### API отдельной вакансии
 - Метод: GET
-- URL: https://rabota-bff.domclick.ru/api/v1/vacancies/{id}
-- Путь к данным: data
-- Поля для enrichment: description (HTML, очистить strip_tags, отрезать хештеги)
-- Отсутствующие поля: grade, published_at
-
+- URL: https://career.domclick.ru/api/v1/vacancy/detail/{slug}/
+- Полное описание: result.vacancycontent.description (HTML, BS4 cleanup).
+- Отсутствующие поля: grade, published_at.
 
 ## Купер
 - Метод: GET
@@ -324,7 +323,7 @@
 - Обязательные заголовки: нет (стандартные)
 - Путь к вакансиям: result (массив категорий, искать по category === "vacancies", данные в .data)
 - Пагинация: page-based (параметр page, с 1), фиксированный размер 10, условие остановки: result[category=pagination].data.pages
-- Фильтр: group=186247de-f72e-469e-9da3-db468f9b6197 (Product & Project Management)
+- Прежний фильтр: group=186247de-f72e-469e-9da3-db468f9b6197 (Product & Project Management). На 2026-10-01 он возвращает 0; общий API — одну вакансию контактного центра. Полнота не подтверждена: team.kuper.ru отвечает 403 с просьбой отключить VPN даже в Chromium и Actions.
 - Поля: id (str, UUID), title (str), city (str, человекочитаемая), grade (array[str], может быть []), wf (array[str], может быть []), workExperience (int|null, число лет), description (str, HTML preview), friendlyUrl (str, ключ для detail и URL), group (str), division (str), idForUrl (int, не используется)
 - Ссылка: https://team.kuper.ru/vacancies/{friendlyUrl}
 - Описание: PREVIEW в списке (укороченное), полное через API detail
@@ -359,11 +358,11 @@
 
 ## МТС Линк
 - Метод: GET
-- URL: https://mts-link.ru/api/huntflow/vacancies?categoryId=221722
-- Обязательные заголовки: Authorization: Bearer (статический), Origin: https://job.mts-link.ru, Referer: https://job.mts-link.ru/
+- URL: https://mts-link.ru/api/huntflow/vacancies
+- Заголовки: Origin: https://job.mts-link.ru, Referer: https://job.mts-link.ru/; публичные list/detail не требуют Bearer (Chromium и HTTP, 2026-10-01).
 - Путь к вакансиям: корень (JSON-массив)
 - Пагинация: отсутствует (API отдаёт все вакансии одним массивом)
-- Фильтр: categoryId=221722 (направление «Продукт»)
+- Фильтр: общий список без устаревшего categoryId; hidden=true пропускается, роли отбирает pipeline.
 - Поля: id (int), position (str), workExperience (str-enum), workFormat (str), accountDivision (str), created (object), hidden (bool), money (str)
 - Ссылка: https://job.mts-link.ru/vacancy/?id={id}
 - Описание: через API detail (body + requirements + conditions, HTML)

@@ -63,7 +63,7 @@ def url_metadata(url):
             'query_keys': sorted(parse_qs(parts.query, keep_blank_values=True))}
 
 
-async def inspect_sources(names):
+async def inspect_sources(names, probe_tbank_pagination=False):
     results = {}
     async with async_playwright() as playwright:
         proxy = os.getenv('HTTPS_PROXY') or os.getenv('HTTP_PROXY')
@@ -141,7 +141,7 @@ async def inspect_sources(names):
                     links = [urljoin(page.url, a['href']) for a in soup.select('a[href]')
                              if '/vacanc' in a['href'] or '/vakans' in a['href']]
                     result['vacancy_links'] = [url_metadata(url) for url in dict.fromkeys(links)][:12]
-                    if name == 'tbank':
+                    if name == 'tbank' and probe_tbank_pagination:
                         result['button_labels'] = [b.get_text(' ', strip=True) for b in soup.select('button')][:30]
                         # Пользователь разрешил диагностику через браузер и кнопки вакансий.
                         # Только чтение следующей страницы; формы отклика не используются.
@@ -179,12 +179,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--sources', nargs='+', choices=TARGETS, default=list(TARGETS))
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--probe-tbank-pagination', action='store_true',
+                        help='Явная DevTools-диагностика одного POST по кнопке каталога, без выгрузки вакансий')
     parser.add_argument('--source-ca', action='store_true',
                         help='Временный официальный root CA для Chromium в Actions; TLS проверки сохранены')
     args = parser.parse_args()
     certificate = add_actions_browser_ca() if args.source_ca else None
     try:
-        report = asyncio.run(inspect_sources(args.sources))
+        report = asyncio.run(inspect_sources(args.sources, args.probe_tbank_pagination))
     finally:
         if certificate:
             location, nickname = certificate

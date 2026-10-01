@@ -246,7 +246,7 @@ class TBankParser(BaseParser):
             logger.warning("T-Bank enrich: не удалось загрузить HTML для %s: %s", vacancy.get("url"), exc)
             return vacancy
         finally:
-            await asyncio.sleep(1)
+            await asyncio.sleep(5)
 
         try:
             soup = BeautifulSoup(html, "html.parser")

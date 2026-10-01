@@ -34,14 +34,14 @@ def selected(vacancy):
 
 
 async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_browser=True,
-                        full_enrich_sources=()):
+                        full_enrich_sources=(), exclude_sources=()):
     logging.disable(logging.CRITICAL)
     db = SupabaseService()
     companies = db.get_enabled_companies()
     city_mappings = db.get_city_mappings()
     expected_companies = {c["name"] for c in companies}
     enabled = list(dict.fromkeys(c["parser_name"] for c in companies))
-    requested = names or enabled
+    requested = [name for name in (names or enabled) if name not in exclude_sources]
     report = {"created_at": datetime.now(timezone.utc).isoformat(), "read_only": True, "sources": {}}
     browser_secrets = {}
     if use_browser:
@@ -89,7 +89,8 @@ async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_
                     for vacancy in product_vacancies[:sample_limit]:
                         before = dict(vacancy)
                         try:
-                            await asyncio.wait_for(parser.enrich(session, vacancy), timeout=45)
+                            enrich_timeout = 150 if name == 'tbank' else 45
+                            await asyncio.wait_for(parser.enrich(session, vacancy), timeout=enrich_timeout)
                             if len(vacancy.get("description") or "") < len(before.get("description") or ""):
                                 issues.add("description_shortened")
                             for field in ("grade", "city", "work_format", "experience"):
@@ -143,6 +144,8 @@ async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sources", nargs="+")
+    parser.add_argument("--exclude-sources", nargs="+", default=[],
+                        help="Не повторять источники, проверяемые отдельным job")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--enrich-limit", type=int, default=2)
     parser.add_argument("--no-browser", action="store_true")
@@ -150,7 +153,7 @@ def main():
                         help="Проверить описания всех product-вакансий указанных источников")
     args = parser.parse_args()
     report = asyncio.run(audit_sources(args.sources, args.enrich_limit, use_browser=not args.no_browser,
-                                       full_enrich_sources=args.full_enrich_sources))
+                                       full_enrich_sources=args.full_enrich_sources, exclude_sources=args.exclude_sources))
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     return 0 if report["ok"] else 1

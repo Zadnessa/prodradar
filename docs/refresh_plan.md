@@ -9,8 +9,10 @@
 Пользователь разрешил автономный проход **1–4**: сохранить исходный продукт и
 данные, подготовить изолированное окружение @ProdRadar_bot, восстановить
 **фирменные API** и проверить прежний флоу. HH использовать для сверки полноты,
-не заменять им фирменные источники. Браузерная диагностика запросов, cookies и
-динамических токенов разрешена; необходимые browser secrets подключать через
+не заменять им фирменные источники. DevTools-диагностика разрешена для поиска контракта API; browser runtime
+служит только доступу через антибот/cookies/токены, не выгружает вакансии.
+Обычный HTTP HTML-enrichment допустим, если API не даёт полный текст.
+Необходимые browser secrets подключать через
 общий `parsers/browser.py`. Project-профиль и новый интерфейс пока не разрешены.
 Пользователь считает прежнего бота архивным после длительного простоя.
 
@@ -103,15 +105,20 @@ HH OAuth/captcha, неверные items, повторяющиеся id и не�
   HTML получает qrator_ssid2. Старый rabota-bff endpoint даёт 404.
 - Альфа: **30 raw / 23 product**, все 23 описания проверены в Actions 36912345431.
 - Точка: **1 raw / 1 product**, полное описание проверено в том же Actions.
-- Т-Банк: **новый native-сбор ещё проверяется**. Chromium открыл текущий каталог;
-  DevTools кнопки «Показать ещё» снял POST getVacancies с
-  `filters.generatedGraphQL`: T_CAREER/ACTIVE, anonymous Control, or по трём
-  публичным categories. Direction/category/cityId относятся к UI-state;
-  отправлять их напрямую в API нельзя. API base берётся из публичного
-  `__TRAMVAI_STATE__.stores.environment.VACANCIES_PUBLIC_API`. Runtime исключает
-  searchFiasIds Москвы и читает плоскую пагинацию с totalCount. Пустой API при
-  непустом SSR — ошибка. Description включает «Мы предлагаем»; audit требует
-  реальные html_sections, одного shortDescription недостаточно.
+- Т-Банк: Actions **36917545369** получил **385/385 строк фирменного API**,
+  234 после объединения городов, 25 product. Старый фильтр
+  tcareer_it_profession=product-management и вложенная pagination.it устарели:
+  API возвращал OK с пустым списком. DevTools выявил текущий POST getVacancies
+  с filters.generatedGraphQL и плоской pagination. Runtime собирает IT/back-office
+  без ограничения Москвой, проверяет уникальность/offset/totalCount; endpoint
+  берётся из публичного environment.VACANCIES_PUBLIC_API. Для списка browser
+  cookies или token не понадобились; все строки получены обычным HTTP POST.
+  Полные описания, как и в прежнем main, читаются HTTP GET из HTML, включая
+  «Мы предлагаем». Это допустимое дополнение API, не браузерная выгрузка.
+  В том запуске восемь из 25 описаний получили 429; готовность всего источника
+  ещё не подтверждена. Убраны два одновременных сбора Т-Банка, пауза HTML GET
+  увеличена до 5 секунд, повторы 429 — 30/60 секунд с соблюдением Retry-After.
+  Audit enrichment timeout 150 секунд допускает эти повторы; parse — 360 секунд.
 
 **Причина TLS банков подтверждена**, Actions
 [36911140341](https://github.com/Zadnessa/prodradar/actions/runs/36911140341):
@@ -136,33 +143,20 @@ VPN**, включая Chromium и Actions. Нужна проверка фирм�
 `scripts/inspect_source_browser.py` сохраняет пути, имена query/header/cookies,
 статусы, JSON-структуру и публичные filters/pagination каталога; значения
 токенов/cookies не записываются. Для явно разрешённой пользователем диагностики
-нажимается только последняя «Показать ещё» Т-Банка (первая раскрывает фильтры).
-Формы отклика не используются. `--source-ca` импортирует официальный root
-в NSS одноразового Actions runner и удаляет после Chromium; вне Actions запрещён.
-Runtime browser stage остаётся общим в `parsers/browser.py`.
+с явным `--probe-tbank-pagination` можно нажать последнюю «Показать ещё»
+Т-Банка (первая раскрывает фильтры), чтобы снять один публичный POST. Обычный
+workflow этого клика не делает. Формы отклика не используются. `--source-ca`
+импортирует официальный root в NSS одноразового Actions runner и удаляет после
+Chromium; вне Actions запрещён. Runtime browser stage остаётся общим в
+`parsers/browser.py`, только для антибот-доступа.
 
-Read-only Actions имеет independent `bank_contracts` без Chromium и общий audit
-с `--full-enrich-sources alfa tochka tbank domclick aviasales`, затем DevTools.
-Job `original` остаётся **без** environment prodradar-test: repo Secrets исходного
-collector не должны затеняться тестовыми. Локально **21 регрессия успешна**.
-Актуальный запуск: [36915998999](https://github.com/Zadnessa/prodradar/actions/runs/36915998999)
-(SHA 68c22fc; результат пока ожидается). Предыдущий 36915232885 отменён из-за
-зависшей установки Chromium; он не является проверкой источников.
-Native job этого запуска подтвердил 23 HTTP 200 страницы Т-Банка, но сбор
-общего каталога с массовыми work_with_clients исчерпал audit timeout 180 секунд.
-В query выбраны IT/back-office; audit теперь показывает api_collected_count и
-api_total_count даже при ошибке. Native работает без browser tokens; полноту
-суженного каталога и все product-описания ещё нужно подтвердить новым запуском.
-Native job 36916844675 получил 300 уникальных строк из API totalCount=385,
-31 HTTP 200, затем закончился audit timeout 180 секунд. Это искусственный
-лимит диагностики: runtime parse не ограничен им. Сервер отдаёт по 10 даже при
-limit=100, с подтверждёнными паузами полный список требует около четырёх минут.
-Audit timeout только этого источника увеличен до 360 секунд, остальным оставлен 180.
-Общий audit 36917545369 затем встретил HTTP 429 после 200 из 385 строк.
-Добавлен bounded retry 30/60 секунд с соблюдением Retry-After для list/HTML;
-ожидание выше 60 секунд не сокращается, источник остаётся ошибкой для следующего
-сбора. Восстановленный 429 отражается в отчёте и не портит успешность при полной
-пагинации и наличии всех html_sections. Локально проходят 23 регрессии.
+Read-only Actions имеет independent `bank_contracts` без Chromium: только он
+собирает Т-Банк. Общий audit исключает его через `--exclude-sources tbank`;
+concurrency отменяет предыдущий audit ветки. Job `original` остаётся **без**
+environment prodradar-test, чтобы не затенять repo Secrets исходного collector.
+Локально **23 регрессии успешны**. Проверка всех описаний после ограничения
+частоты ещё ожидается. Запуск 36918527238 отменён при уточнении пользователя;
+его отмена не означает ни успех, ни регрессию API.
 
 Прямой gh download ZIP даёт 403, но GitHub connector
 `github_download_workflow_artifact` + `download_file` успешно получает отчёты.

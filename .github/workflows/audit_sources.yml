@@ -12,6 +12,10 @@ on:
       - 'parsers/**'
   workflow_dispatch:
 
+concurrency:
+  group: read-only-source-audit-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -41,7 +45,7 @@ jobs:
           retention-days: 14
   bank_contracts:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     environment: prodradar-test
     steps:
       - uses: actions/checkout@v5
@@ -82,7 +86,7 @@ jobs:
         run: python scripts/check_source_tls.py --output source-tls-check.json
       - name: Audit enabled parsers and descriptions without writes
         if: always()
-        run: python scripts/audit_sources.py --enrich-limit 3 --full-enrich-sources alfa tochka tbank domclick aviasales --output sources-check.json
+        run: python scripts/audit_sources.py --exclude-sources tbank --enrich-limit 3 --full-enrich-sources alfa tochka domclick aviasales --output sources-check.json
         env:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}

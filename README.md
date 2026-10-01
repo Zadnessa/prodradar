@@ -195,6 +195,8 @@ HTTP-проверка и тест пользовательского флоу в
   подтверждает полные HTML-секции и включает «Мы предлагаем» в description.
   Отдельный job `bank_contracts` проверяет все описания банков с `--no-browser`,
   чтобы установка Chromium не блокировала проверку их публичных API.
+  Общий job использует `--exclude-sources tbank`: Т-Банк не опрашивается
+  одновременно дважды. Concurrency отменяет предыдущий audit той же ветки.
   Для Т-Банка отчёт содержит `api_collected_count` и `api_total_count` до
   объединения по городам; фирменный query выбирает IT/back-office.
   API отдаёт по 10 строк, поэтому bounded parse timeout Т-Банка в audit —
@@ -202,6 +204,8 @@ HTTP-проверка и тест пользовательского флоу в
   Т-Банк повторяет 429 с паузами 30/60 секунд и соблюдает Retry-After;
   более длинное ожидание оставляет источник ошибкой до следующего сбора.
   Audit явно показывает восстановленные rate limits и требует полный результат.
+  Для HTML-описаний оставлена пауза 5 секунд; audit timeout одного enrichment
+  Т-Банка — 150 секунд, чтобы не обрывать разрешённые повторы 30/60 секунд.
 - `python scripts/backup_database.py /path/outside/repository/snapshot` выгружает
   шесть таблиц в NDJSON, OpenAPI и manifest с количеством строк и SHA-256.
   Используйте ключ, видящий пользовательские таблицы. Выгрузка ограничивает
@@ -219,7 +223,9 @@ HTTP-проверка и тест пользовательского флоу в
   totalCount; прежняя вложенная пагинация давала ложный пустой ответ.
 - `python scripts/inspect_source_browser.py --output reports/browser.json`
   собирает DevTools-метаданные страниц без сохранения значений cookies/токенов.
-  Такой же отчёт сохраняется в read-only Actions audit.
+  Такой же отчёт сохраняется в read-only Actions audit. Браузер не выгружает
+  вакансии. Для отдельного исследования публичного POST каталога Т-Банка
+  используйте явный `--probe-tbank-pagination`; в обычном audit клика нет.
 - `python scripts/check_source_tls.py --output reports/tls.json` в GitHub Actions
   сравнивает TLS банков с системными и официальными дополнительными CA.
   Происхождение цепочки и границы доверия: `parsers/certificates/README.md`.

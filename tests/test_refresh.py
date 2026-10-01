@@ -3,6 +3,7 @@
 import hashlib
 import json
 import os
+import ssl
 from pathlib import Path
 import tempfile
 import unittest
@@ -21,6 +22,20 @@ from parsers.domclick import DomClickParser
 from scripts.backup_database import backup_database
 from scripts.backup_schema import render_schema
 from scripts.collect_test import check_target
+from parsers.tls import source_ssl_context
+
+
+class SourceTLSVerificationTests(unittest.TestCase):
+    def test_additional_source_ca_keeps_certificate_and_hostname_checks(self):
+        context = source_ssl_context('https://job.alfabank.ru/api/vacancies')
+        self.assertEqual(context.verify_mode, ssl.CERT_REQUIRED)
+        self.assertTrue(context.check_hostname)
+        self.assertGreater(context.cert_store_stats()['x509_ca'], 2)
+
+    def test_additional_source_ca_does_not_apply_to_external_or_similar_hosts(self):
+        for url in ('https://api.telegram.org', 'https://jmsdxgylyjxwdwmdrmxw.supabase.co',
+                    'https://job.alfabank.ru.attacker.example', 'https://other.tbank.ru'):
+            self.assertIs(source_ssl_context(url), True)
 
 
 class Response:

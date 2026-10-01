@@ -1,6 +1,7 @@
 """Парсер вакансий Alfa-Bank."""
 
 from parsers.base import BaseParser
+from parsers.tls import source_ssl_context
 import config
 
 
@@ -48,7 +49,8 @@ class AlfaParser(BaseParser):
         del existing_ids
         options_url = "https://job.alfabank.ru/api/optionLists"
         options_params = [("listIds", "archetypes"), ("listIds", "cities"), ("listIds", "experiences")]
-        async with session.get(options_url, headers=config.REQUEST_HEADERS, params=options_params) as response:
+        async with session.get(options_url, headers=config.REQUEST_HEADERS, params=options_params,
+                               ssl=source_ssl_context(options_url)) as response:
             response.raise_for_status()
             option_lists = await response.json()
 
@@ -57,7 +59,7 @@ class AlfaParser(BaseParser):
         experience_map = self._build_option_map(option_lists, "experiences")
 
         url = "https://job.alfabank.ru/api/vacancies?businessLine=1020&take=100"
-        async with session.get(url, headers=config.REQUEST_HEADERS) as response:
+        async with session.get(url, headers=config.REQUEST_HEADERS, ssl=source_ssl_context(url)) as response:
             response.raise_for_status()
             payload = await response.json()
 

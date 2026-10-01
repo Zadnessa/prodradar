@@ -205,6 +205,10 @@ HTTP-проверка и тест пользовательского флоу в
 - `python scripts/inspect_source_browser.py --output reports/browser.json`
   собирает DevTools-метаданные страниц без сохранения значений cookies/токенов.
   Такой же отчёт сохраняется в read-only Actions audit.
+- `python scripts/check_source_tls.py --output reports/tls.json` в GitHub Actions
+  сравнивает TLS банков с системными и официальными дополнительными CA.
+  Происхождение цепочки и границы доверия: `parsers/certificates/README.md`.
+  В облачном runtime с обязательным proxy этот прямой TLS-пробник не запускать.
 - `python scripts/backup_schema.py /path/sql --project-ref PROJECT_REF` сохраняет
   прикладную SQL-схему public, RLS, индексы, sequences и ACL через Management API
   (`SUPABASE_ACCESS_TOKEN`). Внутренние схемы платформы не входят в копию.

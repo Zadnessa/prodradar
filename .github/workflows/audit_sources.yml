@@ -53,6 +53,8 @@ jobs:
       - run: playwright install chromium --with-deps
       - name: Check parser regression tests
         run: python -m unittest discover -s tests -v
+      - name: Check official TLS certificate chains
+        run: python scripts/check_source_tls.py --output source-tls-check.json
       - name: Inspect official vacancy pages and browser network requests
         run: python scripts/inspect_source_browser.py --output browser-sources-check.json
       - name: Audit enabled parsers and descriptions without writes
@@ -69,4 +71,5 @@ jobs:
           path: |
             sources-check.json
             browser-sources-check.json
+            source-tls-check.json
           retention-days: 14

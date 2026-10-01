@@ -5,6 +5,7 @@ import logging
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 from parsers.base import BaseParser
+from parsers.tls import source_ssl_context
 import config
 
 
@@ -111,7 +112,8 @@ class TBankParser(BaseParser):
                 "pagination": pagination,
             }
 
-            async with session.post(url, headers=config.REQUEST_HEADERS, json=payload) as response:
+            async with session.post(url, headers=config.REQUEST_HEADERS, json=payload,
+                                    ssl=source_ssl_context(url)) as response:
                 response.raise_for_status()
                 result = await response.json()
 
@@ -168,7 +170,8 @@ class TBankParser(BaseParser):
 
     async def enrich(self, session, vacancy):
         try:
-            async with session.get(vacancy["url"], headers=config.REQUEST_HEADERS) as response:
+            async with session.get(vacancy["url"], headers=config.REQUEST_HEADERS,
+                                   ssl=source_ssl_context(vacancy["url"])) as response:
                 response.raise_for_status()
                 html = await response.text(encoding="utf-8")
         except Exception as exc:

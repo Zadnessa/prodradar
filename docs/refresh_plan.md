@@ -133,10 +133,20 @@ DevTools-отчёт: пути, имена query/header/cookies, статусы, 
 (16 ready, 2 empty, 6 failed; 8 тестов, original check успешен). Новый запуск
 после текущего коммита нужно проверить по jobs/logs и артефактам
 `sources-check.json`, `browser-sources-check.json`.
+Запуск [36909585896](https://github.com/Zadnessa/prodradar/actions/runs/36909585896)
+подтвердил 19 ready, 4 failed, 1 empty и 17 регрессий; original check успешен.
+Альфа/Т-Банк/Точка дают TLS certificate error и в HTTP, и Chromium;
+Dodo backend — 503, Купер — empty при 403 страницы. МТС/VK/СберЗдоровье ready.
+Проверяется официальная российская CA-цепочка для трёх банков через
+`parsers/tls.py` и отдельный Actions TLS report; hostname/CERT_REQUIRED сохранены.
+Этот новый этап пока не считать успешным до live Actions.
+
 Локальный полный audit до установки Chromium не подтверждал МТС/VK/СберЗдоровье
 (503, proxy 403, отсутствующий браузер); не отменять прежний успешный Actions
-на основании этих локальных ошибок. Загрузка Actions ZIP по прежней ссылке
-повторно дала 403; при необходимости читать логи или доступный connector.
+на основании этих локальных ошибок. Прямой gh download ZIP даёт 403, но
+GitHub connector `github_download_workflow_artifact` успешно получает ZIP,
+который затем скачивается через `download_file`. Последние source/browser
+отчёты сохранены в приватном `/workspace/prodradar-backups/diagnostics`.
 
 ### Точные следующие действия
 

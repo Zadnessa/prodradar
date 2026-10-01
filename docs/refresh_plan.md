@@ -26,6 +26,57 @@ browser runtime
 
 ### Приоритет следующей сессии
 
+**Передача после настройки секретов (2 октября 2026).** Пользователь переходит
+в новую сессию: текущая не используется для проверки добавленных env. Продолжить
+в `codex/restore-test-bot`, PR #129, без новых проектов/PR и без слияния в main.
+Песочница уже работает; повторный provision схемы не нужен.
+
+**Что добавить в настройках облачного окружения Codex:** существующие общие
+переменные/секреты сохранить, вместо их перезаписи добавить отдельные test-имена.
+
+| Имя | Тип | Откуда взять значение | Домены секрета |
+| --- | --- | --- | --- |
+| `TEST_SUPABASE_URL` | Переменная | `https://jmsdxgylyjxwdwmdrmxw.supabase.co` | — |
+| `TEST_SUPABASE_KEY` | Секрет | Supabase → проект ProdRadar-test → Settings → API Keys → Legacy anon/service_role → service_role → Reveal | `jmsdxgylyjxwdwmdrmxw.supabase.co`, `api.vercel.com` |
+| `TEST_TELEGRAM_BOT_TOKEN` | Секрет | @BotFather → /mybots → @ProdRadar_bot → API Token; копировать существующий token | `api.telegram.org`, `api.vercel.com` |
+| `PRODRADAR_GITHUB_TOKEN` | Секрет | GitHub Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token | `api.github.com` |
+
+Для GitHub token: Resource owner **Zadnessa**, Only select repositories →
+**prodradar**, Repository permissions → **Environments: Read and write**,
+**Actions: Read and write**, **Contents: Read-only**; Metadata read-only
+добавляется автоматически. SUPABASE_ACCESS_TOKEN, VERCEL_TOKEN, HH_ACCESS_TOKEN,
+ADMIN_CHAT_ID и остальные существующие настройки сохранить. В Vercel ничего
+дополнительно копировать не требуется: test env уже установлен.
+
+**Первые действия нового чата:** проверить readiness и реальные API с новыми
+именами; использовать PRODRADAR_GITHUB_TOKEN для GitHub-команд. Добавить в репозиторий
+явный выбор профиля `test`/`prod`: test-имена отображаются на стандартные
+SUPABASE_URL/KEY и TELEGRAM_BOT_TOKEN **до импорта config** только в выбранном
+процессе. Тестовый профиль проверяет project ref и @ProdRadar_bot, без fallback
+на общие переменные при отсутствии test-ключа. Для будущего production использовать
+отдельные PROD_SUPABASE_URL/KEY и PROD_TELEGRAM_BOT_TOKEN после сверки identity
+@findproductjob_bot и исходной БД; глобальные настройки не переключать скрыто.
+Эта поддержка профилей пока запланирована, текущий код ещё не читает TEST_*.
+
+Затем обновить **только GitHub environment prodradar-test**: variables
+SUPABASE_URL (test URL), ADMIN_CHAT_ID; secrets SUPABASE_KEY (test service_role),
+TELEGRAM_BOT_TOKEN (@ProdRadar_bot), проверить существующий HH_ACCESS_TOKEN.
+Для шифрования GitHub secrets брать реальные значения через Management API/Vercel
+в память, не шифровать proxy placeholders Codex. Repo Secrets исходного collector
+не менять, production и cron не включать. Сначала read-only check, затем ручной
+Check Test Environment, ID 372368844, ref codex/restore-test-bot,
+input collect_test=true. Последний push без флага уже проверен в Actions
+36927628877: check success, collect skipped.
+
+**Что довести по парсерам и доставке:**
+
+- Альфа, Т-Банк, Точка: повторить сбор в Actions, где доступна официальная CA-цепочка; проверить все страницы и полные product-описания, сохранить результат в тестовую БД. Локальный proxy TLS 503 не лечить отключением проверки сертификатов.
+- МТС, VK: проверить текущие фирменные list/detail в Actions; если ошибка повторяется там, исправить endpoint, transport или пагинацию по фактическому контракту. Локальные upstream 503 МТС и CONNECT 403 VK сами по себе не доказывают баг парсера; HH fallback не добавлять.
+- СберЗдоровье: установить Chromium подходящей версии Playwright в новой среде/Actions, проверить buildId до collector. Источник уже повторно успешен: 46 raw / 6 product, описание всех шести сохранено.
+- Купер: отдельно сверить общий фирменный каталог с карьерным сайтом, установить охват API и пагинацию; не считать пустой product-group доказательством полной выдачи. При необходимости исправить фирменный контракт, HH использовать только для сверки.
+- Dodo оставить отключённым только в тестовой БД, отложен пользователем; не включать в ближайший прогон и не исследовать без нового поручения.
+- После исправлений выполнить один защищённый collector: отсутствие ошибок по остальным включённым источникам, данные/полные описания сохранены, нет пропущенных битых вакансий. Проверить активность/paused и фильтры тестового пользователя, нажать «Вакансии» и сверить новые delivered с фактическими карточками. Бот сохраняет отбор product manager: все карточки означают все подходящие вакансии, не весь сырой каталог компаний.
+
 **Текущий запуск: песочница и прежний флоу подтверждены, продолжаем парсеры.**
 2 октября 2026 пользователь сообщил: «Все прекрасно работает» и поручил
 продолжить восстановление парсеров. Проверка новой БД: один пользователь,
@@ -41,8 +92,8 @@ read/write и Actions read/write к `Zadnessa/prodradar` (например, от
 обновить только его test URL/KEY, сверить bot token как @ProdRadar_bot,
 ADMIN_CHAT_ID и HH_ACCESS_TOKEN; repo Secrets исходного collector не менять.
 Текущие runtime SUPABASE_URL/KEY в Codex всё ещё привязаны к исходному проекту:
-для обычных команд переключить их на тестовые URL/service_role и разрешить
-binding SUPABASE_KEY к `jmsdxgylyjxwdwmdrmxw.supabase.co`. Сейчас локальные
+новое поручение сохраняет их и добавляет отдельные TEST_* из таблицы выше.
+Для обычных команд сначала реализовать явный выбор профиля. Сейчас локальные
 операции получают нужный test key через Management API в память.
 
 `collect_test.yml` отсутствует в списке зарегистрированных workflows (GET — 404).

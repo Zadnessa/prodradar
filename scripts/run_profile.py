@@ -12,6 +12,8 @@ from runtime_profiles import select_profile, verify_bot
 
 COMMANDS = {
     "check": "scripts/check_environment.py",
+    "prepare-github": "scripts/prepare_test_github.py",
+    "configure-github": "scripts/configure_test_github.py",
     "audit": "scripts/audit_sources.py",
     "collect": "scripts/collect_test.py",
     "collect-prod": "main.py",
@@ -24,7 +26,7 @@ def main():
     parser.add_argument("command", choices=COMMANDS)
     parser.add_argument("arguments", nargs=argparse.REMAINDER)
     args = parser.parse_args()
-    if (args.command == "collect" and args.profile != "test") or (
+    if (args.command in ("collect", "prepare-github", "configure-github") and args.profile != "test") or (
         args.command == "collect-prod" and args.profile != "prod"
     ):
         parser.error("Команда сбора не соответствует профилю")

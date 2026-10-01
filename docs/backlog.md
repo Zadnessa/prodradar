@@ -232,3 +232,5 @@
 - [x] Завершить песочницу @ProdRadar_bot: настроить пустую БД jmsdxgylyjxwdwmdrmxw и Vercel prodradar-test, перенести только тестовый webhook, проверить прежний флоу; готово когда изоляция и delivery подтверждены, ресурсы и проверки описаны в refresh_plan (scripts/, .github/workflows/collect_test.yml, README.md, docs/refresh_plan.md).
 
 - [x] Добавить явные профили test/prod до импорта config с проверкой project ref, Telegram identity и redirect без fallback на общие реквизиты; test подтверждён реальными API, prod требует отдельные PROD_* (runtime_profiles.py, scripts/run_profile.py, tests/test_profiles.py, .github/workflows/).
+
+- [x] Подготовить автоматическую настройку только GitHub environment prodradar-test через Actions PAT, sealed-box перенос проверенных test-реквизитов и отдельный read-only check; первоначальное добавление bootstrap PAT требует GitHub UI, полный перенос ещё не выполнен (scripts/configure_test_github.py, scripts/setup_test_github.py, scripts/prepare_test_github.py, .github/workflows/check_test_environment.yml, tests/test_github_setup.py).

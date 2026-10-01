@@ -26,6 +26,30 @@ browser runtime
 
 ### Приоритет следующей сессии
 
+**Актуальное ограничение и автоматизация GitHub (2 октября 2026).**
+Пользователь приостановил парсеры/сбор/доставку и попросил сначала разобраться с
+GitHub, автоматизируя всё доступное. Аудиты 36930639922 и 36930607479 отменены.
+Контролируемые запросы /user с явным PAT, без Authorization и с заведомо
+невалидным Authorization все дают HTTP 200 / Zadnessa. Заголовок сохраняется
+локальным requests, но GitHub видит один OAuth client Iv23liVemv8A9if9v0F2.
+У chatgpt-codex-connector есть Actions/Contents write, но нет Environments.
+Настройки PAT пользователя проверены по скриншоту и соответствуют задаче;
+повторно просить расширить их не нужно. Операции environment выполняет
+отдельный Actions job с PAT из environment secret, вне proxy Codex.
+
+Подготовлена `scripts/run_profile.py --profile test configure-github`: Actions
+экспортирует только public key, Codex получает реальные test реквизиты через
+Supabase Management/test Vercel, проверяет identity/ref, шифрует в памяти и
+отправляет ciphertext второму setup job. Job обновляет только SUPABASE_URL,
+ADMIN_CHAT_ID, SUPABASE_KEY и TELEGRAM_BOT_TOKEN в prodradar-test, проверяет
+наличие HH_ACCESS_TOKEN. Затем отдельный read-only check, без collector.
+Единственный начальный ручной шаг — добавить **environment secret**
+PRODRADAR_GITHUB_TOKEN в **prodradar-test** через GitHub UI. Пользователь уже
+имеет соответствующий PAT; интеграция Codex не может создать этот секрет сама.
+Тесты проверяют sealed-box roundtrip и отказ до записи при чужом environment,
+исходной БД, смене key_id, лишних/незашифрованных секретах. Результат полного
+переноса ещё не подтверждён: не объявлять environment настроенным до check.
+
 **Продолжение 2 октября 2026, текущая сессия.** TEST_* проходят реальные
 read-only проверки: test ref, @ProdRadar_bot, webhook pending=0, admin chat,
 135 вакансий / 135 описаний и HH HTTP 200. Реализованы явные профили в

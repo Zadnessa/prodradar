@@ -311,3 +311,43 @@ Vercel webhook сохраняет установленную конфигура�
 отправляет сообщения. Полные публичные product-вакансии и raw IDs выгружаются
 в artifact для проверки описаний. Обычный collector по-прежнему требует
 обновлённый environment, успешный check и отдельный `collect_test=true`.
+
+
+### Автоматическая настройка GitHub environment
+
+В облачной среде Codex запросы api.github.com автоматически авторизуются
+GitHub-приложением Codex; эта авторизация подменяет явный PAT, а приложение не
+имеет Environments permission. Настройка выполняется отдельным Actions job,
+в котором используется настоящий PAT из environment secret.
+
+Единственный ручной шаг: GitHub → Settings → Environments → `prodradar-test` →
+Environment secrets → Add environment secret:
+`PRODRADAR_GITHUB_TOKEN` = существующий fine-grained PAT для Zadnessa/prodradar
+с Environments read/write и Actions read/write. Добавление секрета выполняется
+через GitHub UI: текущая интеграция Codex не имеет права создать его сама.
+
+Дальше всё выполняет одна команда в Codex с выбранным test-профилем:
+
+```bash
+python -m pip install PyNaCl
+python scripts/run_profile.py --profile test configure-github
+```
+
+Команда автоматически:
+1. Запускает `Check Test Environment` с `setup_github=export-key` и получает
+   публичный ключ тестового environment через artifact.
+2. Берёт реальный test service_role из Supabase Management API и test bot token
+   из существующего Vercel `prodradar-test`, проверяет доступ к тестовой БД и
+   identity `@ProdRadar_bot`, шифрует значения в памяти sealed box GitHub.
+3. Запускает `setup_github=apply`: обновляет environment secrets `SUPABASE_KEY`,
+   `TELEGRAM_BOT_TOKEN` и variables `SUPABASE_URL`, `ADMIN_CHAT_ID`. Значения
+   секретов в inputs/logs не передаются: только ciphertext. Публичный ключ,
+   repo/environment, test URL и набор имён проверяются до первой записи.
+4. Запускает отдельный read-only check реальных API с `collect_test=false`.
+   Существующий environment `HH_ACCESS_TOKEN` сохраняется и проверяется.
+
+Повторный запуск безопасен при частичной настройке; смена публичного ключа
+останавливает запись старого пакета. Скрипты не обращаются к repo Secrets,
+production environment или исходному Telegram token. Сбор и доставка этой
+командой не запускаются. `prepare-github` и `setup_test_github.py` позволяют
+выполнить отдельные этапы; основной путь — `configure-github`.

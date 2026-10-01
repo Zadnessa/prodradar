@@ -1,4 +1,5 @@
 name: Check Test Environment
+run-name: ${{ inputs.setup_github != 'none' && inputs.setup_github != '' && format('Setup prodradar-test {0} {1}', inputs.setup_github, inputs.setup_request) || 'Check Test Environment' }}
 
 on:
   push:
@@ -9,6 +10,19 @@ on:
       - 'scripts/check_environment.py'
   workflow_dispatch:
     inputs:
+      setup_github:
+        description: 'Настройка только prodradar-test через отдельный PAT'
+        type: choice
+        options: [none, export-key, apply]
+        default: none
+      setup_request:
+        description: 'Несекретный ID автоматической настройки'
+        type: string
+        required: false
+      encrypted_settings:
+        description: 'Пакет настроек с зашифрованными секретами; без plaintext'
+        type: string
+        required: false
       audit_sources:
         description: 'Read-only аудит фирменных API без доступа к БД и Telegram'
         type: boolean
@@ -29,7 +43,7 @@ permissions:
 
 jobs:
   check:
-    if: github.event_name != 'workflow_dispatch' || inputs.audit_sources != true
+    if: github.event_name != 'workflow_dispatch' || (inputs.audit_sources != true && (inputs.setup_github == 'none' || inputs.setup_github == ''))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment: prodradar-test
@@ -60,7 +74,7 @@ jobs:
           retention-days: 7
 
   collect:
-    if: github.event_name == 'workflow_dispatch' && inputs.collect_test == true && inputs.audit_sources != true
+    if: github.event_name == 'workflow_dispatch' && inputs.collect_test == true && inputs.audit_sources != true && (inputs.setup_github == 'none' || inputs.setup_github == '')
     needs: check
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -88,7 +102,7 @@ jobs:
         run: python scripts/run_profile.py --profile test collect --project-ref jmsdxgylyjxwdwmdrmxw
 
   diagnose:
-    if: github.event_name == 'workflow_dispatch' && inputs.audit_sources == true && inputs.collect_test != true
+    if: github.event_name == 'workflow_dispatch' && inputs.audit_sources == true && inputs.collect_test != true && (inputs.setup_github == 'none' || inputs.setup_github == '')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -116,4 +130,35 @@ jobs:
           path: |
             remote-sources-check.json
             remote-vacancies.json
+          retention-days: 7
+
+  setup_github:
+    if: github.event_name == 'workflow_dispatch' && (inputs.setup_github == 'export-key' || inputs.setup_github == 'apply') && inputs.collect_test != true && inputs.audit_sources != true
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: prodradar-test
+    concurrency:
+      group: prodradar-test-github-setup
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ secrets.PRODRADAR_GITHUB_TOKEN }}
+      ENCRYPTED_SETTINGS: ${{ inputs.encrypted_settings }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - name: Export only the public environment key
+        if: inputs.setup_github == 'export-key'
+        run: python scripts/setup_test_github.py --export-key github-environment-key.json
+      - name: Apply only encrypted test credentials and test variables
+        if: inputs.setup_github == 'apply'
+        run: python scripts/setup_test_github.py --settings-env ENCRYPTED_SETTINGS
+      - name: Save public key
+        if: inputs.setup_github == 'export-key' && success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-environment-public-key
+          path: github-environment-key.json
           retention-days: 7

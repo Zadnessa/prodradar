@@ -2,8 +2,16 @@
 Явные профили реализованы в runtime_profiles.py и scripts/run_profile.py:
 выбор TEST_* / PROD_* до config, проверка ref и Telegram identity, отдельный
 redirect, без fallback на общие реквизиты. Исходный TELEGRAM_BOT_TOKEN не
-используется при test. GitHub environment API в текущем экземпляре всё ещё
-возвращает 403 для PRODRADAR_GITHUB_TOKEN; read-only диагностика фирменных API
+используется при test. GitHub environment API в текущем экземпляре возвращает 403: контролируемый
+запрос с невалидным Authorization и запрос без него оба получают 200 / Zadnessa
+и OAuth client Iv23liVemv8A9if9v0F2. Сетевой маршрут подменяет PAT авторизацией
+chatgpt-codex-connector без Environments permission. Настройка автоматизирована
+через отдельный Actions setup job, которому нужен одноимённый environment
+secret PRODRADAR_GITHUB_TOKEN, добавляемый один раз через GitHub UI;
+configure-github получает публичный ключ, передаёт sealed-box test реквизиты,
+обновляет только prodradar-test и запускает read-only check. Полнота исполнения
+будет подтверждена после добавления bootstrap secret. Все прочие работы
+приостановлены пользователем. До этого read-only диагностика фирменных API
 в Actions может получать только справочники тестовой БД через input без секретов.
 
 # Контекст проекта ProductRadar

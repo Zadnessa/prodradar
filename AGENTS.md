@@ -99,3 +99,5 @@
 - Браузерный runtime служит только получению доступа через антибот/cookies/токены; вакансии собираются HTTP-запросами к API. HTML-описания обычным HTTP допустимы, если API не отдаёт полный текст; браузер не выгружает вакансии.
 
 - Команды восстановления запускать через `scripts/run_profile.py --profile test`; явные TEST_* отображаются в стандартные имена только до импорта config, без fallback. Для будущего prod требуются отдельные PROD_* и проверка identity. Исходный token не использовать в test. Read-only аудит с --catalog-env не получает реквизиты БД/Telegram и использует справочники, прочитанные из тестовой БД.
+
+- Настройка GitHub prodradar-test автоматизирована командой `scripts/run_profile.py --profile test configure-github`; bootstrap PAT читается только из GitHub environment secret отдельного setup job. Пакет содержит только test URL, ADMIN_CHAT_ID и sealed-box SUPABASE_KEY/TELEGRAM_BOT_TOKEN; реальные значения получать через Supabase Management и test Vercel, а не шифровать proxy placeholders. Repo Secrets и production не изменять. Настройка завершается read-only check, без collector.

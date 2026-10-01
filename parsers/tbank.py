@@ -3,6 +3,8 @@
 import asyncio
 import json
 import logging
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 from parsers.base import BaseParser
@@ -20,6 +22,36 @@ class TBankParser(BaseParser):
         "Гибрид": "Гибрид",
         "Офис": "Офис",
     }
+
+    async def _request(self, session, method, url, *, as_json=False, **kwargs):
+        for attempt in range(3):
+            async with getattr(session, method)(url, headers=config.REQUEST_HEADERS,
+                                                ssl=source_ssl_context(url), **kwargs) as response:
+                if response.status == 429 and attempt < 2:
+                    retry_after = (getattr(response, 'headers', {}) or {}).get('Retry-After')
+                    delay = 30 * (attempt + 1)
+                    if retry_after:
+                        try:
+                            minimum_delay = float(retry_after)
+                        except ValueError:
+                            try:
+                                minimum_delay = (parsedate_to_datetime(retry_after) -
+                                                 datetime.now(timezone.utc)).total_seconds()
+                            except (ValueError, TypeError):
+                                minimum_delay = 0
+                        delay = max(delay, minimum_delay)
+                    # Длинный Retry-After не сокращаем: возвращаем ошибку для
+                    # следующего сбора вместо преждевременного нового запроса.
+                    if delay > 60:
+                        response.raise_for_status()
+                    await response.text()
+                    await asyncio.sleep(delay)
+                    continue
+                response.raise_for_status()
+                value = await response.json() if as_json else await response.text(encoding='utf-8')
+                if attempt:
+                    self._recovered_rate_limits = getattr(self, '_recovered_rate_limits', 0) + 1
+                return value
 
     @staticmethod
     def _build_grade(tags):
@@ -103,11 +135,9 @@ class TBankParser(BaseParser):
 
     async def parse(self, session, existing_ids, city_mappings):
         del existing_ids
+        self._recovered_rate_limits = 0
         page_url = 'https://www.tbank.ru/career/it/'
-        async with session.get(page_url, headers=config.REQUEST_HEADERS,
-                               ssl=source_ssl_context(page_url)) as response:
-            response.raise_for_status()
-            soup = BeautifulSoup(await response.text(), 'html.parser')
+        soup = BeautifulSoup(await self._request(session, 'get', page_url), 'html.parser')
         state_tag = soup.find('script', id='__TRAMVAI_STATE__')
         if not state_tag:
             raise ValueError('T-Bank: публичное состояние каталога не найдено')
@@ -138,10 +168,7 @@ class TBankParser(BaseParser):
                 "pagination": pagination,
             }
 
-            async with session.post(url, headers=config.REQUEST_HEADERS, json=payload,
-                                    ssl=source_ssl_context(url)) as response:
-                response.raise_for_status()
-                result = await response.json()
+            result = await self._request(session, 'post', url, as_json=True, json=payload)
 
             body = result.get("payload")
             if result.get("resultCode") != "OK" or not isinstance(body, dict):
@@ -214,10 +241,7 @@ class TBankParser(BaseParser):
 
     async def enrich(self, session, vacancy):
         try:
-            async with session.get(vacancy["url"], headers=config.REQUEST_HEADERS,
-                                   ssl=source_ssl_context(vacancy["url"])) as response:
-                response.raise_for_status()
-                html = await response.text(encoding="utf-8")
+            html = await self._request(session, 'get', vacancy['url'])
         except Exception as exc:
             logger.warning("T-Bank enrich: не удалось загрузить HTML для %s: %s", vacancy.get("url"), exc)
             return vacancy

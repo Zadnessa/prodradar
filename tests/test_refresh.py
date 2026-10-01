@@ -53,7 +53,7 @@ class Response:
     async def json(self, **kwargs):
         return self.data
 
-    async def text(self):
+    async def text(self, **kwargs):
         return self.body
 
     def raise_for_status(self):
@@ -74,6 +74,35 @@ class Session:
 
 
 class ParserTests(unittest.IsolatedAsyncioTestCase):
+    async def test_tbank_rate_limit_retries_same_page_and_keeps_complete_result(self):
+        state = '<script id="__TRAMVAI_STATE__">' + json.dumps({'stores': {'environment': {
+            'VACANCIES_PUBLIC_API': 'https://www.tbank.ru/pfpjobs/papi/'}}}) + '</script>'
+        limited = Response(status=429)
+        limited.headers = {'Retry-After': '40'}
+        session = Session(Response(text=state), limited, Response({'resultCode': 'OK', 'payload': {
+            'vacancies': [{'title': 'Product Manager', 'urlSlug': '1'}],
+            'nextPagination': {'offset': 1, 'isFinished': True, 'totalCount': 1}}}))
+        parser = TBankParser()
+        with patch('parsers.tbank.asyncio.sleep', return_value=None) as sleep:
+            result = await parser.parse(session, set(), {})
+        self.assertEqual(len(result), 1)
+        self.assertEqual(session.calls[1][1]['json'], session.calls[2][1]['json'])
+        sleep.assert_awaited_once_with(40.0)
+        self.assertEqual(parser._recovered_rate_limits, 1)
+
+    async def test_tbank_full_description_includes_offer_and_preserves_fields(self):
+        session = Session(Response(text='<h2>Описание</h2><p>Продукт</p>'
+                                  '<h2>Обязанности</h2><p>Развивать</p>'
+                                  '<h2>Требования</h2><p>Опыт</p>'
+                                  '<h2>Мы предлагаем</h2><p>Условия работы</p>'))
+        vacancy = {'url': 'https://www.tbank.ru/career/it/1/', 'description': 'Preview',
+                   'city': 'Москва', 'grade': 'Senior'}
+        with patch('parsers.tbank.asyncio.sleep', return_value=None):
+            await TBankParser().enrich(session, vacancy)
+        self.assertIn('Условия работы', vacancy['description'])
+        self.assertEqual(vacancy['city'], 'Москва')
+        self.assertEqual(vacancy['grade'], 'Senior')
+
     async def test_tbank_flat_pagination_reads_every_page_before_city_deduplication(self):
         def page(raw_id, offset, finished):
             return {'resultCode': 'OK', 'payload': {'vacancies': [

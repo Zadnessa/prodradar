@@ -111,7 +111,9 @@ async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_
                     result.update({"status": "contract_failed" if issues else "ready" if vacancies else "empty",
                                    "raw_count": len(vacancies), "product_count": len(product_vacancies),
                                    "issues": sorted(issues), "samples": samples})
-                    if getattr(parser, "captcha_hit", False) or any(int(code) >= 400 for code in statuses):
+                    recovered_429 = name == 'tbank' and getattr(parser, '_recovered_rate_limits', 0)
+                    if getattr(parser, "captcha_hit", False) or any(int(code) >= 400 and
+                            not (code == '429' and recovered_429) for code in statuses):
                         result["status"] = "failed"
                     if name == "sberhealth" and not browser_secrets.get("sberhealth_build_id"):
                         result["status"] = "failed"
@@ -123,6 +125,7 @@ async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_
             if name == 'tbank':
                 result['api_total_count'] = getattr(parser, '_api_total_count', None)
                 result['api_collected_count'] = getattr(parser, '_api_collected_count', 0)
+                result['recovered_rate_limits'] = getattr(parser, '_recovered_rate_limits', 0)
             result["duration_seconds"] = round(time.monotonic() - started, 1)
             report["sources"][name] = result
             print(json.dumps({"source": name, **{key: value for key, value in result.items() if key != "samples"}},

@@ -139,7 +139,12 @@ DevTools-отчёт: пути, имена query/header/cookies, статусы, 
 Dodo backend — 503, Купер — empty при 403 страницы. МТС/VK/СберЗдоровье ready.
 Проверяется официальная российская CA-цепочка для трёх банков через
 `parsers/tls.py` и отдельный Actions TLS report; hostname/CERT_REQUIRED сохранены.
-Этот новый этап пока не считать успешным до live Actions.
+Actions [36911140341](https://github.com/Zadnessa/prodradar/actions/runs/36911140341)
+подтвердил TLS-гипотезу для всех трёх банков: system verify failed, официальный
+source_chain verified с hostname. Альфа 30/23 ready, Точка 1/1 ready; Т-Банк
+получает API 200, но старый фильтр даёт empty. Проверяются актуальный контракт
+Т-Банка и Chromium с временным NSS root только в одноразовом Actions runner.
+Общий audit: 21 ready, 1 failed (Dodo), 2 empty (Т-Банк/Купер); 19 тестов успешны.
 
 Локальный полный audit до установки Chromium не подтверждал МТС/VK/СберЗдоровье
 (503, proxy 403, отсутствующий браузер); не отменять прежний успешный Actions

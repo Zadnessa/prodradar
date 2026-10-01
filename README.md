@@ -209,6 +209,10 @@ HTTP-проверка и тест пользовательского флоу в
   сравнивает TLS банков с системными и официальными дополнительными CA.
   Происхождение цепочки и границы доверия: `parsers/certificates/README.md`.
   В облачном runtime с обязательным proxy этот прямой TLS-пробник не запускать.
+- `python scripts/inspect_bank_api.py --output reports/banks.json` сравнивает
+  структуру публичного API Т-Банка с прежним фильтром и без фильтра, без секретов.
+  В Actions Chromium получает временный пользовательский root CA через
+  `inspect_source_browser.py --source-ca`; после диагностики сертификат удаляется.
 - `python scripts/backup_schema.py /path/sql --project-ref PROJECT_REF` сохраняет
   прикладную SQL-схему public, RLS, индексы, sequences и ACL через Management API
   (`SUPABASE_ACCESS_TOKEN`). Внутренние схемы платформы не входят в копию.

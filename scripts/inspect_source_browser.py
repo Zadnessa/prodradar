@@ -9,6 +9,8 @@ import asyncio
 import json
 import os
 import re
+import subprocess
+import tempfile
 from pathlib import Path
 import sys
 from urllib.parse import parse_qs, urljoin, urlsplit
@@ -18,6 +20,29 @@ from playwright.async_api import async_playwright
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
+from parsers.tls import CA_BUNDLE
+
+
+def add_actions_browser_ca():
+    """Временный пользовательский NSS trust только в одноразовом Actions runner."""
+    if os.getenv('GITHUB_ACTIONS') != 'true':
+        raise RuntimeError('--source-ca допустим только в одноразовом GitHub Actions runner')
+    database = Path.home() / '.pki' / 'nssdb'
+    database.mkdir(parents=True, exist_ok=True)
+    location = 'sql:' + str(database)
+    nickname = 'ProductRadar official Russian root diagnostic'
+    if not (database / 'cert9.db').exists():
+        subprocess.run(['certutil', '-N', '--empty-password', '-d', location], check=True)
+    if subprocess.run(['certutil', '-L', '-d', location, '-n', nickname],
+                      capture_output=True).returncode == 0:
+        raise RuntimeError('Диагностический сертификат уже существует; не перезаписываем')
+    root = CA_BUNDLE.read_text().split('-----END CERTIFICATE-----', 1)[0] + '-----END CERTIFICATE-----\n'
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.pem') as certificate:
+        certificate.write(root)
+        certificate.flush()
+        subprocess.run(['certutil', '-A', '-d', location, '-n', nickname,
+                        '-t', 'C,,', '-i', certificate.name], check=True)
+    return location, nickname
 
 
 TARGETS = {
@@ -131,8 +156,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--sources', nargs='+', choices=TARGETS, default=list(TARGETS))
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--source-ca', action='store_true',
+                        help='Временный официальный root CA для Chromium в Actions; TLS проверки сохранены')
     args = parser.parse_args()
-    report = asyncio.run(inspect_sources(args.sources))
+    certificate = add_actions_browser_ca() if args.source_ca else None
+    try:
+        report = asyncio.run(inspect_sources(args.sources))
+    finally:
+        if certificate:
+            location, nickname = certificate
+            subprocess.run(['certutil', '-D', '-d', location, '-n', nickname], check=True)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
     return 0

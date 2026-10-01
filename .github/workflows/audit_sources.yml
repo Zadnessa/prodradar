@@ -7,6 +7,8 @@ on:
       - '.github/workflows/audit_sources.yml'
       - 'scripts/audit_sources.py'
       - 'scripts/inspect_source_browser.py'
+      - 'scripts/inspect_bank_api.py'
+      - 'scripts/check_source_tls.py'
       - 'parsers/**'
   workflow_dispatch:
 
@@ -51,12 +53,20 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements.txt
       - run: playwright install chromium --with-deps
+      - run: sudo apt-get install -y libnss3-tools
       - name: Check parser regression tests
         run: python -m unittest discover -s tests -v
       - name: Check official TLS certificate chains
         run: python scripts/check_source_tls.py --output source-tls-check.json
       - name: Inspect official vacancy pages and browser network requests
-        run: python scripts/inspect_source_browser.py --output browser-sources-check.json
+        run: python scripts/inspect_source_browser.py --source-ca --output browser-sources-check.json
+      - name: Inspect bank API contracts and filters without writes
+        run: python scripts/inspect_bank_api.py --output bank-api-check.json
+      - name: Check all bank product descriptions without writes
+        run: python scripts/audit_sources.py --sources alfa tochka --enrich-limit 999 --no-browser --output bank-descriptions-check.json
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       - name: Audit enabled parsers and descriptions without writes
         run: python scripts/audit_sources.py --enrich-limit 3 --output sources-check.json
         env:
@@ -72,4 +82,6 @@ jobs:
             sources-check.json
             browser-sources-check.json
             source-tls-check.json
+            bank-api-check.json
+            bank-descriptions-check.json
           retention-days: 14

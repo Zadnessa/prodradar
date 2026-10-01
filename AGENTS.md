@@ -81,6 +81,7 @@
 
 - Ручной сбор для @ProdRadar_bot запускается через scripts/collect_test.py: до pipeline проверяются отдельный Supabase URL, identity бота и отсутствие чужих пользователей. Исходная БД запрещена; тестовый workflow не имеет cron.
 - Read-only DevTools-диагностика scripts/inspect_source_browser.py сохраняет только метаданные запросов и имена cookies/headers, без значений секретов; runtime browser stage остаётся общим в parsers/browser.py.
+- Дополнительная официальная CA-цепочка применяется через parsers/tls.py только к проверенным source hosts; hostname/CERT_REQUIRED не отключаются. Временный NSS root для диагностического Chromium допустим только в одноразовом Actions runner и удаляется после запуска.
 
 ## Антипаттерны
 

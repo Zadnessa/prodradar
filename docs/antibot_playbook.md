@@ -2,6 +2,18 @@
 
 ## 1. Классификация блокировок
 
+### Недостающая цепочка CA
+`CERTIFICATE_VERIFY_FAILED` / `ERR_CERT_AUTHORITY_INVALID` возникают до HTTP
+и JavaScript; это не TLS fingerprint. Проверить issuer и подпись сертификата.
+Для трёх банков официальная российская цепочка в `parsers/certificates` добавляется
+к системным CA через `parsers/tls.py` только в запросах этих источников.
+Hostname и CERT_REQUIRED обязательны; `ssl=False` / `ignore_https_errors` запрещены.
+
+### Блокировка сети или региона
+Страница может запрещать адреса облачных/VPN сетей ещё до приложения.
+Chromium с того же IP получает такую же блокировку; cookie/token сам по себе
+не решает её. Сравнить ответы разных разрешённых сред и явно записать ограничение.
+
 ### Cookie-based
 Сервер проверяет наличие определённых cookies (обычно ставятся JS-скриптами аналитики).
 
@@ -49,12 +61,16 @@ WAF определяет HTTP-клиент по параметрам TLS handsha
 | ДомКлик | header validation / QRator на HTML | aiohttp с Referer и Sec-Fetch | Текущий career.domclick.ru API проходит без cookies в проверенном runtime; HTML открывается Chromium и получает qrator_ssid2 |
 | МТС Линк | публичный API | aiohttp | Huntflow list/detail сайта доступны без Bearer; старый categoryId исключён |
 | Dodo | новый backend, текущий 503 | aiohttp | apiURL из публичного Nuxt config; transport/browser tokens ещё проверяются в Actions |
+| Альфа-Банк, Т-Банк, Точка | недостающий официальный CA | aiohttp + scoped SSLContext | Actions подтвердил Russian Trusted Sub CA; проверка hostname сохранена, исходные API дают HTTP 200 |
+| Купер | блокировка облачной/VPN сети | firm API пока требует сверки | team.kuper.ru отвечает 403 с просьбой отключить VPN и в Chromium; старый API содержит лишь одну вакансию контактного центра |
 
 ## 4. Инструменты
 
 - `requests`: стандартный HTTP-клиент. TLS fingerprint OpenSSL, легко определяется WAF.
 - `curl_cffi`: обёртка над `curl-impersonate`. Имитирует TLS fingerprint Chrome. Установка: `pip install curl_cffi` (~15 MB). Ключевой параметр: `impersonate="chrome131"`.
-- Playwright: headless-браузер. Проходит любую защиту, но тяжёлый. Использовать только для генерации сессии (cookies, tokens), не для массовых запросов.
+- Playwright: headless-браузер для JavaScript, cookies и tokens; сам по себе
+  не исправляет недоверенный CA или блокировку IP/региона. Runtime использует
+  общий browser stage; отдельная read-only DevTools-диагностика исследует API.
 
 ## 5. Типичные ошибки диагностики
 

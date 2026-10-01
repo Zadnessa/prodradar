@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import os
 from pathlib import Path
 import re
 import ssl
@@ -18,6 +19,10 @@ def main():
     args = parser.parse_args()
     # В Actions соединения идут напрямую. В облачной среде требуется proxy;
     # этот диагностический TLS-инструмент там не используется.
+    if any(os.getenv(key) for key in ('HTTPS_PROXY', 'HTTP_PROXY', 'ALL_PROXY',
+                                     'https_proxy', 'http_proxy', 'all_proxy')):
+        raise RuntimeError('Прямой TLS-пробник не запускается при обязательном HTTP proxy')
+    args.output.parent.mkdir(parents=True, exist_ok=True)
     combined = args.output.with_suffix('.ca.pem')
     combined.write_bytes(Path(ssl.get_default_verify_paths().cafile).read_bytes() + CA_BUNDLE.read_bytes())
     results = {}

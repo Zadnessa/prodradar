@@ -197,6 +197,8 @@ HTTP-проверка и тест пользовательского флоу в
   чтобы установка Chromium не блокировала проверку их публичных API.
   Для Т-Банка отчёт содержит `api_collected_count` и `api_total_count` до
   объединения по городам; фирменный query выбирает IT/back-office.
+  API отдаёт по 10 строк, поэтому bounded parse timeout Т-Банка в audit —
+  360 секунд при паузах между страницами; остальные источники — 180 секунд.
 - `python scripts/backup_database.py /path/outside/repository/snapshot` выгружает
   шесть таблиц в NDJSON, OpenAPI и manifest с количеством строк и SHA-256.
   Используйте ключ, видящий пользовательские таблицы. Выгрузка ограничивает

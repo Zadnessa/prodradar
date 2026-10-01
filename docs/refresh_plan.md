@@ -153,6 +153,11 @@ Native job этого запуска подтвердил 23 HTTP 200 стран
 В query выбраны IT/back-office; audit теперь показывает api_collected_count и
 api_total_count даже при ошибке. Native работает без browser tokens; полноту
 суженного каталога и все product-описания ещё нужно подтвердить новым запуском.
+Native job 36916844675 получил 300 уникальных строк из API totalCount=385,
+31 HTTP 200, затем закончился audit timeout 180 секунд. Это искусственный
+лимит диагностики: runtime parse не ограничен им. Сервер отдаёт по 10 даже при
+limit=100, с подтверждёнными паузами полный список требует около четырёх минут.
+Audit timeout только этого источника увеличен до 360 секунд, остальным оставлен 180.
 
 Прямой gh download ZIP даёт 403, но GitHub connector
 `github_download_workflow_artifact` + `download_file` успешно получает отчёты.

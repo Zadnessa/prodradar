@@ -68,8 +68,11 @@ async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_
                 parser = PARSER_REGISTRY[name]()
                 async with aiohttp.ClientSession(trust_env=True, timeout=aiohttp.ClientTimeout(total=30),
                                                  trace_configs=[trace]) as session:
+                    # Т-Банк отдаёт страницы по 10; 385 строк с безопасными паузами
+                    # требуют более трёх минут, что подтверждено live audit.
+                    source_timeout = max(parser_timeout, 360) if name == 'tbank' else parser_timeout
                     vacancies = await asyncio.wait_for(parser.parse(session, set(), city_mappings,
-                                                       browser_secrets=browser_secrets), timeout=parser_timeout)
+                                                       browser_secrets=browser_secrets), timeout=source_timeout)
                     issues = set()
                     for vacancy in vacancies:
                         if not vacancy.get("id") or not vacancy.get("title") or not vacancy.get("url"):

@@ -13,7 +13,9 @@ from parsers.base import BaseParser
 class AviasalesParser(BaseParser):
     """Парсер вакансий Aviasales."""
 
-    LIST_URL = "https://vacancies-app.aviasales.ru/api/vacancies?specializations=Product+managment&language=ru"
+    # Фильтр specializations больше не соответствует контракту API: возвращает
+    # [] при наличии Product Manager в общем списке. Отбор ролей делает pipeline.
+    LIST_URL = "https://vacancies-app.aviasales.ru/api/vacancies?language=ru"
     DETAIL_URL_TEMPLATE = "https://aviasales.ru/about/vacancies/{raw_id}"
     KNOWN_KEYS = {"id", "position", "tags", "team", "workPlace"}
     ROUTER_DATA_RE = re.compile(r"window\._ROUTER_DATA\s*=\s*(\{.*?\})\s*(?:</script>|;)", re.DOTALL)

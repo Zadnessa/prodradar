@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -13,7 +14,13 @@ from parsers.twogis import TwoGisParser
 from parsers.lamoda import LamodaParser
 from parsers.kontur import KonturParser
 from parsers.hh import HHParser
+from parsers.mtslink import MtsLinkParser
+from parsers.aviasales import AviasalesParser
+from parsers.dodo import DodoParser
+from parsers.domclick import DomClickParser
 from scripts.backup_database import backup_database
+from scripts.backup_schema import render_schema
+from scripts.collect_test import check_target
 
 
 class Response:
@@ -49,6 +56,72 @@ class Session:
 
 
 class ParserTests(unittest.IsolatedAsyncioTestCase):
+    async def test_domclick_current_api_paginates_and_reads_full_detail_by_slug(self):
+        def item(raw_id):
+            return {'id': raw_id, 'slug': f'product-{raw_id}', 'title': ' Product Owner ',
+                    'vacancycontent': {'work_format': ['REMOTE', 'HYBRID']},
+                    'area': {'name': 'Москва'}}
+        session = Session(Response({'success': True, 'result': [item(1)],
+                                    'pagination': {'limit': 1, 'offset': 0, 'total': 2}}),
+                          Response({'success': True, 'result': [item(2)],
+                                    'pagination': {'limit': 1, 'offset': 1, 'total': 2}}),
+                          Response({'success': True, 'result': {'vacancycontent': {
+                                    'description': '<p>' + 'Полный текст ' * 600 + '</p>'}}}))
+        parser = DomClickParser()
+        result = await parser.parse(session, set(), {})
+        self.assertEqual(len(result), 2)
+        self.assertEqual(session.calls[1][1]['params']['offset'], 1)
+        self.assertEqual(result[0]['title'], 'Product Owner')
+        self.assertEqual(result[0]['work_format'], 'Удалёнка, Гибрид')
+        await parser.enrich(session, result[0])
+        self.assertIn('/api/v1/vacancy/detail/product-1/', session.calls[-1][0])
+        self.assertGreater(len(result[0]['description']), 7000)
+        self.assertEqual(result[0]['city'], 'Москва')
+
+    async def test_domclick_incomplete_pagination_is_rejected(self):
+        session = Session(Response({'success': True, 'result': [], 'pagination': {'total': 10}}))
+        with self.assertRaises(ValueError):
+            await DomClickParser().parse(session, set(), {})
+
+    async def test_dodo_discovers_current_backend_and_keeps_it_for_detail(self):
+        session = Session(Response(text='<script>window.__NUXT__={config:{public:{apiURL:"https://new-api.example"}}}</script>'),
+                          Response({'data': [{'items': [{'id': 12, 'subspeciality': 'product',
+                                                         'position': 'Product Manager'}]}]}),
+                          Response({'data': {'page': {'content': [{'type': 'vacancy_text',
+                                                                  'data': {'text': '<p>Полный текст</p>'}}]}}}))
+        parser = DodoParser()
+        vacancy = (await parser.parse(session, set(), {}))[0]
+        with patch('parsers.dodo.asyncio.sleep', return_value=None):
+            await parser.enrich(session, vacancy)
+        self.assertEqual(session.calls[1][0], 'https://new-api.example/api/v1/vacancies')
+        self.assertEqual(session.calls[2][0], 'https://new-api.example/api/v1/pages/vacancy/12')
+        self.assertEqual(vacancy['url'], 'https://dodoteam.ru/vacancy?vacancyId=12')
+        self.assertEqual(vacancy['description'], 'Полный текст')
+
+    async def test_aviasales_does_not_use_the_obsolete_specialization_filter(self):
+        session = Session(Response([{'id': 10, 'position': 'Product Manager', 'workPlace': None}]))
+        result = await AviasalesParser().parse(session, set(), {})
+        self.assertEqual(len(result), 1)
+        self.assertNotIn('specializations', session.calls[0][0])
+
+    async def test_mtslink_public_list_and_detail_need_no_bearer_or_stale_category(self):
+        session = Session(Response([{'id': 12, 'position': 'Product Manager', 'hidden': False,
+                                     'created': {'date': '2026-09-30 10:22:44.000000', 'timezone': '+03:00'}}]),
+                          Response({'body': '<p>Полный текст</p>', 'requirements': '<p>Требования</p>'}))
+        parser = MtsLinkParser()
+        vacancy = (await parser.parse(session, set(), {}))[0]
+        await parser.enrich(session, vacancy)
+        self.assertEqual(vacancy['published_at'], '2026-09-30T10:22:44+03:00')
+        self.assertIn('Требования', vacancy['description'])
+        for _, options in session.calls:
+            self.assertNotIn('Authorization', options['headers'])
+            self.assertNotIn('params', options)
+
+    async def test_hh_successful_but_incomplete_list_is_not_accepted(self):
+        session = Session(Response({'items': [{'id': '1', 'name': 'Product Manager'}], 'pages': 1, 'found': 2}))
+        with self.assertRaises(ValueError):
+            await HHParser().parse(session, set(), {})
+
     async def test_twogis_reads_every_page_and_uses_api_fields(self):
         def item(raw_id):
             return {'id': raw_id, 'title': ' Менеджер продукта ', 'isRemote': True,
@@ -114,6 +187,46 @@ class ParserTests(unittest.IsolatedAsyncioTestCase):
 
 
 class BackupTests(unittest.TestCase):
+    def test_test_collector_rejects_original_database_before_api_calls(self):
+        with patch('scripts.collect_test._post') as telegram, \
+                patch('scripts.collect_test.SupabaseService') as database:
+            with self.assertRaises(ValueError):
+                check_target('ykbtejjedefibdgyfgov')
+            telegram.assert_not_called()
+            database.assert_not_called()
+
+    def test_test_collector_rejects_original_bot_before_database_access(self):
+        with patch.dict(os.environ, {'SUPABASE_URL': 'https://isolated.supabase.co'}), \
+                patch('scripts.collect_test._post', return_value={'username': 'findproductjob_bot'}), \
+                patch('scripts.collect_test.SupabaseService') as database:
+            with self.assertRaises(ValueError):
+                check_target('isolated')
+            database.assert_not_called()
+
+    def test_schema_export_keeps_bigint_identity_limits_and_private_rls(self):
+        catalog = {name: [] for name in ('tables', 'columns', 'sequences', 'constraints', 'functions',
+                                        'indexes', 'triggers', 'policies', 'grants', 'schema_grants',
+                                        'default_grants', 'unsupported_types')}
+        catalog['tables'] = [{'name': 'users', 'relkind': 'r', 'rls': True, 'force_rls': False}]
+        catalog['columns'] = [{'table_name': 'users', 'name': 'id', 'type': 'bigint', 'not_null': True,
+                               'default_expr': None, 'identity': 'a', 'generated': '',
+                               'identity_sequence': 'public.users_id_seq'}]
+        catalog['sequences'] = [{'sequencename': 'users_id_seq', 'deptype': 'i', 'owned_table': 'users',
+                                 'owned_column': 'id', 'start_value': '1', 'increment_by': '1',
+                                 'min_value': '1', 'max_value': '9223372036854775807', 'cache_size': '1',
+                                 'cycle': False}]
+        catalog['policies'] = [{'policyname': 'Service role only', 'tablename': 'users',
+                                'permissive': 'PERMISSIVE', 'cmd': 'ALL', 'roles': '{service_role}',
+                                'qual': 'true', 'with_check': 'true'}]
+        sql = render_schema(catalog)
+        self.assertIn('MAXVALUE 9223372036854775807', sql)
+        self.assertIn('ENABLE ROW LEVEL SECURITY', sql)
+        self.assertIn('TO "service_role" USING (true) WITH CHECK (true)', sql)
+        self.assertNotIn('CREATE SEQUENCE', sql)
+        catalog['tables'][0]['relkind'] = 'v'
+        with self.assertRaises(ValueError):
+            render_schema(catalog)
+
     def test_export_bounds_new_events_and_verifies_every_page(self):
         class RestResponse:
             def __init__(self, body, headers=None):

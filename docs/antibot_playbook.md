@@ -46,6 +46,9 @@ WAF определяет HTTP-клиент по параметрам TLS handsha
 | Циан (API) | cookies + headers | aiohttp + browser_secrets cookies | `_yasc` обязательна, sec-заголовки обязательны; API не требует TLS impersonate, нужны только cookies + заголовки |
 | Циан (enrichment) | TLS fingerprint | curl_cffi impersonate="chrome131" | cookies не нужны, CSR-страница |
 | СберЗдоровье | JS challenge | Playwright | buildId из HTML |
+| ДомКлик | header validation / QRator на HTML | aiohttp с Referer и Sec-Fetch | Текущий career.domclick.ru API проходит без cookies в проверенном runtime; HTML открывается Chromium и получает qrator_ssid2 |
+| МТС Линк | публичный API | aiohttp | Huntflow list/detail сайта доступны без Bearer; старый categoryId исключён |
+| Dodo | новый backend, текущий 503 | aiohttp | apiURL из публичного Nuxt config; transport/browser tokens ещё проверяются в Actions |
 
 ## 4. Инструменты
 

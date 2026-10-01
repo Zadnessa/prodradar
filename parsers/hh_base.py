@@ -20,6 +20,7 @@ class HHBaseParser(BaseParser):
     EMPLOYER_ID = None
     COMPANY_NAME = None
     VACANCY_ID_PREFIX = None
+    LIST_PARAMS = {}
 
     def __init__(self):
         self.captcha_hit = False
@@ -58,6 +59,7 @@ class HHBaseParser(BaseParser):
                 "employer_id": self.EMPLOYER_ID,
                 "page": page,
                 "per_page": 100,
+                **self.LIST_PARAMS,
             }
             payload = None
 
@@ -90,7 +92,12 @@ class HHBaseParser(BaseParser):
                     break
 
             if payload is None:
-                return vacancies
+                raise ValueError("HH: список вакансий не получен")
+
+            if not isinstance(payload, dict) or not isinstance(payload.get("items"), list):
+                raise ValueError("HH: неожиданный формат списка вакансий")
+            if (payload.get("found") or 0) > 2000:
+                raise ValueError("HH: выдача превышает доступные 2000 вакансий")
 
             items = payload.get("items") or []
             for item in items:
@@ -119,6 +126,11 @@ class HHBaseParser(BaseParser):
                 break
             await asyncio.sleep(random.uniform(1.0, 2.0))
 
+        ids = [v["id"] for v in vacancies]
+        if len(ids) != len(set(ids)):
+            raise ValueError("HH: повторяющиеся вакансии в пагинации")
+        if payload.get("found") is not None and len(vacancies) != payload["found"]:
+            raise ValueError("HH: число вакансий не совпадает с found")
         return vacancies
 
     async def enrich(self, session, vacancy):

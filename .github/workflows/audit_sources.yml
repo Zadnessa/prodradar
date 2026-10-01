@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/audit_sources.yml'
       - 'scripts/audit_sources.py'
+      - 'scripts/inspect_source_browser.py'
       - 'parsers/**'
   workflow_dispatch:
 
@@ -52,17 +53,20 @@ jobs:
       - run: playwright install chromium --with-deps
       - name: Check parser regression tests
         run: python -m unittest discover -s tests -v
+      - name: Inspect official vacancy pages and browser network requests
+        run: python scripts/inspect_source_browser.py --output browser-sources-check.json
       - name: Audit enabled parsers and descriptions without writes
         run: python scripts/audit_sources.py --enrich-limit 3 --output sources-check.json
         env:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           HH_ACCESS_TOKEN: ${{ secrets.HH_ACCESS_TOKEN }}
-          MTSLINK_BEARER_TOKEN: ${{ secrets.MTSLINK_BEARER_TOKEN }}
       - name: Save diagnostic reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: source-audit
-          path: sources-check.json
+          path: |
+            sources-check.json
+            browser-sources-check.json
           retention-days: 14

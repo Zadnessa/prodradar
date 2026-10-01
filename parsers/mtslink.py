@@ -1,7 +1,8 @@
 """Парсер вакансий МТС Линк."""
 
 import re
-import os
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from parsers.base import BaseParser
 
@@ -11,7 +12,6 @@ class MtsLinkParser(BaseParser):
 
     LIST_URL = "https://mts-link.ru/api/huntflow/vacancies"
     DETAIL_URL_TEMPLATE = "https://mts-link.ru/api/huntflow/vacancy/{raw_id}"
-    LIST_PARAMS = {"categoryId": 221722}
     REQUEST_HEADERS = {
         "Origin": "https://job.mts-link.ru",
         "Referer": "https://job.mts-link.ru/",
@@ -20,12 +20,6 @@ class MtsLinkParser(BaseParser):
 
     def __init__(self):
         self._raw_ids = {}
-
-    def _build_headers(self):
-        token = os.getenv("MTSLINK_BEARER_TOKEN")
-        if not token:
-            raise ValueError("МТС Линк: MTSLINK_BEARER_TOKEN не задан")
-        return {**self.REQUEST_HEADERS, "Authorization": f"Bearer {token}"}
 
     @staticmethod
     def _build_published_at(created):
@@ -37,11 +31,13 @@ class MtsLinkParser(BaseParser):
         if not raw_date or not raw_timezone:
             return None
 
-        date_base = str(raw_date).split(".", maxsplit=1)[0].strip()
-        if " " not in date_base:
-            return None
-
-        return f"{date_base.replace(' ', 'T', 1)}{raw_timezone}"
+        value = datetime.fromisoformat(str(raw_date))
+        if value.tzinfo is None:
+            if raw_timezone.startswith(("+", "-")):
+                value = datetime.fromisoformat(value.isoformat() + raw_timezone)
+            else:
+                value = value.replace(tzinfo=ZoneInfo(raw_timezone))
+        return value.isoformat()
 
     @staticmethod
     def _strip_html(value):
@@ -53,11 +49,15 @@ class MtsLinkParser(BaseParser):
 
         async with session.get(
             self.LIST_URL,
-            params=self.LIST_PARAMS,
-            headers=self._build_headers(),
+            headers=self.REQUEST_HEADERS,
         ) as response:
             response.raise_for_status()
             items = await response.json()
+
+        # Публичный endpoint сайта не требует Bearer. Старый categoryId может
+        # молча вернуть [], поэтому роли отбираются общим фильтром pipeline.
+        if not isinstance(items, list):
+            raise ValueError("МТС Линк: неожиданный формат списка вакансий")
 
         vacancies = []
         for item in items or []:
@@ -95,7 +95,7 @@ class MtsLinkParser(BaseParser):
             return vacancy
 
         detail_url = self.DETAIL_URL_TEMPLATE.format(raw_id=raw_id)
-        async with session.get(detail_url, headers=self._build_headers()) as response:
+        async with session.get(detail_url, headers=self.REQUEST_HEADERS) as response:
             response.raise_for_status()
             detail = await response.json()
 

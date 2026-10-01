@@ -1,0 +1,35 @@
+name: Collect Test Vacancies (Manual Only)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prodradar-test-collector
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: prodradar-test
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      ADMIN_CHAT_ID: ${{ vars.ADMIN_CHAT_ID }}
+      HH_ACCESS_TOKEN: ${{ secrets.HH_ACCESS_TOKEN }}
+      REDIRECT_BASE_URL: prodradar-test.vercel.app
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: playwright install chromium --with-deps
+      - run: python -m unittest discover -s tests -v
+      - name: Verify isolation, then collect into the test database
+        run: python scripts/collect_test.py --project-ref jmsdxgylyjxwdwmdrmxw

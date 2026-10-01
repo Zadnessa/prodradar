@@ -12,7 +12,7 @@
 
 
 ## После релиза
-- [ ] T-052 Создать песочницу: второй проект Vercel на тот же репозиторий, env-переменные старого бота (@ProductRadar_bot), отдельная база Supabase (free tier), установить webhook; документировать два окружения в README (infra/, README.md).
+- [ ] T-052 Завершить песочницу @ProdRadar_bot: настроить пустую БД jmsdxgylyjxwdwmdrmxw и Vercel prodradar-test, перенести только тестовый webhook, проверить прежний флоу; готово когда изоляция и delivery подтверждены, ресурсы и проверки описаны в refresh_plan (scripts/, .github/workflows/collect_test.yml, README.md, docs/refresh_plan.md).
 - [ ] T-010 Контрактный тест: для каждого парсера из PARSER_REGISTRY прогнать parse() на фикстуре и проверить, что все vacancy["company"] присутствуют в companies.name; тест падает при рассинхроне (tests/, parsers/, fixtures/).
 - [ ] T-026 On-demand витрина и ранжирование: первая пачка — витрина, дальше — релевантностное ранжирование (delivery/telegram.py, bot/handlers.py).
 - [ ] T-027 Сводка `N новых + M ранее просмотренных` в scheduled/выдаче (delivery/telegram.py, bot/handlers.py).
@@ -66,7 +66,6 @@
 - [ ] sanitize_description как общая функция очистки HTML (utils/, parsers/).
 - [ ] Хардинг delivery pipeline по нагрузке (SQL anti-join, батчинг Telegram, параллелизация) (delivery/, database/).
 - [ ] Чистка хардкодов источников и общий extractor HTML-секций (parsers/).
-- [ ] MTS Link — автоматическое получение токена или переход на HH как fallback-источник (parsers/mtslink.py, parsers/hh.py).
 - [ ] Аудит всех парсеров на соблюдение контракта enrich() (parsers/).
 - [ ] Фикстуры parsers и минимальные контрактные тесты parse/enrich (fixtures/, tests/).
 
@@ -227,3 +226,7 @@
 - [x] Зафиксировать контекст рефреша, реальные результаты диагностики, неизвестные связи инфраструктуры, семь фаз с критериями завершения, сохранение продуктового флоу, нового бота для одного проджект-менеджера с mute и отдельной ревизией функций; следующему чату поручена только фаза 1 (docs/refresh_plan.md, docs/context.md, README.md).
 
 - [x] MTS Link bearer-токен вынести в env, добавить обработку 401 и skip без падения пайплайна (parsers/mtslink.py, config.py).
+
+- [x] Сохранить прикладную SQL-схему public и все шесть таблиц исходного продукта; подтверждено восстановлением PostgreSQL 17, сравнением значений, каталога и RLS, подготовлена транзакционная загрузка только справочников в пустую тестовую БД (scripts/backup_schema.py, scripts/provision_test_database.py, docs/refresh_plan.md).
+
+- [x] MTS Link — автоматическое получение токена или переход на HH как fallback-источник; фирменный list/detail теперь публичный и не требует Bearer, восстановлен прямой сбор без categoryId, подтверждены 11 вакансий и ответ detail (parsers/mtslink.py, tests/test_refresh.py, docs/refresh_plan.md).

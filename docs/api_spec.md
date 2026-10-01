@@ -318,6 +318,10 @@
 - Отсутствующие поля: grade, published_at.
 
 ## Купер
+- Runtime сначала проверяет доступ к https://team.kuper.ru/vacancies; HTTP 403
+  считается blocked source, а не пустым каталогом. На 2026-10-01 подтверждено
+  тремя транспортами в Actions 36935380788; полнота нового каталога неизвестна.
+- Runtime не применяет прежний group UUID; pages/уникальные ids проверяются.
 - Метод: GET
 - URL: https://vacancies-api.sbermarket.ru/api/vacancy_pagination/
 - Обязательные заголовки: нет (стандартные)

@@ -6,6 +6,8 @@ import logging
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 
+import aiohttp
+
 from bs4 import BeautifulSoup, NavigableString, Tag
 from parsers.base import BaseParser
 from parsers.tls import source_ssl_context
@@ -24,34 +26,48 @@ class TBankParser(BaseParser):
     }
 
     async def _request(self, session, method, url, *, as_json=False, **kwargs):
+        rate_limited = False
+        disconnected = False
         for attempt in range(3):
-            async with getattr(session, method)(url, headers=config.REQUEST_HEADERS,
-                                                ssl=source_ssl_context(url), **kwargs) as response:
-                if response.status == 429 and attempt < 2:
-                    retry_after = (getattr(response, 'headers', {}) or {}).get('Retry-After')
-                    delay = 30 * (attempt + 1)
-                    if retry_after:
-                        try:
-                            minimum_delay = float(retry_after)
-                        except ValueError:
+            try:
+                async with getattr(session, method)(url, headers=config.REQUEST_HEADERS,
+                                                    ssl=source_ssl_context(url), **kwargs) as response:
+                    if response.status == 429 and attempt < 2:
+                        rate_limited = True
+                        retry_after = (getattr(response, 'headers', {}) or {}).get('Retry-After')
+                        delay = 30 * (attempt + 1)
+                        if retry_after:
                             try:
-                                minimum_delay = (parsedate_to_datetime(retry_after) -
-                                                 datetime.now(timezone.utc)).total_seconds()
-                            except (ValueError, TypeError):
-                                minimum_delay = 0
-                        delay = max(delay, minimum_delay)
-                    # Длинный Retry-After не сокращаем: возвращаем ошибку для
-                    # следующего сбора вместо преждевременного нового запроса.
-                    if delay > 60:
-                        response.raise_for_status()
-                    await response.text()
-                    await asyncio.sleep(delay)
-                    continue
-                response.raise_for_status()
-                value = await response.json() if as_json else await response.text(encoding='utf-8')
-                if attempt:
-                    self._recovered_rate_limits = getattr(self, '_recovered_rate_limits', 0) + 1
-                return value
+                                minimum_delay = float(retry_after)
+                            except ValueError:
+                                try:
+                                    minimum_delay = (parsedate_to_datetime(retry_after) -
+                                                     datetime.now(timezone.utc)).total_seconds()
+                                except (ValueError, TypeError):
+                                    minimum_delay = 0
+                            delay = max(delay, minimum_delay)
+                        # Длинный Retry-After не сокращаем: ждём следующего сбора.
+                        if delay > 60:
+                            response.raise_for_status()
+                        await response.text()
+                        await asyncio.sleep(delay)
+                        continue
+                    response.raise_for_status()
+                    value = await response.json() if as_json else await response.text(encoding='utf-8')
+            except (aiohttp.ServerDisconnectedError, aiohttp.ClientPayloadError, asyncio.TimeoutError):
+                # POST getVacancies только читает каталог: повторяем тот же payload,
+                # не продвигаем offset и не принимаем оборванный ответ за страницу.
+                if attempt == 2:
+                    raise
+                disconnected = True
+                logger.warning('T-Bank: временный обрыв ответа, повтор %s/2', attempt + 1)
+                await asyncio.sleep(5 * (attempt + 1))
+                continue
+            if rate_limited:
+                self._recovered_rate_limits = getattr(self, '_recovered_rate_limits', 0) + 1
+            if disconnected:
+                self._recovered_disconnects = getattr(self, '_recovered_disconnects', 0) + 1
+            return value
 
     @staticmethod
     def _build_grade(tags):
@@ -136,6 +152,7 @@ class TBankParser(BaseParser):
     async def parse(self, session, existing_ids, city_mappings):
         del existing_ids
         self._recovered_rate_limits = 0
+        self._recovered_disconnects = 0
         page_url = 'https://www.tbank.ru/career/it/'
         soup = BeautifulSoup(await self._request(session, 'get', page_url), 'html.parser')
         state_tag = soup.find('script', id='__TRAMVAI_STATE__')

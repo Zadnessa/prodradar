@@ -12,7 +12,7 @@ class KuperParser(BaseParser):
 
     LIST_URL = "https://vacancies-api.sbermarket.ru/api/vacancy_pagination/"
     DETAIL_URL_TEMPLATE = "https://vacancies-api.sbermarket.ru/api/vacancy/{friendly_url}"
-    GROUP_ID = "186247de-f72e-469e-9da3-db468f9b6197"
+    CAREER_URL = "https://team.kuper.ru/vacancies"
 
     def __init__(self):
         self._friendly_urls = {}
@@ -55,27 +55,41 @@ class KuperParser(BaseParser):
 
     async def parse(self, session, existing_ids, city_mappings):
         del existing_ids, city_mappings
+        # Старый API отдаёт сокращённый каталог даже при блокировке сайта.
+        # Сначала подтверждаем доступ: 403/5xx нельзя выдавать за отсутствие jobs.
+        async with session.get(self.CAREER_URL, headers=config.REQUEST_HEADERS) as response:
+            response.raise_for_status()
         vacancies = []
+        seen_ids = set()
         self._friendly_urls = {}
 
         page = 1
         total_pages = 1
 
         while page <= total_pages:
-            params = {"page": page, "group": self.GROUP_ID}
+            params = {"page": page}
             async with session.get(self.LIST_URL, headers=config.REQUEST_HEADERS, params=params) as response:
                 response.raise_for_status()
                 payload = await response.json()
 
-            vacancy_items = self._extract_category_data(payload, "vacancies") or []
+            vacancy_items = self._extract_category_data(payload, "vacancies")
             pagination = self._extract_category_data(payload, "pagination") or {}
-            total_pages = int(pagination.get("pages") or total_pages)
+            pages = pagination.get("pages")
+            if not isinstance(vacancy_items, list) or not isinstance(pages, int) or pages < 0 or (pages == 0 and vacancy_items):
+                raise ValueError("Kuper: API не подтвердил каталог/пагинацию")
+            if page > 1 and pages != total_pages:
+                raise ValueError("Kuper: число страниц изменилось во время сбора")
+            total_pages = pages
+            if not vacancy_items and page < total_pages:
+                raise ValueError("Kuper: пустая страница внутри каталога")
 
             for item in vacancy_items:
-                vacancy_id = str(item.get("id"))
+                raw_id = item.get("id")
+                vacancy_id = str(raw_id) if raw_id is not None else ""
                 friendly_url = item.get("friendlyUrl")
-                if not vacancy_id or not friendly_url:
-                    continue
+                if not vacancy_id or not friendly_url or vacancy_id in seen_ids:
+                    raise ValueError("Kuper: отсутствующий или повторяющийся id/URL")
+                seen_ids.add(vacancy_id)
 
                 work_format_values = [str(value).strip() for value in (item.get("wf") or []) if str(value).strip()]
                 experience_years = item.get("workExperience")

@@ -21,6 +21,9 @@ from parsers.aviasales import AviasalesParser
 from parsers.dodo import DodoParser
 from parsers.domclick import DomClickParser
 from parsers.tbank import TBankParser
+from parsers.kuper import KuperParser
+from parsers.mts import MtsParser
+from parsers.vk import VKParser
 from scripts.backup_database import backup_database
 from scripts.backup_schema import render_schema
 from scripts.collect_test import check_target
@@ -113,6 +116,42 @@ class ParserTests(unittest.IsolatedAsyncioTestCase):
         sleep.assert_awaited_once_with(40.0)
         self.assertEqual(parser._recovered_rate_limits, 1)
 
+    async def test_tbank_disconnect_retries_same_offset_and_collects_remaining_pages(self):
+        class BrokenResponse(Response):
+            async def json(self, **kwargs):
+                raise aiohttp.ClientPayloadError('Оборванный ответ')
+
+        def page(raw_id, offset, finished):
+            return Response({'resultCode': 'OK', 'payload': {
+                'vacancies': [{'title': 'Product Manager ' + raw_id, 'urlSlug': raw_id}],
+                'nextPagination': {'offset': offset, 'isFinished': finished, 'totalCount': 2}}})
+        state = '<script id="__TRAMVAI_STATE__">' + json.dumps({'stores': {'environment': {
+            'VACANCIES_PUBLIC_API': 'https://www.tbank.ru/pfpjobs/papi/'}}}) + '</script>'
+        session = Session(Response(text=state), page('1', 1, False), BrokenResponse(), page('2', 2, True))
+        parser = TBankParser()
+        with patch('parsers.tbank.asyncio.sleep', return_value=None):
+            result = await parser.parse(session, set(), {})
+        self.assertEqual({item['id'] for item in result}, {'tbank_1', 'tbank_2'})
+        self.assertEqual(session.calls[2][1]['json'], session.calls[3][1]['json'])
+        self.assertEqual(parser._api_collected_count, 2)
+        self.assertEqual(parser._recovered_disconnects, 1)
+        self.assertEqual(parser._recovered_rate_limits, 0)
+
+    async def test_tbank_persistent_disconnect_exhausts_budget_and_5xx_is_not_retried(self):
+        class DisconnectedResponse(Response):
+            async def __aenter__(self):
+                raise aiohttp.ServerDisconnectedError()
+        session = Session(*(DisconnectedResponse() for _ in range(3)))
+        with patch('parsers.tbank.asyncio.sleep', return_value=None) as sleep:
+            with self.assertRaises(aiohttp.ServerDisconnectedError):
+                await TBankParser()._request(session, 'get', 'https://www.tbank.ru/career/it/')
+        self.assertEqual(len(session.calls), 3)
+        self.assertEqual(sleep.await_count, 2)
+        session = Session(Response(status=503))
+        with self.assertRaises(aiohttp.ClientResponseError):
+            await TBankParser()._request(session, 'get', 'https://www.tbank.ru/career/it/')
+        self.assertEqual(len(session.calls), 1)
+
     async def test_tbank_full_description_includes_offer_and_preserves_fields(self):
         session = Session(Response(text='<h2>Описание</h2><p>Продукт</p>'
                                   '<h2>Обязанности</h2><p>Развивать</p>'
@@ -155,6 +194,62 @@ class ParserTests(unittest.IsolatedAsyncioTestCase):
                 'vacancies': items, 'nextPagination': pagination}}))
             with self.assertRaises(ValueError):
                 await TBankParser().parse(session, set(), {})
+    async def test_kuper_blocked_career_is_error_not_empty_success(self):
+        session = Session(Response(status=403))
+        with self.assertRaises(aiohttp.ClientResponseError):
+            await KuperParser().parse(session, set(), {})
+        self.assertEqual(len(session.calls), 1)
+
+    async def test_kuper_reads_all_groups_and_pages_and_rejects_duplicate_page(self):
+        def page(raw_id):
+            return Response({'result': [{'category': 'vacancies', 'data': [
+                {'id': raw_id, 'friendlyUrl': raw_id, 'title': 'Product Owner'}]},
+                {'category': 'pagination', 'data': {'pages': 2}}]})
+        session = Session(Response(), page('1'), page('2'))
+        result = await KuperParser().parse(session, set(), {})
+        self.assertEqual(len(result), 2)
+        self.assertNotIn('group', session.calls[1][1]['params'])
+        self.assertEqual(session.calls[2][1]['params']['page'], 2)
+        with self.assertRaises(ValueError):
+            await KuperParser().parse(Session(Response(), page('1'), page('1')), set(), {})
+
+    async def test_mts_uses_actual_page_size_and_rejects_truncated_catalog(self):
+        def page(raw_id, total=2):
+            return Response({'data': {'vacancies': [{'id': raw_id, 'name': 'Product Manager'}],
+                                      'pageInfo': {'total': total}}})
+        parser = MtsParser()
+        with patch.object(parser, '_fetch_api_key', return_value='test-key'):
+            session = Session(page(1), page(2))
+            result = await parser.parse(session, set(), {})
+        self.assertEqual(len(result), 2)
+        self.assertEqual(session.calls[1][1]['json']['offset'], 1)
+        for bad_page in (Response({'data': {'vacancies': [], 'pageInfo': {'total': 2}}}),
+                         page(1), page(2, 3)):
+            parser = MtsParser()
+            with patch.object(parser, '_fetch_api_key', return_value='test-key'), self.assertRaises(ValueError):
+                await parser.parse(Session(page(1), bad_page), set(), {})
+
+    async def test_vk_incomplete_or_repeated_pagination_is_rejected(self):
+        for payload in ({'results': [{'id': 1}], 'next': '?offset=0'},
+                        {'results': [{'id': 1}], 'next': '?limit=50'},
+                        {'results': [], 'count': 5, 'next': None}):
+            with self.subTest(payload=payload), self.assertRaises(ValueError):
+                await VKParser().parse(Session(Response(payload)), set(), {})
+
+    async def test_vk_enrich_preserves_populated_fields_and_ignores_free_text_grade(self):
+        html = '<meta name="description" content="вакансия уровня senior в проект">'
+        html += '<div class="article"><h3>Задачи</h3><p>Новый текст</p></div>'
+        vacancy = {'url': 'https://team.vk.company/vacancy/1/', 'grade': 'Middle',
+                   'description': 'Полное сохранённое описание ' * 20}
+        before = dict(vacancy)
+        with patch('parsers.vk.asyncio.sleep', return_value=None):
+            await VKParser().enrich(Session(Response(text=html)), vacancy)
+        self.assertEqual(vacancy, before)
+        vacancy['grade'] = None
+        with patch('parsers.vk.asyncio.sleep', return_value=None):
+            await VKParser().enrich(Session(Response(text=html)), vacancy)
+        self.assertIsNone(vacancy['grade'])
+
     async def test_domclick_current_api_paginates_and_reads_full_detail_by_slug(self):
         def item(raw_id):
             return {'id': raw_id, 'slug': f'product-{raw_id}', 'title': ' Product Owner ',

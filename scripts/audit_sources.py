@@ -138,6 +138,7 @@ async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_
                 result['api_total_count'] = getattr(parser, '_api_total_count', None)
                 result['api_collected_count'] = getattr(parser, '_api_collected_count', 0)
                 result['recovered_rate_limits'] = getattr(parser, '_recovered_rate_limits', 0)
+                result['recovered_disconnects'] = getattr(parser, '_recovered_disconnects', 0)
             result["duration_seconds"] = round(time.monotonic() - started, 1)
             report["sources"][name] = result
             print(json.dumps({"source": name, **{key: value for key, value in result.items() if key != "samples"}},

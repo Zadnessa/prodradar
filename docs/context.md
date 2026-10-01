@@ -1,3 +1,28 @@
+<!-- Итог восстановления, 1 октября 2026 UTC -->
+Итоговый collector [36935834198](https://github.com/Zadnessa/prodradar/actions/runs/36935834198)
+(SHA 3e89cdb): 22 источника собраны, Купер — единственный blocked/403;
+811 raw →224 product, 25 новых Т-Банка, 199 без изменений, 0 снятых/битых.
+25/25 Т-Банк имеют все четыре html_sections в test БД. Collector отправил
+10 карточек, delivered 32→42; отдельная контрольная карточка Т-Банка успешно
+отправлена через bot/telegram_api.py и отмечена delivered, итого43.
+Тестовая БД:225 total/224 active/224 active descriptions, 21 компания с
+подходящими вакансиями. Webhook ProdRadar_bot: pending=0, ошибок нет.
+Workflow failure честно отражает Купер 403; остальные источники/сохранение/
+доставка завершены. Новых origin 5xx не найдено, новых пауз не добавлено;
+Dodo сохраняет прежнюю test паузу. 51 локальный тест проходит; collector
+Actions запускал50, один optional PyNaCl test skipped, остальные прошли.
+
+<!-- Vercel завершён, 1 октября 2026 UTC -->
+Итог очистки: удалены 28 old deployments (26 original preview +2 test),
+созданы две компактные test сборки. Осталось 26: 23 original +3 test;
+28 alias bindings сохранены, repeat dry-run candidates=[]. Original production
+83b2b6GGhrwLU3nDU5PCJq1v2yhJ сохранён. Test production теперь
+8MRFgWvvZ2FSwrRTfqsA9iRwres9, здоровый rollback 4DSVaw86DX684mdEHXxDTfbL3ReN,
+current preview 8pv3wo8BQGN6aCBWmKu9mESdgtoz. Stable test domain smoke 403/200/400
+пройден, identity ProdRadar_bot. Push после изменения git.deploymentEnabled
+не создал новый original preview. API не возвращает billed Function Storage GB;
+локальные 223→39 MB — только dependency footprint, не счётчик квоты.
+
 <!-- Надёжность источников, 1 октября 2026 UTC -->
 Т-Банк повторяет до двух раз тот же read-only запрос после обрыва ответа,
 не принимает partial JSON. MTS/VK проверяют полноту и продвижение пагинации;
@@ -9,7 +34,7 @@ VK enrich сохраняет заполненные поля и не извле�
 исчерпан: старый API/group + общий каталог, браузер и Chrome HTTP; следующие
 слепые альтернативные endpoints не исследуются.
 
-<!-- Актуализация восстановления: 2 октября 2026 -->
+<!-- История baseline и первого этапа очистки -->
 Пользователь возобновил парсеры и доставку, разрешил временно паузить в test
 источники с подтверждённым 5xx карьерного сайта. Лимит — четыре разных подхода
 на проблемный источник; одинаковые transport retries не считаются новыми

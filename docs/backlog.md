@@ -68,6 +68,8 @@
 - [ ] Аудит всех парсеров на соблюдение контракта enrich() (parsers/).
 - [ ] Фикстуры parsers и минимальные контрактные тесты parse/enrich (fixtures/, tests/).
 
+- [ ] Восстановить фирменный каталог Купера после 403 карьерного сайта; получить публичные метаданные, подтвердить полный API и описания, без HH-подмены; готово когда read-only audit и test collector подтверждают полноту (parsers/kuper.py, docs/api_spec.md, docs/refresh_plan.md).
+
 ### AI
 
 - [ ] Создать архитектуру AI-фазы: таблица vacancy_ai_enrichment, LEFT JOIN при выдаче, kill switch (database/, delivery/, main.py).
@@ -235,4 +237,6 @@
 
 - [x] Подготовить автоматическую настройку только GitHub environment prodradar-test через Actions PAT, sealed-box перенос проверенных test-реквизитов и отдельный read-only check; bootstrap PAT добавлен через GitHub UI, полный перенос и read-only check подтверждены Actions 36932808570/36932843737/36932886519 (scripts/configure_test_github.py, scripts/setup_test_github.py, scripts/prepare_test_github.py, .github/workflows/check_test_environment.yml, tests/test_github_setup.py).
 
-- [x] Уменьшить рост бесплатной Vercel Function Storage: отделить collector/browser зависимости и payload от webhook, отключить preview ветки восстановления, безопасно удалить 27 неиспользуемых deployments с сохранением 28 aliases/current/rollbacks (requirements*.txt, .vercelignore, vercel.json, scripts/vercel_storage.py, tests/test_vercel_storage.py).
+- [x] Уменьшить рост бесплатной Vercel Function Storage: отделить collector/browser зависимости и payload от webhook, отключить preview ветки восстановления, безопасно удалить 28 неиспользуемых deployments с сохранением 28 aliases/current/rollbacks (requirements*.txt, .vercelignore, vercel.json, scripts/vercel_storage.py, tests/test_vercel_storage.py).
+
+- [x] Защитить Т-Банк от обрывов read-only ответов, MTS/VK от неполной пагинации, VK от перезаписи enrichment, Купер от ложного empty success при blocked career (parsers/, tests/test_refresh.py).

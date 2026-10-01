@@ -204,12 +204,14 @@ default privileges чужой роли с копией, при несовпад�
 ### Vercel webhook включает браузер и каждый preview копит Function Storage (BUG-100)
 Суть: общий requirements включал Playwright/curl_cffi/bs4 в обе Python-функции,
 а Git integration исходного проекта создавала preview при каждом push ветки
-восстановления. Накопились 52 READY deployments и предупреждение 75%/10GB.
+восстановления. Накопились 52 READY deployments и предупреждение 75%/10GB. Инвентарь
+подтвердил 32 deployments за 2026-10-01, 28 с meta ref ветки восстановления:
+пуши восстановления заметно увеличили хранение функций.
 Правило: изолировать webhook requirements и payload, collector deps держать в
 requirements-collector.txt; preview восстановления отключить в git.deploymentEnabled.
 Очистка читает все aliases/pages, защищает current и healthy rollback, повторно
-проверяет перед deletion. Удалены 27 unaliased old previews/test deployments,
-28 aliases не изменены. Dependency tree 223→39MB; actual billed storage требует
+проверяет перед deletion. Удалены 28 unaliased old previews/test deployments; после двух slim test
+сборок READY 52→26, 28 aliases не изменены. Dependency tree 223→39MB; actual billed storage требует
 отдельной проверки и не равен простой сумме размеров установленных пакетов.
 
 ### Обрыв ответа Т-Банка останавливает весь каталог (BUG-101)
@@ -240,3 +242,19 @@ team.kuper.ru возвращает 403 в обычном HTTP, Chrome TLS и Chr
 заполненные поля сохранять, description менять только на более длинное.
 Регрессии проверяют короткую MTS страницу, потерю/повтор/изменение total,
 VK broken next/count и сохранение enrichment.
+
+### Защита aliases устаревает между двумя удалениями Vercel (BUG-104)
+Суть: helper обновлял полный inventory только один раз перед batch; новый
+alias между DELETE мог не учитываться. Правило: полностью перечитывать
+aliases/deployments/targets для каждого кандидата, затем проверять detail.
+Регрессия добавляет alias второго кандидата после первого DELETE и запрещает
+его удаление. Фактическая первая очистка 27 использовала свежий общий snapshot
+и detail каждого id; после batch все 28 alias bindings точно совпали с исходными.
+Последнее 28-е удаление использовало отдельный свежий inventory. Итоговые
+ресурсы проверены; исправленный helper предназначен для дальнейших очисток.
+
+Live подтверждение BUG-101/102/103: Actions 36935834198, Т-Банк234 после
+city-dedup (полный raw каталог подтверждён), 25/25 product descriptions с
+четырьмя секциями; MTS32/VK24 собраны, Купер403reportedblocked. 224 active
+product сохранены, 0 skipped, 10 scheduled карточек доставлены; отдельная
+контрольная Т-Банка доставлена, test delivery43. Новых 5xx нет.

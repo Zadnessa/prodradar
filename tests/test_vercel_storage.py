@@ -1,6 +1,7 @@
 """Защита активных deployment при очистке Function Storage."""
 
 import unittest
+from unittest.mock import patch
 
 from scripts.vercel_storage import ORIGINAL, TEST, all_pages, apply_plan, plan
 
@@ -46,6 +47,20 @@ class StorageTests(unittest.TestCase):
             return {"deployments": [old] if params["projectId"] == TEST else [],
                     "pagination": {"next": None}}
         self.assertEqual(apply_plan(initial, fetch), [])
+
+    def test_alias_added_between_two_deletions_protects_second_deployment(self):
+        rows = [deployment('first', target=None), deployment('second', target=None)]
+        before = dict(aliases=[], targets=[], deployments=rows)
+        after = dict(aliases=[{'deployment': {'id': 'second'}}], targets=[], deployments=[rows[1]])
+        calls = []
+        def fetch(path, params=None, method='GET'):
+            calls.append((path, method))
+            return {'projectId': TEST, 'target': None}
+        with patch('scripts.vercel_storage.inventory', side_effect=[before, after]) as refresh:
+            self.assertEqual(apply_plan(plan(before), fetch), ['first'])
+        self.assertEqual(refresh.call_count, 2)
+        self.assertEqual([path for path, method in calls if method == 'DELETE'],
+                         ['/v13/deployments/first'])
 
     def test_failed_refresh_never_starts_deletion(self):
         initial = {"candidates": [{"uid": "candidate", "projectId": TEST}]}

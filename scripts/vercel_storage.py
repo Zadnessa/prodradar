@@ -99,10 +99,12 @@ def plan(snapshot):
 
 def apply_plan(initial, fetch=request):
     # Новые deployments не попадают в удаление, новые aliases отменяют удаление.
-    fresh = plan(inventory(fetch))
-    eligible = {d["uid"] for d in fresh["candidates"]}
     deleted = []
     for deployment in initial["candidates"]:
+        # Привязка может появиться после предыдущего DELETE: не используем
+        # защиту первого кандидата для всей пачки.
+        fresh = plan(inventory(fetch))
+        eligible = {d["uid"] for d in fresh["candidates"]}
         uid = deployment["uid"]
         if uid not in eligible:
             continue

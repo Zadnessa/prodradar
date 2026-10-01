@@ -34,6 +34,20 @@ retry, не новый поиск. При подтверждённом 5xx са�
 временно паузится только в test, с сохранением причины. Ошибка локального proxy
 не доказывает origin 5xx. Production и cron по-прежнему не включаются.
 
+Итоговый collector [36935834198](https://github.com/Zadnessa/prodradar/actions/runs/36935834198)
+(SHA 3e89cdb): 22 источника собраны, Купер — единственный blocked/403;
+811 raw →224 product, 25 новых Т-Банка, 199 без изменений, 0 снятых/битых.
+25/25 Т-Банк имеют все четыре html_sections в test БД. Collector отправил
+10 карточек, delivered 32→42; отдельная контрольная карточка Т-Банка успешно
+отправлена через bot/telegram_api.py и отмечена delivered, итого43.
+Тестовая БД:225 total/224 active/224 active descriptions, 21 компания с
+подходящими вакансиями. Webhook ProdRadar_bot: pending=0, ошибок нет.
+Workflow failure честно отражает Купер 403; остальные источники/сохранение/
+доставка завершены. Новых origin 5xx не найдено, новых пауз не добавлено;
+Dodo сохраняет прежнюю test паузу. 51 локальный тест проходит; collector
+Actions запускал50, один optional PyNaCl test skipped, остальные прошли.
+
+История baseline перед исправлениями:
 Baseline [36933860419](https://github.com/Zadnessa/prodradar/actions/runs/36933860419):
 22 парсера успешны, один tbank ServerDisconnectedError. 577 raw /199 product,
 65 новых, 134 неизменных, 1 снята, 0 битых; 10 карточек отправлены одному
@@ -48,17 +62,25 @@ TLS и Chromium. Старый API/group и общий каталог прове�
 50 локальных регрессий проходят; финальный collector проверяет live поведение.
 Dodo пока сохранён в прежнем отключённом состоянии по отдельному решению.
 
-**Параллельная задача Vercel:** пользователь попросил остаться на бесплатной
-квоте и явно разрешил очистку устаревших deployments после предупреждения
-75% Function Storage /10GB. Найдено 49 original +3 test READY. Удалены 26
-непривязанных original previews и 1 old test, все 28 aliases сохранены; текущий
-original/test production и healthy rollbacks защищены. Сейчас 25 deployments.
-Инвентарь/план/результат приватно в /tmp/prodradar-vercel-*.json. Root requirements
-теперь только webhook, Playwright/curl_cffi/bs4 отделены в collector requirements;
-установленные зависимости 223→39MB. Будущие Git previews этой ветки отключены.
-Actual billing quota пока не считалась через API; не утверждать процент
-освобождённого Function Storage по простой сумме package sizes. Slim test live
-размещение и smoke будут проверены отдельно; original live не переразмещается.
+**Vercel очищен и облегчён (1 октября 2026 UTC).** Пользователь поручил
+остаться на бесплатной квоте после предупреждения 75% Function Storage/10GB.
+Инвентарь: 32 из 52 deployments созданы 1 октября, 28 относятся к ветке
+восстановления; автоматические previews от push увеличили расход.
+Удалены 28 старых deployments (26 original preview +2 test), затем созданы две
+компактные test сборки: осталось 26 вместо 52 (23 original +3 test).
+Все 28 alias bindings сохранены, повторный dry-run candidates=[].
+Исходный production dpl_83b2b6GGhrwLU3nDU5PCJq1v2yhJ сохранён;
+новый test production dpl_8MRFgWvvZ2FSwrRTfqsA9iRwres9, здоровый rollback
+dpl_4DSVaw86DX684mdEHXxDTfbL3ReN, current preview
+dpl_8pv3wo8BQGN6aCBWmKu9mESdgtoz. Проверки стабильного test домена:
+unauth webhook 403, auth unknown user 200, redirect без цели 400;
+identity ProdRadar_bot. Original live не переразмещался.
+requirements.txt теперь только webhook; Playwright/curl_cffi/bs4 отделены
+в requirements-collector.txt, collector исключён .vercelignore. Локальный
+размер dependencies 223→39MB. Git previews этой ветки отключены; последующий
+push действительно не создал original preview. Инвентарь/план/результат
+приватно в /tmp/prodradar-vercel-*.json. API не возвращает billed storage GB,
+поэтому текущий процент квоты не подтверждён этими измерениями.
 
 **GitHub настроен, проверено агентом 2 октября 2026.** Пользователь добавил
 bootstrap environment secret PRODRADAR_GITHUB_TOKEN и явно поручил агенту
@@ -77,10 +99,10 @@ descriptions=135; getMe=ProdRadar_bot, webhook зарегистрирован, p
 и test Vercel; перенесены sealed box, plaintext не сохранялся.
 
 **История проверки GitHub до возобновления парсеров:**
-Collector и diagnose во всех setup/check запусках skipped, сообщения не
-отправлялись. Исходный TELEGRAM_BOT_TOKEN не использовался, repo Secrets и
-production не изменены. Полный успешный сбор источников пока не подтверждён.
-Дальнейшее восстановление парсеров продолжать после возобновления пользователем.
+В тех setup/check запусках collector и diagnose skipped, сообщения не
+отправлялись. После возобновления выполнен baseline и исправлены парсеры,
+как описано выше. Исходный TELEGRAM_BOT_TOKEN не использовался, repo Secrets
+и production не изменены.
 Ниже сохранена история первоначального блокера и подготовки автоматизации;
 требование вручную добавить bootstrap secret уже выполнено.
 

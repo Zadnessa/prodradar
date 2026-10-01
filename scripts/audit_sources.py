@@ -33,7 +33,8 @@ def selected(vacancy):
     return zone == "exact" or bool(zone and not _diagnose_blacklist(vacancy["title"]))
 
 
-async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_browser=True):
+async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_browser=True,
+                        full_enrich_sources=()):
     logging.disable(logging.CRITICAL)
     db = SupabaseService()
     companies = db.get_enabled_companies()
@@ -80,7 +81,8 @@ async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_
                         issues.add("duplicate_ids")
                     product_vacancies = [v for v in vacancies if selected(v)]
                     samples = []
-                    for vacancy in product_vacancies[:enrichment_limit]:
+                    sample_limit = len(product_vacancies) if name in full_enrich_sources else enrichment_limit
+                    for vacancy in product_vacancies[:sample_limit]:
                         before = dict(vacancy)
                         try:
                             await asyncio.wait_for(parser.enrich(session, vacancy), timeout=45)
@@ -93,6 +95,11 @@ async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_
                             samples.append({key: vacancy.get(key) for key in
                                             ("id", "title", "company", "url", "grade", "city", "work_format")})
                             samples[-1]["description_length"] = len(vacancy.get("description") or "")
+                            if name == 'tbank':
+                                sections = (vacancy.get('source_json') or {}).get('html_sections') or {}
+                                samples[-1]['description_sections'] = sorted(sections)
+                                if not sections:
+                                    issues.add('missing_full_description_sections')
                             if not samples[-1]["description_length"]:
                                 issues.add("missing_description")
                         except Exception as exc:
@@ -129,8 +136,11 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--enrich-limit", type=int, default=2)
     parser.add_argument("--no-browser", action="store_true")
+    parser.add_argument("--full-enrich-sources", nargs='+', default=[],
+                        help="Проверить описания всех product-вакансий указанных источников")
     args = parser.parse_args()
-    report = asyncio.run(audit_sources(args.sources, args.enrich_limit, use_browser=not args.no_browser))
+    report = asyncio.run(audit_sources(args.sources, args.enrich_limit, use_browser=not args.no_browser,
+                                       full_enrich_sources=args.full_enrich_sources))
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     return 0 if report["ok"] else 1

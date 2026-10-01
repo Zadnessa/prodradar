@@ -190,6 +190,9 @@ HTTP-проверка и тест пользовательского флоу в
   Ошибки и нарушения контрактов дают ненулевой exit code; пустой корректный список
   отделён от ошибки API. Workflow `Audit Sources (Read Only)` повторяет проверку
   в GitHub Actions с environment `prodradar-test`.
+  `--full-enrich-sources alfa tochka tbank domclick aviasales` проверяет все
+  product-описания этих источников в единственном сборе; Т-Банк дополнительно
+  подтверждает полные HTML-секции и включает «Мы предлагаем» в description.
 - `python scripts/backup_database.py /path/outside/repository/snapshot` выгружает
   шесть таблиц в NDJSON, OpenAPI и manifest с количеством строк и SHA-256.
   Используйте ключ, видящий пользовательские таблицы. Выгрузка ограничивает

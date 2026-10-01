@@ -112,19 +112,27 @@ class TBankParser(BaseParser):
         if not state_tag:
             raise ValueError('T-Bank: публичное состояние каталога не найдено')
         stores = json.loads(state_tag.string or '{}').get('stores') or {}
-        directions = (stores.get('filtersStore') or {}).get('direction')
-        if not isinstance(directions, list) or not directions:
-            raise ValueError('T-Bank: публичный каталог не подтвердил направления')
-        url = "https://www.tbank.ru/pfpjobs/papi/getVacancies"
+        api_base = (stores.get('environment') or {}).get('VACANCIES_PUBLIC_API')
+        if not isinstance(api_base, str) or not api_base.startswith('https://'):
+            raise ValueError('T-Bank: публичный каталог не подтвердил API URL')
+        url = api_base.rstrip('/') + '/getVacancies'
         pagination = {"limit": 100, "offset": 0}
         collected = []
         seen_ids = set()
 
         while True:
             payload = {
-                # Текущий каталог использует direction и плоскую пагинацию.
-                # Роли отбирает общий pipeline: старый profession-фильтр даёт [].
-                "filters": {"direction": directions, "category": [], "cityId": []},
+                # Реальный публичный POST снят через DevTools кнопки каталога.
+                # searchFiasIds исключён: сбор не ограничивается default city.
+                "filters": {"generatedGraphQL": {
+                    "type": "T_CAREER", "status": "ACTIVE",
+                    "includeSeoAndPcPublications": False,
+                    "includeInternshipPublications": True,
+                    "userGroup": {"groups": ["Control"], "type": "SPECIFIC"},
+                    "collapsePredstavitelPublications": True,
+                    "or": [{"category": category} for category in (
+                        "tcareer_work_with_clients", "tcareer_it", "tcareer_back_office")],
+                }},
                 "pagination": pagination,
             }
 
@@ -160,7 +168,7 @@ class TBankParser(BaseParser):
             if not items or not isinstance(offset, int) or offset <= pagination["offset"]:
                 raise ValueError("T-Bank: пагинация не продвигается")
             pagination = {"limit": pagination["limit"], "offset": offset}
-            await asyncio.sleep(1)
+            await asyncio.sleep(5)
 
         vacancies_by_key = {}
         ordered_keys = []
@@ -210,7 +218,7 @@ class TBankParser(BaseParser):
             logger.warning("T-Bank enrich: не удалось загрузить HTML для %s: %s", vacancy.get("url"), exc)
             return vacancy
         finally:
-            await asyncio.sleep(0.3)
+            await asyncio.sleep(1)
 
         try:
             soup = BeautifulSoup(html, "html.parser")
@@ -226,6 +234,7 @@ class TBankParser(BaseParser):
                 sections.get("Описание"),
                 sections.get("Обязанности"),
                 sections.get("Требования"),
+                sections.get("Мы предлагаем"),
             ]
             summary = "\n\n".join(part for part in summary_parts if part).strip()
             current_description = vacancy.get("description") or ""

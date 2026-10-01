@@ -58,21 +58,16 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Check official TLS certificate chains
         run: python scripts/check_source_tls.py --output source-tls-check.json
-      - name: Check all bank product descriptions without writes
-        run: python scripts/audit_sources.py --sources alfa tochka tbank --enrich-limit 999 --no-browser --output bank-descriptions-check.json
-        env:
-          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-      - name: Inspect official vacancy pages and browser network requests
-        if: always()
-        run: python scripts/inspect_source_browser.py --source-ca --output browser-sources-check.json
       - name: Audit enabled parsers and descriptions without writes
         if: always()
-        run: python scripts/audit_sources.py --enrich-limit 3 --output sources-check.json
+        run: python scripts/audit_sources.py --enrich-limit 3 --full-enrich-sources alfa tochka tbank domclick aviasales --output sources-check.json
         env:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           HH_ACCESS_TOKEN: ${{ secrets.HH_ACCESS_TOKEN }}
+      - name: Inspect official vacancy pages and browser network requests
+        if: always()
+        run: python scripts/inspect_source_browser.py --source-ca --output browser-sources-check.json
       - name: Save diagnostic reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -82,5 +77,4 @@ jobs:
             sources-check.json
             browser-sources-check.json
             source-tls-check.json
-            bank-descriptions-check.json
           retention-days: 14

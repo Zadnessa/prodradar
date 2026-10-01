@@ -169,3 +169,8 @@ totalCount; старое вложение it возвращает OK с 0, хо�
 Направления извлекать при запуске из публичного Tramvai state: literal it
 больше не соответствует актуальным directions. City/category не ограничивают
 сбор; default city страницы не должен сужать вакансии до Москвы.
+Уточнение из реального DevTools POST: API принимает filters.generatedGraphQL;
+direction/category/cityId относятся к UI-state. Использовать публичную GraphQL
+модель запроса каталога, убрать searchFiasIds Москвы, API base взять из public
+environment.VACANCIES_PUBLIC_API. Полный текст включает «Мы предлагаем»;
+аудит проверяет html_sections, а не только наличие shortDescription.

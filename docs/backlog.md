@@ -234,3 +234,5 @@
 - [x] Добавить явные профили test/prod до импорта config с проверкой project ref, Telegram identity и redirect без fallback на общие реквизиты; test подтверждён реальными API, prod требует отдельные PROD_* (runtime_profiles.py, scripts/run_profile.py, tests/test_profiles.py, .github/workflows/).
 
 - [x] Подготовить автоматическую настройку только GitHub environment prodradar-test через Actions PAT, sealed-box перенос проверенных test-реквизитов и отдельный read-only check; bootstrap PAT добавлен через GitHub UI, полный перенос и read-only check подтверждены Actions 36932808570/36932843737/36932886519 (scripts/configure_test_github.py, scripts/setup_test_github.py, scripts/prepare_test_github.py, .github/workflows/check_test_environment.yml, tests/test_github_setup.py).
+
+- [x] Уменьшить рост бесплатной Vercel Function Storage: отделить collector/browser зависимости и payload от webhook, отключить preview ветки восстановления, безопасно удалить 27 неиспользуемых deployments с сохранением 28 aliases/current/rollbacks (requirements*.txt, .vercelignore, vercel.json, scripts/vercel_storage.py, tests/test_vercel_storage.py).

@@ -1,15 +1,6 @@
 name: Audit Sources (Read Only)
 
 on:
-  push:
-    branches: ['codex/restore-test-bot']
-    paths:
-      - '.github/workflows/audit_sources.yml'
-      - 'scripts/audit_sources.py'
-      - 'scripts/inspect_source_browser.py'
-      - 'scripts/inspect_bank_api.py'
-      - 'scripts/check_source_tls.py'
-      - 'parsers/**'
   workflow_dispatch:
 
 concurrency:
@@ -29,7 +20,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install -r requirements.txt
+      - run: pip install -r requirements-collector.txt
       - run: python -m unittest discover -s tests -v
       - name: Check every bank product description independently of browser installation
         run: python scripts/run_profile.py --profile test audit --sources alfa tochka tbank --enrich-limit 999 --no-browser --output bank-sources-check.json
@@ -55,7 +46,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install -r requirements.txt
+      - run: pip install -r requirements-collector.txt
       - run: playwright install chromium --with-deps
       - run: sudo apt-get install -y libnss3-tools
       - name: Check parser regression tests

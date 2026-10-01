@@ -32,6 +32,10 @@ on:
         description: 'JSON справочников тестовой БД; без секретов и пользователей'
         type: string
         required: false
+      inspect_sources:
+        description: 'Read-only browser/HTTP диагностика выбранных источников через пробел'
+        type: string
+        required: false
       collect_test:
         description: 'После успешной проверки вручную собрать вакансии в тестовую БД'
         type: boolean
@@ -43,7 +47,7 @@ permissions:
 
 jobs:
   check:
-    if: github.event_name != 'workflow_dispatch' || (inputs.audit_sources != true && (inputs.setup_github == 'none' || inputs.setup_github == ''))
+    if: github.event_name != 'workflow_dispatch' || (inputs.audit_sources != true && inputs.inspect_sources == '' && (inputs.setup_github == 'none' || inputs.setup_github == ''))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment: prodradar-test
@@ -74,7 +78,7 @@ jobs:
           retention-days: 7
 
   collect:
-    if: github.event_name == 'workflow_dispatch' && inputs.collect_test == true && inputs.audit_sources != true && (inputs.setup_github == 'none' || inputs.setup_github == '')
+    if: github.event_name == 'workflow_dispatch' && inputs.collect_test == true && inputs.audit_sources != true && inputs.inspect_sources == '' && (inputs.setup_github == 'none' || inputs.setup_github == '')
     needs: check
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -95,14 +99,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install -r requirements.txt
+      - run: pip install -r requirements-collector.txt
       - run: playwright install chromium --with-deps
       - run: python -m unittest discover -s tests -v
       - name: Verify isolation, then collect into the test database
         run: python scripts/run_profile.py --profile test collect --project-ref jmsdxgylyjxwdwmdrmxw
 
   diagnose:
-    if: github.event_name == 'workflow_dispatch' && inputs.audit_sources == true && inputs.collect_test != true && (inputs.setup_github == 'none' || inputs.setup_github == '')
+    if: github.event_name == 'workflow_dispatch' && inputs.audit_sources == true && inputs.collect_test != true && inputs.inspect_sources == '' && (inputs.setup_github == 'none' || inputs.setup_github == '')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -113,7 +117,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install -r requirements.txt
+      - run: pip install -r requirements-collector.txt
       - run: playwright install chromium --with-deps
       - run: python -m unittest discover -s tests -v
       - name: Read official APIs without database credentials or Telegram token
@@ -133,7 +137,7 @@ jobs:
           retention-days: 7
 
   setup_github:
-    if: github.event_name == 'workflow_dispatch' && (inputs.setup_github == 'export-key' || inputs.setup_github == 'apply') && inputs.collect_test != true && inputs.audit_sources != true
+    if: github.event_name == 'workflow_dispatch' && (inputs.setup_github == 'export-key' || inputs.setup_github == 'apply') && inputs.collect_test != true && inputs.audit_sources != true && inputs.inspect_sources == ''
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment: prodradar-test
@@ -161,4 +165,32 @@ jobs:
         with:
           name: github-environment-public-key
           path: github-environment-key.json
+          retention-days: 7
+
+  inspect:
+    if: github.event_name == 'workflow_dispatch' && inputs.inspect_sources != '' && inputs.collect_test != true && inputs.audit_sources != true && (inputs.setup_github == 'none' || inputs.setup_github == '')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      INSPECT_SOURCES: ${{ inputs.inspect_sources }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-collector.txt
+      - run: playwright install chromium --with-deps
+      - name: Inspect browser metadata and HTTP transport without database or Telegram access
+        run: |
+          python - <<'PY'
+          import os, subprocess
+          names = os.environ['INSPECT_SOURCES'].split()
+          subprocess.run(['python', 'scripts/inspect_source_browser.py', '--sources', *names,
+                          '--compare-http', '--output', 'source-inspection.json'], check=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: source-inspection
+          path: source-inspection.json
           retention-days: 7

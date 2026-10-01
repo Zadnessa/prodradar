@@ -1,0 +1,18 @@
+# В webhook остаются api, bot, database, delivery и config.py.
+.git/
+.github/
+.venv/
+venv/
+**/__pycache__/
+**/*.pyc
+.pytest_cache/
+docs/
+tests/
+scripts/
+parsers/
+enrichment/
+normalizer/
+main.py
+requirements-collector.txt
+*.md
+*.sql

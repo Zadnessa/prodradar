@@ -199,3 +199,15 @@ default privileges чужой роли с копией, при несовпад�
 проверяют chunks с расширением/trailer и UTF-8, обычный Content-Length,
 отказ на оборванном или слишком большом теле. Live Vercel POST теперь
 возвращает 200/ok=true; запрос без webhook secret — 403.
+
+
+### Vercel webhook включает браузер и каждый preview копит Function Storage (BUG-100)
+Суть: общий requirements включал Playwright/curl_cffi/bs4 в обе Python-функции,
+а Git integration исходного проекта создавала preview при каждом push ветки
+восстановления. Накопились 52 READY deployments и предупреждение 75%/10GB.
+Правило: изолировать webhook requirements и payload, collector deps держать в
+requirements-collector.txt; preview восстановления отключить в git.deploymentEnabled.
+Очистка читает все aliases/pages, защищает current и healthy rollback, повторно
+проверяет перед deletion. Удалены 27 unaliased old previews/test deployments,
+28 aliases не изменены. Dependency tree 223→39MB; actual billed storage требует
+отдельной проверки и не равен простой сумме размеров установленных пакетов.

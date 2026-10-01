@@ -53,6 +53,8 @@ TARGETS = {
     'domclick_team': 'https://team.domclick.ru/',
     'dodo': 'https://dodoteam.ru/vacancies',
     'kuper': 'https://team.kuper.ru/vacancies',
+    'mts': 'https://job.mts.ru/',
+    'vk': 'https://team.vk.company/career/',
     'mtslink': 'https://job.mts-link.ru/vacancies/',
 }
 
@@ -63,7 +65,7 @@ def url_metadata(url):
             'query_keys': sorted(parse_qs(parts.query, keep_blank_values=True))}
 
 
-async def inspect_sources(names, probe_tbank_pagination=False):
+async def inspect_sources(names, probe_tbank_pagination=False, compare_http=False):
     results = {}
     async with async_playwright() as playwright:
         proxy = os.getenv('HTTPS_PROXY') or os.getenv('HTTP_PROXY')
@@ -78,6 +80,24 @@ async def inspect_sources(names, probe_tbank_pagination=False):
                 network = []
                 pending = set()
                 result = {'page': TARGETS[name], 'network': network}
+                if compare_http:
+                    # Разные клиенты проверяют транспорт, а не повторяют один запрос.
+                    import aiohttp
+                    from curl_cffi.requests import AsyncSession
+                    async with aiohttp.ClientSession(trust_env=True) as session:
+                        try:
+                            async with session.get(TARGETS[name], headers=config.REQUEST_HEADERS,
+                                                   timeout=aiohttp.ClientTimeout(total=25)) as response:
+                                result['http'] = {'status': response.status}
+                                await response.read()
+                        except Exception as exc:
+                            result['http'] = {'error_type': type(exc).__name__}
+                    async with AsyncSession(impersonate='chrome') as session:
+                        try:
+                            response = await session.get(TARGETS[name], headers=config.REQUEST_HEADERS, timeout=25)
+                            result['chrome_http'] = {'status': response.status_code}
+                        except Exception as exc:
+                            result['chrome_http'] = {'error_type': type(exc).__name__}
 
                 async def response_received(response):
                     request = response.request
@@ -138,6 +158,17 @@ async def inspect_sources(names, probe_tbank_pagination=False):
                     result['cookie_names'] = sorted({c['name'] for c in await context.cookies()})
                     soup = BeautifulSoup(html, 'html.parser')
                     result['title'] = soup.title.get_text(strip=True) if soup.title else None
+                    result['script_paths'] = [url_metadata(urljoin(page.url, script['src']))
+                                              for script in soup.select('script[src]')][:30]
+                    result['jsonld_present'] = bool(soup.select('script[type="application/ld+json"]'))
+                    next_data = soup.find('script', id='__NEXT_DATA__')
+                    if next_data:
+                        try:
+                            state = json.loads(next_data.string or '{}')
+                            result['next_metadata'] = {'keys': sorted(state), 'has_build_id': bool(state.get('buildId')),
+                                                       'page_props_keys': sorted((state.get('props') or {}).get('pageProps') or {})}
+                        except (ValueError, TypeError):
+                            result['next_metadata'] = {'invalid_json': True}
                     links = [urljoin(page.url, a['href']) for a in soup.select('a[href]')
                              if '/vacanc' in a['href'] or '/vakans' in a['href']]
                     result['vacancy_links'] = [url_metadata(url) for url in dict.fromkeys(links)][:12]
@@ -179,6 +210,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--sources', nargs='+', choices=TARGETS, default=list(TARGETS))
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--compare-http', action='store_true', help='Сравнить обычный HTTP, Chrome TLS и Chromium')
     parser.add_argument('--probe-tbank-pagination', action='store_true',
                         help='Явная DevTools-диагностика одного POST по кнопке каталога, без выгрузки вакансий')
     parser.add_argument('--source-ca', action='store_true',
@@ -186,13 +218,17 @@ def main():
     args = parser.parse_args()
     certificate = add_actions_browser_ca() if args.source_ca else None
     try:
-        report = asyncio.run(inspect_sources(args.sources, args.probe_tbank_pagination))
+        report = asyncio.run(inspect_sources(args.sources, args.probe_tbank_pagination, args.compare_http))
     finally:
         if certificate:
             location, nickname = certificate
             subprocess.run(['certutil', '-D', '-d', location, '-n', nickname], check=True)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+    for name, item in report.items():
+        # Только публичные пути и схемы, без cookies/token values.
+        compact = json.dumps(item, ensure_ascii=False, separators=(',', ':'))
+        print(f'::notice title=source-inspection-{name}::{compact}')
     return 0
 
 

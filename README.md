@@ -351,3 +351,40 @@ python scripts/run_profile.py --profile test configure-github
 production environment или исходному Telegram token. Сбор и доставка этой
 командой не запускаются. `prepare-github` и `setup_test_github.py` позволяют
 выполнить отдельные этапы; основной путь — `configure-github`.
+
+
+### Бесплатный Vercel: зависимости и старые деплои
+
+`requirements.txt` содержит только зависимости HTTP webhook/redirect; сборщик
+и Playwright устанавливаются отдельным `requirements-collector.txt` в Actions.
+`.vercelignore` исключает parsers/scripts/tests/docs и сборщик из пакета функций.
+В `vercel.json` отключены Git preview deployments только ветки
+`codex/restore-test-bot`; ручное test размещение сохраняется. Это предотвращает
+накопление тяжёлых preview при каждом коммите восстановления.
+
+```bash
+python scripts/vercel_storage.py
+python scripts/vercel_storage.py --apply
+```
+
+По умолчанию скрипт только показывает план очистки. Он полностью читает
+страницы deployments/aliases двух известных проектов, сохраняет все active
+aliases и два последних здоровых production deployments. Original historical
+production остаётся защищённым; удаляются только непривязанные preview и
+устаревшие test deployments. Перед каждым удалением защита проверяется заново;
+ошибка/неполная пагинация останавливает очистку. Cron не добавлен.
+
+2 октября 2026 удалены 27 устаревших deployments (26 original preview и 1 test),
+число готовых deployments уменьшилось с 52 до 25, все 28 alias bindings сохранены.
+Размер установленного Python dependency tree уменьшен с 223 до 39 МБ;
+фактическая квота Function Storage зависит от упаковки/дедупликации Vercel и
+не определяется суммой этих оценок.
+
+### Диагностика текущих источников
+
+В `Check Test Environment` input `inspect_sources` запускает только read-only
+браузерную и HTTP/Chrome-TLS проверку указанных имён, например `mts vk kuper`.
+Job не получает DB/Telegram secrets; отчёт содержит публичные пути, статусы,
+JSON-схемы и имена cookies/headers. Значения credentials не записываются.
+Live `Audit Sources` запускается вручную: push не повторяет сетевой аудит и
+не конкурирует со сборщиком за лимиты источников.

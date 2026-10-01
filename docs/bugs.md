@@ -178,3 +178,6 @@ API base берётся из public environment.VACANCIES_PUBLIC_API. В Actions
 Предыдущий audit ветки отменяется через concurrency. Пауза HTML GET — 5 секунд,
 audit enrichment timeout — 150 секунд. DevTools POST вызывается только явным
 флагом диагностического скрипта. Положительный результат требует всех описаний.
+
+Подтверждение BUG-097: Actions 36919821912, bank_contracts успешен — 385/385
+строк, все 25 описаний с четырьмя секциями, семь восстановленных 429, issues=[].

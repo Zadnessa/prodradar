@@ -103,7 +103,7 @@
 - Метод: POST
 - URL: {VACANCIES_PUBLIC_API}/getVacancies; base из публичного __TRAMVAI_STATE__.stores.environment. На 2026-10-01 — https://www.tbank.ru/pfpjobs/papi/getVacancies
 - Content-Type: application/json
-- Фильтр реального DevTools POST (2026-10-01): filters.generatedGraphQL с type=T_CAREER, status=ACTIVE, userGroup={groups:[Control],type:SPECIFIC}, or по category=tcareer_work_with_clients/tcareer_it/tcareer_back_office, includeSeoAndPcPublications=false, includeInternshipPublications=true, collapsePredstavitelPublications=true. Runtime снимает searchFiasIds Москвы. direction/category/cityId в filtersStore — UI-state; отправлять их напрямую нельзя. Runtime выбирает только tcareer_it/tcareer_back_office. Actions 36917545369 подтвердил 385/385 API строк (234 после city-dedup, 25 product); все описания ещё не подтверждены из-за 429.
+- Фильтр реального DevTools POST (2026-10-01): filters.generatedGraphQL с type=T_CAREER, status=ACTIVE, userGroup={groups:[Control],type:SPECIFIC}, or по category=tcareer_work_with_clients/tcareer_it/tcareer_back_office, includeSeoAndPcPublications=false, includeInternshipPublications=true, collapsePredstavitelPublications=true. Runtime снимает searchFiasIds Москвы. direction/category/cityId в filtersStore — UI-state; отправлять их напрямую нельзя. Runtime выбирает только tcareer_it/tcareer_back_office. Actions 36919821912 подтвердил 385/385 API строк (234 после city-dedup, 25 product) и все 25 полных описаний; семь 429 восстановлены ограниченными повторами.
 - Путь к вакансиям: payload.vacancies
 - Пагинация: плоские limit/offset в request.pagination; response.payload.nextPagination содержит offset/isFinished/totalCount. Прежнее вложение it устарело. Проверить totalCount до city-dedup; empty при непустом SSR-каталоге — ошибка.
 - Поля: urlSlug (str), title (str), shortDescription (str — содержит HTML-теги, очищать), regionId (str, FIAS UUID — источник города), seoSlug (str — компонент URL), category (str), backend (str), tags (array[str] — грейд: Middle, Senior, Head), source (str), specialty (str), cities (array[str], на новой странице может быть непустым; прежний parser использует regionId и city mappings)
@@ -116,7 +116,7 @@
 ### API отдельной вакансии
 - Метод: GET
 - URL: https://hrsites-api-vacancies.tbank.ru/vacancies/public/api/platform/v2/getVacancy?urlSlug={slug}
-- Статус: НЕ РАБОТАЕТ для source=publisher, возвращает пустые поля. Проверено 2026-03-22.
+- Историческая проверка 2026-03-22: для source=publisher возвращал пустые поля. В этом проходе detail API повторно не подтверждён; прежний HTTP HTML-enrichment сохранён.
 
 ## VK
 - Метод: GET
@@ -206,7 +206,7 @@
 
 ## Dodo
 - Метод: GET
-- URL списка: {apiURL}/api/v1/vacancies; apiURL извлекается при запуске из публичного window.__NUXT__.config.public.apiURL. На 2026-10-01 это https://job-site-backend.dodo-ai-platform.io; backend отвечает 503 в runtime и Actions, успешный новый контракт ещё не проверен.
+- URL списка: {apiURL}/api/v1/vacancies; apiURL извлекается при запуске из публичного window.__NUXT__.config.public.apiURL. На 2026-10-01 это https://job-site-backend.dodo-ai-platform.io; backend отвечает 503 в runtime и Actions, также для /api/v1/available-pages; успешный parse/detail не проверен. Текущий JS подтверждает GET /api/v1/vacancies и GET /api/v1/pages/vacancy/{id}, Authorization в этих stores не задаётся.
 - Путь к вакансиям: data[*].items (массив групп, у каждой поле items)
 - Пагинация: отсутствует, все вакансии в одном ответе
 - Поля списка: id (int), position (str), vacancy_location (str), work_format (array str), subspeciality (str), brand (str)
@@ -323,7 +323,7 @@
 - Обязательные заголовки: нет (стандартные)
 - Путь к вакансиям: result (массив категорий, искать по category === "vacancies", данные в .data)
 - Пагинация: page-based (параметр page, с 1), фиксированный размер 10, условие остановки: result[category=pagination].data.pages
-- Прежний фильтр: group=186247de-f72e-469e-9da3-db468f9b6197 (Product & Project Management). На 2026-10-01 он возвращает 0; общий API — одну вакансию контактного центра. Полнота не подтверждена: team.kuper.ru отвечает 403 с просьбой отключить VPN даже в Chromium и Actions.
+- Прежний фильтр: group=186247de-f72e-469e-9da3-db468f9b6197 (Product & Project Management). На 2026-10-01 он возвращает 0; общий API — одну вакансию контактного центра. Detail этой вакансии: status=PB (Опубликована), archivedAt=null, четыре текстовых блока. Для сверки HH employer 1272486 (www.kuper.ru) имеет 1308 вакансий, включая массовый найм; это не ожидаемое число офисного API. Полнота не подтверждена: team.kuper.ru отвечает 403 с просьбой отключить VPN даже в Chromium и Actions.
 - Поля: id (str, UUID), title (str), city (str, человекочитаемая), grade (array[str], может быть []), wf (array[str], может быть []), workExperience (int|null, число лет), description (str, HTML preview), friendlyUrl (str, ключ для detail и URL), group (str), division (str), idForUrl (int, не используется)
 - Ссылка: https://team.kuper.ru/vacancies/{friendlyUrl}
 - Описание: PREVIEW в списке (укороченное), полное через API detail

@@ -49,7 +49,7 @@ WAF определяет HTTP-клиент по параметрам TLS handsha
 3. Добавить cookies из браузера. Если OK — cookie-based, решение: Playwright в `browser.py`.
 4. Попробовать `curl_cffi` с `impersonate` без cookies. Если OK — TLS fingerprint, решение: `curl_cffi`.
 5. Попробовать `curl_cffi` с `impersonate` + cookies из Playwright. Если OK — комбинация TLS + cookies.
-6. Если ничего не помогает — Playwright для полного рендеринга (тип D, максимальная сложность).
+6. Если API всё ещё недоступен — исследовать актуальный endpoint и запрос в DevTools, сравнить допустимые сети, зафиксировать неуспех. Браузерный runtime служит только получению доступа; выгрузка вакансий через браузер запрещена. Обычный HTTP HTML-enrichment допустим для полного описания, отсутствующего в API.
 
 ## 3. Реестр компаний и их защит
 

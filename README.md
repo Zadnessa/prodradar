@@ -195,6 +195,8 @@ HTTP-проверка и тест пользовательского флоу в
   подтверждает полные HTML-секции и включает «Мы предлагаем» в description.
   Отдельный job `bank_contracts` проверяет все описания банков с `--no-browser`,
   чтобы установка Chromium не блокировала проверку их публичных API.
+  Для Т-Банка отчёт содержит `api_collected_count` и `api_total_count` до
+  объединения по городам; фирменный query выбирает IT/back-office.
 - `python scripts/backup_database.py /path/outside/repository/snapshot` выгружает
   шесть таблиц в NDJSON, OpenAPI и manifest с количеством строк и SHA-256.
   Используйте ключ, видящий пользовательские таблицы. Выгрузка ограничивает

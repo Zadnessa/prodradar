@@ -174,3 +174,5 @@ direction/category/cityId относятся к UI-state. Использоват
 модель запроса каталога, убрать searchFiasIds Москвы, API base взять из public
 environment.VACANCIES_PUBLIC_API. Полный текст включает «Мы предлагаем»;
 аудит проверяет html_sections, а не только наличие shortDescription.
+В query выбираются IT/back-office; в audit фиксируются число полученных API
+строк и totalCount до city-dedup, включая неуспешный/прерванный сбор.

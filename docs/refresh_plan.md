@@ -87,103 +87,77 @@ pipeline отвергает исходную БД, несоответствие 
 
 ### Источники и браузерная диагностика
 
-Сохраняются исправления предыдущего прохода: 2ГИС (98 вакансий, 2 product,
-полная пагинация), Lamoda (10/5, нет служебного `_raw_id`) и Контур (6/6,
-отдельные поля карточки). Ошибки HH OAuth/captcha не возвращают частичный список;
-дополнительно проверяется совпадение с `found` и уникальность id.
+Работа идёт через **фирменные API**, HH не подменяет их. Прежние исправления
+2ГИС (98/2, полная пагинация), Lamoda (10/5) и Контура (6/6) сохранены.
+HH OAuth/captcha, неверные items, повторяющиеся id и неполный found дают ошибку.
 
-В этом проходе исправлены Aviasales и МТС Линк: устаревшие API-фильтры молча
-возвращали `[]`; теперь читается общий фирменный список, роли отбирает прежний
-pipeline. Aviasales: **30 raw / 2 product**, полные описания обеих проверены.
-МТС Линк: **11 raw / 0 product**, публичные list/detail не требуют Bearer,
-это подтверждено запросами и Chromium network log. Исправлен формат даты
-`created` с timezone `+03:00`; `MTSLINK_BEARER_TOKEN` больше не нужен.
+- Aviasales: **30 raw / 2 product**, оба полных описания проверены.
+  Удалён устаревший specializations-фильтр, теперь читается общий фирменный список.
+- МТС Линк: **11 raw / 0 product**, публичные list/detail подтверждены HTTP и
+  Chromium без Bearer. categoryId удалён, дата created учитывает реальный offset.
+  `MTSLINK_BEARER_TOKEN` не нужен.
+- ДомКлик: **31 raw / 8 product**, все восемь описаний проверены. Через Chromium
+  найдены `/api/v1/vacancy/` (limit/offset) и `/api/v1/vacancy/detail/{slug}/`
+  на career.domclick.ru. Поля title/vacancycontent.work_format/description;
+  API достаточно Referer/Sec-Fetch, cookies не нужны в проверенных средах.
+  HTML получает qrator_ssid2. Старый rabota-bff endpoint даёт 404.
+- Альфа: **30 raw / 23 product**, все 23 описания проверены в Actions 36912345431.
+- Точка: **1 raw / 1 product**, полное описание проверено в том же Actions.
+- Т-Банк: **новый native-сбор ещё проверяется**. Chromium открыл текущий каталог;
+  DevTools кнопки «Показать ещё» снял POST getVacancies с
+  `filters.generatedGraphQL`: T_CAREER/ACTIVE, anonymous Control, or по трём
+  публичным categories. Direction/category/cityId относятся к UI-state;
+  отправлять их напрямую в API нельзя. API base берётся из публичного
+  `__TRAMVAI_STATE__.stores.environment.VACANCIES_PUBLIC_API`. Runtime исключает
+  searchFiasIds Москвы и читает плоскую пагинацию с totalCount. Пустой API при
+  непустом SSR — ошибка. Description включает «Мы предлагаем»; audit требует
+  реальные html_sections, одного shortDescription недостаточно.
 
-Через Chromium найден **новый фирменный API ДомКлика**:
-`https://career.domclick.ru/api/v1/vacancy/` (list с limit/offset) и
-`/api/v1/vacancy/detail/{slug}/` (полный текст в
-`result.vacancycontent.description`). Поля title и структурированный
-`vacancycontent.work_format` заменяют старый контракт. Пагинация подтверждена
-live через limit=1, offset=0/1/31. API проходит через обычный HTTP с Referer и
-Sec-Fetch-заголовками, без cookies; браузер страницы получает `qrator_ssid2`.
-Старый `rabota-bff.domclick.ru/api/v1/vacancies` возвращает 404.
-Live-аудит нового парсера: **31 raw / 8 product**, полные описания всех восьми
-проверены, нарушения контрактов не обнаружены. Все 17 регрессий проходят.
+**Причина TLS банков подтверждена**, Actions
+[36911140341](https://github.com/Zadnessa/prodradar/actions/runs/36911140341):
+системные CA не проходят, официальная Russian Trusted Root/Sub CA проходит
+для job.alfabank.ru/www.tbank.ru/hr.tochka.com с проверкой hostname.
+`parsers/tls.py` расширяет доверие только запросов этих sources;
+CERT_REQUIRED сохраняется. Происхождение/fingerprints/сроки —
+`parsers/certificates/README.md`. В этой облачной среде upstream proxy сам
+отвергает цепочку и даёт 503; локальный ответ не отменяет успешный Actions.
 
-Dodo: новый backend **`https://job-site-backend.dodo-ai-platform.io`** обнаружен
-в публичном `window.__NUXT__.config.public.apiURL`; list/detail routes сверены с
-текущими JS-модулями. Парсер извлекает адрес при каждом запуске, карточки теперь
-`/vacancy?vacancyId=…`. Backend в этой среде отвечает 503 nginx; успешный live
-parse/detail ещё не подтверждён.
+Dodo: backend **https://job-site-backend.dodo-ai-platform.io** найден в публичном
+Nuxt config, list/detail routes сверены с текущим JS. Парсер извлекает apiURL
+при запуске, карточка `/vacancy?vacancyId=…`. Backend отвечает **503 nginx**
+в runtime и Actions, Chromium fetch тоже не проходит. Referer/Origin не помогают;
+успешные parse/detail не подтверждены. Это не доказательство необходимости токена.
 
-`scripts/inspect_source_browser.py` запускает Chromium и сохраняет безопасный
-DevTools-отчёт: пути, имена query/header/cookies, статусы, структуру JSON и
-сетевые ошибки; **значения токенов и cookies не записываются**. В этой среде
-страницы ДомКлика и МТС Линк открылись (200). Альфа, Т-Банк, Точка дали 503
-даже в Chromium: proxy сообщает upstream `CERTIFICATE_VERIFY_FAILED`.
-Не отключать TLS и не считать этот ответ доказательством старого API.
-Купер: старый group-filter возвращает 0, общий старый API содержит лишь одну
-вакансию контактного центра; текущая страница team.kuper.ru даже в Chromium
-отвечает 403. Полнота фирменного списка пока не подтверждена.
+Купер: **полнота не подтверждена**. Старый group-filter возвращает 0, общий API —
+одну вакансию контактного центра. team.kuper.ru отвечает **403 с просьбой отключить
+VPN**, включая Chromium и Actions. Нужна проверка фирменного сайта/API в сети,
+которую сайт допускает; Playwright с того же IP не решает блокировку.
 
-Диагностика браузера добавлена в read-only Actions audit, где сеть отличается
-от облачной среды. Job `original` обязан оставаться **без**
-`environment: prodradar-test`, чтобы repo Secrets не затенялись test Secrets.
-Последний прежний Actions: [36903433041](https://github.com/Zadnessa/prodradar/actions/runs/36903433041)
-(16 ready, 2 empty, 6 failed; 8 тестов, original check успешен). Новый запуск
-после текущего коммита нужно проверить по jobs/logs и артефактам
-`sources-check.json`, `browser-sources-check.json`.
-Запуск [36909585896](https://github.com/Zadnessa/prodradar/actions/runs/36909585896)
-подтвердил 19 ready, 4 failed, 1 empty и 17 регрессий; original check успешен.
-Альфа/Т-Банк/Точка дают TLS certificate error и в HTTP, и Chromium;
-Dodo backend — 503, Купер — empty при 403 страницы. МТС/VK/СберЗдоровье ready.
-Проверяется официальная российская CA-цепочка для трёх банков через
-`parsers/tls.py` и отдельный Actions TLS report; hostname/CERT_REQUIRED сохранены.
-Actions [36911140341](https://github.com/Zadnessa/prodradar/actions/runs/36911140341)
-подтвердил TLS-гипотезу для всех трёх банков: system verify failed, официальный
-source_chain verified с hostname. Альфа 30/23 ready, Точка 1/1 ready; Т-Банк
-получает API 200, но старый фильтр даёт empty. Проверяются актуальный контракт
-Т-Банка и Chromium с временным NSS root только в одноразовом Actions runner.
-Общий audit: 21 ready, 1 failed (Dodo), 2 empty (Т-Банк/Купер); 19 тестов успешны.
-Actions 36911838162 открыл все три банковские страницы в Chromium с официальным
-CA (200). На странице Т-Банка есть ML-продакт вакансии; API-пробник получил 429
-на втором быстром POST, поэтому последующие audit steps не выполнились.
-Диагностика выполняется перед Chromium и соблюдает паузы/ограниченный retry;
-этот запуск не считать проверкой описаний всех вакансий.
-Actions 36912345431 подтвердил полные описания всех 23 product-вакансий Альфы
-и одной Точки. API-пробник выявил плоский nextPagination offset/isFinished/
-totalCount; прежнее вложение it получает OK/0 даже без profession-фильтра.
-Публичный Tramvai state страницы содержит filtersStore direction/category/cityId
-и 10 SSR-вакансий. Парсер Т-Банка обновлён на direction=it и плоскую пагинацию,
-21 регрессия проходит; live подтверждение нового сбора ещё требуется.
-Actions 36912995992 показал, что literal direction=it тоже устарел: SSR хранит
-finansy-bezopasnost-i-yurisprudenciya / it-razrabotka / analitika-i-dannye /
-produkt-i-marketing. Парсер берёт массив из публичного Tramvai state при каждом
-запуске, снимает city/category ограничения и проверяет весь каталог.
-DevTools нажимает только «Показать ещё» для подтверждения реального POST;
-пользователь явно разрешил исследование кнопок вакансий, формы отклика запрещены.
-Actions 36913762573: native старого API всё ещё OK/0, дополнительная серия
-пробников провоцирует 429; автоматические сравнительные probes убраны.
-На странице две кнопки «Показать ещё»: первая раскрывает фильтры, последняя
-загружает вакансии. DevTools выбирает последнюю; native пустой ответ при
-непустом SSR-каталоге теперь считается ошибкой, не успешным empty.
-Actions 36914458944 снял настоящий POST: filters.generatedGraphQL с
-type=T_CAREER, status=ACTIVE, anonymous Control, or по трём публичным categories.
-Direction — только UI-state, его нельзя отправлять как API-filter. Парсер
-использует реальный query без searchFiasIds Москвы; API base из публичного
-environment.VACANCIES_PUBLIC_API, плоская пагинация. Повторные probes убраны;
-один audit проверяет все product-описания пяти восстановленных источников,
-для Т-Банка требует реальные HTML-секции, включая «Мы предлагаем».
-Установка Chromium в Actions 36915232885 задержалась; native-проверка всех
-банковских product-описаний выделена в независимый job bank_contracts без
-браузера. Его bank-sources-check.json можно получить отдельно от source-audit.
+`scripts/inspect_source_browser.py` сохраняет пути, имена query/header/cookies,
+статусы, JSON-структуру и публичные filters/pagination каталога; значения
+токенов/cookies не записываются. Для явно разрешённой пользователем диагностики
+нажимается только последняя «Показать ещё» Т-Банка (первая раскрывает фильтры).
+Формы отклика не используются. `--source-ca` импортирует официальный root
+в NSS одноразового Actions runner и удаляет после Chromium; вне Actions запрещён.
+Runtime browser stage остаётся общим в `parsers/browser.py`.
 
-Локальный полный audit до установки Chromium не подтверждал МТС/VK/СберЗдоровье
-(503, proxy 403, отсутствующий браузер); не отменять прежний успешный Actions
-на основании этих локальных ошибок. Прямой gh download ZIP даёт 403, но
-GitHub connector `github_download_workflow_artifact` успешно получает ZIP,
-который затем скачивается через `download_file`. Последние source/browser
-отчёты сохранены в приватном `/workspace/prodradar-backups/diagnostics`.
+Read-only Actions имеет independent `bank_contracts` без Chromium и общий audit
+с `--full-enrich-sources alfa tochka tbank domclick aviasales`, затем DevTools.
+Job `original` остаётся **без** environment prodradar-test: repo Secrets исходного
+collector не должны затеняться тестовыми. Локально **21 регрессия успешна**.
+Актуальный запуск: [36915998999](https://github.com/Zadnessa/prodradar/actions/runs/36915998999)
+(SHA 68c22fc; результат пока ожидается). Предыдущий 36915232885 отменён из-за
+зависшей установки Chromium; он не является проверкой источников.
+Native job этого запуска подтвердил 23 HTTP 200 страницы Т-Банка, но сбор
+общего каталога с массовыми work_with_clients исчерпал audit timeout 180 секунд.
+В query выбраны IT/back-office; audit теперь показывает api_collected_count и
+api_total_count даже при ошибке. Native работает без browser tokens; полноту
+суженного каталога и все product-описания ещё нужно подтвердить новым запуском.
+
+Прямой gh download ZIP даёт 403, но GitHub connector
+`github_download_workflow_artifact` + `download_file` успешно получает отчёты.
+Приватный каталог `/workspace/prodradar-backups/diagnostics` содержит только
+диагностику прямых firm sources; прежние эксперименты с HH fallback исключены.
 
 ### Точные следующие действия
 
@@ -204,7 +178,7 @@ GitHub connector `github_download_workflow_artifact` успешно получа
    исходного collector не трогать. Если GitHub write снова даёт 403, выполнить
    ручной тестовый сбор локально с проверкой target и зафиксировать ограничение.
 5. Прочитать свежие browser/API отчёты Actions; восстановить оставшиеся
-   **фирменные** API Альфы, Т-Банка, Точки, Dodo и Купера, проверить все страницы
+   **фирменные** API Dodo/Купера и проверить итог Т-Банка, все страницы
    и все product-описания. При динамическом token/cookie добавить извлечение в
    общий browser stage. HH нужен для сверки, fallback не является завершением ремонта.
 6. Разместить код только в `prodradar-test`; проверить 403 без webhook secret,

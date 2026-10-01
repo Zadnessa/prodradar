@@ -119,6 +119,8 @@ class TBankParser(BaseParser):
         pagination = {"limit": 100, "offset": 0}
         collected = []
         seen_ids = set()
+        self._api_collected_count = 0
+        self._api_total_count = None
 
         while True:
             payload = {
@@ -131,7 +133,7 @@ class TBankParser(BaseParser):
                     "userGroup": {"groups": ["Control"], "type": "SPECIFIC"},
                     "collapsePredstavitelPublications": True,
                     "or": [{"category": category} for category in (
-                        "tcareer_work_with_clients", "tcareer_it", "tcareer_back_office")],
+                        "tcareer_it", "tcareer_back_office")],
                 }},
                 "pagination": pagination,
             }
@@ -155,6 +157,8 @@ class TBankParser(BaseParser):
                 seen_ids.add(raw_id)
             collected.extend(items)
             total = next_pagination.get("totalCount")
+            self._api_total_count = total
+            self._api_collected_count = len(collected)
             finished = next_pagination.get("isFinished")
             if not isinstance(total, int) or not isinstance(finished, bool):
                 raise ValueError("T-Bank: API не подтвердил totalCount/isFinished")

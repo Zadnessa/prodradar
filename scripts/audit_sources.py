@@ -63,6 +63,7 @@ async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_
                 statuses[str(params.response.status)] += 1
 
             trace.on_request_end.append(on_end)
+            parser = None
             try:
                 parser = PARSER_REGISTRY[name]()
                 async with aiohttp.ClientSession(trust_env=True, timeout=aiohttp.ClientTimeout(total=30),
@@ -116,6 +117,9 @@ async def audit_sources(names=None, enrichment_limit=2, parser_timeout=180, use_
                 if isinstance(exc, aiohttp.ClientResponseError):
                     result["http_status"] = exc.status
             result["http_statuses"] = dict(statuses)
+            if name == 'tbank':
+                result['api_total_count'] = getattr(parser, '_api_total_count', None)
+                result['api_collected_count'] = getattr(parser, '_api_collected_count', 0)
             result["duration_seconds"] = round(time.monotonic() - started, 1)
             report["sources"][name] = result
             print(json.dumps({"source": name, **{key: value for key, value in result.items() if key != "samples"}},

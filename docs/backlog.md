@@ -113,7 +113,6 @@
 - [ ] Расшивка bot/handlers.py на onboarding/settings/delivery модули (bot/handlers.py, bot/).
 - [ ] Расшивка SupabaseService на доменные репозитории (database/supabase_client.py, database/).
 - [ ] Дашборд аналитики (Metabase/Grafana) после переезда на VPS (infra/, analytics/).
-- [ ] Проверить новые секреты среды Codex и выполнить HTTP-тест webhook `@ProdRadar_bot`; готово когда Vercel и HH проходят реальные API-проверки, а настроенный обработчик принимает аутентифицированный запрос (scripts/check_environment.py, api/webhook.py, README.md).
 
 ## Архив
 
@@ -230,3 +229,4 @@
 - [x] Сохранить прикладную SQL-схему public и все шесть таблиц исходного продукта; подтверждено восстановлением PostgreSQL 17, сравнением значений, каталога и RLS, подготовлена транзакционная загрузка только справочников в пустую тестовую БД (scripts/backup_schema.py, scripts/provision_test_database.py, docs/refresh_plan.md).
 
 - [x] MTS Link — автоматическое получение токена или переход на HH как fallback-источник; фирменный list/detail теперь публичный и не требует Bearer, восстановлен прямой сбор без categoryId, подтверждены 11 вакансий и ответ detail (parsers/mtslink.py, tests/test_refresh.py, docs/refresh_plan.md).
+- [x] Проверить новые секреты среды Codex и выполнить HTTP-тест webhook `@ProdRadar_bot`; готово когда Vercel и HH проходят реальные API-проверки, а настроенный обработчик принимает аутентифицированный запрос (scripts/check_environment.py, api/webhook.py, README.md).

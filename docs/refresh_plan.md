@@ -26,6 +26,68 @@ browser runtime
 
 ### Приоритет следующей сессии
 
+**Текущий запуск: Supabase и размещение завершены, ручной флоу проверяется.**
+Новый Management token успешно читает оба проекта, ключи и SQL. Уже существующая
+БД `jmsdxgylyjxwdwmdrmxw` была пустой; в одной транзакции загружены 6 таблиц,
+35 компаний и 53 city mappings. Пользователи, вакансии и история до сборщика
+оставались пустыми. Колонки, constraints, индексы, RLS policies и ACL сверены
+с исходной схемой; массив `pg_policies.roles` нормализован при сравнении.
+`supabase_admin` default privileges уже совпадали: облачная роль `postgres`
+не имеет права повторять их ALTER. Provision теперь проверяет точное совпадение
+платформенных ACL до записи и сохраняет их; различие останавливает загрузку.
+Первый отказ откатил транзакцию целиком. Dodo отключён только в новой БД.
+
+В существующий Vercel `prodradar-test` подключён настоящий service_role новой БД.
+Deployment на `https://prodradar-test.vercel.app` готов. Vercel SSO protection
+отключена только у тестового проекта: Telegram нужен публичный HTTP endpoint;
+webhook по-прежнему защищён `TELEGRAM_WEBHOOK_SECRET`. Live POST без секрета —
+403, аутентифицированный POST с неизвестным пользователем — 200/`ok=true`
+после чтения тестовой БД. Vercel proxy передаёт тело с `Transfer-Encoding: chunked`
+без Content-Length; исправлено чтение chunks в `api/webhook.py`, иначе прежний
+код отвечал 200/`ok=false` из-за пустого JSON. Диагностические варианты размещения
+заменены обычным кодом. Только webhook **@ProdRadar_bot** переведён на
+`https://prodradar-test.vercel.app/api/webhook`, pending updates=0.
+Исходный **@findproductjob_bot** сохраняет
+`https://prodradar.vercel.app/api/webhook`; его БД, env и размещение не менялись.
+Исходный workflow `collect.yml` остаётся `disabled_inactivity`, cron не включался.
+
+**Сбор успешен частично, полный прогон не подтверждён.** Защищённый локальный
+collector получил 445 сырых вакансий и сохранил 129 product-вакансий с полными
+описаниями, затем завершился ошибкой из-за шести источников. Перед ним не был
+проверен установленный Chromium; СберЗдоровье упало на отсутствующем executable.
+Установлен Chromium текущей версии Playwright, проверен локальный browser smoke,
+повторён только СберЗдоровье: buildId получен, 46 raw / 6 product, все описания,
+ошибок 0. Итого **135 вакансий и 135 непустых описаний** в новой БД.
+Остаются пять ошибок среды: Альфа/Т-Банк/Точка — proxy upstream TLS 503,
+МТС — proxy upstream connection termination 503, VK — отказ CONNECT самого
+proxy с 403. Это не успешный полный сбор и не доказательство ошибки API VK.
+Ранее успешные Actions банков сохраняют силу для своего окружения, но не
+подменяют успешный тестовый collector в текущей среде. Dodo не запускался;
+полнота Купера не объявляется подтверждённой. HH fallback не добавлялся.
+
+GitHub GET variables/secrets environment `prodradar-test` возвращает 403;
+обновление URL/KEY там не выполнено. Repo Secrets исходного collector не менялись.
+Для полного тестового collector в Actions нужен доступ к этому environment,
+затем обновление только его URL/KEY. Локальный прогон не исправляет его настройку.
+
+Приватный архив прошлого экземпляра отсутствовал, поэтому повторены REST и SQL
+backup: 638 vacancies, 65 users, 15323 delivery, **140406 events**, 35 companies,
+53 mappings. В PostgreSQL 17 проверены все значения каждой строки, количества,
+каталог и RLS. Новая копия:
+`/workspace/prodradar-backups/prodradar-original-verified-2026-10-01-session2.tar.gz`,
+SHA-256 `21c6f71ae7c82074d2c130d40b16e22fd2e08e57a101a7d7e2907e57c8c0cf06`.
+REST/SQL и отчёты `restore-check.json`, `webhook-check.json`,
+`test-environment-check.json`, `test-collector.json`, `test-sberhealth.json`
+находятся вне Git в `/workspace/prodradar-backups`. Скрипты текущих операций
+в `/workspace/prodradar-cloud` получают секреты из API в память. Эти файлы
+также не переносятся автоматически в другой экземпляр.
+
+28 регрессий проходят. Пользователю отправлен чеклист настоящих нажатий:
+полный онбординг и быстрый старт, выдача/Ещё/Хватит/Все, настройки, mute/unmute,
+returning /start, просмотренные, pause/resume/stop. **До сверки этих действий
+и delivery T-052 и проход 1–4 не считать завершёнными.** Записи ниже описывают
+состояние перед текущим запуском, когда облачная схема и deployment ещё отсутствовали.
+
 Последнее решение пользователя: **продолжить с Supabase и запустить тестовый
 @ProdRadar_bot на прежнем флоу**. Пользователь сообщил, что карьерный сайт
 Dodo недоступен, предположил ремонт и отложил повторную проверку. Не исследовать

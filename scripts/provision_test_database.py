@@ -14,10 +14,22 @@ import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from scripts.backup_schema import ident
+from scripts.backup_schema import CATALOG_QUERIES, ident, role
 
 
 ORIGINAL_PROJECT_REF = "ykbtejjedefibdgyfgov"
+
+
+def preserve_platform_defaults(schema, source, target, current_user):
+    """Платформенные ACL сохраняем только после точного сравнения с копией."""
+    owners = {grant['owner'] for grant in source if grant['owner'] != current_user}
+    for owner in owners:
+        expected = [grant for grant in source if grant['owner'] == owner]
+        actual = [grant for grant in target if grant['owner'] == owner]
+        if expected != actual:
+            raise ValueError('Default privileges платформенной роли не совпадают')
+    prefixes = tuple(f'ALTER DEFAULT PRIVILEGES FOR ROLE {role(owner)} ' for owner in owners)
+    return '\n'.join(line for line in schema.splitlines() if not line.startswith(prefixes))
 
 
 def verify_files(directory, manifest_key):
@@ -59,6 +71,10 @@ def provision(project_ref, schema_directory, data_directory, token):
     schema = (schema_directory / 'schema.sql').read_text().strip()
     if not schema.startswith('BEGIN;') or not schema.endswith('COMMIT;'):
         raise ValueError('Неподдерживаемый формат schema.sql')
+    catalog = json.loads((schema_directory / 'catalog.json').read_text())
+    defaults = query(CATALOG_QUERIES['default_grants'])
+    current_user = query('SELECT current_user AS name')[0]['name']
+    schema = preserve_platform_defaults(schema, catalog['default_grants'], defaults, current_user)
     statements = [schema[:-len('COMMIT;')]]
     for table in ('companies', 'city_mappings'):
         path = data_directory / f'{table}.ndjson'
@@ -79,6 +95,8 @@ def provision(project_ref, schema_directory, data_directory, token):
         THEN RAISE EXCEPTION 'public is not empty'; END IF; END $$;"""
     statements[0] = statements[0].replace('BEGIN;', 'BEGIN;\n' + guard, 1)
     query('\n'.join(statements))
+    if query(CATALOG_QUERIES['default_grants']) != catalog['default_grants']:
+        raise ValueError('Default privileges после восстановления не совпадают')
     counts = query('SELECT ' + ','.join(
         f'(SELECT count(*) FROM public.{ident(table)}) AS {ident(table)}'
         for table in data_manifest['tables']))[0]

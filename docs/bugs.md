@@ -181,3 +181,21 @@ audit enrichment timeout — 150 секунд. DevTools POST вызываетс�
 
 Подтверждение BUG-097: Actions 36919821912, bank_contracts успешен — 385/385
 строк, все 25 описаний с четырьмя секциями, семь восстановленных 429, issues=[].
+
+### Облачный provision меняет права платформенной роли (BUG-098)
+Суть: Supabase Management SQL выполняется от postgres без superuser; ALTER
+DEFAULT PRIVILEGES FOR ROLE supabase_admin запрещён, даже когда права уже
+совпадают. Транзакция загрузки откатывалась. Правило: до записи сверять все
+default privileges чужой роли с копией, при несовпадении останавливаться;
+совпадающие платформенные ACL сохранять без ALTER. После загрузки повторно
+сверять default privileges. Подтверждено загрузкой 6 таблиц и 35/53 справочников
+в пустую тестовую БД; две регрессии проверяют совпадение и отказ при различии.
+
+### Webhook читает пустое тело при HTTP chunked (BUG-099)
+Суть: Vercel proxy передаёт Transfer-Encoding: chunked без Content-Length.
+Прежний read(0) приводил к JSONDecodeError и 200/ok=false даже для корректного
+аутентифицированного update. Правило: поддерживать обе формы HTTP тела,
+проверять размеры/CRLF, не ждать EOF после последнего chunk. Три регрессии
+проверяют chunks с расширением/trailer и UTF-8, обычный Content-Length,
+отказ на оборванном или слишком большом теле. Live Vercel POST теперь
+возвращает 200/ok=true; запрос без webhook secret — 403.

@@ -46,6 +46,36 @@ def _is_transient_error(exc):
     return isinstance(exc, TRANSIENT_EXCEPTIONS)
 
 
+def _read_request_body(headers, stream):
+    """Читает обычное тело или HTTP chunks, которые передаёт Vercel proxy."""
+    if headers.get("Transfer-Encoding", "").lower() != "chunked":
+        return stream.read(int(headers.get("Content-Length", 0)))
+    chunks = []
+    total = 0
+    while True:
+        line = stream.readline(128)
+        if not line.endswith(b"\r\n"):
+            raise ValueError("Некорректный размер HTTP chunk")
+        size = int(line.split(b";", 1)[0].strip(), 16)
+        if size < 0 or total + size > 2 * 1024 * 1024:
+            raise ValueError("Слишком большое тело webhook")
+        if size == 0:
+            # Не ждём EOF: proxy может оставить соединение открытым.
+            trailer_bytes = 0
+            while True:
+                trailer = stream.readline(8192)
+                trailer_bytes += len(trailer)
+                if not trailer.endswith(b"\r\n") or trailer_bytes > 8192:
+                    raise ValueError("Некорректные HTTP trailers")
+                if trailer == b"\r\n":
+                    return b"".join(chunks)
+        chunk = stream.read(size)
+        if len(chunk) != size or stream.read(2) != b"\r\n":
+            raise ValueError("Оборванный HTTP chunk")
+        chunks.append(chunk)
+        total += size
+
+
 class handler(BaseHTTPRequestHandler):
     """HTTP handler для Telegram update."""
 
@@ -68,8 +98,7 @@ class handler(BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps({"ok": False, "error": "forbidden"}).encode("utf-8"))
                 return
 
-            content_len = int(self.headers.get("Content-Length", 0))
-            body = self.rfile.read(content_len)
+            body = _read_request_body(self.headers, self.rfile)
             update = json.loads(body.decode("utf-8"))
             logging.info(
                 "Webhook update received: callback=%s message=%s",

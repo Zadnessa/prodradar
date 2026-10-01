@@ -1,6 +1,7 @@
 """Регрессии контрактов источников и полноты резервной выгрузки."""
 
 import hashlib
+import io
 import json
 import os
 import ssl
@@ -23,7 +24,29 @@ from parsers.tbank import TBankParser
 from scripts.backup_database import backup_database
 from scripts.backup_schema import render_schema
 from scripts.collect_test import check_target
+from scripts.provision_test_database import preserve_platform_defaults
 from parsers.tls import source_ssl_context
+from api.webhook import _read_request_body
+
+
+class WebhookBodyTests(unittest.TestCase):
+    def test_vercel_chunked_json_and_trailers_are_decoded_without_reading_eof(self):
+        body = '{"message":{"text":"Привет"}}'.encode('utf-8')
+        parts = [body[:17], body[17:]]
+        wire = b''.join(f'{len(part):x};test=1\r\n'.encode() + part + b'\r\n'
+                        for part in parts) + b'0\r\nX-Test: yes\r\n\r\nNEXT REQUEST'
+        stream = io.BytesIO(wire)
+        headers = {'Transfer-Encoding': 'chunked'}
+        self.assertEqual(json.loads(_read_request_body(headers, stream)), json.loads(body))
+        self.assertEqual(stream.read(), b'NEXT REQUEST')
+
+    def test_content_length_body_keeps_existing_behavior(self):
+        self.assertEqual(_read_request_body({'Content-Length': '2'}, io.BytesIO(b'{}NEXT')), b'{}')
+
+    def test_incomplete_or_oversized_chunks_are_rejected(self):
+        for wire in (b'5\r\n{}', b'2\r\n{}xx0\r\n\r\n', b'200001\r\n', b'0\r\n'):
+            with self.subTest(wire=wire), self.assertRaises(ValueError):
+                _read_request_body({'Transfer-Encoding': 'chunked'}, io.BytesIO(wire))
 
 
 class SourceTLSVerificationTests(unittest.TestCase):
@@ -263,6 +286,26 @@ class ParserTests(unittest.IsolatedAsyncioTestCase):
 
 
 class BackupTests(unittest.TestCase):
+    def test_provision_preserves_matching_supabase_admin_defaults(self):
+        grants = [{'owner': 'supabase_admin', 'type': 'r', 'grantee': 'anon',
+                   'privilege': 'SELECT', 'is_grantable': False}]
+        sql = ('BEGIN;\nALTER DEFAULT PRIVILEGES FOR ROLE "supabase_admin" '
+               'IN SCHEMA public GRANT SELECT ON TABLES TO "anon";\n'
+               'ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA public '
+               'GRANT SELECT ON TABLES TO "anon";\nCOMMIT;')
+        result = preserve_platform_defaults(sql, grants, grants, 'postgres')
+        self.assertNotIn('ROLE "supabase_admin"', result)
+        self.assertIn('ROLE "postgres"', result)
+        self.assertTrue(result.startswith('BEGIN;') and result.endswith('COMMIT;'))
+
+    def test_provision_rejects_different_platform_defaults(self):
+        grants = [{'owner': 'supabase_admin', 'type': 'r', 'grantee': 'anon',
+                   'privilege': 'SELECT', 'is_grantable': False}]
+        for target in ([], [{**grants[0], 'is_grantable': True}],
+                       grants + [{**grants[0], 'privilege': 'INSERT'}]):
+            with self.subTest(target=target), self.assertRaises(ValueError):
+                preserve_platform_defaults('BEGIN;\nCOMMIT;', grants, target, 'postgres')
+
     def test_test_collector_rejects_original_database_before_api_calls(self):
         with patch('scripts.collect_test._post') as telegram, \
                 patch('scripts.collect_test.SupabaseService') as database:

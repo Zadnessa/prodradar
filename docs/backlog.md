@@ -33,7 +33,6 @@
 - [ ] T-043 Аудит хардкода по всем парсерам: полный скан 28 парсеров, замена хардкода на конфиг/БД (parsers/).
 - [ ] T-044 Сбор фидбека по формату выдачи (карточки vs дайджест) (docs/).
 - [ ] T-045 Inline mute-кнопка на карточке вакансии (delivery/telegram.py, bot/handlers.py).
-- [ ] T-049 VK enrich: добавить проверку existing значений grade и description перед перезаписью; description заменять только если len(new) > len(current) (parsers/vk.py).
 - [ ] T-050 AGENTS.md: добавить callback-префиксы more:new:, more:new:all:, more:new:stop в документацию (AGENTS.md).
 - [ ] T-051 Вернуть технические PM-вакансии после AI-классификации по категориям (классик, growth, tech, AI/ML); до AI-фазы отсекать blacklist-ом (config.py, ai/).
 - [x] T-057 BUG-079: on-demand zero-state показывает кнопку просмотренных, если новых нет и все подходящие вакансии уже delivered; готово когда в zero-state есть CTA `more:reseen:0`, а пагинация работает через `more:reseen:*` (bot/handlers.py, database/supabase_client.py, docs/).
@@ -240,3 +239,5 @@
 - [x] Уменьшить рост бесплатной Vercel Function Storage: отделить collector/browser зависимости и payload от webhook, отключить preview ветки восстановления, безопасно удалить 28 неиспользуемых deployments с сохранением 28 aliases/current/rollbacks (requirements*.txt, .vercelignore, vercel.json, scripts/vercel_storage.py, tests/test_vercel_storage.py).
 
 - [x] Защитить Т-Банк от обрывов read-only ответов, MTS/VK от неполной пагинации, VK от перезаписи enrichment, Купер от ложного empty success при blocked career (parsers/, tests/test_refresh.py).
+
+- [x] VK enrich: добавить проверку existing значений grade и description перед перезаписью; description заменять только если len(new) > len(current) (parsers/vk.py).

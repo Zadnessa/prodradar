@@ -164,6 +164,7 @@ class MtsParser(BaseParser):
                         "experience": info.get("experience"),
                         "published_at": self._parse_russian_date(info.get("date")),
                         "description": None,
+                        "source_json": item,
                         "url": f"https://job.mts.ru/vacancy/{raw_id_str}",
                     }
                 )
@@ -207,4 +208,3 @@ class MtsParser(BaseParser):
                 vacancy["description"] = new_description
 
         return vacancy
-

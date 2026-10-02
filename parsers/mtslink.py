@@ -82,6 +82,7 @@ class MtsLinkParser(BaseParser):
                     "experience": item.get("workExperience"),
                     "published_at": self._build_published_at(item.get("created")),
                     "description": "",
+                    "source_json": item,
                     "url": f"https://job.mts-link.ru/vacancy/?id={raw_id}",
                 }
             )

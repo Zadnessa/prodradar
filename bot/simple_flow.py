@@ -18,38 +18,44 @@ def effective_filters(filters):
             "excluded_companies": (filters or {}).get("excluded_companies") or []}
 
 
-def _all_available(db, chat_id):
+def _all_available(db, chat_id, include_delivered=False):
     result = []
     while True:
-        page = db.get_undelivered_vacancies(chat_id, limit=1000, offset=len(result))
+        page = (db.get_active_vacancies_for_filter_check(limit=1000, offset=len(result)) if include_delivered
+                else db.get_undelivered_vacancies(chat_id, limit=1000, offset=len(result)))
         result.extend(page)
         if len(page) < 1000:
             return result
 
 
-def show_vacancies(chat_id, db=None, family="project"):
+def show_vacancies(chat_id, db=None, family="project", include_delivered=False, offset=0):
     db = db or SupabaseService()
     if family not in {"project", "bizdev"}:
         family = "project"
     user = db.get_user(chat_id) or {}
     filters = effective_filters(user.get("filters"))
-    available = [v for v in _all_available(db, chat_id) if family in (v.get("role_families") or [])]
-    vacancies = rank_vacancies(filter_vacancies_for_user(available, filters), filters["grades"])
     companies = {c["name"]: c for c in db.get_enabled_companies()}
+    available = [v for v in _all_available(db, chat_id, include_delivered) if family in (v.get("role_families") or [])
+                 and v.get("company") in companies]
+    vacancies = rank_vacancies(filter_vacancies_for_user(available, filters), filters["grades"])
     delivered = []
-    for vacancy in vacancies[:PAGE_SIZE]:
+    for vacancy in vacancies[offset:offset + PAGE_SIZE]:
         text = format_vacancy_message(vacancy, companies.get(vacancy.get("company"), {}),
                                       chat_id=chat_id, source="simple")
         result = send_message(chat_id, text)
         # Отмечаем каждую успешно отправленную карточку до следующей API операции.
         if result is None:
             return delivered
-        db.mark_delivered(chat_id, [vacancy["id"]], source="simple")
+        if not include_delivered:
+            db.mark_delivered(chat_id, [vacancy["id"]], source="simple")
         delivered.append(vacancy["id"])
     rows = []
-    remaining = len(vacancies) - len(delivered)
+    remaining = max(len(vacancies) - offset - len(delivered), 0)
     if remaining:
-        rows.append([{"text": f"Ещё вакансии ({remaining})", "callback_data": f"sm:more:{family}"}])
+        callback = f"sm:seen:{family}:{offset + PAGE_SIZE}" if include_delivered else f"sm:more:{family}"
+        rows.append([{"text": f"Ещё вакансии ({remaining})", "callback_data": callback}])
+    if not vacancies and not include_delivered:
+        rows.append([{"text": "Посмотреть текущие ещё раз", "callback_data": f"sm:seen:{family}:0"}])
     rows.append([{"text": "Запасной вариант: bizdev" if family == "project" else "К проектным вакансиям",
                   "callback_data": "sm:more:bizdev" if family == "project" else "sm:more:project"}])
     rows.append([{"text": "Настройки", "callback_data": "sm:settings"}])
@@ -100,6 +106,11 @@ def show_blocked(chat_id, db=None):
 
 def handle_simple_callback(data, chat_id, message_id, db=None):
     db = db or SupabaseService()
+    if data.startswith("sm:seen:"):
+        parts = data.split(":")
+        if len(parts) == 4 and parts[3].isdigit():
+            return show_vacancies(chat_id, db, parts[2], include_delivered=True, offset=int(parts[3]))
+        return
     if data.startswith("sm:more:"):
         return show_vacancies(chat_id, db, data.split(":", 2)[2])
     if data in {"more:0", "st:deliver"} or data.startswith(("more:", "hub:", "ob:")):
@@ -162,4 +173,3 @@ def handle_simple_message(chat_id, text, username=None, db=None, **profile):
         return show_vacancies(chat_id, db)
     return send_message(chat_id, "Нажми «Вакансии» для проектного поиска или «Настройки» для грейдов и mute.",
                         reply_markup=build_main_reply_keyboard())
-

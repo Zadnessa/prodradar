@@ -21,7 +21,7 @@ def evaluate(pool, gold, classifier=classify):
                 if row['split'] != split:
                     continue
                 expected = family in row['families']
-                actual = family in classifier({'title': row['title']})['families']
+                actual = family in classifier(row)['families']
                 tp += bool(expected and actual)
                 fn += bool(expected and not actual)
                 fp += bool(not expected and actual)
@@ -61,6 +61,10 @@ def main():
                              '|'.join(decision['native_groups']), v['url']])
     from scripts.role_filter_ablation import ablate
     (args.output / 'ablation.json').write_text(json.dumps(ablate(json.loads(args.pool.read_text()), json.loads(args.gold.read_text())), ensure_ascii=False, indent=2) + '\n')
+    from scripts.native_role_cohorts import evaluate_native_cohorts
+    native_gold = json.loads(Path('tests/fixtures/native_role_cohorts.json').read_text())
+    native = evaluate_native_cohorts(json.loads(args.pool.read_text()), native_gold)
+    (args.output / 'native_cohorts.json').write_text(json.dumps(native, ensure_ascii=False, indent=2) + '\n')
     print(json.dumps(summary, ensure_ascii=False))
     return 0
 

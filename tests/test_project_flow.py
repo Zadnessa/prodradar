@@ -159,9 +159,10 @@ class AblationTests(unittest.TestCase):
         from scripts.role_filter_ablation import ablate
         gold = json.loads(Path('tests/fixtures/project_bizdev_gold.json').read_text())
         report = ablate([], gold)
-        for stage in report['stages'][:4]:
-            self.assertFalse(stage['missed_targets'], stage)
-        self.assertTrue(any(v['family'] == 'project' for v in report['stages'][4]['missed_targets']))
+        for stage in report['stages'][2:4]:
+            self.assertFalse(stage['target_losses_vs_previous'], stage)
+        self.assertFalse(report['stages'][4]['missed_targets'])
+        self.assertTrue(any(v['family'] == 'project' for v in report['stages'][5]['missed_targets']))
 
     def test_relaxing_grade_and_mute_restores_vacancies_without_changing_roles(self):
         from delivery.filters import filter_vacancies_for_user
@@ -178,3 +179,98 @@ class AblationTests(unittest.TestCase):
         self.assertEqual({v['id'] for v in relaxed}, {'senior', 'junior', 'unknown'})
         self.assertEqual(restored, strict)
         self.assertTrue(all('project' in classify(v)['families'] for v in relaxed))
+
+class ReplayTests(unittest.TestCase):
+    def test_replay_is_explicit_and_does_not_clear_or_rewrite_history(self):
+        db = MagicMock()
+        db.get_user.return_value = {'filters': {}}
+        db.get_enabled_companies.return_value = [{'name': 'Example'}]
+        db.get_active_vacancies_for_filter_check.return_value = [
+            {'id':'seen', 'title':'Project Manager', 'company':'Example', 'role_families':['project'], 'url':'https://example.com'}]
+        with patch('bot.simple_flow.send_message', return_value={'message_id':1}):
+            simple_flow.handle_simple_callback('sm:seen:project:0', 1, 2, db)
+        db.mark_delivered.assert_not_called()
+        db.clear_delivery_history.assert_not_called()
+        db.get_undelivered_vacancies.assert_not_called()
+
+class SemanticAliasTests(unittest.TestCase):
+    def test_verified_alias_requires_company_title_and_both_duty_quotes(self):
+        import json
+        from pathlib import Path
+        from delivery.role_aliases import ALIASES
+        gold = json.loads(Path('tests/fixtures/project_bizdev_gold.json').read_text())
+        for alias in ALIASES:
+            row = next(r for r in gold['rows'] if r['title'] == alias['title'] and r.get('company') == alias['company'])
+            with self.subTest(alias=alias['id']):
+                self.assertEqual(set(classify(row)['families']), set(alias['families']))
+                self.assertNotIn('company_alias:' + alias['id'], classify(dict(row, company='Other company'))['rules'])
+                self.assertNotIn('company_alias:' + alias['id'], classify(dict(row, description='Опыт работы с проектами. Знание Jira.'))['rules'])
+                first_quote = alias['evidence']['quotes'][0]
+                self.assertNotIn('company_alias:' + alias['id'], classify(dict(row, description=first_quote))['rules'])
+
+    def test_generic_product_and_warehouse_operations_stay_out(self):
+        for vacancy in [
+            {'company':'Ozon','title':'Менеджер по развитию продукта (курьерская доставка)',
+             'description':'Discovery, интервью, продуктовые фичи, метрики и бэклог'},
+            {'company':'Ozon','title':'Руководитель отдела по оптимизации потерь ( СЦ Радищево)',
+             'description':'Организация подразделения склада, инвентаризация, утилизация и KPI'},
+            {'company':'VK','title':'Ассистент команды','description':'Календарь, встречи и документооборот'},
+            {'company':'VK','title':'Кадровый резерв МАХ','description':'Задачи зависят от будущей роли'}]:
+            self.assertNotEqual(classify(vacancy)['status'], 'selected')
+
+class NativeCohortTests(unittest.TestCase):
+    def test_full_audited_native_groups_retain_targets_without_role_noise(self):
+        import json
+        from pathlib import Path
+        from scripts.native_role_cohorts import evaluate_native_cohorts
+        gold = json.loads(Path('tests/fixtures/native_role_cohorts.json').read_text())
+        # Срезы пересекаются: не дублируем одну вакансию в исходном каталоге.
+        pool = list({v['id']: v for rows in gold['cohorts'].values() for v in rows}.values())
+        report = evaluate_native_cohorts(pool, gold)
+        for name, row in report['cohorts'].items():
+            with self.subTest(cohort=name):
+                self.assertFalse(row['unaudited_ids'])
+                self.assertFalse(row['missing_snapshot_ids'])
+                for family, metric in row['metrics'].items():
+                    self.assertFalse(metric['errors'], (family, metric))
+
+    def test_new_native_member_is_unaudited_instead_of_automatic_target(self):
+        import json
+        from pathlib import Path
+        from scripts.native_role_cohorts import evaluate_native_cohorts
+        gold = json.loads(Path('tests/fixtures/native_role_cohorts.json').read_text())
+        new = dict(gold['cohorts']['ozon_project_107'][0], id='new_native_id', title='Неизвестная роль')
+        report = evaluate_native_cohorts([new], gold)['cohorts']['ozon_project_107']
+        self.assertEqual(report['unaudited_ids'], ['new_native_id'])
+        self.assertIsNone(report['metrics']['project']['recall'])
+
+    def test_disabling_aliases_reveals_native_project_losses(self):
+        import json
+        from pathlib import Path
+        from scripts.native_role_cohorts import evaluate_native_cohorts
+        gold = json.loads(Path('tests/fixtures/native_role_cohorts.json').read_text())
+        pool = list({v['id']: v for rows in gold['cohorts'].values() for v in rows}.values())
+        report = evaluate_native_cohorts(pool, gold, lambda v: classify(v, enable_aliases=False))
+        self.assertLess(report['cohorts']['vk_project_2261']['metrics']['project']['recall'], .95)
+        self.assertLess(report['cohorts']['sber_project_specializations']['metrics']['project']['recall'], .95)
+
+class LiveSemanticSelectionTests(unittest.IsolatedAsyncioTestCase):
+    async def test_empty_list_snippet_is_enriched_before_alias_filter(self):
+        from unittest.mock import AsyncMock
+        from delivery.roles import resolve_role
+        vacancy = {'id':'mtslink_new', 'company':'МТС Линк', 'title':'Продюсер онлайн-трансляций', 'description':None}
+        async def enrich(_session, row):
+            row['description'] = 'Реализация проектов под ключ. Контроль исполнения бюджета.'
+        parser = MagicMock(enrich=AsyncMock(side_effect=enrich))
+        decision = await resolve_role(None, vacancy, parser)
+        self.assertEqual(decision['families'], ['project'])
+        parser.enrich.assert_awaited_once()
+
+    async def test_verified_cached_description_does_not_repeat_detail_request(self):
+        from unittest.mock import AsyncMock
+        from delivery.roles import resolve_role
+        vacancy = {'company':'МТС Линк', 'title':'Продюсер онлайн-трансляций',
+                   'description':'Реализация проектов под ключ. Контроль исполнения бюджета.'}
+        parser = MagicMock(enrich=AsyncMock())
+        self.assertEqual((await resolve_role(None, vacancy, parser))['families'], ['project'])
+        parser.enrich.assert_not_awaited()

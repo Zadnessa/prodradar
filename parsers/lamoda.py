@@ -53,6 +53,7 @@ class LamodaParser(BaseParser):
                         "work_format": None,
                         "url": f"https://job.lamoda.ru/vacancies/{slug}",
                         "description": None,
+                        "source_json": item,
                         "experience": None,
                         "published_at": item.get("externalPublicationDate"),
                     }

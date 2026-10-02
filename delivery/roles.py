@@ -5,7 +5,7 @@ import unicodedata
 
 from delivery.role_aliases import ALIASES
 
-VERSION = 'project-bizdev-2026-10-02.3'
+VERSION = 'project-bizdev-2026-10-02.4'
 
 PROJECT_RULES = {
     'project_en': r'\b(?:project|program(?:me)?)\s+(?:manager|lead|director|coordinator)\b',
@@ -66,7 +66,8 @@ def native_groups(vacancy):
                 if value.get(key):
                     names(value[key])
     for key in ('group', 'group_name', 'category', 'direction', 'directions', 'prof_area',
-                'specialization', 'businessLine', 'businessLineName', 'professionalRoles', 'mainCategory', 'mainSpecialization', 'specialty', 'tags', 'department'):
+                'specialization', 'businessLine', 'businessLineName', 'direction_title', 'direction_role_title',
+                'professionalRoles', 'mainCategory', 'mainSpecialization', 'specialty', 'tags', 'department'):
         names(source.get(key))
     names((source.get('info') or {}).get('category'))
     return list(dict.fromkeys(groups))
@@ -120,9 +121,20 @@ def classify(vacancy, *, apply_blacklist=True, disambiguate=True, exclude_intern
     if not grey:
         return result
     result.update(status='review', zone='grey', rules=grey)
-    # Группа не подменяет название роли: ambiguous позиции сохраняются
-    # для ручной оценки, но не доставляются без явного имени project/bizdev.
+    # Группа не доказывает функцию: смежные позиции требуют проверки
+    # обязанностей и company alias до доставки.
     return result
+
+
+async def resolve_role(session, vacancy, parser=None):
+    """При live сборе известный алиас проверяется после detail API/HTML."""
+    decision = classify(vacancy)
+    known_alias = any(vacancy.get('company') == a['company'] and
+                      normalized(vacancy.get('title')) == normalized(a['title']) for a in ALIASES)
+    if known_alias and decision['zone'] != 'semantic' and parser is not None:
+        await parser.enrich(session, vacancy)
+        decision = classify(vacancy)
+    return decision
 
 
 def apply_selection(vacancy, decision):

@@ -78,6 +78,7 @@ class AviasalesParser(BaseParser):
                     "experience": None,
                     "published_at": None,
                     "description": None,
+                    "source_json": item,
                     "url": self.DETAIL_URL_TEMPLATE.format(raw_id=raw_id),
                 }
             )

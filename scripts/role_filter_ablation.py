@@ -9,10 +9,11 @@ def _no_title_filter(_vacancy):
 def variants():
     return [
         ('0_all_catalog', _no_title_filter),
-        ('1_named_roles_only', lambda v: classify(v, apply_blacklist=False, disambiguate=False)),
-        ('2_technical_primary_blacklist', lambda v: classify(v, disambiguate=False)),
-        ('3_other_primary_role_guard', classify),
-        ('4_restore_legacy_intern_blacklist', lambda v: classify(v, exclude_internships=True)),
+        ('1_named_roles_only', lambda v: classify(v, apply_blacklist=False, disambiguate=False, enable_aliases=False)),
+        ('2_technical_primary_blacklist', lambda v: classify(v, disambiguate=False, enable_aliases=False)),
+        ('3_other_primary_role_guard', lambda v: classify(v, enable_aliases=False)),
+        ('4_verified_company_aliases', classify),
+        ('5_restore_legacy_intern_blacklist', lambda v: classify(v, exclude_internships=True)),
     ]
 
 
@@ -37,7 +38,7 @@ def ablate(pool, gold):
         missed = []
         for row in gold['rows']:
             expected = set(row['families'])
-            actual = set(classifier({'title': row['title']})['families'])
+            actual = set(classifier(row)['families'])
             tp += len(expected & actual)
             fp += len(actual - expected)
             fn += len(expected - actual)

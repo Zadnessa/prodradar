@@ -238,10 +238,16 @@ async def run():
         grey_hits = 0
         regex_blacklist_rejected = 0
         grey_blacklist_rejected = 0
+        role_enrichment_failed_ids = set()
         for vacancy in all_collected:
             if config.VACANCY_PROFILE == "project_bizdev":
-                from delivery.roles import classify, apply_selection
-                decision = classify(vacancy)
+                from delivery.roles import classify, apply_selection, resolve_role
+                try:
+                    decision = await resolve_role(session, vacancy, parsers_by_company.get(vacancy.get("company")))
+                except Exception as exc:
+                    role_enrichment_failed_ids.add(vacancy["id"])
+                    parser_errors.append(f"role enrichment {vacancy['id']}: {type(exc).__name__}")
+                    continue
                 if decision["status"] == "selected":
                     filtered.append(apply_selection(vacancy, decision))
                     exact_hits += 1
@@ -283,7 +289,7 @@ async def run():
                 filtered.append(vacancy)
         all_collected = filtered
         if config.VACANCY_PROFILE == "project_bizdev":
-            all_collected_ids = {vacancy["id"] for vacancy in filtered}
+            all_collected_ids = {vacancy["id"] for vacancy in filtered} | role_enrichment_failed_ids
         logging.info(
             "Фильтрация заголовков: %s -> %s (отсеяно %s, из них blacklist: %s)",
             before_filter,
@@ -323,6 +329,7 @@ async def run():
 
                 if config.VACANCY_PROFILE == "project_bizdev":
                     apply_selection(vacancy, classify(vacancy))
+                    content_hash = compute_content_hash(vacancy)
                 _prepare_vacancy(vacancy, city_mappings)
                 vacancy["content_hash"] = content_hash
 
@@ -400,12 +407,17 @@ async def run():
                 continue
 
             try:
-                undelivered = db.get_undelivered_vacancies(chat_id, limit=200)
+                if config.SIMPLE_BOT_FLOW:
+                    from bot.simple_flow import _all_available
+                    undelivered = _all_available(db, chat_id)
+                else:
+                    undelivered = db.get_undelivered_vacancies(chat_id, limit=200)
                 user_filters = user.get("filters") or {}
                 if config.SIMPLE_BOT_FLOW:
                     from bot.simple_flow import effective_filters
                     user_filters = effective_filters(user_filters)
-                    undelivered = [v for v in undelivered if "project" in (v.get("role_families") or [])]
+                    enabled_names = {c["name"] for c in db.get_enabled_companies()}
+                    undelivered = [v for v in undelivered if "project" in (v.get("role_families") or []) and v.get("company") in enabled_names]
                 user_grades = user_filters.get("grades") or []
                 filtered_vacancies = filter_vacancies_for_user(undelivered, user_filters)
                 filtered_vacancies = rank_vacancies(filtered_vacancies, user_grades)

@@ -302,3 +302,9 @@ capture_pool_only допускает inspect_sources без повторного
 использует явный --skip-hh; статус skipped, не ready. Полный live/HH сбор
 по-прежнему проверяет HH. ClientOSError104 Т-Банка входит в прежний бюджет
 двух transport retries; HTTP5xx и TLS verification не обходятся.
+
+### Pool regression наследует список реальных источников из CI (BUG-111)
+Суть: Actions36993716753 остановился до сбора: fixture Example несовместима
+с RADAR_POOL_SOURCES=alfa sber tbank. Regression явно изолирует env списка;
+реальный guard неизвестных/отключённых компаний сохраняется. Calibration
+296 реальных title candidates зафиксирована отдельно от будущей holdout.

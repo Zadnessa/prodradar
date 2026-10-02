@@ -71,7 +71,7 @@ class PoolPipelineTests(unittest.IsolatedAsyncioTestCase):
         db.get_city_mappings.return_value = {}
         parser = MagicMock()
         parser.parse = AsyncMock(return_value=[{'id': 'example_1', 'title': 'Project Manager', 'url': 'https://example.com/1'}])
-        with patch('main.SupabaseService', return_value=db), patch.dict('main.PARSER_REGISTRY', {'example': lambda: parser}), \
+        with patch.dict('os.environ', {'RADAR_POOL_SOURCES': ''}), patch('main.SupabaseService', return_value=db), patch.dict('main.PARSER_REGISTRY', {'example': lambda: parser}), \
              patch('main.fetch_browser_secrets', AsyncMock(return_value={})), patch('config.SOURCE_POOL_ONLY', True), \
              patch('config.CAPTURE_ALL_ROLES', True), patch('config.USE_SOURCE_POOL', False), patch('main.send_message') as send:
             await main.run()

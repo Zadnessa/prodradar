@@ -131,3 +131,23 @@ class PoolStoreTests(unittest.TestCase):
         self.db.client.rpc.assert_called_once()
         self.assertEqual(self.db.client.rpc.call_args.args[0], 'commit_source_pool')
         self.assertEqual(self.db.client.rpc.call_args.args[1]['p_expected'], 201)
+
+class EmpiricalRoleTests(unittest.TestCase):
+    def test_manually_audited_titles_have_at_least_95_percent_recall_and_precision(self):
+        import json
+        from pathlib import Path
+        from scripts.evaluate_role_slice import evaluate
+        gold = json.loads(Path('tests/fixtures/project_bizdev_gold.json').read_text())
+        report, _ = evaluate([], gold)
+        for split, families in report['metrics'].items():
+            for family, metrics in families.items():
+                with self.subTest(split=split, family=family):
+                    if metrics['recall'] is not None:
+                        self.assertGreaterEqual(metrics['recall'], .95, metrics['errors'])
+                        self.assertGreaterEqual(metrics['precision'], .95, metrics['errors'])
+
+    def test_project_in_hr_domain_is_not_excluded(self):
+        self.assertEqual(classify({'title': 'Менеджер проектов (HR Tech)'})['families'], ['project'])
+
+    def test_bizdev_does_not_match_business_process_development(self):
+        self.assertNotIn('bizdev', classify({'title': 'Менеджер по развитию бизнес-процессов'})['families'])

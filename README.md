@@ -436,3 +436,8 @@ bizdev» открывает вторую роль явно. `/settings` — гр
 `inspect_sources="alfa sber tbank"`. Для него и cached collect проверка
 `--skip-hh` не обращается к несвязанному HH API; полномасштабный live сбор
 сохраняет обязательную проверку HH.
+
+Офлайн-измерение title-среза: `python scripts/evaluate_role_slice.py --pool
+/tmp/prodradar-full-pool.json --output reports/project_bizdev`. Ручная разметка
+хранится в `tests/fixtures/project_bizdev_gold.json`; precision/recall относятся
+к размеченным названиям, недоступные источники не включаются в знаменатель.

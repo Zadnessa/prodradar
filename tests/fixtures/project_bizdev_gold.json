@@ -1,0 +1,4387 @@
+{
+  "method": "Ручной аудит всех широких title candidates из 19 доступных каталогов. Метки target — названная роль, review — неоднозначная смежная роль, other — другая профессия/стажировка. Это calibration, не независимый holdout.",
+  "rows": [
+    {
+      "title": "BDM «Цифровой водоканал»",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_643420306303618373",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "BDM по развитию продаж pLTE/5G",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_694130163427836179",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Business Development Manager (Enterprise)",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "aviasales_4331056",
+          "company": "Авиасейлс",
+          "source": "aviasales"
+        }
+      ]
+    },
+    {
+      "title": "C&B партнер (МГТС)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_702040489079079225",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Global Partnerships Lead",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "aviasales_4325346",
+          "company": "Авиасейлс",
+          "source": "aviasales"
+        }
+      ]
+    },
+    {
+      "title": "HR-бизнес-партнер (HR BP)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_136808022",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "HR-бизнес-партнер (HR BP) IT-направления",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "2gis_526",
+          "company": "2ГИС",
+          "source": "2gis"
+        }
+      ]
+    },
+    {
+      "title": "Junior Service Manager/Координатор проектов [Личный кабинет Авторизованный вызов]",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_704301789536583951",
+          "company": "MWS.AI",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Mobile User Acquisition Manager (Programmatic)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "aviasales_4241746",
+          "company": "Авиасейлс",
+          "source": "aviasales"
+        }
+      ]
+    },
+    {
+      "title": "PR партнер Tech",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_7974",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Presale-cпециалист по проектам фиксированной связи",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_701375086879310096",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Project manager SMT",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "2gis_572",
+          "company": "2ГИС",
+          "source": "2gis"
+        }
+      ]
+    },
+    {
+      "title": "Senior Project Manager [ИРТЕЯ]",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_643408336225570118",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Аналитик-разработчик (аналитика развития сети ПВЗ)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137636877",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Архитектор цифровых проектов",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_686531261363126556",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Бизнес партнер по работе с персоналом (HR BP)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_136064635",
+          "company": "Ozon",
+          "source": "ozon"
+        },
+        {
+          "id": "ozon_136924665",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Бизнес-аналитик (группа развития ПВЗ)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_138049218",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Бизнес-аналитик (международные проекты)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137731362",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Бизнес-партнер клиентского сервиса",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8147",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Ведущий инженер по автоматизации тестирования, Группа разработки спецпроектов",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_135205195",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Ведущий инженер по проектированию фиксированных сетей связи",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_689419074467266835",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_711836022450684189",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Ведущий менеджер по развитию продаж рекламы",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_577818982552177665",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Ведущий менеджер проектов, Ozon Travel",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137535746",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Ведущий менеджер проектов, Мобильное направление, Ozon Банк",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137905133",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Ведущий специалист по развитию бизнеса",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_699287789157482573",
+          "company": "МТС Банк",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Ведущий специалист по развитию продаж",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_690898663420988667",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_709345166330170598",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Ведущий специалист по развитию франшизы",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_694923558656150768",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Главный инженер проекта по проектированию сетей связи",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_688717598153507085",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Индустриальный менеджер по развитию бизнеса Retail & FMCG",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_7694",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Инженер Computer Vision, направление разработки аппаратных проектов",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_136365128",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Инженер по внедрению СЗИ [Кибербезопасность]",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_559702815446929445",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Инженер по проектной документации сетей радиодоступа (МГТС)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_709306524358413514",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Инженер по развитию транспортной сети",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_712159533971016904",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Инженер развития сети",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_647772942637205707",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_659245009400240266",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_681821484439570478",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_697405912930847965",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Инженер развития сети фиксированного доступа",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_678492336828712961",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_706501429778451698",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Инженер-координатор корпоративных клиентов",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_707233428851917103",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Инженер-проектировщик",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137741096",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Инженер-проектировщик (МГТС)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_624971944634095157",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Клиентский бизнес-партнер b2g",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "kontur_5756",
+          "company": "Контур",
+          "source": "kontur"
+        },
+        {
+          "id": "kontur_5820",
+          "company": "Контур",
+          "source": "kontur"
+        }
+      ]
+    },
+    {
+      "title": "Координатор",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8221",
+          "company": "Avito",
+          "source": "avito"
+        },
+        {
+          "id": "wb_39893",
+          "company": "Wildberries",
+          "source": "wildberries"
+        }
+      ]
+    },
+    {
+      "title": "Координатор (в группу бюджетирования и работы с поставщиками)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137634414",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Координатор бригад по строительству сетей связи (МГТС)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_710113353569141000",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Координатор курьерской доставки",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137820453",
+          "company": "Ozon",
+          "source": "ozon"
+        },
+        {
+          "id": "ozon_137820525",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Координатор по документообороту в Департамент технологий",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "2gis_570",
+          "company": "2ГИС",
+          "source": "2gis"
+        }
+      ]
+    },
+    {
+      "title": "Координатор по материально-техническому обеспечению (МГТС)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_706828018315693291",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Координатор по оптимизации потерь хаба",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137429719",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Координатор по промо проектам (Трейд-маркетинг)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_684699398390677811",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_711517698982412594",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Координатор подрядных организаций (МГТС)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_701002621485321470",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер В2В проектов в 2GIS",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "2gis_563",
+          "company": "2ГИС",
+          "source": "2gis"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер детских образовательных проектов, Группа детского образования",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137661858",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер коммерческих спецпроектов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137680238",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер логистических проектов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_135777795",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер логистических проектов (со знанием английского языка)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137487440",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по маркетинговым коммуникациям (отдел спонсорства и спецпроектов)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137342592",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по обучению и развитию (тренер-методолог)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "191",
+          "company": "ДомКлик",
+          "source": "domclick"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по партнерскому маркетингу",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137176782",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по продажам и развитию клиентов (МГТС)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_696326021124721915",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по работе с партнерами",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_135624281",
+          "company": "Ozon",
+          "source": "ozon"
+        },
+        {
+          "id": "ozon_137178262",
+          "company": "Ozon",
+          "source": "ozon"
+        },
+        {
+          "id": "ozon_137474138",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по работе с партнерами в агентский канал продаж",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_7986",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию (складская логистика)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137585501",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию VIP-клиентов",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_645585535426889922",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_690889966204488933",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию агентской сети",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "x5_692ea312a152f1b4ad5b941f",
+          "company": "X5 Tech",
+          "source": "x5"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию бизнеса",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8241",
+          "company": "Avito",
+          "source": "avito"
+        },
+        {
+          "id": "vk_54537",
+          "company": "VK",
+          "source": "vk"
+        },
+        {
+          "id": "wb_39083",
+          "company": "Wildberries",
+          "source": "wildberries"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию бизнеса (эффективность каналов продаж)",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8220",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию бизнеса Авито Спецтехника",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8108",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию бизнеса в офис комплексных проектов (В2В)",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_668813062752436789",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию бизнеса в сфере видеонаблюдения и безопасности (BDM)",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_673435529504620946",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию государственных заказчиков",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_704601035087282476",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию каналов привлечения (Телеком)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_703630231977591046",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию каналов продаж",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_681803510873850270",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию клиентов (Малый и средний бизнес)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_704218379333927197",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию клиентов крупного бизнеса",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_698495259046317308",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_711153424447570187",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию клиентов малого и среднего бизнеса",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_706024682876308697",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию ключевых клиентов В2В",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_653908043393666806",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию ключевых партнеров (Fashion\\Accessories)",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137880575",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию ключевых партнеров (Направление Одежда)",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137893002",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию ключевых партнеров, Fashion",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137950894",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию корпоративных клиентов",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_661441888762468530",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_666909878442263096",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_696555501273484528",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_709703369144405192",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию корпоративных клиентов (key account manager)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_694549182895096073",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_697025060686266664",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию корпоративных клиентов (МСБ B2B)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_709707161466309864",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию корпоративных клиентов (малый и средний бизнес)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_648872947364138319",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию корпоративных клиентов продуктов ЭДО",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "kontur_5855",
+          "company": "Контур",
+          "source": "kontur"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию крупного бизнеса",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_696547003684880687",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_696598455396601035",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию крупных корпоративных клиентов В2В (КАМ)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_693800282999488810",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию малого и среднего бизнеса",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_601009040918581988",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_688652804297854152",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_694420717520814397",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_698788684933103893",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_700978010936839386",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_702057570180792629",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_703588088944787720",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_712253451295260981",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию направления (NKAM)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137960971",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию объектов коммерческой недвижимости",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_693386640223112389",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию операций",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8162",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию отношений с партнерами и развитию ассортимента, Non Fashion, Ozon Селект",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137910168",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию партнеров",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137920507",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию партнеров (направление fashion)",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_138045638",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию продавцов",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137476488",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию продаж в сегменте «нерезиденты»",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_703917823050648823",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию продукта (FinTech)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137169777",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию продукта (курьерская доставка)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137716618",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию реферального партнерства",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "kontur_5860",
+          "company": "Контур",
+          "source": "kontur"
+        },
+        {
+          "id": "kontur_5863",
+          "company": "Контур",
+          "source": "kontur"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию территорий",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_701046610922048739",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию федеральных клиентов",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "kontur_4403",
+          "company": "Контур",
+          "source": "kontur"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию финансовых продуктов",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137807662",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проекта",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_135154732",
+          "company": "Ozon",
+          "source": "ozon"
+        },
+        {
+          "id": "wb_38528",
+          "company": "Wildberries",
+          "source": "wildberries"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проекта (Телеком)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_703629336481107141",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проекта (пресейл)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_684026696399063040",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектных решений IoT",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_708601586225515734",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_136505068",
+          "company": "Ozon",
+          "source": "ozon"
+        },
+        {
+          "id": "ozon_137057291",
+          "company": "Ozon",
+          "source": "ozon"
+        },
+        {
+          "id": "ozon_137496345",
+          "company": "Ozon",
+          "source": "ozon"
+        },
+        {
+          "id": "ozon_137797834",
+          "company": "Ozon",
+          "source": "ozon"
+        },
+        {
+          "id": "vk_52657",
+          "company": "VK",
+          "source": "vk"
+        },
+        {
+          "id": "vk_54659",
+          "company": "VK",
+          "source": "vk"
+        },
+        {
+          "id": "ya_45527",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов (HR Tech)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137909657",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов (Non IT)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137246718",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов (Интеграционные сервисы, Ozon Банк)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137205463",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов (Инфраструктура и платформа автоматизированного тестирования, Ozon Банк)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137532829",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов (Телеком)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_668422481601626624",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов (административная поддержка и процессы)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_710121344334823693",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов (проекты ПВЗ)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_134655808",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов IT решений",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_663693287378392919",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов IoT в B2B",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_696360580830724415",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов | TMS/YMS",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137803576",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов | WMS",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137804555",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов | Прогнозирование",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137807234",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов в логистике",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137254236",
+          "company": "Ozon",
+          "source": "ozon"
+        },
+        {
+          "id": "ozon_137958237",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов в сервис коммерции",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "2gis_574",
+          "company": "2ГИС",
+          "source": "2gis"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов индивидуальных средств мобильности (велосипеды)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137202417",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов качества продуктов и сервисов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_696334248075854089",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов клиентского сервиса",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8105",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов по оборудованию",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_698902108975399222",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов по поддержке продаж",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_696270302316858602",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов по подключению корпоративных",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_711464276988005582",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов по работе с оборудованием",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_699534272972721372",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов по развитию бизнес-направления Авито Подработка",
+      "families": [
+        "project",
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_7982",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов реализации инфраструктуры GPON (МГТС)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_654195280089976561",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов фиксированной связи (Presale)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_671581018020381115",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов функциональной группы поддержки регионов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_673794763631100344",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов эффективности ПВЗ",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "lamoda_2558",
+          "company": "Lamoda",
+          "source": "lamoda"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов, Ozon Travel",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137536327",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Младший бизнес партнер по работе с персоналом (HR BP)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137010695",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Младший менеджер проектов в маркетинге, Ozon Банк",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137494460",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Монтажник, Отдел автоматизации конвейеров (проектная занятость)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137575930",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Начальник отдела развития сети",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_669071945492337758",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_702068180071219514",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Программист-внедренец 1С в Логистику от Контур.Диадока",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "kontur_4019",
+          "company": "Контур",
+          "source": "kontur"
+        }
+      ]
+    },
+    {
+      "title": "Продуктовый аналитик ML-проектов",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_132517013",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Проектный инженер",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_136560980",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Проектный менеджер (Озон СНГ)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137304631",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель GR проектов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8084",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель GR проектов (со знанием английского языка)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_136906121",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель группы продуктов финансовых сервисов продавцов и партнеров, Head of finance product",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_136953520",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель группы реализации проектов обучения",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137796806",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель направления по развитию бизнеса категории «Строительство и сад»",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8022",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель направления развития категории ФРОВ",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "x5_6a3a31b3fe7224dc92f1bdc7",
+          "company": "X5 Tech",
+          "source": "x5"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель направления развития продаж продуктов МТС Линк",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_693796779237313740",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель направления спецпроектов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8182",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель отдела развития клиентов в Контур.Логистика",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "kontur_5850",
+          "company": "Контур",
+          "source": "kontur"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель по управлению проектами, автоматизация закупок",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137062551",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектной команды (DS)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137128882",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_703880180732526875",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "ozon_136740224",
+          "company": "Ozon",
+          "source": "ozon"
+        },
+        {
+          "id": "ozon_137343050",
+          "company": "Ozon",
+          "source": "ozon"
+        },
+        {
+          "id": "vk_54650",
+          "company": "VK",
+          "source": "vk"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов (English/Chinese)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_136978677",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов (SmartLTE, Wi-Fi для бизнеса)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_708967154447289574",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов (T&D)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_685872834714537206",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов по обучению технического персонала (МГТС)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_696348986004475077",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов по развитию корпоративных клиентов (Big Data)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_701411264546472252",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов по развитию маркетплейсов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_693741414042832103",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов по слаботочным системам (ЖК/коммерческая недвижимость)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_620586383504840202",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов транспортной логистики",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137301040",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель строительных проектов по слаботочным системам (МГТС)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_666555119482967167",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Сетевой инженер по развитию телеком оборудования (МГТС)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_623848345755980533",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Специалист по внедрению коннекторов в Логистику от Контур.Диадока",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "kontur_5620",
+          "company": "Контур",
+          "source": "kontur"
+        }
+      ]
+    },
+    {
+      "title": "Специалист по подбору персонала в команду развития стажёрских программ",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8137",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Специалист по продажам и развитию корпоративных клиентов",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_505735218443851016",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_508281162355970302",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Специалист по работе с партнерами",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_710068335802322136",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Специалист по работе с партнерами в сфере аренды",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_702415507847908551",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Специалист по развитию ассортимента",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "x5_6a796ec15d5b0a2b7b8f138a",
+          "company": "Перекрёсток",
+          "source": "x5"
+        }
+      ]
+    },
+    {
+      "title": "Стажер - маркетолог (Партнерские программы и CRM)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_696295865706351847",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Стажер по развитию международного бизнеса",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_693470812836990186",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Стажер-координатор партнеров (В2С)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_698805459791908039",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Стажёр - менеджер проекта в департамент продукта Ozon Travel",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137255461",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Старший Go-разработчик, Группа разработки спецпроектов",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137953810",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Старший инженер по развитию транспортной сети",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_699439711051058371",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Старший инженер развития сети",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_671350257715513347",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_706427446366306590",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_710003218091868464",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_712216009620065532",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Старший инженер развития сети фиксированного доступа",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_709595532514820408",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Старший инженер развития транспортных сетей",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_696651362527609136",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Старший инженер разработки проектов фиксированной сети",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_704603704908582133",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер ИТ-проектов (Инфраструктура)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "lamoda_2537",
+          "company": "Lamoda",
+          "source": "lamoda"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер образовательных проектов команды Tech",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8043",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер по развитию клиентов",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8096",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер по росту и развитию клиентской базы (КИОН)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_691307784838316344",
+          "company": "KION",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер проектов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137633682",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер проектов (Логистика)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "lamoda_2651",
+          "company": "Lamoda",
+          "source": "lamoda"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер проектов (ПВЗ)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137537708",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер проектов (команда разработки процессинга, Озон Банк)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137520477",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер проектов B2B",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "lamoda_3080",
+          "company": "Lamoda",
+          "source": "lamoda"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер проектов, Группа комплаенс, Ozon Банк",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137011319",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер проектов, Корпоративные сервисы, Ozon Банк",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137869054",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Старший руководитель проектов (Москва)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_709736645162696787",
+          "company": "МТС Банк",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Старший специалист по развитию продаж",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_680782934013116835",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_693397644533301557",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_699493630284398864",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Старший технический менеджер проектов (AI/Fullstack Platform), Ozon Банк",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137539636",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Старший юрист по сопровождению партнерских проектов, Ozon Банк",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137539721",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Супервайзер по развитию продаж",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_706775763226984707",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Технический менеджер проектов IAM, Ozon Банк",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_136746448",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Технический менеджер проектов в команду поиска",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8175",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Торговый представитель по развитию территории",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_701772449091423466",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Финансовый партнер блока потерь",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137755612",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "эксперт по развитию сети 5G\\NTN",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_704738504340406580",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Delivery Manager в Яндекс 360",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_47668",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Growth Project Manager в Яндекс Музыку",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48485",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "ML-аналитик в команду LLM-спецпроектов Алисы",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_43226",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "ML-разработчик в бригаду развития автотаргетинга",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_49090",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "ML-разработчик в команду LLM-спецпроектов Алисы",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_44378",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Project manager (AI PDLC)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "sberhealth_4314436",
+          "company": "СберЗдоровье",
+          "source": "sberhealth"
+        }
+      ]
+    },
+    {
+      "title": "Project manager в Локализацию",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "wb_26430",
+          "company": "Wildberries",
+          "source": "wildberries"
+        }
+      ]
+    },
+    {
+      "title": "Бригадир проектов аутсорса в Москве",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48431",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Ведущий дизайнер партнёрских спецпроектов в Кинопоиск",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_45980",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Ведущий менеджер по логистике в международные проекты Доставки",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48484",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Ведущий менеджер по развитию крупных клиентов",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "vk_54742",
+          "company": "VK",
+          "source": "vk"
+        }
+      ]
+    },
+    {
+      "title": "Врач-гастроэнтеролог (партнерская программа)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "sberhealth_3694965",
+          "company": "СберЗдоровье",
+          "source": "sberhealth"
+        }
+      ]
+    },
+    {
+      "title": "Врач-отоларинголог (партнерская программа)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "sberhealth_3870092",
+          "company": "СберЗдоровье",
+          "source": "sberhealth"
+        }
+      ]
+    },
+    {
+      "title": "Врач-уролог (партнерская программа)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "sberhealth_3720461",
+          "company": "СберЗдоровье",
+          "source": "sberhealth"
+        }
+      ]
+    },
+    {
+      "title": "Главный специалист по проектированию механических систем",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "vk_45702",
+          "company": "VK",
+          "source": "vk"
+        }
+      ]
+    },
+    {
+      "title": "Главный специалист по проектированию систем электроснабжения",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "vk_45733",
+          "company": "VK",
+          "source": "vk"
+        }
+      ]
+    },
+    {
+      "title": "Директор по развитию B2G‑направления",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "sberhealth_4329796",
+          "company": "СберЗдоровье",
+          "source": "sberhealth"
+        }
+      ]
+    },
+    {
+      "title": "Инженер по развитию и автоматизации систем SOC",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48263",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Инженер‑проектировщик логистических объектов в Маркет",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48526",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Координатор офисных мероприятий и сервисных процессов",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_49029",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Координатор по согласованию документов и работе с партнёрами в Яндекс Образование",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_49000",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Координатор производства контента (вечера и вых.)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48437",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Координатор экопроектов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_47792",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "МБ Региональный менеджер по развитию корпоративных продаж ДКБ",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "sberhealth_4331115",
+          "company": "СберЗдоровье",
+          "source": "sberhealth"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер PR-проектов по цифровой безопасности и цифровой грамотности",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48759",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер growth‑проектов в Яндекс Go",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_49105",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер бизнес-проектов (рыночные каналы продаж) (ДКБ)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "sberhealth_4314569",
+          "company": "СберЗдоровье",
+          "source": "sberhealth"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер в проектный офис устойчивого развития",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_25171",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер кросс-сервисных проектов Плюса",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48347",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер международных проектов в Фабрику",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_44575",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер образовательных проектов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_47965",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер отчётности по устойчивому развитию (стажёр)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48790",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по запуску продуктов/проектов В2В",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "hh_kaspersky_137332083",
+          "company": "Касперский",
+          "source": "hh_kaspersky"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по маркетингу (HR Brand & DevRel-проекты)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48241",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по работе с партнёрами в команду развития бизнеса подписки в Плюс",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48955",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию бизнеса в Домиленд",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48973",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию бизнеса в Заботу",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48988",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию бизнеса в Такси (Санкт-Петербург)",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48793",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию бизнеса ключевых клиентов в Коммерческий департамент",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_8022",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию бизнес‑процессов в Маркет",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48971",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию еком-бизнеса (стажёр) в Яндекс Фабрику",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_49076",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию категории «Электроника и бытовая техника» в Яндекс Фабрику",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48326",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию клиентов в e-commerce",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48888",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию ключевых клиентов",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48673",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию ключевых клиентов (B2B клиенты)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "hh_137626248",
+          "company": "HeadHunter",
+          "source": "hh"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию ключевых клиентов в Рекламу",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_35790",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию ключевых партнёров",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "wb_35932",
+          "company": "Wildberries",
+          "source": "wildberries"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию партнеров (cross-border)",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "wb_39541",
+          "company": "Wildberries",
+          "source": "wildberries"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию партнёров Security в Yandex Cloud",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48825",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию партнёрской сети",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48963",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию продаж медийной рекламы",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48951",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию продаж перформанс‑продуктов",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48678",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию проекта «VK Авто»",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "vk_52773",
+          "company": "VK",
+          "source": "vk"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию стратегических партнерств",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_46689",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проекта IT",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "wb_36757",
+          "company": "Wildberries",
+          "source": "wildberries"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов (промышленный дизайн и упаковка) в команду Алисы и умных устройств",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48996",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов (стажёр) в Международный Поиск",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48811",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов в Финтех",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_32273",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов в Фудтех (каналы привлечения курьеров, международное направление)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_47671",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов в блок коммуникаций и медиа бизнес-группы Персональных сервисов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48522",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов в команду разработки роботов доставки Автономного транспорта",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_41799",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов в команду стратегических партнёрств",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_49086",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов в логистику Яндекс Еды",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_47482",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов коммерческой эффективности в Рекламу",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_14525",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов направления монетизации и рекламы",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "vk_54568",
+          "company": "VK",
+          "source": "vk"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов по международной логистике",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "wb_38500",
+          "company": "Wildberries",
+          "source": "wildberries"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов по развитию продаж в Коммерческий департамент",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_47726",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов по строительству",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_38862",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов развития HR-сервисов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_45414",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов управления недвижимостью",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_47797",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер развития рекламного кабинета",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "vk_52219",
+          "company": "VK",
+          "source": "vk"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер рекламных проектов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "vk_54867",
+          "company": "VK",
+          "source": "vk"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер строительных проектов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_45436",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер технических проектов Люмена в Плюс Фантех",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48975",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер технических проектов со знанием китайского в команду Электро",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48815",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Проектный менеджер Ultima в Маркет",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48036",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Разработчик С++ в команду международных проектов Яндекс Еды",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_42742",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Разработчик бэкенда поисковых проектов в Рекламе",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_42514",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Разработчик в группу поддержки и развития пайплайна автономного транспорта",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48236",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Разработчик в группу развития opensource-технологий",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_9705",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Разработчик на С++ в команду экосистемных проектов Яндекс Еды",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_45606",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Разработчик прикладных AI‑решений для обучения и развития",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48779",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Региональный менеджер по развитию корпоративных продаж (Поволжский банк) (ДКБ)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "sberhealth_4328760",
+          "company": "СберЗдоровье",
+          "source": "sberhealth"
+        }
+      ]
+    },
+    {
+      "title": "Региональный менеджер по развитию корпоративных продаж (Сибирский банк) (ДКБ)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "sberhealth_4306405",
+          "company": "СберЗдоровье",
+          "source": "sberhealth"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель ML-команды LLM-спецпроектов в Алису",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_45099",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель образовательных проектов по креативным направлениям и non–tech",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "vk_54838",
+          "company": "VK",
+          "source": "vk"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проекта",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "vk_52738",
+          "company": "VK",
+          "source": "vk"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проекта NEV-бренда в Электро",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48205",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов офлайн‑качества Такси",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48515",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "СРБ Региональный менеджер по развитию корпоративных продаж ДКБ",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "sberhealth_4331116",
+          "company": "СберЗдоровье",
+          "source": "sberhealth"
+        }
+      ]
+    },
+    {
+      "title": "Старший аналитик стратегических проектов",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "vk_54661",
+          "company": "VK",
+          "source": "vk"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер отчетности по Устойчивому развитию",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48676",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер по развитию бизнеса",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "vk_45747",
+          "company": "VK",
+          "source": "vk"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер по развитию ключевых клиентов в Рекламу",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48387",
+          "company": "Яндекс",
+          "source": "yandex"
+        },
+        {
+          "id": "ya_48423",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Технический менеджер под развитие инфраструктурного облака в Yandex Infrastructure",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_32961",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Технический менеджер проектов в автономный транспорт",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_32553",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Технический менеджер проектов в команду Такси",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48875",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Технический менеджер специальных проектов в Алису и Умные устройства",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48728",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    }
+  ]
+}

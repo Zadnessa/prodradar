@@ -1,3 +1,14 @@
+# Последняя проверка: action цвет, cron и DB (2 октября2026 Москва)
+
+Основные действия мини-онбординга и возврат из settings в листинг зелёные,
+style=success. Runtimeae0c4b3 опубликован TEST READY7R3FGMGFum1cTssHASTB1UcB3TeN,
+Telegram подтвердил style в реальной панели settings. Filters/history не сбрасывали.
+Cron НЕ включён: test manual-only; original245897389 disabled_inactivity,
+last schedule24 июня2026. Configured10/19 Москва сейчас не исполняется;
+после исчерпания просмотр сам не собирает новые вакансии. Доступ test DB
+подтверждён:374 active/description374,248 project/132 bizdev (6 overlaps),
+source_pool12270,role_reviews793. Подробности — test_bot_flow.md.
+
 # Последнее поручение: общая лента и мини-онбординг test
 
 Вместо отдельных направлений показывать project и bizdev вместе.

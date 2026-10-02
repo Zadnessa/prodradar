@@ -72,3 +72,8 @@ delivered115→123; pending0. Прямые URL проверены formatter-ре
 Доступ test DB jmsdxgylyjxwdwmdrmxw подтверждён:374 active project_bizdev,
 248 project/132 bizdev/6 пересечений,374 непустых описания,22 ready источника.
 Готово для следующей задачи по анализу; исходная DB/token не используются.
+
+Цвет опубликован: runtimeae0c4b3, TEST production7R3FGMGFum1cTssHASTB1UcB3TeN
+READY. Настоящий Telegram ответ содержит style=success для «К вакансиям :-)»;
+новую панель настроек отправили админу без изменения filters/history.
+Дополнительные read-only counts: source_pool12270, role_reviews793.

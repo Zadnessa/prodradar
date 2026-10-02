@@ -1,3 +1,12 @@
+<!-- Action color и проверка доступа/расписания, 2 октября2026 Москва -->
+Test forward actions sm:onboard:done/all и возврат sm:more:all в settings —
+зелёные style=success; grade buttons стандартные. Расписание не включалось:
+test только manual, original disabled_inactivity (last schedule24 июня2026).
+Configured original07/16 UTC =10/19 Москва, автоматического обновления сейчас
+нет. Просмотр не вызывает collector; текущие непросмотренные из DB продолжают
+показываться. Доступ test vacancies подтверждён:374 active,248 project/132
+bizdev (6 пересечений),description374/374,22 ready source snapshots.
+
 <!-- Live mini flow, 2 октября2026 Москва -->
 Runtime137ccd1 опубликован READY в TEST GYUgXTbt3u4tZXxBHmgjcVv7y5KF.
 97 тестов прошли; приветствие не доставляет вакансии до done. Опубликованный

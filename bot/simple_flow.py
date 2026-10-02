@@ -32,10 +32,10 @@ def show_onboarding(chat_id, db=None, message_id=None):
               "callback_data": f"sm:onboard:grade:{index}"} for index, grade in enumerate(GRADE_OPTIONS)]]
     rows.extend([
         [{"text": "Поехали смотреть вакансии :-)" if selected else "Показать все грейды :-)",
-          "callback_data": "sm:onboard:done"}],
+          "callback_data": "sm:onboard:done", "style": "success"}],
     ])
     if selected:
-        rows.append([{"text": "Посмотреть все грейды", "callback_data": "sm:onboard:all"}])
+        rows.append([{"text": "Посмотреть все грейды", "callback_data": "sm:onboard:all", "style": "success"}])
     if message_id:
         return edit_message(chat_id, message_id, text, reply_markup={"inline_keyboard": rows})
     return send_message(chat_id, text, reply_markup={"inline_keyboard": rows})
@@ -118,7 +118,7 @@ def show_settings(chat_id, db=None, message_id=None):
         [{"text": "Все грейды", "callback_data": "sm:grades:all"}],
         [{"text": "Скрытые компании", "callback_data": "sm:blocked"}],
         [{"text": "Возобновить рассылку" if paused else "Пауза рассылки", "callback_data": "sm:pause"}],
-        [{"text": "К вакансиям :-)", "callback_data": "sm:more:all"}],
+        [{"text": "К вакансиям :-)", "callback_data": "sm:more:all", "style": "success"}],
     ])
     if message_id:
         edit_message(chat_id, message_id, text, reply_markup={"inline_keyboard": rows})

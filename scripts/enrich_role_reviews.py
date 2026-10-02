@@ -21,7 +21,7 @@ def candidate(v):
     if decision['status'] in {'selected', 'review'}:
         return True
     groups = ' '.join(native_groups(v)).lower()
-    return bool(re.search(r'управление проектами|project management|руководитель проектов|продажи и развитие бизнеса|менеджер по работе с партнерами', groups))
+    return bool(re.search(r'управление[^\n]*проект|project management|руководитель проектов|продажи и развитие бизнеса|менеджер по работе с партнерами', groups))
 
 
 async def review():
@@ -40,7 +40,7 @@ async def review():
             parser = PARSER_REGISTRY[source]()
             if source == 'sberhealth':
                 parser._build_id = browser.get('sberhealth_build_id')
-            vacancies = db.load_source_pool(source)
+            vacancies = db.merge_role_reviews(source, db.load_source_pool(source))
             candidates = [v for v in vacancies if candidate(v)]
             enriched = []
             failures = []

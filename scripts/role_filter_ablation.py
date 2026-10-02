@@ -43,7 +43,7 @@ def ablate(pool, gold):
             fp += len(actual - expected)
             fn += len(expected - actual)
             for family in expected & actual:
-                retained.add((row['title'], family))
+                retained.add((row.get('company', ''), row['title'], family))
             for family in expected - actual:
                 missed.append({'title': row['title'], 'family': family})
         result.append({'step': name, 'selected_records': sum(classifier(v)['status'] == 'selected' for v in pool),
@@ -51,7 +51,7 @@ def ablate(pool, gold):
                        'recall': tp / (tp + fn) if tp + fn else None,
                        'precision': tp / (tp + fp) if tp + fp else None,
                        'missed_targets': missed,
-                       'target_losses_vs_previous': [{'title': t, 'family': f} for t, f in sorted((previous_targets or retained) - retained)]})
+                       'target_losses_vs_previous': [{'company': c, 'title': t, 'family': f} for c, t, f in sorted((previous_targets or retained) - retained)]})
         previous_targets = retained
     native = []
     for source in ('alfa', 'vk', 'ozon'):

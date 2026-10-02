@@ -318,3 +318,8 @@ shadow reviews не свежат каталог и не рассылают ка�
 93.0% recall до исправлений сохранён отдельно. Недоступный Купер и новые
 неразмеченные IDs не подменяются успешным покрытием. Простой test флоу
 сохраняет grade/mute/pause и явный повтор без очистки delivery history.
+
+Native metadata shared product/project/process группы МТС сохраняется в
+source_json.info.category; shadow review должен охватывать всю эту группу,
+включая неизвестные titles. Повторный review использует только описания того
+же свежего snapshot, не делает одинаковые detail запросы заново.

@@ -255,6 +255,10 @@ class NativeCohortTests(unittest.TestCase):
         self.assertLess(report['cohorts']['sber_project_specializations']['metrics']['project']['recall'], .95)
 
 class LiveSemanticSelectionTests(unittest.IsolatedAsyncioTestCase):
+    def test_shared_product_project_process_group_is_reviewed(self):
+        from scripts.enrich_role_reviews import candidate
+        self.assertTrue(candidate({'title':'Менеджер клиентского опыта', 'source_json': {
+            'info':{'category':'Управление продуктами/проектами/процессами'}}}))
     async def test_empty_list_snippet_is_enriched_before_alias_filter(self):
         from unittest.mock import AsyncMock
         from delivery.roles import resolve_role

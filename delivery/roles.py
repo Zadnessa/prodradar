@@ -21,7 +21,6 @@ BIZDEV_RULES = {
 }
 HARD_REJECT = {
     'internship': r'\b(?:стажер\w*|intern(?:ship)?|trainee)\b',
-    'hr': r'\b(?:hr|персонал\w*|кадров\w*|рекрутер\w*|развити\w*\s+команд\w*)\b',
     'engineering_or_analysis': r'\b(?:аналитик\w*|разработчик\w*|developer|engineer|дизайнер\w*|проектировщик\w*)\b',
 }
 GREY_RULES = {
@@ -65,7 +64,6 @@ def native_groups(vacancy):
 def classify(vacancy):
     title = normalized(vacancy.get('title'))
     groups = native_groups(vacancy)
-    group_text = normalized(' '.join(groups))
     body = normalized(vacancy.get('description'))
     signals = [name for name, pattern in SIGNALS.items() if re.search(pattern, title + ' ' + body)]
     rejected = [name for name, pattern in HARD_REJECT.items() if re.search(pattern, title)]

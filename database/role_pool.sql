@@ -53,3 +53,46 @@ REVOKE ALL ON FUNCTION public.replace_source_pool(text, jsonb, jsonb) FROM PUBLI
 GRANT EXECUTE ON FUNCTION public.replace_source_pool(text, jsonb, jsonb) TO service_role;
 NOTIFY pgrst, 'reload schema';
 COMMIT;
+
+-- Большие каталоги загружаются короткими HTTP batches, публикуются одной транзакцией.
+BEGIN;
+CREATE TABLE IF NOT EXISTS public.source_pool_stage (
+    capture_id uuid NOT NULL,
+    source_name text NOT NULL,
+    vacancy_id text NOT NULL,
+    vacancy jsonb NOT NULL,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    PRIMARY KEY(capture_id, vacancy_id),
+    CHECK (vacancy->>'id' = vacancy_id),
+    CHECK (coalesce(vacancy->>'title','') != '' AND coalesce(vacancy->>'url','') != '')
+);
+ALTER TABLE public.source_pool_stage ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.source_pool_stage FROM anon, authenticated;
+GRANT ALL ON public.source_pool_stage TO service_role;
+CREATE OR REPLACE FUNCTION public.commit_source_pool(p_source text, p_capture uuid, p_expected integer, p_metadata jsonb)
+RETURNS void LANGUAGE plpgsql SECURITY INVOKER AS $$
+BEGIN
+    IF p_source IS NULL OR p_source = '' OR p_expected < 0 THEN
+        RAISE EXCEPTION 'Invalid source pool';
+    END IF;
+    PERFORM pg_advisory_xact_lock(hashtext('source_pool:' || p_source));
+    IF (SELECT count(*) FROM public.source_pool_stage WHERE capture_id = p_capture AND source_name = p_source) != p_expected
+       OR EXISTS(SELECT FROM public.source_pool_stage WHERE capture_id = p_capture AND source_name != p_source) THEN
+        RAISE EXCEPTION 'Incomplete source pool stage';
+    END IF;
+    DELETE FROM public.source_pool WHERE source_name = p_source;
+    INSERT INTO public.source_pool(source_name, vacancy_id, vacancy)
+        SELECT source_name, vacancy_id, vacancy FROM public.source_pool_stage
+        WHERE capture_id = p_capture AND source_name = p_source;
+    INSERT INTO public.source_pool_status(source_name, status, captured_at, raw_count, metadata)
+        VALUES(p_source, CASE WHEN p_expected = 0 THEN 'empty' ELSE 'ready' END, now(), p_expected, p_metadata)
+        ON CONFLICT(source_name) DO UPDATE SET status = excluded.status, captured_at = excluded.captured_at,
+            raw_count = excluded.raw_count, metadata = excluded.metadata;
+    DELETE FROM public.source_pool_stage WHERE capture_id = p_capture;
+    DELETE FROM public.source_pool_stage WHERE created_at < now() - interval '1 day';
+END;
+$$;
+REVOKE ALL ON FUNCTION public.commit_source_pool(text, uuid, integer, jsonb) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.commit_source_pool(text, uuid, integer, jsonb) TO service_role;
+NOTIFY pgrst, 'reload schema';
+COMMIT;

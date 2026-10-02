@@ -89,7 +89,7 @@ def _prepare_vacancy(vacancy, city_mappings):
         if inferred_experience is not None:
             vacancy["experience"] = inferred_experience
     title_lower = vacancy.get("title", "").strip().lower()
-    for pattern, override_grade in GRADE_OVERRIDE_PATTERNS:
+    for pattern, override_grade in (GRADE_OVERRIDE_PATTERNS if config.VACANCY_PROFILE == "product" else []):
         if re.search(pattern, title_lower):
             vacancy["grade"] = override_grade
             break
@@ -106,6 +106,15 @@ async def run():
     db = SupabaseService()
     companies = db.get_enabled_companies()
     city_mappings = db.get_city_mappings()
+    import os
+    requested_sources = set(os.getenv("RADAR_POOL_SOURCES", "").split())
+    if requested_sources:
+        if not config.SOURCE_POOL_ONLY:
+            raise ValueError("Ограничение источников разрешено только без доставки")
+        enabled = {c.get("parser_name") for c in companies}
+        if not requested_sources <= enabled:
+            raise ValueError("Неизвестный или отключённый source")
+        companies = [c for c in companies if c.get("parser_name") in requested_sources]
 
     try:
         browser_secrets = await fetch_browser_secrets()
@@ -393,6 +402,10 @@ async def run():
             try:
                 undelivered = db.get_undelivered_vacancies(chat_id, limit=200)
                 user_filters = user.get("filters") or {}
+                if config.SIMPLE_BOT_FLOW:
+                    from bot.simple_flow import effective_filters
+                    user_filters = effective_filters(user_filters)
+                    undelivered = [v for v in undelivered if "project" in (v.get("role_families") or [])]
                 user_grades = user_filters.get("grades") or []
                 filtered_vacancies = filter_vacancies_for_user(undelivered, user_filters)
                 filtered_vacancies = rank_vacancies(filtered_vacancies, user_grades)

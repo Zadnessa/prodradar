@@ -2,6 +2,7 @@
 
 import hashlib
 import logging
+import uuid
 from datetime import datetime, timedelta, timezone
 
 from supabase import create_client
@@ -64,10 +65,20 @@ class SupabaseService:
         return columns
 
     def store_source_pool(self, source, vacancies, metadata):
-        if config.VACANCY_PROFILE != "project_bizdev" or config.SUPABASE_URL.rstrip('/') != "https://jmsdxgylyjxwdwmdrmxw.supabase.co":
-            raise ValueError("Пул разрешён только в test")
-        self.client.rpc("replace_source_pool", {"p_source": source, "p_items": vacancies,
-                                                "p_metadata": metadata}).execute()
+        self._guard_pool()
+        if len({v.get("id") for v in vacancies}) != len(vacancies) or any(
+            not v.get("id") or not v.get("title") or not v.get("url") for v in vacancies):
+            raise ValueError("Некорректный или дублирующийся pool id/title/url")
+        capture = str(uuid.uuid4())
+        try:
+            for chunk in self._chunked(vacancies, 100):
+                self.client.table("source_pool_stage").insert([
+                    {"capture_id": capture, "source_name": source, "vacancy_id": v["id"], "vacancy": v}
+                    for v in chunk]).execute()
+            self.client.rpc("commit_source_pool", {"p_source": source, "p_capture": capture,
+                "p_expected": len(vacancies), "p_metadata": metadata}).execute()
+        finally:
+            self.client.table("source_pool_stage").delete().eq("capture_id", capture).execute()
 
     def fail_source_pool(self, source, error):
         self._guard_pool()

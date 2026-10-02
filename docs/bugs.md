@@ -288,3 +288,10 @@ main, regression запускает run() в pool mode и запрещает з�
 Правило: дедуплицировать отдельные ID с учётом raw API count, отвергать
 полностью повторную страницу и несовпадение page/total. Сохранять число
 дубликатов в метаданных пула; total API не равен числу уникальных вакансий.
+
+### Большой JSON-каталог не укладывается в PostgREST statement timeout (BUG-109)
+Суть: Alfa2350 и Sber3155 собраны полностью, но большой replace_source_pool
+JSON вызвал timeout и не сохранился. Правило: загрузка stage batches по100,
+затем атомарный commit_source_pool с expected count/advisory lock; failed
+stage не публикуется, очищается. Для исправления отдельного источника
+capture_pool_only допускает inspect_sources без повторного сбора остальных.

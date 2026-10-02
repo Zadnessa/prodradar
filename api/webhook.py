@@ -8,6 +8,9 @@ from http.server import BaseHTTPRequestHandler
 import aiohttp
 import httpx
 import requests
+
+import config
+from bot.simple_flow import handle_simple_message, handle_simple_callback
 from postgrest.exceptions import APIError
 
 from bot.handlers import (
@@ -130,7 +133,9 @@ class handler(BaseHTTPRequestHandler):
 
                 prefix = data.split(":", 1)[0] if ":" in data else data
 
-                if prefix == "ob" and chat_id and message_id:
+                if config.SIMPLE_BOT_FLOW and prefix not in {"mute", "unmute", "unmute_all"} and chat_id and message_id:
+                    handle_simple_callback(data, chat_id, message_id, db=db)
+                elif prefix == "ob" and chat_id and message_id:
                     handle_callback(data, chat_id, message_id, callback_message, db=db)
                 elif prefix == "st" and chat_id and message_id:
                     handle_settings_callback(data, chat_id, message_id, callback_message, db=db)
@@ -168,7 +173,10 @@ class handler(BaseHTTPRequestHandler):
                     self.wfile.write(json.dumps({"ok": True}).encode("utf-8"))
                     return
 
-                if text == "/start":
+                if config.SIMPLE_BOT_FLOW:
+                    handle_simple_message(chat_id, text, username, db=db, language_code=language_code,
+                                          is_premium=is_premium, first_name=first_name, last_name=last_name)
+                elif text == "/start":
                     handle_start(
                         chat_id,
                         username,

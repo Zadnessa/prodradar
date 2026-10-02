@@ -441,3 +441,10 @@ bizdev» открывает вторую роль явно. `/settings` — гр
 /tmp/prodradar-full-pool.json --output reports/project_bizdev`. Ручная разметка
 хранится в `tests/fixtures/project_bizdev_gold.json`; precision/recall относятся
 к размеченным названиям, недоступные источники не включаются в знаменатель.
+
+`evaluate_role_slice.py` также сохраняет `ablation.json`: общий пул → только
+названные роли → технический blacklist → guard другой основной роли →
+контрольный возврат legacy internship blacklist. Видны потери target каждого
+шага и потери от возврата product native групп Alfa/VK/Ozon. Стажировки с
+явным project/bizdev названием сохранены: автоматическое отсечение теряет
+целевые роли; пользовательский грейд остаётся отдельным выбором.

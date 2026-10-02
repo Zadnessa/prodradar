@@ -61,8 +61,9 @@ class AlfaParser(BaseParser):
         url = "https://job.alfabank.ru/api/vacancies"
         items = []
         seen_ids = set()
+        api_count = 0
         while True:
-            params = {"take": 200, "skip": len(items)} if config.CAPTURE_ALL_ROLES else {"businessLine": 1020, "take": 100}
+            params = {"take": 200, "skip": api_count} if config.CAPTURE_ALL_ROLES else {"businessLine": 1020, "take": 100}
             async with session.get(url, params=params, headers=config.REQUEST_HEADERS,
                                    ssl=source_ssl_context(url)) as response:
                 response.raise_for_status()
@@ -70,21 +71,31 @@ class AlfaParser(BaseParser):
             page_items = payload.get("items")
             if not isinstance(page_items, list):
                 raise ValueError("Альфа: API не подтвердил список")
+            api_count += len(page_items)
+            new_ids = 0
             for item in page_items:
-                if item.get("id") is None or item["id"] in seen_ids:
-                    raise ValueError("Альфа: отсутствующий или повторяющийся id")
+                if item.get("id") is None:
+                    raise ValueError("Альфа: отсутствующий id")
+                if item["id"] in seen_ids:
+                    continue
                 seen_ids.add(item["id"])
-            items.extend(page_items)
+                new_ids += 1
+                items.append(item)
+            if page_items and new_ids == 0:
+                raise ValueError("Альфа: страница повторяет собранные ids")
             if not config.CAPTURE_ALL_ROLES:
                 break
             total = payload.get("total")
-            if not isinstance(total, int) or (not page_items and len(items) < total):
+            if not isinstance(total, int) or (not page_items and api_count < total):
                 raise ValueError("Альфа: API не подтвердил полный каталог")
-            if len(items) >= total:
-                if len(items) != total:
+            if api_count >= total:
+                if api_count != total:
                     raise ValueError("Альфа: число вакансий не совпадает с total")
                 break
 
+        self._api_total_count = payload.get("total")
+        self._api_collected_count = api_count
+        self._duplicate_count = api_count - len(items)
         vacancies = []
         for item in items:
             slug = item.get("slug") or ""

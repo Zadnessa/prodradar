@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from delivery.roles import classify, VERSION
 
 
-def evaluate(pool, gold):
+def evaluate(pool, gold, classifier=classify):
     metrics = {}
     for split in sorted({r['split'] for r in gold['rows']}):
         metrics[split] = {}
@@ -21,7 +21,7 @@ def evaluate(pool, gold):
                 if row['split'] != split:
                     continue
                 expected = family in row['families']
-                actual = family in classify({'title': row['title']})['families']
+                actual = family in classifier({'title': row['title']})['families']
                 tp += bool(expected and actual)
                 fn += bool(expected and not actual)
                 fp += bool(not expected and actual)
@@ -30,7 +30,7 @@ def evaluate(pool, gold):
             metrics[split][family] = {'true_positive': tp, 'false_positive': fp, 'false_negative': fn,
                                       'recall': tp / (tp + fn) if tp + fn else None,
                                       'precision': tp / (tp + fp) if tp + fp else None, 'errors': errors}
-    classified = [(v, classify(v)) for v in pool]
+    classified = [(v, classifier(v)) for v in pool]
     selected = [(v, d) for v, d in classified if d['status'] == 'selected']
     audited_titles = {r['title'] for r in gold['rows']}
     return {'version': VERSION, 'scope': 'Captured native catalogs; unavailable sources excluded; title recall is not crawl coverage',
@@ -59,6 +59,8 @@ def main():
             writer.writerow([v['id'], v['company'], v['title'], decision['status'],
                              ','.join(decision['families']), ','.join(decision['rules']),
                              '|'.join(decision['native_groups']), v['url']])
+    from scripts.role_filter_ablation import ablate
+    (args.output / 'ablation.json').write_text(json.dumps(ablate(json.loads(args.pool.read_text()), json.loads(args.gold.read_text())), ensure_ascii=False, indent=2) + '\n')
     print(json.dumps(summary, ensure_ascii=False))
     return 0
 

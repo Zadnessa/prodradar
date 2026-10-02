@@ -151,3 +151,30 @@ class EmpiricalRoleTests(unittest.TestCase):
 
     def test_bizdev_does_not_match_business_process_development(self):
         self.assertNotIn('bizdev', classify({'title': 'Менеджер по развитию бизнес-процессов'})['families'])
+
+class AblationTests(unittest.TestCase):
+    def test_adding_role_guards_does_not_remove_any_audited_project(self):
+        import json
+        from pathlib import Path
+        from scripts.role_filter_ablation import ablate
+        gold = json.loads(Path('tests/fixtures/project_bizdev_gold.json').read_text())
+        report = ablate([], gold)
+        for stage in report['stages'][:4]:
+            self.assertFalse(stage['missed_targets'], stage)
+        self.assertTrue(any(v['family'] == 'project' for v in report['stages'][4]['missed_targets']))
+
+    def test_relaxing_grade_and_mute_restores_vacancies_without_changing_roles(self):
+        from delivery.filters import filter_vacancies_for_user
+        records = [{'id': 'senior', 'title': 'Руководитель R&D проектов в HR', 'grade': 'Senior', 'company': 'Сбер'},
+                   {'id': 'junior', 'title': 'Менеджер проектов (стажёр)', 'grade': 'Junior', 'company': 'Ozon'},
+                   {'id': 'unknown', 'title': 'Project Manager', 'grade': None, 'company': 'Ozon'}]
+        with patch('config.SIMPLE_BOT_FLOW', True):
+            strict = filter_vacancies_for_user(records, {'grades': ['Senior'], 'excluded_companies': ['Ozon']})
+            no_mute = filter_vacancies_for_user(records, {'grades': ['Senior']})
+            relaxed = filter_vacancies_for_user(records, {})
+            restored = filter_vacancies_for_user(relaxed, {'grades': ['Senior'], 'excluded_companies': ['Ozon']})
+        self.assertEqual([v['id'] for v in strict], ['senior'])
+        self.assertEqual({v['id'] for v in no_mute}, {'senior', 'unknown'})
+        self.assertEqual({v['id'] for v in relaxed}, {'senior', 'junior', 'unknown'})
+        self.assertEqual(restored, strict)
+        self.assertTrue(all('project' in classify(v)['families'] for v in relaxed))

@@ -1,5 +1,5 @@
 {
-  "method": "Ручной аудит всех широких title candidates из 19 доступных каталогов. Метки target — названная роль, review — неоднозначная смежная роль, other — другая профессия/стажировка. Это calibration, не независимый holdout.",
+  "method": "Ручной аудит всех широких title candidates из 19 доступных каталогов. Метки target — названная роль, review — неоднозначная смежная роль, other — другая профессия/стажировка. Это calibration, не независимый holdout. Пользователь потребовал минимум потерь: названные project-стажировки считаются целевыми. Sber holdout v2 (до доработки) сохранён отдельно; после доработки это calibration, не независимая проверка v3.",
   "rows": [
     {
       "title": "BDM «Цифровой водоканал»",
@@ -2589,8 +2589,10 @@
     },
     {
       "title": "Стажёр - менеджер проекта в департамент продукта Ozon Travel",
-      "families": [],
-      "label": "other",
+      "families": [
+        "project"
+      ],
+      "label": "target",
       "split": "calibration",
       "examples": [
         {
@@ -3558,8 +3560,10 @@
     },
     {
       "title": "Менеджер по развитию еком-бизнеса (стажёр) в Яндекс Фабрику",
-      "families": [],
-      "label": "other",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
       "split": "calibration",
       "examples": [
         {
@@ -3782,8 +3786,10 @@
     },
     {
       "title": "Менеджер проектов (стажёр) в Международный Поиск",
-      "families": [],
-      "label": "other",
+      "families": [
+        "project"
+      ],
+      "label": "target",
       "split": "calibration",
       "examples": [
         {
@@ -5083,6 +5089,2301 @@
           "id": "ya_49064",
           "company": "Яндекс",
           "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "CJE / Project Manager (рекомендательные системы Домклик)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4566207",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Data Analyst (Дивизион \"Phygital. Развитие продаж в каналах\")",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4570682",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Delivery Lead",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4568026",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Delivery Lead (Навигатор)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4574835",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Delivery Lead (команда Закуп.AI)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4567001",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Delivery Manager",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4574005",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Delivery Manager (Прайм)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4571834",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "DevOps (проект IDP GigaSearch)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4557734",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "DevOps Engineer (развитие инфраструктуры)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4556922",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "IT Delivery Lead",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4571297",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4573709",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Middle Data Analyst (Трайб «Развитие сервиса в каналах»)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4544554",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Product Owner на DS проекты управления модельным риском",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4567355",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Product manager на проект умного помощника (Legal)",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4533856",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Project Manager (Миграция данных / DWH)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4571225",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Project Manager(AI-Agents)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4572555",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Project manager (Удержание, СберПрайм)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4539959",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Project manager в Технологические и AI-риски",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4543944",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "QA инженер проект STACK",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4566848",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Release Delivery Manager",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4571665",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Senior Delivery Lead",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4551069",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Senior Project Manager (Транзакционный банкинг B2C)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4572545",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Senior Project manager (Центр Робототехники)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4574070",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "UX/UI дизайнер (проект Навигатор)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4558668",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "iOS разработчик (Развитие технологий в финансовых рынках)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4574868",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Администратор СПО (системного программного обеспечения на стендах тестирования и промышленных средах)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4549070",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Администратор проекта (команда Центра снабжения)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4546210",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Администратор проектов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4575657",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Аналитик в проектный офис ДИТ",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4559194",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Аналитик данных (Управление моделирования и развития AI)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4566028",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Аналитик проекта ( Управление ИТ \"Кредиты и кредитный потенциал\")",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4572639",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Арт-Директор (с функцией проектного управления)",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4574180",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Бизнес-аналитик (Управление зарплатных проектов)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4572330",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Бизнес-аналитик в Дивизион \"Развитие внешнеэкономического партнерства\"",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4566240",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Бизнес-аналитик в продукт «AI-агент по управлению оценкой бюджета строительных проектов»",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4558228",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Бизнес-аналитик по внедрению ML-решений (криптовалютный рынок и блокчейн)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4556833",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Бизнес-партнер по развитию команд (Private Banking и Сбер 1)",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4563402",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Ведущий эксперт по развитию ВЭД",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4573126",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Главный клиентский менеджер (ГЧП / Public-Private Partnership)",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4547775",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Главный эксперт по развитию ВЭД",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4395860",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Директор исследовательских и академических программ (Research & Academic Programs)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4573184",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Директор проектов (развитие международного бизнеса)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4536799",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Инженер внедрения и оптимизации (JDK)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4575133",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Инженер по развитию ITSM платформы (Naumen ServiceDesk)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4569014",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Инженер по сопровождению (Развитие технологий международного финансирования)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4568689",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Инженер по сопровождению инвестиционных проектов",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4562045",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4562060",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4562063",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Инженер-координатор",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4553149",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Исполнительный директор Центра развития Индийского направления",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4566254",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Клиентский менеджер по развитию инвестиционных и инфраструктурных проектов",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4569401",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Координатор (Инвестиционный бизнес)",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4567210",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Координатор ITSM-процессов",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4547560",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Координатор проектов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4569798",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Координатор руководителя",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4574313",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Корпоративный архитектор ДКА (Развитие клиентского пути B2C )",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4570982",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Кредитный аналитик (проектное финансирование)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4567246",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер Центра развития и управления эффективностью",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4568483",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по внедрению региональных стратегий",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4570848",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по коммуникациям и событийным проектам",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4566346",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4569406",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по организации корпоративного питания и развитию сервисов",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4519034",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по привлечению партнеров (Эквайринг)",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4569148",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по продажам и развитию партнерских программ",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4568918",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по продаже зарплатных проектов",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4278839",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4386944",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4424469",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4434760",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4480095",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4482916",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4525103",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4539363",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4543612",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4549166",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4558900",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4559353",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4562278",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4566447",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4568362",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4568701",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4569565",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4570307",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4571050",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4573849",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4573952",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4574886",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4574936",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию бизнеса (ВЭД)",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4402835",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию бизнеса (личные виды страхования)",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4562667",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию малого бизнеса",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4250591",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4250872",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4250988",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4254388",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4254396",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4254407",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4254919",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4256409",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4315746",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4480519",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4480522",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4480528",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4480530",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4483893",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4484405",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4485005",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4490546",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4495333",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4510887",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4523601",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4550543",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4555420",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4558367",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4559486",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4565091",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4569005",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4569464",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4570748",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4571090",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4571260",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4574954",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4575252",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по развитию сегментной вертикали \"Пенсионеры\"",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4570210",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер продукта в проекте RecEngine",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4558099",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов внутреннего аудита",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4574006",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов по работе с партнерами",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4570706",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер проектов по разметке данных для обучения нейросетей",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4510276",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4518681",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4518683",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер развития отношений с партнерами",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4559487",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4573787",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер специальных CX-проектов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4534122",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер центра развития и управления эффективностью (Аналитик данных)",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4574058",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Методолог (проект цифрового депозитария) с фокусом на бизнес-анализ",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4569052",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Методолог на проект \"Консьерж\"",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4565151",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Начальник отдела зарплатных проектов",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4562029",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4568199",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4568332",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Начальник отдела недвижимости и развития инфраструктуры",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4568334",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4569367",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Начальник сектора (недвижимость и развитие инфраструктуры)",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4559848",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Начальник сектора развития инфраструктуры",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4522740",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Проектный менеджер по сделкам с недвижимостью",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4570623",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Разработка и внедрении решений с LLM (стажер)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4552473",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Региональный директор (развитие фокусной территории)",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4526560",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4526562",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель R&D проектов в HR",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4569727",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель кросс-блочного проекта IT/DS решений по управлению прибыльностью розничных продуктов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4569655",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель направления безопасности GenAI-моделей (разработка программного обеспечения)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4507296",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель направления образовательных программ",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4553319",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель направления по продажам зарплатных проектов",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4569231",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель направления по работе с партнерами для сервисов В2С",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4512556",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель направления по развитию ИСЖ и НСЖ",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4552754",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель направления по развитию бизнеса",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4543437",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4566129",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель направления по развитию бизнеса (ВЭД)",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4521690",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель направления по развитию методологии ИБ",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4541568",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель направления по развитию продаж в канале Премьер",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4555454",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель направления по развитию продукта (HR-платформа Пульс)",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4548824",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель направления развития производственных процессов (HR платформа)",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4566318",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проекта с навыками Middle ML dаta scientist",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4566358",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов (AI, Data-Science)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4572173",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов (SaaS ГосТех)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4564173",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов (Кибербезопасность)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4575286",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов (Маркетплейс КАСКО)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4571691",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов (кредитные карты)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4559002",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов (программа AI PDLC)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4568430",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов Platform V (SberTech)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4557294",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов в Офис GenAI-трансформации B2C",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4574276",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов по разработке пенсионных продуктов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4542620",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов по технологическому развитию клиентов",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4525131",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4533714",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4546799",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4559962",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4563930",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4570015",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4571918",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов по технологическому развитию клиентов крупного и среднего бизнеса",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4563993",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель проектов цифровой оценки должностей (грейдинг)",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4566426",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Системный аналитик (Digital Business Platform)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4544746",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Системный аналитик (Риски строительных проектов)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4569374",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Системный аналитик внедрения (Платформа V Multi Data Clusters)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4558326",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Системный аналитик/Проектировщик (Platform V Synapse Event Mesh)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4571234",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Специалист банковского контроля инвестиционных проектов",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4562108",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Специалист по зарплатным проектам",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4332562",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4380211",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4381049",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4383812",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4385908",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4388087",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4388090",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4388568",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4389532",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4418825",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4422786",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4434789",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4535955",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4555614",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4560259",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4565774",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4566469",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4567971",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4568126",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4572221",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4573281",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4573688",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4574264",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4574730",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4574786",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Специалист по продажам зарплатных проектов",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4574887",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Специалист по развитию клиентского сервиса (продажи)",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4504689",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Специалист по развитию процессов комплаенс",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4548835",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Стажер в Дирекцию академичских партнерств",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4575425",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Старший бизнес-партнер по развитию команд",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4553248",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер по продажам и развитию партнерских программ",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4560680",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер по развитию малого бизнеса",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4254394",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер по развитию партнерских программ",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4568445",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер развития отношений с партнерами ипотечного кредитования",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4569573",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Старший разработчик / Владелец проекта мультиагентной системы (ДКА)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4528829",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Территориальный директор по проектной деятельности",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4551551",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Территориальный менеджер по работе с партнерами",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4559221",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4565017",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4573041",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Финансовый бизнес партнёр",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4572578",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Финансовый бизнес-партнер (b2c)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4291354",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Эксперт банковского контроля строительных проектов",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4562041",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4562051",
+          "company": "Сбер",
+          "source": "sber"
+        },
+        {
+          "id": "sber_4562057",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Эксперт по развитию продаж ВЭД",
+      "families": [],
+      "label": "review",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4509370",
+          "company": "Сбер",
+          "source": "sber"
+        }
+      ]
+    },
+    {
+      "title": "Юрист (ГЧП / Public-Private Partnership)",
+      "families": [],
+      "label": "other",
+      "split": "calibration_sber_after_v2",
+      "examples": [
+        {
+          "id": "sber_4547780",
+          "company": "Сбер",
+          "source": "sber"
         }
       ]
     }

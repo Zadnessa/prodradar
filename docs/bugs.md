@@ -308,3 +308,15 @@ capture_pool_only допускает inspect_sources без повторного
 с RADAR_POOL_SOURCES=alfa sber tbank. Regression явно изолирует env списка;
 реальный guard неизвестных/отключённых компаний сохраняется. Calibration
 296 реальных title candidates зафиксирована отдельно от будущей holdout.
+
+### Holdout выявил потери R&D/событийных проектов (BUG-112)
+Sber holdout v2: project40/43 recall93.0%, precision90.9%. Причины: R&D
+разрывал regex, общий «другой менеджер» отсекал событийные проекты, не было
+project activity директора. Добавлены точные title-правила, сохранён исходный
+holdout отчёт; после исправления Sber является calibration, не holdout v3.
+По поручению пользователя ablation восстанавливает ограничения по одному;
+запрет стажировок удалён, т.к. отсекает названные project роли. Product/client/
+sales primary guards и техническая профессия проверяются на отсутствие
+потерь вручную размеченных target; native product groups не возвращаются.
+Alfa пересечение одной страницы дедуплицируется по ID, raw offset/total
+проверяются отдельно; полностью повторная страница по-прежнему ошибка.

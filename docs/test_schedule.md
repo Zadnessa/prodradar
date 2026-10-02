@@ -32,3 +32,14 @@ Concurrency совпадает с ручным test collector, одноврем�
 Не удалять codex/restore-test-bot, пока расписание использует эту ветку. После
 объединения полноценного test кода в main поменять checkout ref отдельно.
 Отключение: GitHub Actions → Scheduled Test Vacancies → Disable workflow.
+
+Активация подтверждена2 октября2026: PR130 объединён в main8a8493b,
+workflow373139509 active. Диагностика
+[37014895434](https://github.com/Zadnessa/prodradar/actions/runs/37014895434)
+success: gate/check success, collect/keepalive skipped. Source tests103 local
+проходят; существующие настройки/история не сбрасывались. Original245897389
+по-прежнему disabled_inactivity. Служебные Vercel builds CANCELED; aliases
+оригинального83b2b6 и тестового7R3FGM не изменены. Полный fresh collector
+этим диагностическим запуском не запускали — первый scheduled завтра.
+Не обещать успешный сбор недоступного Купера403; частичный результат остаётся
+виден в admin report. Точный snapshot — test_schedule_activation.json.

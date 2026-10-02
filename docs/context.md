@@ -1,3 +1,13 @@
+<!-- TEST cron активирован, 2 октября2026 Москва -->
+Поручение выполнено через отдельный PR130/main8a8493b: schedule_test.yml,
+workflow373139509 active. Первый scheduled3 октября2026 10:00 Москва,
+затем ежедневно10:00/19:00. Диагностика37014895434 success, collect/keepalive
+skipped, без доставки. Product245897389 остаётся disabled_inactivity;
+original83b2b6/test7R3FGM aliases не изменены. Vercel отменяет metadata-only
+builds; keepalive поддерживает main активность раз в30 дней. PR129 не merged,
+его ветка синхронизирована с отдельным scheduler main commit.
+Подробнее test_schedule.md и test_schedule_activation.json.
+
 <!-- Новое поручение: включить TEST cron с3 октября2026 -->
 Пользователь разрешил регулярный свежий сбор10:00/19:00 Москва с завтрашнего
 дня. Отдельный schedule_test.yml в main checkout codex/restore-test-bot,

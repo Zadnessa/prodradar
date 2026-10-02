@@ -107,3 +107,13 @@ review/ошибкой, а не автоматическим возвратом �
 Регрессы: 111 тестов — сохранённые 257, цитатные ограничения, company/title
 границы, клиентские PM, rollback, live detail/no detail/cached negative,
 атомарное применение без users/history и прежний product flow.
+
+Применено к живой TEST БД:257 active с версией.6, исходные фильтры/онбординг
+и24 delivery записи совпали до/после. source_json.selection обновлён вместе
+с core полями без удаления native metadata. GitHub read-only проверка
+[37022028000](https://github.com/Zadnessa/prodradar/actions/runs/37022028000)
+загрузила19ca5d5 и прошла111 тестов (1 optional PyNaCl skipped),
+identity/DB/webhook готовы; collector/delivery в этой проверке skipped.
+Vercel rebuild не нужен: фильтры применяются collector/DB, действующий
+webhook читает is_active и сохранённые role_families. Новый runtime deployment
+ради изменения выборки не создавался, чтобы не увеличивать Function Storage.

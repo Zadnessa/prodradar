@@ -402,7 +402,12 @@ async def run():
             bot_id = user.get("bot_id") or "main"
 
             user_detail = db.get_user(chat_id)
-            if (user_detail or {}).get("onboarding_step") is not None:
+            if config.SIMPLE_BOT_FLOW:
+                from bot.simple_flow import onboarding_completed
+                awaiting_simple_onboarding = not onboarding_completed(user_detail)
+            else:
+                awaiting_simple_onboarding = False
+            if (user_detail or {}).get("onboarding_step") is not None or awaiting_simple_onboarding:
                 skipped_onboarding += 1
                 continue
 
@@ -417,7 +422,7 @@ async def run():
                     from bot.simple_flow import effective_filters
                     user_filters = effective_filters(user_filters)
                     enabled_names = {c["name"] for c in db.get_enabled_companies()}
-                    undelivered = [v for v in undelivered if "project" in (v.get("role_families") or []) and v.get("company") in enabled_names]
+                    undelivered = [v for v in undelivered if set(v.get("role_families") or []) & {"project", "bizdev"} and v.get("company") in enabled_names]
                 user_grades = user_filters.get("grades") or []
                 filtered_vacancies = filter_vacancies_for_user(undelivered, user_filters)
                 filtered_vacancies = rank_vacancies(filtered_vacancies, user_grades)

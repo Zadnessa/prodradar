@@ -1,4 +1,4 @@
-"""Сразу вакансии: project — основной поиск, bizdev — запасной вариант."""
+"""Короткое знакомство и общая лента project/bizdev для test-бота."""
 
 from html import escape
 
@@ -10,6 +10,40 @@ from delivery.ranking import rank_vacancies
 from delivery.telegram import format_vacancy_message
 
 PAGE_SIZE = 8
+ONBOARDING_STEP = "simple_grade"
+COMPLETED_KEY = "simple_onboarding_completed"
+
+
+def onboarding_completed(user):
+    return bool(((user or {}).get("filters") or {}).get(COMPLETED_KEY))
+
+
+def show_onboarding(chat_id, db=None, message_id=None):
+    db = db or SupabaseService()
+    user = db.get_user(chat_id) or {}
+    selected = effective_filters(user.get("filters"))["grades"]
+    text = ("Привет, Катюша! :-)\n\n"
+            "Собрала для тебя проекты и развитие бизнеса в одну ленту. "
+            "Не нужно выбирать что-то одно.\n\n"
+            "Какие грейды тебе показывать? Можно выбрать несколько или посмотреть все. "
+            "Если грейд не указан, вакансию тоже покажу — вдруг там что-то интересное.\n\n"
+            "Потом всё можно поменять в настройках. Компании, которые не подходят, можно скрыть.")
+    rows = [[{"text": ("✓ " if grade in selected else "") + grade,
+              "callback_data": f"sm:onboard:grade:{index}"} for index, grade in enumerate(GRADE_OPTIONS)]]
+    rows.extend([
+        [{"text": "Поехали смотреть вакансии :-)" if selected else "Показать все грейды :-)",
+          "callback_data": "sm:onboard:done"}],
+    ])
+    if selected:
+        rows.append([{"text": "Посмотреть все грейды", "callback_data": "sm:onboard:all"}])
+    if message_id:
+        return edit_message(chat_id, message_id, text, reply_markup={"inline_keyboard": rows})
+    return send_message(chat_id, text, reply_markup={"inline_keyboard": rows})
+
+
+def _begin_onboarding(chat_id, db):
+    db.update_onboarding_step(chat_id, ONBOARDING_STEP)
+    return show_onboarding(chat_id, db)
 
 
 def effective_filters(filters):
@@ -28,14 +62,15 @@ def _all_available(db, chat_id, include_delivered=False):
             return result
 
 
-def show_vacancies(chat_id, db=None, family="project", include_delivered=False, offset=0):
+def show_vacancies(chat_id, db=None, family="all", include_delivered=False, offset=0):
     db = db or SupabaseService()
-    if family not in {"project", "bizdev"}:
-        family = "project"
     user = db.get_user(chat_id) or {}
+    if not onboarding_completed(user):
+        return _begin_onboarding(chat_id, db)
     filters = effective_filters(user.get("filters"))
     companies = {c["name"]: c for c in db.get_enabled_companies()}
-    available = [v for v in _all_available(db, chat_id, include_delivered) if family in (v.get("role_families") or [])
+    # Старые кнопки направлений открывают ту же общую ленту.
+    available = [v for v in _all_available(db, chat_id, include_delivered) if set(v.get("role_families") or []) & {"project", "bizdev"}
                  and v.get("company") in companies]
     vacancies = rank_vacancies(filter_vacancies_for_user(available, filters), filters["grades"])
     delivered = []
@@ -52,21 +87,19 @@ def show_vacancies(chat_id, db=None, family="project", include_delivered=False, 
     rows = []
     remaining = max(len(vacancies) - offset - len(delivered), 0)
     if remaining:
-        callback = f"sm:seen:{family}:{offset + PAGE_SIZE}" if include_delivered else f"sm:more:{family}"
+        callback = f"sm:seen:all:{offset + PAGE_SIZE}" if include_delivered else "sm:more:all"
         rows.append([{"text": f"Ещё вакансии ({remaining})", "callback_data": callback}])
     if not vacancies and not include_delivered:
-        rows.append([{"text": "Посмотреть текущие ещё раз", "callback_data": f"sm:seen:{family}:0"}])
-    rows.append([{"text": "Запасной вариант: bizdev" if family == "project" else "К проектным вакансиям",
-                  "callback_data": "sm:more:bizdev" if family == "project" else "sm:more:project"}])
+        rows.append([{"text": "Посмотреть текущие ещё раз", "callback_data": "sm:seen:all:0"}])
     rows.append([{"text": "Настройки", "callback_data": "sm:settings"}])
     if not vacancies:
-        text = "Непросмотренных проектных вакансий по текущим настройкам пока нет." if family == "project" else "Непросмотренных bizdev-вакансий по текущим настройкам пока нет."
+        text = "Катюша, непросмотренных вакансий по этим настройкам пока нет :-)"
         if filters["grades"]:
             text += " Можно изменить грейды в настройках."
     else:
-        text = f"Показано: {len(delivered)}. " + (f"Осталось: {remaining}." if remaining else "Все текущие вакансии этого направления просмотрены.")
+        text = f"Вот ещё {len(delivered)} вакансий для тебя :-) " + (f"Осталось: {remaining}." if remaining else "На сегодня всё в этой подборке.")
     send_message(chat_id, text, reply_markup={"inline_keyboard": rows})
-    db.log_event(chat_id, "simple_vacancies_shown", {"family": family, "delivered": len(delivered), "remaining": remaining})
+    db.log_event(chat_id, "simple_vacancies_shown", {"family": "all", "delivered": len(delivered), "remaining": remaining})
     return delivered
 
 
@@ -85,7 +118,7 @@ def show_settings(chat_id, db=None, message_id=None):
         [{"text": "Все грейды", "callback_data": "sm:grades:all"}],
         [{"text": "Скрытые компании", "callback_data": "sm:blocked"}],
         [{"text": "Возобновить рассылку" if paused else "Пауза рассылки", "callback_data": "sm:pause"}],
-        [{"text": "Проектные вакансии", "callback_data": "sm:more:project"}],
+        [{"text": "К вакансиям :-)", "callback_data": "sm:more:all"}],
     ])
     if message_id:
         edit_message(chat_id, message_id, text, reply_markup={"inline_keyboard": rows})
@@ -106,6 +139,33 @@ def show_blocked(chat_id, db=None):
 
 def handle_simple_callback(data, chat_id, message_id, db=None):
     db = db or SupabaseService()
+    if data.startswith("sm:onboard:"):
+        user = db.get_user(chat_id) or {}
+        if onboarding_completed(user):
+            return show_settings(chat_id, db, message_id)
+        filters = dict(user.get("filters") or {})
+        if data.startswith("sm:onboard:grade:"):
+            index = data.rsplit(":", 1)[-1]
+            if not index.isdigit() or int(index) >= len(GRADE_OPTIONS):
+                return
+            grade = GRADE_OPTIONS[int(index)]
+            grades = list(filters.get("grades") or [])
+            grades.remove(grade) if grade in grades else grades.append(grade)
+            filters["grades"] = grades
+            db.update_user_filters(chat_id, filters)
+            return show_onboarding(chat_id, db, message_id)
+        if data not in {"sm:onboard:done", "sm:onboard:all"}:
+            return
+        if data == "sm:onboard:all":
+            filters["grades"] = []
+        filters[COMPLETED_KEY] = True
+        db.update_user_filters(chat_id, filters)
+        db.update_onboarding_step(chat_id, None)
+        edit_message(chat_id, message_id, "Поехали, Катюша! :-)\nПроекты и развитие бизнеса — в одной ленте.")
+        send_message(chat_id, "В каждой карточке — прямая ссылка на вакансию. "
+                     "А если компания не твоя, нажми команду скрытия под карточкой.",
+                     reply_markup=build_main_reply_keyboard())
+        return show_vacancies(chat_id, db)
     if data.startswith("sm:seen:"):
         parts = data.split(":")
         if len(parts) == 4 and parts[3].isdigit():
@@ -148,9 +208,9 @@ def handle_simple_message(chat_id, text, username=None, db=None, **profile):
     db = db or SupabaseService()
     if text == "/start":
         db.upsert_user(chat_id, username, **profile)
-        db.update_onboarding_step(chat_id, None)
-        db.set_user_paused(chat_id, False)
-        send_message(chat_id, "Проектные вакансии — основной поиск. Bizdev доступен как запасной вариант.",
+        if not onboarding_completed(db.get_user(chat_id)):
+            return _begin_onboarding(chat_id, db)
+        send_message(chat_id, "Привет, Катюша! :-) Давай посмотрим, что ещё есть для тебя.",
                      reply_markup=build_main_reply_keyboard())
         return show_vacancies(chat_id, db)
     if text in {"/settings", "Настройки"}:
@@ -171,5 +231,8 @@ def handle_simple_message(chat_id, text, username=None, db=None, **profile):
         return handle_mute(chat_id, text[len("/mute_"):], db=db)
     if text in {"Вакансии", "/vacancies"}:
         return show_vacancies(chat_id, db)
-    return send_message(chat_id, "Нажми «Вакансии» для проектного поиска или «Настройки» для грейдов и mute.",
+    if not onboarding_completed(db.get_user(chat_id)):
+        return _begin_onboarding(chat_id, db)
+    return send_message(chat_id, "Катюша, нажми «Вакансии», чтобы продолжить :-) "
+                        "В «Настройках» можно поменять грейды и вернуть скрытые компании.",
                         reply_markup=build_main_reply_keyboard())

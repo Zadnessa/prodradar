@@ -93,4 +93,24 @@ def rank_vacancies(vacancies: list[dict], user_grades: list[str] | None, title_b
             vacancy.get("published_at") or "",
         )
 
-    return sorted(vacancies, key=_sort_key, reverse=True)
+    ranked = sorted(vacancies, key=_sort_key, reverse=True)
+    if config.VACANCY_PROFILE != "project_bizdev":
+        return ranked
+    from delivery.roles import classify
+
+    # Общая лента: два проекта, затем bizdev. Не прячем вторую роль
+    # за всем проектным каталогом; внутри каждой семьи сохраняем грейд/свежесть.
+    projects, bizdev, other = [], [], []
+    for vacancy in ranked:
+        families = vacancy.get("role_families") or classify({"title": vacancy.get("title", "")})["families"]
+        if "project" in families:
+            projects.append(vacancy)
+        elif "bizdev" in families:
+            bizdev.append(vacancy)
+        else:
+            other.append(vacancy)
+    mixed = []
+    for index in range(max((len(projects) + 1) // 2, len(bizdev))):
+        mixed.extend(projects[index * 2:index * 2 + 2])
+        mixed.extend(bizdev[index:index + 1])
+    return mixed + other

@@ -1,3 +1,13 @@
+<!-- Новое поручение: включить TEST cron с3 октября2026 -->
+Пользователь разрешил регулярный свежий сбор10:00/19:00 Москва с завтрашнего
+дня. Отдельный schedule_test.yml в main checkout codex/restore-test-bot,
+environment prodradar-test; PR129 не объединяется с runtime в main. Gate
+до3 октября07:00 UTC не собирает; dispatch defaultfalse проверяет без доставки.
+Collector read-only token, keepalive только .github heartbeat раз в30 дней,
+без test secrets. Vercel Ignored Build Step пропускает только metadata/docs
+коммиты, runtime изменения продолжают собираться. Previous cron-off ниже —
+история до этого поручения. Точный контракт: docs/test_schedule.md.
+
 <!-- Action color и проверка доступа/расписания, 2 октября2026 Москва -->
 Test forward actions sm:onboard:done/all и возврат sm:more:all в settings —
 зелёные style=success; grade buttons стандартные. Расписание не включалось:

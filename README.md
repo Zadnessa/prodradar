@@ -485,3 +485,8 @@ grade/mute фильтрации. `source_json` сохраняет native metadat
 в ленту — зелёные (native Telegram style=success). Тестовый сбор остаётся
 ручным: собственного cron пока нет. Original schedule10:00/19:00 Москва
 отключён GitHub за неактивность; просмотр карточек сам не обновляет каталог.
+
+Тестовый @ProdRadar_bot обновляется отдельным GitHub расписанием с3 октября2026:
+10:00 и19:00 Москва. Код берётся из codex/restore-test-bot, только test secrets;
+исходный product workflow остаётся отключённым. Контракт и ручная проверка без
+доставки: [docs/test_schedule.md](docs/test_schedule.md).

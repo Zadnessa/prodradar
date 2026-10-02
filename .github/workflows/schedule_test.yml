@@ -1,0 +1,134 @@
+name: Scheduled Test Vacancies
+
+on:
+  schedule:
+    # 10:00 и 19:00 Europe/Moscow; GitHub cron использует UTC.
+    - cron: '0 7 * * *'
+    - cron: '0 16 * * *'
+  workflow_dispatch:
+    inputs:
+      collect_test:
+        description: 'Запустить настоящий сбор сейчас; false — только проверка без доставки'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      collect: ${{ steps.first_run.outputs.collect }}
+    steps:
+      - name: Начать расписание 3 октября 2026 в 10:00 МСК
+        id: first_run
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          COLLECT_NOW: ${{ inputs.collect_test || false }}
+        run: |
+          python - <<'PY'
+          from datetime import datetime, timezone
+          import os
+          first = datetime(2026, 10, 3, 7, 0, tzinfo=timezone.utc)
+          scheduled = os.environ['EVENT_NAME'] == 'schedule' and datetime.now(timezone.utc) >= first
+          manual = os.environ['EVENT_NAME'] == 'workflow_dispatch' and os.environ['COLLECT_NOW'] == 'true'
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('collect=' + str(scheduled or manual).lower() + '\n')
+          PY
+
+  check:
+    needs: gate
+    if: needs.gate.outputs.collect == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: prodradar-test
+    env:
+      TEST_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      TEST_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      TEST_TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      ADMIN_CHAT_ID: ${{ vars.ADMIN_CHAT_ID }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: codex/restore-test-bot
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-collector.txt
+      - run: python -m unittest discover -s tests -v
+      # Доступность HH проверяет его парсер: его сбой не блокирует другие источники.
+      - name: Проверить test identity и БД без записи и рассылки
+        run: python scripts/run_profile.py --profile test check --skip-hh --output environment-check.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: scheduled-test-check
+          path: environment-check.json
+          retention-days: 7
+
+  collect:
+    needs: [gate, check]
+    if: needs.gate.outputs.collect == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    environment: prodradar-test
+    concurrency:
+      group: prodradar-test-collector
+      cancel-in-progress: false
+    env:
+      TEST_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      TEST_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      TEST_TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      ADMIN_CHAT_ID: ${{ vars.ADMIN_CHAT_ID }}
+      HH_ACCESS_TOKEN: ${{ secrets.HH_ACCESS_TOKEN }}
+      REDIRECT_BASE_URL: prodradar-test.vercel.app
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: codex/restore-test-bot
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-collector.txt
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: scheduled-test-playwright-${{ hashFiles('requirements-collector.txt') }}
+      - run: playwright install chromium --with-deps
+      - name: Свежий сбор API/HTML, сохранение среза и доставка в ProdRadar
+        run: python scripts/run_profile.py --profile test collect --project-ref jmsdxgylyjxwdwmdrmxw
+
+  keepalive:
+    needs: gate
+    if: needs.gate.outputs.collect == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    concurrency:
+      group: prodradar-test-schedule-heartbeat
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 1
+      - name: Поддерживать активность раз в 30 дней, без доступа к test secrets
+        run: |
+          last_activity=$(git log -1 --format=%ct)
+          now=$(date -u +%s)
+          if [ "$((now - last_activity))" -lt 2592000 ]; then
+            exit 0
+          fi
+          date -u +%FT%TZ > .github/test-schedule-heartbeat
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/test-schedule-heartbeat
+          git commit -m 'Поддержать активность test расписания'
+          git push origin HEAD:main

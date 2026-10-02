@@ -118,3 +118,5 @@
 - В native отчётах обязательно разделять selection_rate (взято / весь размер категории) и recall (найденные / подтверждённые релевантные роли). После настройки на категории её метрики — calibration; независимую контрольную выборку размечать до изменения правил. Общие итоговые counts и неразмеченные выбранные названия показывать отдельно.
 
 - Для основных test действий завершения мини-онбординга/возврата к ленте использовать нативный InlineKeyboardButton.style=success; выбор грейдов остаётся стандартным. Проверка наличия cron не означает его включение: GitHub schedule работает только из default branch, disabled_inactivity не исполняется.
+
+- Test автосбор разрешён с3 октября2026: .github/workflows/schedule_test.yml в main запускает только codex/restore-test-bot/prodradar-test в10/19 Москва. Product workflow не включать. Scheduled gate не разрешает ранний запуск, workflow_dispatch по умолчанию read-only. Keepalive пишет только .github/test-schedule-heartbeat раз в30 дней без test secrets; collector contents:read. Подробнее docs/test_schedule.md.

@@ -241,3 +241,5 @@
 - [x] Защитить Т-Банк от обрывов read-only ответов, MTS/VK от неполной пагинации, VK от перезаписи enrichment, Купер от ложного empty success при blocked career (parsers/, tests/test_refresh.py).
 
 - [x] VK enrich: добавить проверку existing значений grade и description перед перезаписью; description заменять только если len(new) > len(current) (parsers/vk.py).
+
+- [x] Снизить sales/account шум в TEST project/bizdev: вычитать 374 описания недорогими аудиторами, проверить rollback и клиентский delivery, пересмотреть ошибочные labels; 374→257, 5 mixed учтены как возможная потеря, атомарный переотбор без сброса users/history (delivery/roles.py, delivery/role_exclusions.py, scripts/evaluate_role_precision.py, scripts/reselect_test_roles.py, tests/test_role_precision.py, docs/test_role_precision.md).

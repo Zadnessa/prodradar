@@ -1,0 +1,2763 @@
+{
+  "captured_on": "2026-10-02",
+  "runtime_sha": "969e5d12aebd557dd377a9b63fceb1f88ddb99ee",
+  "summary": {
+    "version": "project-bizdev-2026-10-02.5",
+    "scope": "Captured native catalogs; unavailable sources excluded; title recall is not crawl coverage",
+    "pool_count": 12270,
+    "selected_count": 374,
+    "families": {
+      "project": 248,
+      "bizdev": 132
+    },
+    "by_company": {
+      "2ГИС": 3,
+      "Avito": 12,
+      "Lamoda": 4,
+      "MWS.AI": 3,
+      "Ozon": 53,
+      "VK": 24,
+      "Wildberries": 8,
+      "X5 Tech": 2,
+      "Авиасейлс": 2,
+      "Альфа-Банк": 35,
+      "ДомКлик": 1,
+      "Касперский": 1,
+      "Контур": 2,
+      "МТС": 43,
+      "МТС Банк": 2,
+      "МТС Линк": 1,
+      "Пятёрочка": 1,
+      "Сбер": 115,
+      "СберЗдоровье": 2,
+      "Т-Банк": 13,
+      "Точка": 1,
+      "Яндекс": 46
+    },
+    "review_count": 364,
+    "audited_unique_titles": 513,
+    "gold_method": "Ручная разметка названий и полных обязанностей из доступных native каталогов; calibration после исправлений. Известные company aliases требуют функциональных цитат. Сохранён исходный Sber holdout v2 до исправлений; итоговые calibration метрики не являются независимым доказательством 95% всех компаний.",
+    "unaudited_selected_titles": [
+      "Delivery Manager по покрытию процессов моделями",
+      "Delivery manager в AI/ML (Антифрод платформа)",
+      "Администратор проектов (направление бухгалтерии)",
+      "Ведущий менеджер по привлечению зарплатных проектов",
+      "Ведущий менеджер по развитию среднего и крупного бизнеса",
+      "Главный менеджер по привлечению зарплатных проектов",
+      "Координатор проекта (Ведущий эксперт)",
+      "Менеджер по лизингу и развитию партнерских отношений с автосалонами",
+      "Менеджер по привлечению и развитию партнеров (POS-кредитование/BNPL)",
+      "Менеджер по привлечению и развитию партнеров POS и BNPL-кредитования",
+      "Менеджер по привлечению и сопровождению партнёров (M-сегмент)",
+      "Менеджер по привлечению классических партнеров",
+      "Менеджер по привлечению партнеров",
+      "Менеджер по привлечению партнеров среднего бизнеса (BDM)",
+      "Менеджер по развитию среднего и крупного бизнеса",
+      "Менеджер по удаленному привлечению партнеров",
+      "Менеджер проектов по управлению офисными пространствами",
+      "Менеджер спецпроектов в Авто.ру",
+      "Младший проектный менеджер (B2C-кредитование)",
+      "Проектный менеджер цифровых каналов b2b направления",
+      "Руководитель группы по развитию среднего и крупного бизнеса",
+      "Руководитель направления по правовому обеспечению специальных проектов",
+      "Руководитель направления по развитию бизнеса в электронной коммерции",
+      "Руководитель направления проектной деятельности в рисках",
+      "Руководитель направления развития партнерских проектов",
+      "Руководитель проекта по развитию Основного банка",
+      "Руководитель проектов (зарплатные проекты)",
+      "Руководитель проектов CRM привлечения",
+      "Руководитель проектов автоматизации процессов комплаенса",
+      "Руководитель проектов по кибербезопасности",
+      "Руководитель проектов по оптимизации операционных процессов",
+      "Руководитель проектов по развитию функционала банкоматов (АТМ)",
+      "Руководитель финансовых проектов",
+      "Стажер-координатор образовательных программ"
+    ],
+    "metrics": {
+      "calibration": {
+        "project": {
+          "true_positive": 118,
+          "false_positive": 0,
+          "false_negative": 0,
+          "recall": 1.0,
+          "precision": 1.0,
+          "errors": []
+        },
+        "bizdev": {
+          "true_positive": 37,
+          "false_positive": 0,
+          "false_negative": 0,
+          "recall": 1.0,
+          "precision": 1.0,
+          "errors": []
+        }
+      },
+      "calibration_sber_after_v2": {
+        "project": {
+          "true_positive": 42,
+          "false_positive": 0,
+          "false_negative": 0,
+          "recall": 1.0,
+          "precision": 1.0,
+          "errors": []
+        },
+        "bizdev": {
+          "true_positive": 12,
+          "false_positive": 0,
+          "false_negative": 0,
+          "recall": 1.0,
+          "precision": 1.0,
+          "errors": []
+        }
+      },
+      "native_negative_calibration": {
+        "project": {
+          "true_positive": 0,
+          "false_positive": 0,
+          "false_negative": 0,
+          "recall": null,
+          "precision": null,
+          "errors": []
+        },
+        "bizdev": {
+          "true_positive": 0,
+          "false_positive": 0,
+          "false_negative": 0,
+          "recall": null,
+          "precision": null,
+          "errors": []
+        }
+      },
+      "semantic_calibration": {
+        "project": {
+          "true_positive": 32,
+          "false_positive": 0,
+          "false_negative": 0,
+          "recall": 1.0,
+          "precision": 1.0,
+          "errors": []
+        },
+        "bizdev": {
+          "true_positive": 22,
+          "false_positive": 0,
+          "false_negative": 0,
+          "recall": 1.0,
+          "precision": 1.0,
+          "errors": []
+        }
+      }
+    }
+  },
+  "native_cohorts": {
+    "method": "Ручной аудит полного native среза 2026-10-02: функции и названия; calibration после исправлений, не независимый holdout. Знаменатель recall — подтверждённые target внутри каждой подборки. Негативные вакансии той же группы сохраняются для precision.",
+    "cohorts": {
+      "ozon_project_107": {
+        "native_records": 36,
+        "selected_records": 35,
+        "selection_rate": 0.9722222222222222,
+        "selected_by_family": {
+          "project": 34,
+          "bizdev": 1
+        },
+        "excluded_records": [
+          {
+            "id": "ozon_137977370",
+            "title": "Руководитель отдела по оптимизации потерь ( СЦ Радищево)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Руководитель проектов",
+                "Ozon Производство"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          }
+        ],
+        "audited_records": 36,
+        "unaudited_ids": [],
+        "missing_snapshot_ids": [],
+        "metrics": {
+          "project": {
+            "true_positive": 34,
+            "false_positive": 0,
+            "false_negative": 0,
+            "recall": 1.0,
+            "precision": 1.0,
+            "errors": []
+          },
+          "bizdev": {
+            "true_positive": 1,
+            "false_positive": 0,
+            "false_negative": 0,
+            "recall": 1.0,
+            "precision": 1.0,
+            "errors": []
+          }
+        }
+      },
+      "ozon_partners": {
+        "native_records": 10,
+        "selected_records": 6,
+        "selection_rate": 0.6,
+        "selected_by_family": {
+          "project": 0,
+          "bizdev": 6
+        },
+        "excluded_records": [
+          {
+            "id": "ozon_133349033",
+            "title": "Менеджер по сопровождению агентов",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Менеджер по работе с партнерами",
+                "Ozon Банк"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "ozon_137178262",
+            "title": "Менеджер по работе с партнерами",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "review",
+              "families": [],
+              "zone": "grey",
+              "rules": [
+                "partner_accounts"
+              ],
+              "excluded_by": [],
+              "native_groups": [
+                "Менеджер по работе с партнерами",
+                "Ozon Офис и Коммерция"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "ozon_137474138",
+            "title": "Менеджер по работе с партнерами",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "review",
+              "families": [],
+              "zone": "grey",
+              "rules": [
+                "partner_accounts"
+              ],
+              "excluded_by": [],
+              "native_groups": [
+                "Менеджер по работе с партнерами",
+                "Ozon Офис и Коммерция"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "ozon_137646592",
+            "title": "Менеджер по сопровождению сделок",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Менеджер по работе с партнерами",
+                "Ozon Банк"
+              ],
+              "signals": []
+            }
+          }
+        ],
+        "audited_records": 10,
+        "unaudited_ids": [],
+        "missing_snapshot_ids": [],
+        "metrics": {
+          "project": {
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0,
+            "recall": null,
+            "precision": null,
+            "errors": []
+          },
+          "bizdev": {
+            "true_positive": 6,
+            "false_positive": 0,
+            "false_negative": 0,
+            "recall": 1.0,
+            "precision": 1.0,
+            "errors": []
+          }
+        }
+      },
+      "vk_project_2261": {
+        "native_records": 10,
+        "selected_records": 8,
+        "selection_rate": 0.8,
+        "selected_by_family": {
+          "project": 8,
+          "bizdev": 1
+        },
+        "excluded_records": [
+          {
+            "id": "vk_54535",
+            "title": "Кадровый резерв МАХ",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "MAX",
+                "Разработка и технические специальности",
+                "Разработка и технические специальности КР",
+                "system analyst",
+                "backend",
+                "data analysis",
+                "javascript",
+                "data science",
+                "c++",
+                "frontend",
+                "go",
+                "mobile",
+                "QA manual",
+                "java",
+                "SRE",
+                "ios",
+                "android",
+                "data engineering",
+                "tarantool",
+                "UX",
+                "UI",
+                "engineer",
+                "product designer",
+                "DevOps",
+                "QA automation",
+                "product management",
+                "project management",
+                "kotlin",
+                "analytics",
+                "SQL",
+                "objective c",
+                "swift",
+                "WEB",
+                "architecture",
+                "linux",
+                "DWH",
+                "qt"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "vk_54802",
+            "title": "Ассистент команды",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Экосистемные сервисы",
+                "Внутренние сервисы",
+                "Управление персоналом",
+                "project management"
+              ],
+              "signals": []
+            }
+          }
+        ],
+        "audited_records": 10,
+        "unaudited_ids": [],
+        "missing_snapshot_ids": [],
+        "metrics": {
+          "project": {
+            "true_positive": 8,
+            "false_positive": 0,
+            "false_negative": 0,
+            "recall": 1.0,
+            "precision": 1.0,
+            "errors": []
+          },
+          "bizdev": {
+            "true_positive": 1,
+            "false_positive": 0,
+            "false_negative": 0,
+            "recall": 1.0,
+            "precision": 1.0,
+            "errors": []
+          }
+        }
+      },
+      "vk_business_263": {
+        "native_records": 24,
+        "selected_records": 19,
+        "selection_rate": 0.7916666666666666,
+        "selected_by_family": {
+          "project": 9,
+          "bizdev": 12
+        },
+        "excluded_records": [
+          {
+            "id": "vk_45598",
+            "title": "Старший менеджер по продажам",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Сервисы продуктивности VK Tech",
+                "Внутренние сервисы",
+                "Продажи и развитие бизнеса",
+                "management",
+                "sales"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "vk_52219",
+            "title": "Менеджер развития рекламного кабинета",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "review",
+              "families": [],
+              "zone": "grey",
+              "rules": [
+                "development"
+              ],
+              "excluded_by": [],
+              "native_groups": [
+                "VK Реклама",
+                "Внутренние сервисы",
+                "Продажи и развитие бизнеса",
+                "sales"
+              ],
+              "signals": [
+                "advertising"
+              ]
+            }
+          },
+          {
+            "id": "vk_54567",
+            "title": "Менеджер по работе с клиентами",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "VK Реклама",
+                "Внутренние сервисы",
+                "Продажи и развитие бизнеса",
+                "account manager",
+                "sales"
+              ],
+              "signals": [
+                "advertising"
+              ]
+            }
+          },
+          {
+            "id": "vk_54583",
+            "title": "Менеджер по обучению",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Экосистемные сервисы",
+                "Внутренние сервисы",
+                "Продажи и развитие бизнеса",
+                "e-learning"
+              ],
+              "signals": [
+                "advertising"
+              ]
+            }
+          },
+          {
+            "id": "vk_54858",
+            "title": "Руководитель группы presale в Data Services",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "VK Tech",
+                "Внутренние сервисы",
+                "Продажи и развитие бизнеса",
+                "pre-sale"
+              ],
+              "signals": []
+            }
+          }
+        ],
+        "audited_records": 24,
+        "unaudited_ids": [],
+        "missing_snapshot_ids": [],
+        "metrics": {
+          "project": {
+            "true_positive": 9,
+            "false_positive": 0,
+            "false_negative": 0,
+            "recall": 1.0,
+            "precision": 1.0,
+            "errors": []
+          },
+          "bizdev": {
+            "true_positive": 12,
+            "false_positive": 0,
+            "false_negative": 0,
+            "recall": 1.0,
+            "precision": 1.0,
+            "errors": []
+          }
+        }
+      },
+      "sber_project_specializations": {
+        "native_records": 50,
+        "selected_records": 31,
+        "selection_rate": 0.62,
+        "selected_by_family": {
+          "project": 31,
+          "bizdev": 1
+        },
+        "excluded_records": [
+          {
+            "id": "sber_4524687",
+            "title": "Team lead DS",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Информационные технологии:Руководитель проектов"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4539954",
+            "title": "Главный конструктор подвижного состава (ВСМ)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Строительство, недвижимость:Руководитель проектов"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4547195",
+            "title": "Руководитель направления операционного сопровождения (Эквайринг)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "review",
+              "families": [],
+              "zone": "grey",
+              "rules": [
+                "direction"
+              ],
+              "excluded_by": [],
+              "native_groups": [
+                "Информационные технологии:Руководитель проектов"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4547560",
+            "title": "Координатор ITSM-процессов",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "review",
+              "families": [],
+              "zone": "grey",
+              "rules": [
+                "producer"
+              ],
+              "excluded_by": [],
+              "native_groups": [
+                "Информационные технологии:Руководитель проектов"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4547792",
+            "title": "Руководитель направления по исследованию данных",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "review",
+              "families": [],
+              "zone": "grey",
+              "rules": [
+                "direction"
+              ],
+              "excluded_by": [],
+              "native_groups": [
+                "Информационные технологии:Руководитель проектов"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4555113",
+            "title": "Криптотрейдер",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Стратегия, инвестиции, консалтинг:Руководитель проектов"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4561972",
+            "title": "AI Product Manager",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Стратегия, инвестиции, консалтинг:Руководитель проектов"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4562045",
+            "title": "Инженер по сопровождению инвестиционных проектов",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [
+                "engineering_or_analysis"
+              ],
+              "native_groups": [
+                "Строительство, недвижимость:Руководитель строительного проекта"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4562783",
+            "title": "Руководитель исследовательского направления «Мышление»",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "review",
+              "families": [],
+              "zone": "grey",
+              "rules": [
+                "direction"
+              ],
+              "excluded_by": [],
+              "native_groups": [
+                "Информационные технологии:Руководитель проектов"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4563928",
+            "title": "Product Owner (Memory-as-a-Service)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Информационные технологии:Руководитель проектов"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4566801",
+            "title": "Product Manager — AI-трансформация корпоративного андеррайтинга",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Информационные технологии:Руководитель проектов"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4568700",
+            "title": "Лидер направления \"Самостоятельные инвестиции\"",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "review",
+              "families": [],
+              "zone": "grey",
+              "rules": [
+                "direction"
+              ],
+              "excluded_by": [],
+              "native_groups": [
+                "Информационные технологии:Руководитель проектов"
+              ],
+              "signals": [
+                "monetization",
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "sber_4568707",
+            "title": "CJE (Customer Journey Expert) в команду агентизации клиентского опыта",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "review",
+              "families": [],
+              "zone": "grey",
+              "rules": [
+                "customer_journey"
+              ],
+              "excluded_by": [],
+              "native_groups": [
+                "Информационные технологии:Руководитель проектов"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4569052",
+            "title": "Методолог (проект цифрового депозитария) с фокусом на бизнес-анализ",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Стратегия, инвестиции, консалтинг:Руководитель проектов"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4569634",
+            "title": "Team Lead (АС Диспуты)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Информационные технологии:Руководитель проектов"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4570400",
+            "title": "Лидер App",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Информационные технологии:Руководитель проектов"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4571809",
+            "title": "Руководитель направления по процессам разработки и аудита ПО",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "review",
+              "families": [],
+              "zone": "grey",
+              "rules": [
+                "direction"
+              ],
+              "excluded_by": [],
+              "native_groups": [
+                "Информационные технологии:Руководитель проектов"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4572507",
+            "title": "Руководитель направления по цифровым активам",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "review",
+              "families": [],
+              "zone": "grey",
+              "rules": [
+                "direction"
+              ],
+              "excluded_by": [],
+              "native_groups": [
+                "Стратегия, инвестиции, консалтинг:Руководитель проектов"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "sber_4573963",
+            "title": "Строительный эксперт",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Строительство, недвижимость:Руководитель строительного проекта"
+              ],
+              "signals": []
+            }
+          }
+        ],
+        "audited_records": 50,
+        "unaudited_ids": [],
+        "missing_snapshot_ids": [],
+        "metrics": {
+          "project": {
+            "true_positive": 31,
+            "false_positive": 0,
+            "false_negative": 0,
+            "recall": 1.0,
+            "precision": 1.0,
+            "errors": []
+          },
+          "bizdev": {
+            "true_positive": 1,
+            "false_positive": 0,
+            "false_negative": 0,
+            "recall": 1.0,
+            "precision": 1.0,
+            "errors": []
+          }
+        }
+      },
+      "wb_project_direction": {
+        "native_records": 5,
+        "selected_records": 4,
+        "selection_rate": 0.8,
+        "selected_by_family": {
+          "project": 4,
+          "bizdev": 0
+        },
+        "excluded_records": [
+          {
+            "id": "wb_37947",
+            "title": "Менеджер учебного офиса Университета RWB (Высшее образование)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление проектами",
+                ""
+              ],
+              "signals": [
+                "advertising",
+                "partnerships"
+              ]
+            }
+          }
+        ],
+        "audited_records": 5,
+        "unaudited_ids": [],
+        "missing_snapshot_ids": [],
+        "metrics": {
+          "project": {
+            "true_positive": 4,
+            "false_positive": 0,
+            "false_negative": 0,
+            "recall": 1.0,
+            "precision": 1.0,
+            "errors": []
+          },
+          "bizdev": {
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0,
+            "recall": null,
+            "precision": null,
+            "errors": []
+          }
+        }
+      },
+      "mts_shared_management": {
+        "native_records": 29,
+        "selected_records": 10,
+        "selection_rate": 0.3448275862068966,
+        "selected_by_family": {
+          "project": 10,
+          "bizdev": 0
+        },
+        "excluded_records": [
+          {
+            "id": "mts_655737047138441084",
+            "title": "Руководитель направления клиентской сегментации B2B",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "review",
+              "families": [],
+              "zone": "grey",
+              "rules": [
+                "direction"
+              ],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "mts_666598979303113243",
+            "title": "Product owner (Линейка CORE тарифов)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": [
+                "monetization",
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "mts_668824047210988066",
+            "title": "Менеджер продукта ATS",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "mts_669142244669789288",
+            "title": "Менеджер клиентского опыта Центра видеонаблюдения и безопасности",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "mts_693851975992737872",
+            "title": "Менеджер по продукту в стрим Микрокредитование",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "mts_698555947240390963",
+            "title": "Менеджер продукта (Видеоаналитика)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "mts_699338030040744213",
+            "title": "Руководитель центра CDP (Customer Data Platform)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "mts_702186897367105633",
+            "title": "Владелец продукта в стрим Микрокредитование",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": []
+            }
+          },
+          {
+            "id": "mts_703631471042104526",
+            "title": "Менеджер по клиентскому опыту (Телеком)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "mts_703632203145281851",
+            "title": "Менеджер продукта (Программа лояльности)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "mts_703918958377435420",
+            "title": "Менеджер по продукту (B2B тарифы)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "mts_704259946044195097",
+            "title": "Chief Product Officer/CPO",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "mts_704594414739128602",
+            "title": "Менеджер продукта (Высокодоходный сегмент)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "mts_704668232119749839",
+            "title": "Менеджер продукта (Скоринги)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "mts_709059103082676495",
+            "title": "Product owner (МТС Оптимус)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": [
+                "monetization",
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "mts_709066199526280443",
+            "title": "Старший менеджер продукта (Видеонаблюдение B2B/B2G)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "mts_710025251177627911",
+            "title": "Продуктовый лидер направления волоконной сенсорики (МГТС)",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "review",
+              "families": [],
+              "zone": "grey",
+              "rules": [
+                "direction"
+              ],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": [
+                "monetization",
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "mts_711171089790664809",
+            "title": "Бизнес-лидер направления ИИ-помощник",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "review",
+              "families": [],
+              "zone": "grey",
+              "rules": [
+                "direction"
+              ],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": [
+                "partnerships"
+              ]
+            }
+          },
+          {
+            "id": "mts_711186198726443102",
+            "title": "Владелец Продукта",
+            "decision": {
+              "version": "project-bizdev-2026-10-02.5",
+              "status": "rejected",
+              "families": [],
+              "zone": null,
+              "rules": [],
+              "excluded_by": [],
+              "native_groups": [
+                "Управление продуктами/проектами/процессами"
+              ],
+              "signals": []
+            }
+          }
+        ],
+        "audited_records": 29,
+        "unaudited_ids": [],
+        "missing_snapshot_ids": [],
+        "metrics": {
+          "project": {
+            "true_positive": 10,
+            "false_positive": 0,
+            "false_negative": 0,
+            "recall": 1.0,
+            "precision": 1.0,
+            "errors": []
+          },
+          "bizdev": {
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0,
+            "recall": null,
+            "precision": null,
+            "errors": []
+          }
+        }
+      }
+    }
+  },
+  "ablation": {
+    "stages": [
+      {
+        "step": "0_all_catalog",
+        "selected_records": 12270,
+        "true_positive": 263,
+        "false_positive": 767,
+        "false_negative": 0,
+        "recall": 1.0,
+        "precision": 0.25533980582524274,
+        "missed_targets": [],
+        "target_losses_vs_previous": []
+      },
+      {
+        "step": "1_named_roles_only",
+        "selected_records": 351,
+        "true_positive": 210,
+        "false_positive": 9,
+        "false_negative": 53,
+        "recall": 0.7984790874524715,
+        "precision": 0.958904109589041,
+        "missed_targets": [
+          {
+            "title": "Менеджер по работе с партнерами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по развитию (складская логистика)",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по развитию агентской сети",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по развитию каналов привлечения (Телеком)",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер по развитию направления (NKAM)",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по развитию территорий",
+            "family": "bizdev"
+          },
+          {
+            "title": "Руководитель направления развития категории ФРОВ",
+            "family": "bizdev"
+          },
+          {
+            "title": "Ведущий менеджер по развитию крупных клиентов",
+            "family": "bizdev"
+          },
+          {
+            "title": "Ведущий менеджер по развитию крупных клиентов",
+            "family": "project"
+          },
+          {
+            "title": "Технический менеджер под развитие инфраструктурного облака в Yandex Infrastructure",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер по работе с партнёрами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по работе с партнёрами (программа лояльности ОЗОН Банка)",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер сопровождения партнёрских интеграций",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель группы программных интеграций",
+            "family": "project"
+          },
+          {
+            "title": "Аналитик в проектный офис ДИТ",
+            "family": "project"
+          },
+          {
+            "title": "Директор проектов (развитие международного бизнеса)",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по внедрению региональных стратегий",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по внедрению региональных стратегий",
+            "family": "project"
+          },
+          {
+            "title": "Начальник отдела недвижимости и развития инфраструктуры",
+            "family": "project"
+          },
+          {
+            "title": "Начальник сектора (недвижимость и развитие инфраструктуры)",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель направления развития производственных процессов (HR платформа)",
+            "family": "project"
+          },
+          {
+            "title": "Специалист по развитию процессов комплаенс",
+            "family": "project"
+          },
+          {
+            "title": "Ведущий Agile coach [TechGov, МТС Веб Сервисы]",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель направления стратегии и операционной эффективности (AI Research)",
+            "family": "project"
+          },
+          {
+            "title": "Старший менеджер по автоматизации складских процессов",
+            "family": "project"
+          },
+          {
+            "title": "Старший менеджер продукта (корп.автопарк)",
+            "family": "project"
+          },
+          {
+            "title": "Продюсер / менеджер по работе с инфлюенсерами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Продюсер / менеджер по работе с инфлюенсерами",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер медиабаинга",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер по решениям для партнеров",
+            "family": "bizdev"
+          },
+          {
+            "title": "Ведущий менеджер по решениям для партнеров",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по работе с партнерами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по работе с клиентами / аккаунт-менеджер (инфлюенс-маркетинг), Москва",
+            "family": "project"
+          },
+          {
+            "title": "Старший менеджер по инвестициям",
+            "family": "bizdev"
+          },
+          {
+            "title": "Коммерческий директор",
+            "family": "bizdev"
+          },
+          {
+            "title": "Старший менеджер по продажам",
+            "family": "bizdev"
+          },
+          {
+            "title": "Руководитель группы по работе с СМБ-платформами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Старший менеджер по работе с агентствами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Директор отдела по работе с клиентами (реклама)",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер направления спортивного контента",
+            "family": "bizdev"
+          },
+          {
+            "title": "Руководитель направления Operational Excellence (OpEx)",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель направления (КСО)",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер кампаний продаж (продукты финансирования ММБ, банковские гарантии)",
+            "family": "project"
+          },
+          {
+            "title": "Applied AI Engineer",
+            "family": "project"
+          },
+          {
+            "title": "IT лидер кластера",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель направления AI в медицине / Lead AI Product Manager",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер по реконструкции и запуску",
+            "family": "project"
+          },
+          {
+            "title": "Продюсер онлайн-трансляций",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер по запускам локаций",
+            "family": "project"
+          },
+          {
+            "title": "Продюсер в Корпоративный центр",
+            "family": "project"
+          },
+          {
+            "title": "Customer Journey Expert в команду «Клиентский опыт»",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель направления по организации процессов продаж",
+            "family": "project"
+          },
+          {
+            "title": "Ведущий пресейл-менеджер ИСС (автосекретарь, телефония, МТС Link)",
+            "family": "project"
+          }
+        ],
+        "target_losses_vs_previous": [
+          {
+            "company": "MWS.AI",
+            "title": "Ведущий Agile coach [TechGov, МТС Веб Сервисы]",
+            "family": "project"
+          },
+          {
+            "company": "Ozon",
+            "title": "Менеджер по работе с партнерами",
+            "family": "bizdev"
+          },
+          {
+            "company": "Ozon",
+            "title": "Менеджер по работе с партнёрами (программа лояльности ОЗОН Банка)",
+            "family": "bizdev"
+          },
+          {
+            "company": "Ozon",
+            "title": "Менеджер по развитию (складская логистика)",
+            "family": "bizdev"
+          },
+          {
+            "company": "Ozon",
+            "title": "Менеджер по развитию направления (NKAM)",
+            "family": "bizdev"
+          },
+          {
+            "company": "Ozon",
+            "title": "Старший менеджер по автоматизации складских процессов",
+            "family": "project"
+          },
+          {
+            "company": "Ozon",
+            "title": "Старший менеджер продукта (корп.автопарк)",
+            "family": "project"
+          },
+          {
+            "company": "VK",
+            "title": "Ведущий менеджер по развитию крупных клиентов",
+            "family": "bizdev"
+          },
+          {
+            "company": "VK",
+            "title": "Ведущий менеджер по развитию крупных клиентов",
+            "family": "project"
+          },
+          {
+            "company": "VK",
+            "title": "Директор отдела по работе с клиентами (реклама)",
+            "family": "bizdev"
+          },
+          {
+            "company": "VK",
+            "title": "Коммерческий директор",
+            "family": "bizdev"
+          },
+          {
+            "company": "VK",
+            "title": "Менеджер медиабаинга",
+            "family": "project"
+          },
+          {
+            "company": "VK",
+            "title": "Менеджер направления спортивного контента",
+            "family": "bizdev"
+          },
+          {
+            "company": "VK",
+            "title": "Менеджер по работе с клиентами / аккаунт-менеджер (инфлюенс-маркетинг), Москва",
+            "family": "project"
+          },
+          {
+            "company": "VK",
+            "title": "Менеджер по работе с партнёрами",
+            "family": "bizdev"
+          },
+          {
+            "company": "VK",
+            "title": "Менеджер сопровождения партнёрских интеграций",
+            "family": "project"
+          },
+          {
+            "company": "VK",
+            "title": "Продюсер / менеджер по работе с инфлюенсерами",
+            "family": "bizdev"
+          },
+          {
+            "company": "VK",
+            "title": "Продюсер / менеджер по работе с инфлюенсерами",
+            "family": "project"
+          },
+          {
+            "company": "VK",
+            "title": "Руководитель группы по работе с СМБ-платформами",
+            "family": "bizdev"
+          },
+          {
+            "company": "VK",
+            "title": "Старший менеджер по инвестициям",
+            "family": "bizdev"
+          },
+          {
+            "company": "VK",
+            "title": "Старший менеджер по продажам",
+            "family": "bizdev"
+          },
+          {
+            "company": "VK",
+            "title": "Старший менеджер по работе с агентствами",
+            "family": "bizdev"
+          },
+          {
+            "company": "Wildberries",
+            "title": "Руководитель группы программных интеграций",
+            "family": "project"
+          },
+          {
+            "company": "X5 Tech",
+            "title": "Менеджер по развитию агентской сети",
+            "family": "bizdev"
+          },
+          {
+            "company": "X5 Tech",
+            "title": "Руководитель направления развития категории ФРОВ",
+            "family": "bizdev"
+          },
+          {
+            "company": "Альфа-Банк",
+            "title": "Ведущий менеджер по решениям для партнеров",
+            "family": "bizdev"
+          },
+          {
+            "company": "Альфа-Банк",
+            "title": "Менеджер по работе с партнерами",
+            "family": "bizdev"
+          },
+          {
+            "company": "Альфа-Банк",
+            "title": "Менеджер по решениям для партнеров",
+            "family": "bizdev"
+          },
+          {
+            "company": "ДомКлик",
+            "title": "Customer Journey Expert в команду «Клиентский опыт»",
+            "family": "project"
+          },
+          {
+            "company": "МТС",
+            "title": "Ведущий пресейл-менеджер ИСС (автосекретарь, телефония, МТС Link)",
+            "family": "project"
+          },
+          {
+            "company": "МТС",
+            "title": "Менеджер по развитию каналов привлечения (Телеком)",
+            "family": "project"
+          },
+          {
+            "company": "МТС",
+            "title": "Менеджер по развитию территорий",
+            "family": "bizdev"
+          },
+          {
+            "company": "МТС Банк",
+            "title": "Руководитель направления по организации процессов продаж",
+            "family": "project"
+          },
+          {
+            "company": "МТС Линк",
+            "title": "Продюсер онлайн-трансляций",
+            "family": "project"
+          },
+          {
+            "company": "Пятёрочка",
+            "title": "Менеджер по реконструкции и запуску",
+            "family": "project"
+          },
+          {
+            "company": "Сбер",
+            "title": "Applied AI Engineer",
+            "family": "project"
+          },
+          {
+            "company": "Сбер",
+            "title": "IT лидер кластера",
+            "family": "project"
+          },
+          {
+            "company": "Сбер",
+            "title": "Аналитик в проектный офис ДИТ",
+            "family": "project"
+          },
+          {
+            "company": "Сбер",
+            "title": "Директор проектов (развитие международного бизнеса)",
+            "family": "bizdev"
+          },
+          {
+            "company": "Сбер",
+            "title": "Менеджер кампаний продаж (продукты финансирования ММБ, банковские гарантии)",
+            "family": "project"
+          },
+          {
+            "company": "Сбер",
+            "title": "Менеджер по внедрению региональных стратегий",
+            "family": "bizdev"
+          },
+          {
+            "company": "Сбер",
+            "title": "Менеджер по внедрению региональных стратегий",
+            "family": "project"
+          },
+          {
+            "company": "Сбер",
+            "title": "Начальник отдела недвижимости и развития инфраструктуры",
+            "family": "project"
+          },
+          {
+            "company": "Сбер",
+            "title": "Начальник сектора (недвижимость и развитие инфраструктуры)",
+            "family": "project"
+          },
+          {
+            "company": "Сбер",
+            "title": "Руководитель направления (КСО)",
+            "family": "project"
+          },
+          {
+            "company": "Сбер",
+            "title": "Руководитель направления AI в медицине / Lead AI Product Manager",
+            "family": "project"
+          },
+          {
+            "company": "Сбер",
+            "title": "Руководитель направления Operational Excellence (OpEx)",
+            "family": "project"
+          },
+          {
+            "company": "Сбер",
+            "title": "Руководитель направления развития производственных процессов (HR платформа)",
+            "family": "project"
+          },
+          {
+            "company": "Сбер",
+            "title": "Руководитель направления стратегии и операционной эффективности (AI Research)",
+            "family": "project"
+          },
+          {
+            "company": "Сбер",
+            "title": "Специалист по развитию процессов комплаенс",
+            "family": "project"
+          },
+          {
+            "company": "Яндекс",
+            "title": "Менеджер по запускам локаций",
+            "family": "project"
+          },
+          {
+            "company": "Яндекс",
+            "title": "Продюсер в Корпоративный центр",
+            "family": "project"
+          },
+          {
+            "company": "Яндекс",
+            "title": "Технический менеджер под развитие инфраструктурного облака в Yandex Infrastructure",
+            "family": "project"
+          }
+        ]
+      },
+      {
+        "step": "2_technical_primary_blacklist",
+        "selected_records": 351,
+        "true_positive": 210,
+        "false_positive": 9,
+        "false_negative": 53,
+        "recall": 0.7984790874524715,
+        "precision": 0.958904109589041,
+        "missed_targets": [
+          {
+            "title": "Менеджер по работе с партнерами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по развитию (складская логистика)",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по развитию агентской сети",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по развитию каналов привлечения (Телеком)",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер по развитию направления (NKAM)",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по развитию территорий",
+            "family": "bizdev"
+          },
+          {
+            "title": "Руководитель направления развития категории ФРОВ",
+            "family": "bizdev"
+          },
+          {
+            "title": "Ведущий менеджер по развитию крупных клиентов",
+            "family": "bizdev"
+          },
+          {
+            "title": "Ведущий менеджер по развитию крупных клиентов",
+            "family": "project"
+          },
+          {
+            "title": "Технический менеджер под развитие инфраструктурного облака в Yandex Infrastructure",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер по работе с партнёрами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по работе с партнёрами (программа лояльности ОЗОН Банка)",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер сопровождения партнёрских интеграций",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель группы программных интеграций",
+            "family": "project"
+          },
+          {
+            "title": "Аналитик в проектный офис ДИТ",
+            "family": "project"
+          },
+          {
+            "title": "Директор проектов (развитие международного бизнеса)",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по внедрению региональных стратегий",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по внедрению региональных стратегий",
+            "family": "project"
+          },
+          {
+            "title": "Начальник отдела недвижимости и развития инфраструктуры",
+            "family": "project"
+          },
+          {
+            "title": "Начальник сектора (недвижимость и развитие инфраструктуры)",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель направления развития производственных процессов (HR платформа)",
+            "family": "project"
+          },
+          {
+            "title": "Специалист по развитию процессов комплаенс",
+            "family": "project"
+          },
+          {
+            "title": "Ведущий Agile coach [TechGov, МТС Веб Сервисы]",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель направления стратегии и операционной эффективности (AI Research)",
+            "family": "project"
+          },
+          {
+            "title": "Старший менеджер по автоматизации складских процессов",
+            "family": "project"
+          },
+          {
+            "title": "Старший менеджер продукта (корп.автопарк)",
+            "family": "project"
+          },
+          {
+            "title": "Продюсер / менеджер по работе с инфлюенсерами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Продюсер / менеджер по работе с инфлюенсерами",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер медиабаинга",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер по решениям для партнеров",
+            "family": "bizdev"
+          },
+          {
+            "title": "Ведущий менеджер по решениям для партнеров",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по работе с партнерами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по работе с клиентами / аккаунт-менеджер (инфлюенс-маркетинг), Москва",
+            "family": "project"
+          },
+          {
+            "title": "Старший менеджер по инвестициям",
+            "family": "bizdev"
+          },
+          {
+            "title": "Коммерческий директор",
+            "family": "bizdev"
+          },
+          {
+            "title": "Старший менеджер по продажам",
+            "family": "bizdev"
+          },
+          {
+            "title": "Руководитель группы по работе с СМБ-платформами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Старший менеджер по работе с агентствами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Директор отдела по работе с клиентами (реклама)",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер направления спортивного контента",
+            "family": "bizdev"
+          },
+          {
+            "title": "Руководитель направления Operational Excellence (OpEx)",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель направления (КСО)",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер кампаний продаж (продукты финансирования ММБ, банковские гарантии)",
+            "family": "project"
+          },
+          {
+            "title": "Applied AI Engineer",
+            "family": "project"
+          },
+          {
+            "title": "IT лидер кластера",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель направления AI в медицине / Lead AI Product Manager",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер по реконструкции и запуску",
+            "family": "project"
+          },
+          {
+            "title": "Продюсер онлайн-трансляций",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер по запускам локаций",
+            "family": "project"
+          },
+          {
+            "title": "Продюсер в Корпоративный центр",
+            "family": "project"
+          },
+          {
+            "title": "Customer Journey Expert в команду «Клиентский опыт»",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель направления по организации процессов продаж",
+            "family": "project"
+          },
+          {
+            "title": "Ведущий пресейл-менеджер ИСС (автосекретарь, телефония, МТС Link)",
+            "family": "project"
+          }
+        ],
+        "target_losses_vs_previous": []
+      },
+      {
+        "step": "3_other_primary_role_guard",
+        "selected_records": 322,
+        "true_positive": 210,
+        "false_positive": 0,
+        "false_negative": 53,
+        "recall": 0.7984790874524715,
+        "precision": 1.0,
+        "missed_targets": [
+          {
+            "title": "Менеджер по работе с партнерами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по развитию (складская логистика)",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по развитию агентской сети",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по развитию каналов привлечения (Телеком)",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер по развитию направления (NKAM)",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по развитию территорий",
+            "family": "bizdev"
+          },
+          {
+            "title": "Руководитель направления развития категории ФРОВ",
+            "family": "bizdev"
+          },
+          {
+            "title": "Ведущий менеджер по развитию крупных клиентов",
+            "family": "bizdev"
+          },
+          {
+            "title": "Ведущий менеджер по развитию крупных клиентов",
+            "family": "project"
+          },
+          {
+            "title": "Технический менеджер под развитие инфраструктурного облака в Yandex Infrastructure",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер по работе с партнёрами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по работе с партнёрами (программа лояльности ОЗОН Банка)",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер сопровождения партнёрских интеграций",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель группы программных интеграций",
+            "family": "project"
+          },
+          {
+            "title": "Аналитик в проектный офис ДИТ",
+            "family": "project"
+          },
+          {
+            "title": "Директор проектов (развитие международного бизнеса)",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по внедрению региональных стратегий",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по внедрению региональных стратегий",
+            "family": "project"
+          },
+          {
+            "title": "Начальник отдела недвижимости и развития инфраструктуры",
+            "family": "project"
+          },
+          {
+            "title": "Начальник сектора (недвижимость и развитие инфраструктуры)",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель направления развития производственных процессов (HR платформа)",
+            "family": "project"
+          },
+          {
+            "title": "Специалист по развитию процессов комплаенс",
+            "family": "project"
+          },
+          {
+            "title": "Ведущий Agile coach [TechGov, МТС Веб Сервисы]",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель направления стратегии и операционной эффективности (AI Research)",
+            "family": "project"
+          },
+          {
+            "title": "Старший менеджер по автоматизации складских процессов",
+            "family": "project"
+          },
+          {
+            "title": "Старший менеджер продукта (корп.автопарк)",
+            "family": "project"
+          },
+          {
+            "title": "Продюсер / менеджер по работе с инфлюенсерами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Продюсер / менеджер по работе с инфлюенсерами",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер медиабаинга",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер по решениям для партнеров",
+            "family": "bizdev"
+          },
+          {
+            "title": "Ведущий менеджер по решениям для партнеров",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по работе с партнерами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер по работе с клиентами / аккаунт-менеджер (инфлюенс-маркетинг), Москва",
+            "family": "project"
+          },
+          {
+            "title": "Старший менеджер по инвестициям",
+            "family": "bizdev"
+          },
+          {
+            "title": "Коммерческий директор",
+            "family": "bizdev"
+          },
+          {
+            "title": "Старший менеджер по продажам",
+            "family": "bizdev"
+          },
+          {
+            "title": "Руководитель группы по работе с СМБ-платформами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Старший менеджер по работе с агентствами",
+            "family": "bizdev"
+          },
+          {
+            "title": "Директор отдела по работе с клиентами (реклама)",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер направления спортивного контента",
+            "family": "bizdev"
+          },
+          {
+            "title": "Руководитель направления Operational Excellence (OpEx)",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель направления (КСО)",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер кампаний продаж (продукты финансирования ММБ, банковские гарантии)",
+            "family": "project"
+          },
+          {
+            "title": "Applied AI Engineer",
+            "family": "project"
+          },
+          {
+            "title": "IT лидер кластера",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель направления AI в медицине / Lead AI Product Manager",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер по реконструкции и запуску",
+            "family": "project"
+          },
+          {
+            "title": "Продюсер онлайн-трансляций",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер по запускам локаций",
+            "family": "project"
+          },
+          {
+            "title": "Продюсер в Корпоративный центр",
+            "family": "project"
+          },
+          {
+            "title": "Customer Journey Expert в команду «Клиентский опыт»",
+            "family": "project"
+          },
+          {
+            "title": "Руководитель направления по организации процессов продаж",
+            "family": "project"
+          },
+          {
+            "title": "Ведущий пресейл-менеджер ИСС (автосекретарь, телефония, МТС Link)",
+            "family": "project"
+          }
+        ],
+        "target_losses_vs_previous": []
+      },
+      {
+        "step": "4_verified_company_aliases",
+        "selected_records": 374,
+        "true_positive": 263,
+        "false_positive": 0,
+        "false_negative": 0,
+        "recall": 1.0,
+        "precision": 1.0,
+        "missed_targets": [],
+        "target_losses_vs_previous": []
+      },
+      {
+        "step": "5_restore_legacy_intern_blacklist",
+        "selected_records": 370,
+        "true_positive": 260,
+        "false_positive": 0,
+        "false_negative": 3,
+        "recall": 0.9885931558935361,
+        "precision": 1.0,
+        "missed_targets": [
+          {
+            "title": "Стажёр - менеджер проекта в департамент продукта Ozon Travel",
+            "family": "project"
+          },
+          {
+            "title": "Менеджер по развитию еком-бизнеса (стажёр) в Яндекс Фабрику",
+            "family": "bizdev"
+          },
+          {
+            "title": "Менеджер проектов (стажёр) в Международный Поиск",
+            "family": "project"
+          }
+        ],
+        "target_losses_vs_previous": [
+          {
+            "company": "",
+            "title": "Менеджер по развитию еком-бизнеса (стажёр) в Яндекс Фабрику",
+            "family": "bizdev"
+          },
+          {
+            "company": "",
+            "title": "Менеджер проектов (стажёр) в Международный Поиск",
+            "family": "project"
+          },
+          {
+            "company": "",
+            "title": "Стажёр - менеджер проекта в департамент продукта Ozon Travel",
+            "family": "project"
+          }
+        ]
+      }
+    ],
+    "native_product_group_rollback": [
+      {
+        "source": "alfa",
+        "available_records": 2358,
+        "target_records": 35,
+        "retained_by_previous_product_group": 0,
+        "lost_target_ids": [
+          "alfa_16654",
+          "alfa_28393",
+          "alfa_31232",
+          "alfa_31956",
+          "alfa_33661",
+          "alfa_34335",
+          "alfa_34664",
+          "alfa_36415",
+          "alfa_36519",
+          "alfa_36548",
+          "alfa_37110",
+          "alfa_37437",
+          "alfa_37478",
+          "alfa_37578",
+          "alfa_37727",
+          "alfa_37802",
+          "alfa_37850",
+          "alfa_37872",
+          "alfa_37894",
+          "alfa_38109",
+          "alfa_38210",
+          "alfa_38236",
+          "alfa_38395",
+          "alfa_38401",
+          "alfa_38407",
+          "alfa_38509",
+          "alfa_38513",
+          "alfa_38534",
+          "alfa_38639",
+          "alfa_38677",
+          "alfa_38728",
+          "alfa_38811",
+          "alfa_38852",
+          "alfa_38865",
+          "alfa_38960"
+        ]
+      },
+      {
+        "source": "vk",
+        "available_records": 265,
+        "target_records": 24,
+        "retained_by_previous_product_group": 1,
+        "lost_target_ids": [
+          "vk_45747",
+          "vk_51868",
+          "vk_51914",
+          "vk_52075",
+          "vk_52247",
+          "vk_52738",
+          "vk_52766",
+          "vk_52773",
+          "vk_54504",
+          "vk_54537",
+          "vk_54546",
+          "vk_54568",
+          "vk_54584",
+          "vk_54587",
+          "vk_54650",
+          "vk_54659",
+          "vk_54726",
+          "vk_54742",
+          "vk_54805",
+          "vk_54825",
+          "vk_54838",
+          "vk_54840",
+          "vk_54867"
+        ]
+      },
+      {
+        "source": "ozon",
+        "available_records": 2083,
+        "target_records": 53,
+        "retained_by_previous_product_group": 0,
+        "lost_target_ids": [
+          "ozon_134655808",
+          "ozon_135154732",
+          "ozon_135624281",
+          "ozon_135777795",
+          "ozon_136163722",
+          "ozon_136505068",
+          "ozon_136740224",
+          "ozon_136746448",
+          "ozon_136906121",
+          "ozon_136978677",
+          "ozon_137011319",
+          "ozon_137057291",
+          "ozon_137062551",
+          "ozon_137128882",
+          "ozon_137202417",
+          "ozon_137205463",
+          "ozon_137246718",
+          "ozon_137254236",
+          "ozon_137255461",
+          "ozon_137259973",
+          "ozon_137262908",
+          "ozon_137301040",
+          "ozon_137304631",
+          "ozon_137343050",
+          "ozon_137487440",
+          "ozon_137494460",
+          "ozon_137496345",
+          "ozon_137520477",
+          "ozon_137532829",
+          "ozon_137535746",
+          "ozon_137536327",
+          "ozon_137537708",
+          "ozon_137539636",
+          "ozon_137585501",
+          "ozon_137633682",
+          "ozon_137661858",
+          "ozon_137680238",
+          "ozon_137796806",
+          "ozon_137797834",
+          "ozon_137803576",
+          "ozon_137804555",
+          "ozon_137807234",
+          "ozon_137869054",
+          "ozon_137880575",
+          "ozon_137893002",
+          "ozon_137905133",
+          "ozon_137909657",
+          "ozon_137910168",
+          "ozon_137920507",
+          "ozon_137950894",
+          "ozon_137958237",
+          "ozon_137960971",
+          "ozon_138045638"
+        ]
+      }
+    ],
+    "decision": "Intern blacklist removed: named target roles are lost. Native product groups are not used. Other-role guards retained only with zero losses on audited targets."
+  },
+  "live": {
+    "statuses": {
+      "/start": 200,
+      "/settings": 200
+    },
+    "delivered_before": 91,
+    "delivered_after": 99,
+    "cards": [
+      {
+        "id": "mts_709736645162696787",
+        "title": "Старший руководитель проектов (Москва)",
+        "company": "МТС Банк",
+        "role_families": [
+          "project"
+        ],
+        "selection_profile": "project_bizdev"
+      },
+      {
+        "id": "mts_711171089803247718",
+        "title": "Руководитель направления по организации процессов продаж",
+        "company": "МТС Банк",
+        "role_families": [
+          "project"
+        ],
+        "selection_profile": "project_bizdev"
+      },
+      {
+        "id": "ozon_134655808",
+        "title": "Менеджер проектов (проекты ПВЗ)",
+        "company": "Ozon",
+        "role_families": [
+          "project"
+        ],
+        "selection_profile": "project_bizdev"
+      },
+      {
+        "id": "ozon_137909657",
+        "title": "Менеджер проектов (HR Tech)",
+        "company": "Ozon",
+        "role_families": [
+          "project"
+        ],
+        "selection_profile": "project_bizdev"
+      },
+      {
+        "id": "sber_4572941",
+        "title": "Руководитель проекта",
+        "company": "Сбер",
+        "role_families": [
+          "project"
+        ],
+        "selection_profile": "project_bizdev"
+      },
+      {
+        "id": "sber_4574276",
+        "title": "Руководитель проектов в Офис GenAI-трансформации B2C",
+        "company": "Сбер",
+        "role_families": [
+          "project"
+        ],
+        "selection_profile": "project_bizdev"
+      },
+      {
+        "id": "sber_4575657",
+        "title": "Администратор проектов",
+        "company": "Сбер",
+        "role_families": [
+          "project"
+        ],
+        "selection_profile": "project_bizdev"
+      },
+      {
+        "id": "ya_49105",
+        "title": "Менеджер growth‑проектов в Яндекс Go",
+        "company": "Яндекс",
+        "role_families": [
+          "project"
+        ],
+        "selection_profile": "project_bizdev"
+      }
+    ],
+    "pending": 0,
+    "recent": [
+      {
+        "vacancy_id": "ozon_137909657",
+        "delivered_at": "2026-10-02T12:10:53.347433+00:00",
+        "status": "delivered"
+      },
+      {
+        "vacancy_id": "mts_711171089803247718",
+        "delivered_at": "2026-10-02T12:10:52.887092+00:00",
+        "status": "delivered"
+      },
+      {
+        "vacancy_id": "mts_709736645162696787",
+        "delivered_at": "2026-10-02T12:10:52.168879+00:00",
+        "status": "delivered"
+      },
+      {
+        "vacancy_id": "ya_49105",
+        "delivered_at": "2026-10-02T12:10:51.557713+00:00",
+        "status": "delivered"
+      },
+      {
+        "vacancy_id": "sber_4574276",
+        "delivered_at": "2026-10-02T12:10:50.951755+00:00",
+        "status": "delivered"
+      },
+      {
+        "vacancy_id": "sber_4575657",
+        "delivered_at": "2026-10-02T12:10:50.330833+00:00",
+        "status": "delivered"
+      },
+      {
+        "vacancy_id": "sber_4572941",
+        "delivered_at": "2026-10-02T12:10:49.72628+00:00",
+        "status": "delivered"
+      },
+      {
+        "vacancy_id": "ozon_134655808",
+        "delivered_at": "2026-10-02T12:10:49.102032+00:00",
+        "status": "delivered"
+      }
+    ]
+  },
+  "available_catalog_by_company": {
+    "2ГИС": {
+      "available": 94,
+      "selected": 3,
+      "project": 3
+    },
+    "Avito": {
+      "available": 112,
+      "selected": 12,
+      "bizdev": 7,
+      "project": 6
+    },
+    "HeadHunter": {
+      "available": 33
+    },
+    "KION": {
+      "available": 4
+    },
+    "Lamoda": {
+      "available": 9,
+      "selected": 4,
+      "project": 4
+    },
+    "MWS.AI": {
+      "available": 121,
+      "selected": 3,
+      "project": 3
+    },
+    "Ozon": {
+      "available": 2083,
+      "selected": 53,
+      "project": 43,
+      "bizdev": 10
+    },
+    "VK": {
+      "available": 265,
+      "selected": 24,
+      "bizdev": 12,
+      "project": 14
+    },
+    "Wildberries": {
+      "available": 135,
+      "selected": 8,
+      "project": 5,
+      "bizdev": 3
+    },
+    "X5 Media": {
+      "available": 3
+    },
+    "X5 Tech": {
+      "available": 81,
+      "selected": 2,
+      "bizdev": 2
+    },
+    "X5 Импорт": {
+      "available": 4
+    },
+    "Авиасейлс": {
+      "available": 31,
+      "selected": 2,
+      "bizdev": 2
+    },
+    "Альфа-Банк": {
+      "available": 2358,
+      "selected": 35,
+      "project": 26,
+      "bizdev": 10
+    },
+    "ДомКлик": {
+      "available": 29,
+      "selected": 1,
+      "project": 1
+    },
+    "Звук": {
+      "available": 2
+    },
+    "Касперский": {
+      "available": 48,
+      "selected": 1,
+      "project": 1
+    },
+    "Контур": {
+      "available": 52,
+      "selected": 2,
+      "bizdev": 2
+    },
+    "МТС": {
+      "available": 2274,
+      "selected": 43,
+      "bizdev": 15,
+      "project": 28
+    },
+    "МТС Банк": {
+      "available": 52,
+      "selected": 2,
+      "project": 2
+    },
+    "МТС Линк": {
+      "available": 11,
+      "selected": 1,
+      "project": 1
+    },
+    "Много лосося": {
+      "available": 5
+    },
+    "Перекрёсток": {
+      "available": 26
+    },
+    "Пятёрочка": {
+      "available": 82,
+      "selected": 1,
+      "project": 1
+    },
+    "Сбер": {
+      "available": 3152,
+      "selected": 115,
+      "bizdev": 48,
+      "project": 69
+    },
+    "СберЗдоровье": {
+      "available": 46,
+      "selected": 2,
+      "project": 2
+    },
+    "Т-Банк": {
+      "available": 229,
+      "selected": 13,
+      "project": 4,
+      "bizdev": 9
+    },
+    "Точка": {
+      "available": 41,
+      "selected": 1,
+      "bizdev": 1
+    },
+    "Циан": {
+      "available": 30
+    },
+    "Чижик": {
+      "available": 20
+    },
+    "Юрент": {
+      "available": 2
+    },
+    "Яндекс": {
+      "available": 836,
+      "selected": 46,
+      "project": 35,
+      "bizdev": 11
+    }
+  }
+}

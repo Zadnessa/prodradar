@@ -2,10 +2,12 @@
 
 import re
 import unicodedata
+from html import unescape
 
 from delivery.role_aliases import ALIASES
+from delivery.role_exclusions import EXCLUSIONS
 
-VERSION = 'project-bizdev-2026-10-02.5'
+VERSION = 'project-bizdev-2026-10-02.6'
 
 PROJECT_RULES = {
     'project_en': r'\b(?:project|program(?:me)?)\s+(?:manager|lead|director|coordinator)\b',
@@ -52,6 +54,10 @@ def normalized(text):
     return re.sub(r'\s+', ' ', text).strip()
 
 
+def normalized_description(text):
+    return normalized(unescape(re.sub(r'<[^>]+>', ' ', str(text or ''))))
+
+
 def native_groups(vacancy):
     source = vacancy.get('source_json') or {}
     groups = []
@@ -73,16 +79,27 @@ def native_groups(vacancy):
     return list(dict.fromkeys(groups))
 
 
-def classify(vacancy, *, apply_blacklist=True, disambiguate=True, exclude_internships=False, enable_aliases=True):
+def classify(vacancy, *, apply_blacklist=True, disambiguate=True, exclude_internships=False,
+             enable_aliases=True, precision_guards=None):
     title = normalized(vacancy.get('title'))
     groups = native_groups(vacancy)
-    body = normalized(vacancy.get('description'))
+    body = normalized_description(vacancy.get('description'))
     signals = [name for name, pattern in SIGNALS.items() if re.search(pattern, title + ' ' + body)]
     rejected = [name for name, pattern in HARD_REJECT.items() if apply_blacklist and re.search(pattern, title)]
     if exclude_internships and re.search(r'\b(?:стажер\w*|intern(?:ship)?|trainee)\b', title):
         rejected.append('internship')
     result = {'version': VERSION, 'status': 'rejected', 'families': [], 'zone': None,
               'rules': [], 'excluded_by': rejected, 'native_groups': groups, 'signals': signals}
+    # Отрицательные алиасы проверены по обязанностям, а не слову «клиент».
+    # Они действуют до положительных: прежняя sales-разметка не обходит review.
+    enabled_guards = {'sales_account', 'other_primary', 'mixed_commercial'} if precision_guards is None else set(precision_guards)
+    for rule in EXCLUSIONS:
+        if rule['kind'] not in enabled_guards or vacancy.get('company') != rule['company'] or title != normalized(rule['title']):
+            continue
+        if any(all(normalized(quote) in body for quote in group) for group in rule['evidence_groups']):
+            result.update(status=rule['status'], zone='reviewed_primary',
+                          excluded_by=['duty_guard:' + rule['id']])
+            return result
     if enable_aliases:
         for alias in ALIASES:
             if vacancy.get('company') != alias['company'] or title != normalized(alias['title']):
@@ -131,9 +148,17 @@ async def resolve_role(session, vacancy, parser=None):
     decision = classify(vacancy)
     known_alias = any(vacancy.get('company') == a['company'] and
                       normalized(vacancy.get('title')) == normalized(a['title']) for a in ALIASES)
-    if known_alias and decision['zone'] != 'semantic' and parser is not None:
+    inspected_title = any(vacancy.get('company') == r['company'] and
+                          normalized(vacancy.get('title')) == normalized(r['title']) for r in EXCLUSIONS)
+    # List API может не отдавать обязанности. Негативный review тоже требует detail,
+    # иначе продажи вернутся в ленту при следующем свежем сборе.
+    insufficient_body = len(normalized_description(vacancy.get('description'))) < 300
+    if parser is not None and ((known_alias and decision['zone'] != 'semantic' and not decision['excluded_by']) or
+                              (inspected_title and insufficient_body and not decision['excluded_by'])):
         await parser.enrich(session, vacancy)
         decision = classify(vacancy)
+    if inspected_title and len(normalized_description(vacancy.get('description'))) < 300 and not decision['excluded_by'] and decision['zone'] != 'semantic':
+        decision.update(status='review', families=[], zone='grey', excluded_by=['missing_reviewed_duties'])
     return decision
 
 

@@ -225,7 +225,7 @@ class AblationTests(unittest.TestCase):
         for stage in report['stages'][2:4]:
             self.assertFalse(stage['target_losses_vs_previous'], stage)
         self.assertFalse(report['stages'][4]['missed_targets'])
-        self.assertTrue(any(v['family'] == 'project' for v in report['stages'][5]['missed_targets']))
+        self.assertTrue(any(v['family'] == 'project' for v in report['stages'][-1]['missed_targets']))
 
     def test_relaxing_grade_and_mute_restores_vacancies_without_changing_roles(self):
         from delivery.filters import filter_vacancies_for_user

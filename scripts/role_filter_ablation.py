@@ -9,11 +9,14 @@ def _no_title_filter(_vacancy):
 def variants():
     return [
         ('0_all_catalog', _no_title_filter),
-        ('1_named_roles_only', lambda v: classify(v, apply_blacklist=False, disambiguate=False, enable_aliases=False)),
-        ('2_technical_primary_blacklist', lambda v: classify(v, disambiguate=False, enable_aliases=False)),
-        ('3_other_primary_role_guard', lambda v: classify(v, enable_aliases=False)),
-        ('4_verified_company_aliases', classify),
-        ('5_restore_legacy_intern_blacklist', lambda v: classify(v, exclude_internships=True)),
+        ('1_named_roles_only', lambda v: classify(v, apply_blacklist=False, disambiguate=False, enable_aliases=False, precision_guards=[])),
+        ('2_technical_primary_blacklist', lambda v: classify(v, disambiguate=False, enable_aliases=False, precision_guards=[])),
+        ('3_other_primary_role_guard', lambda v: classify(v, enable_aliases=False, precision_guards=[])),
+        ('4_company_aliases_without_duty_guards', lambda v: classify(v, precision_guards=[])),
+        ('5_sales_account_duties', lambda v: classify(v, precision_guards=['sales_account'])),
+        ('6_other_primary_duties', lambda v: classify(v, precision_guards=['sales_account', 'other_primary'])),
+        ('7_mixed_commercial_review', classify),
+        ('8_restore_legacy_intern_blacklist', lambda v: classify(v, exclude_internships=True)),
     ]
 
 

@@ -32,6 +32,10 @@ on:
         description: 'JSON справочников тестовой БД; без секретов и пользователей'
         type: string
         required: false
+      role_pool_probe:
+        description: 'Read-only контракты общих каталогов для project/bizdev'
+        type: boolean
+        default: false
       inspect_sources:
         description: 'Read-only browser/HTTP диагностика выбранных источников через пробел'
         type: string
@@ -47,7 +51,7 @@ permissions:
 
 jobs:
   check:
-    if: github.event_name != 'workflow_dispatch' || (inputs.audit_sources != true && inputs.inspect_sources == '' && (inputs.setup_github == 'none' || inputs.setup_github == ''))
+    if: github.event_name != 'workflow_dispatch' || (inputs.audit_sources != true && inputs.inspect_sources == '' && inputs.role_pool_probe != true && (inputs.setup_github == 'none' || inputs.setup_github == ''))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment: prodradar-test
@@ -78,7 +82,7 @@ jobs:
           retention-days: 7
 
   collect:
-    if: github.event_name == 'workflow_dispatch' && inputs.collect_test == true && inputs.audit_sources != true && inputs.inspect_sources == '' && (inputs.setup_github == 'none' || inputs.setup_github == '')
+    if: github.event_name == 'workflow_dispatch' && inputs.collect_test == true && inputs.audit_sources != true && inputs.inspect_sources == '' && inputs.role_pool_probe != true && (inputs.setup_github == 'none' || inputs.setup_github == '')
     needs: check
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -106,7 +110,7 @@ jobs:
         run: python scripts/run_profile.py --profile test collect --project-ref jmsdxgylyjxwdwmdrmxw
 
   diagnose:
-    if: github.event_name == 'workflow_dispatch' && inputs.audit_sources == true && inputs.collect_test != true && inputs.inspect_sources == '' && (inputs.setup_github == 'none' || inputs.setup_github == '')
+    if: github.event_name == 'workflow_dispatch' && inputs.audit_sources == true && inputs.collect_test != true && inputs.inspect_sources == '' && inputs.role_pool_probe != true && (inputs.setup_github == 'none' || inputs.setup_github == '')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -137,7 +141,7 @@ jobs:
           retention-days: 7
 
   setup_github:
-    if: github.event_name == 'workflow_dispatch' && (inputs.setup_github == 'export-key' || inputs.setup_github == 'apply') && inputs.collect_test != true && inputs.audit_sources != true && inputs.inspect_sources == ''
+    if: github.event_name == 'workflow_dispatch' && (inputs.setup_github == 'export-key' || inputs.setup_github == 'apply') && inputs.collect_test != true && inputs.audit_sources != true && inputs.inspect_sources == '' && inputs.role_pool_probe != true
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment: prodradar-test
@@ -168,7 +172,7 @@ jobs:
           retention-days: 7
 
   inspect:
-    if: github.event_name == 'workflow_dispatch' && inputs.inspect_sources != '' && inputs.collect_test != true && inputs.audit_sources != true && (inputs.setup_github == 'none' || inputs.setup_github == '')
+    if: github.event_name == 'workflow_dispatch' && inputs.inspect_sources != '' && inputs.role_pool_probe != true && inputs.collect_test != true && inputs.audit_sources != true && (inputs.setup_github == 'none' || inputs.setup_github == '')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -194,3 +198,15 @@ jobs:
           name: source-inspection
           path: source-inspection.json
           retention-days: 7
+
+  role_pool_probe:
+    if: github.event_name == 'workflow_dispatch' && inputs.role_pool_probe == true && inputs.inspect_sources == '' && inputs.collect_test != true && inputs.audit_sources != true && (inputs.setup_github == 'none' || inputs.setup_github == '')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-collector.txt
+      - run: python scripts/inspect_role_catalogs.py

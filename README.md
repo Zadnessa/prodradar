@@ -421,3 +421,7 @@ prepare-roles создаёт source_pool/статусы и поля роли т�
 input capture_pool_only сохраняет пул; collect_test + use_source_pool
 повторно фильтрует свежий проверенный пул, не повторяя список запросов API.
 Тестовый профиль теперь project_bizdev, production профиль остаётся product.
+
+В test-срезе project/bizdev отбор идёт по названиям ролей; project выше bizdev.
+Монетизация не влияет на ранжирование. `pool` сохраняет общий каталог без
+доставки; `collect --use-source-pool` использует только свежие успешные снимки.

@@ -25,6 +25,9 @@ def compute_content_hash(vacancy):
         value = vacancy.get(field, "")
         normalized_values.append("" if value is None else str(value))
 
+    if vacancy.get("selection_profile") == "project_bizdev":
+        normalized_values.extend(["project_bizdev", ",".join(sorted(vacancy.get("role_families") or [])),
+                                  vacancy.get("selection_version") or ""])
     raw_value = "|".join(normalized_values)
     return hashlib.sha256(raw_value.encode("utf-8")).hexdigest()
 
@@ -42,6 +45,24 @@ class SupabaseService:
         for index in range(0, len(items), chunk_size):
             yield items[index:index + chunk_size]
 
+    @staticmethod
+    def _guard_pool():
+        if config.VACANCY_PROFILE != "project_bizdev" or config.SUPABASE_URL.rstrip('/') != "https://jmsdxgylyjxwdwmdrmxw.supabase.co":
+            raise ValueError("Пул разрешён только в test")
+
+    def _vacancies_select(self, columns, **kwargs):
+        query = self.client.table("vacancies").select(columns, **kwargs)
+        if config.VACANCY_PROFILE == "project_bizdev":
+            query = query.eq("selection_profile", "project_bizdev")
+        return query
+
+    @staticmethod
+    def _vacancy_columns():
+        columns = "id,title,company,grade,city,work_format,experience,description,url,published_at,created_at,is_active,content_hash"
+        if config.VACANCY_PROFILE == "project_bizdev":
+            columns += ",selection_profile,role_families,selection_version"
+        return columns
+
     def store_source_pool(self, source, vacancies, metadata):
         if config.VACANCY_PROFILE != "project_bizdev" or config.SUPABASE_URL.rstrip('/') != "https://jmsdxgylyjxwdwmdrmxw.supabase.co":
             raise ValueError("Пул разрешён только в test")
@@ -49,17 +70,20 @@ class SupabaseService:
                                                 "p_metadata": metadata}).execute()
 
     def fail_source_pool(self, source, error):
+        self._guard_pool()
         self.client.table("source_pool_status").upsert({"source_name": source, "status": "failed",
             "captured_at": datetime.now(timezone.utc).isoformat(), "metadata": {"error": error}},
             on_conflict="source_name").execute()
 
     def load_source_pool(self, source, max_age_hours=24):
+        self._guard_pool()
         status_rows = self.client.table("source_pool_status").select("status,captured_at,raw_count,metadata").eq("source_name", source).execute().data or []
         if len(status_rows) != 1 or status_rows[0]["status"] not in {"ready", "empty"}:
             raise ValueError("Пул источника не подтверждён успешным сбором")
         status = status_rows[0]
         captured = datetime.fromisoformat(status["captured_at"].replace('Z', '+00:00'))
-        if datetime.now(timezone.utc) - captured > timedelta(hours=max_age_hours):
+        age = datetime.now(timezone.utc) - captured
+        if age > timedelta(hours=max_age_hours) or age < -timedelta(minutes=5):
             raise ValueError("Пул источника устарел")
         vacancies = []
         while True:
@@ -72,7 +96,7 @@ class SupabaseService:
         return vacancies
 
     def get_existing_vacancy_ids(self):
-        result = self.client.table("vacancies").select("id").execute()
+        result = self._vacancies_select("id").execute()
         return {row["id"] for row in result.data or []}
 
     def get_existing_vacancy_hashes(self):
@@ -82,8 +106,7 @@ class SupabaseService:
 
         while True:
             result = (
-                self.client.table("vacancies")
-                .select("id,content_hash")
+                self._vacancies_select("id,content_hash")
                 .range(offset, offset + page_size - 1)
                 .execute()
             )
@@ -145,7 +168,7 @@ class SupabaseService:
                 return 0
 
         if active_ids and len(active_ids) <= 500:
-            query = self.client.table("vacancies").select("id").eq("is_active", True)
+            query = self._vacancies_select("id").eq("is_active", True)
             if companies:
                 query = query.in_("company", companies)
             missing_result = query.not_.in_("id", active_ids).execute()
@@ -157,8 +180,7 @@ class SupabaseService:
 
             while True:
                 query = (
-                    self.client.table("vacancies")
-                    .select("id")
+                    self._vacancies_select("id")
                     .eq("is_active", True)
                     .range(offset, offset + page_size - 1)
                 )
@@ -182,7 +204,7 @@ class SupabaseService:
         return len(missing_ids)
 
     def count_active_vacancies(self):
-        result = self.client.table("vacancies").select("id", count="exact").eq("is_active", True).execute()
+        result = self._vacancies_select("id", count="exact").eq("is_active", True).execute()
         return result.count or 0
 
     def count_delivered(self, chat_id):
@@ -218,9 +240,8 @@ class SupabaseService:
             delivery_offset += page_size
 
         query = (
-            self.client.table("vacancies")
-            .select(
-                "id,title,company,grade,city,work_format,experience,description,url,published_at,created_at,is_active,content_hash"
+            self._vacancies_select(
+                self._vacancy_columns()
             )
             .eq("is_active", True)
         )
@@ -233,9 +254,8 @@ class SupabaseService:
 
     def get_active_vacancies_for_filter_check(self, limit=500, offset=0):
         query = (
-            self.client.table("vacancies")
-            .select(
-                "id,title,company,grade,city,work_format,experience,description,url,published_at,created_at,is_active,content_hash"
+            self._vacancies_select(
+                self._vacancy_columns()
             )
             .eq("is_active", True)
         )
@@ -328,13 +348,12 @@ class SupabaseService:
             delivery_offset += page_size
 
         if not delivery_ids:
-            result = self.client.table("vacancies").select("id", count="exact").eq("is_active", True).execute()
+            result = self._vacancies_select("id", count="exact").eq("is_active", True).execute()
             return result.count or 0
 
         if len(delivery_ids) <= 500:
             result = (
-                self.client.table("vacancies")
-                .select("id", count="exact")
+                self._vacancies_select("id", count="exact")
                 .eq("is_active", True)
                 .not_.in_("id", list(delivery_ids))
                 .execute()
@@ -345,8 +364,7 @@ class SupabaseService:
         offset = 0
         while True:
             result = (
-                self.client.table("vacancies")
-                .select("id")
+                self._vacancies_select("id")
                 .eq("is_active", True)
                 .range(offset, offset + page_size - 1)
                 .execute()
@@ -365,7 +383,7 @@ class SupabaseService:
 
         count = 0
         for chunk in self._chunked(list(announced_ids), 500):
-            result = self.client.table("vacancies").select("id").eq("is_active", True).in_("id", chunk).execute()
+            result = self._vacancies_select("id").eq("is_active", True).in_("id", chunk).execute()
             count += len(result.data or [])
         return count
 
@@ -422,8 +440,7 @@ class SupabaseService:
 
         while True:
             result = (
-                self.client.table("vacancies")
-                .select("company")
+                self._vacancies_select("company")
                 .eq("is_active", True)
                 .gte("first_seen_at", cutoff.isoformat())
                 .range(offset, offset + page_size - 1)

@@ -61,3 +61,22 @@ class PoolEntryPointTests(unittest.TestCase):
                 runpy.run_path('scripts/capture_role_pool.py', run_name='__main__')
         self.assertEqual(exited.exception.code, 0)
         main.assert_called_once_with()
+
+class PoolPipelineTests(unittest.IsolatedAsyncioTestCase):
+    async def test_pool_mode_never_writes_or_sends_core_vacancies(self):
+        from unittest.mock import MagicMock, AsyncMock
+        import main
+        db = MagicMock()
+        db.get_enabled_companies.return_value = [{'name': 'Example', 'parser_name': 'example'}]
+        db.get_city_mappings.return_value = {}
+        parser = MagicMock()
+        parser.parse = AsyncMock(return_value=[{'id': 'example_1', 'title': 'Project Manager', 'url': 'https://example.com/1'}])
+        with patch('main.SupabaseService', return_value=db), patch.dict('main.PARSER_REGISTRY', {'example': lambda: parser}), \
+             patch('main.fetch_browser_secrets', AsyncMock(return_value={})), patch('config.SOURCE_POOL_ONLY', True), \
+             patch('config.CAPTURE_ALL_ROLES', True), patch('config.USE_SOURCE_POOL', False), patch('main.send_message') as send:
+            await main.run()
+        db.store_source_pool.assert_called_once()
+        db.insert_vacancies.assert_not_called()
+        db.get_existing_vacancy_hashes.assert_not_called()
+        db.deactivate_missing_vacancies.assert_not_called()
+        send.assert_not_called()

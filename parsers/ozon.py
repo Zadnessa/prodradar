@@ -43,11 +43,15 @@ class OzonParser(BaseParser):
 
             items = payload.get("items", [])
             api_count += len(items)
+            new_ids = 0
             for item in items:
                 raw_id = item.get("internalUuid") or item.get("hhId")
-                if raw_id is None or raw_id in seen_ids:
-                    raise ValueError("Ozon: отсутствующий или повторяющийся id")
+                if raw_id is None:
+                    raise ValueError("Ozon: отсутствующий id")
+                if raw_id in seen_ids:
+                    continue
                 seen_ids.add(raw_id)
+                new_ids += 1
                 if item.get("vacancyType") != "external_vacancy":
                     continue
                 title = (item.get("title", "") or "").strip()
@@ -68,6 +72,8 @@ class OzonParser(BaseParser):
                     }
                 )
 
+            if items and new_ids == 0:
+                raise ValueError("Ozon: страница повторяет ранее собранные ids")
             meta = payload.get("meta") or {}
             current_page = int(meta.get("page", page) or page)
             total_pages = int(meta.get("totalPages", current_page) or current_page)
@@ -79,6 +85,9 @@ class OzonParser(BaseParser):
 
         if config.CAPTURE_ALL_ROLES and isinstance(meta.get("totalItems"), int) and api_count != meta["totalItems"]:
             raise ValueError("Ozon: неполный каталог относительно totalItems")
+        self._api_total_count = meta.get("totalItems")
+        self._api_collected_count = api_count
+        self._duplicate_count = api_count - len(seen_ids)
         return vacancies
 
     async def enrich(self, session, vacancy):

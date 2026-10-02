@@ -165,7 +165,18 @@ async def run():
                 if not parser_cls:
                     raise ValueError(f"Парсер {parser_name} не найден в PARSER_REGISTRY")
                 parser = parser_cls()
-                vacancies = await parser.parse(session, empty_existing_ids, city_mappings, browser_secrets=browser_secrets)
+                if config.USE_SOURCE_POOL:
+                    vacancies = db.load_source_pool(parser_name)
+                    if parser_name == "sberhealth":
+                        parser._build_id = browser_secrets.get("sberhealth_build_id")
+                else:
+                    vacancies = await parser.parse(session, empty_existing_ids, city_mappings, browser_secrets=browser_secrets)
+                if config.CAPTURE_ALL_ROLES and not config.USE_SOURCE_POOL:
+                    db.store_source_pool(parser_name, vacancies, {
+                        "scope": "native_catalog" if parser_name != "tbank" else "IT/back-office",
+                        "api_total": getattr(parser, "_api_total_count", None),
+                        "api_collected": getattr(parser, "_api_collected_count", None),
+                        "duplicates": getattr(parser, "_duplicate_count", 0)})
                 if config.TEST_MODE:
                     vacancies = vacancies[: config.TEST_LIMIT]
                 all_collected.extend(vacancies)
@@ -188,6 +199,8 @@ async def run():
                 if parser_name in HH_PARSER_NAMES and getattr(parser, "captcha_hit", False):
                     hh_captcha_detected = True
                 classified_error = _classify_parser_error(parser_name, exc)
+                if config.SOURCE_POOL_ONLY:
+                    db.fail_source_pool(parser_name, classified_error)
                 parser_errors.append(classified_error[:150])
                 parser_stats[parser_name] = classified_error.replace(f"{parser_name} ", "", 1)
                 logging.error("Ошибка парсера %s: %s", parser_name, str(exc)[:500])
@@ -200,6 +213,13 @@ async def run():
             ):
                 await asyncio.sleep(random.uniform(2.0, 4.0))
 
+        if config.SOURCE_POOL_ONLY:
+            print(json.dumps({"pool_only": True, "raw_count": len(all_collected), "sources": parser_stats,
+                              "errors": parser_errors}, ensure_ascii=False), flush=True)
+            if parser_errors:
+                raise RuntimeError("Частичный source pool; неуспешные источники не заменены пустым списком")
+            return
+
         before_filter = len(all_collected)
         filtered = []
         blacklist_hits = 0
@@ -210,6 +230,13 @@ async def run():
         regex_blacklist_rejected = 0
         grey_blacklist_rejected = 0
         for vacancy in all_collected:
+            if config.VACANCY_PROFILE == "project_bizdev":
+                from delivery.roles import classify, apply_selection
+                decision = classify(vacancy)
+                if decision["status"] == "selected":
+                    filtered.append(apply_selection(vacancy, decision))
+                    exact_hits += 1
+                continue
             zone = classify_title(vacancy["title"])
             if zone is None:
                 title_normalized = vacancy["title"].strip().lower()
@@ -246,6 +273,8 @@ async def run():
                     grey_hits += 1
                 filtered.append(vacancy)
         all_collected = filtered
+        if config.VACANCY_PROFILE == "project_bizdev":
+            all_collected_ids = {vacancy["id"] for vacancy in filtered}
         logging.info(
             "Фильтрация заголовков: %s -> %s (отсеяно %s, из них blacklist: %s)",
             before_filter,
@@ -283,6 +312,8 @@ async def run():
                 if parser:
                     vacancy = await parser.enrich(session, vacancy)
 
+                if config.VACANCY_PROFILE == "project_bizdev":
+                    apply_selection(vacancy, classify(vacancy))
                 _prepare_vacancy(vacancy, city_mappings)
                 vacancy["content_hash"] = content_hash
 

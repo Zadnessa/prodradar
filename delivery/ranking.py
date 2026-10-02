@@ -2,6 +2,8 @@
 
 import re
 
+import config
+
 from config import TITLE_EXACT_WHITELIST, TITLE_GREY_PATTERNS, TITLE_PREFILTER_REJECT, TITLE_REGEX_PATTERNS
 
 _GRADE_MAP = {
@@ -24,6 +26,10 @@ def _normalize_grade_value(grade: str | None) -> int | None:
 
 
 def classify_title(title: str) -> str | None:
+    if config.VACANCY_PROFILE == "project_bizdev":
+        from delivery.roles import classify
+        decision = classify({"title": title})
+        return decision["zone"] if decision["status"] == "selected" else None
     t = title.strip().lower()
     for pattern in TITLE_PREFILTER_REJECT:
         if pattern in t:
@@ -74,6 +80,12 @@ def rank_vacancies(vacancies: list[dict], user_grades: list[str] | None, title_b
 
     def _sort_key(vacancy: dict):
         title = vacancy.get("title", "")
+        if config.VACANCY_PROFILE == "project_bizdev":
+            from delivery.roles import classify
+            families = vacancy.get("role_families") or classify({"title": title})["families"]
+            return (2 if "project" in families else 1 if "bizdev" in families else 0,
+                    grade_score(vacancy.get("grade"), user_grades),
+                    vacancy.get("published_at") or vacancy.get("created_at") or "")
         return (
             boost(title),
             title_confidence(title),

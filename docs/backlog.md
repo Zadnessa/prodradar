@@ -115,6 +115,7 @@
 - [ ] Расшивка bot/handlers.py на onboarding/settings/delivery модули (bot/handlers.py, bot/).
 - [ ] Расшивка SupabaseService на доменные репозитории (database/supabase_client.py, database/).
 - [ ] Дашборд аналитики (Metabase/Grafana) после переезда на VPS (infra/, analytics/).
+- [ ] Проверить новые секреты среды Codex и выполнить HTTP-тест webhook `@ProdRadar_bot`; готово когда Vercel и HH проходят реальные API-проверки, а настроенный обработчик принимает аутентифицированный запрос (scripts/check_environment.py, api/webhook.py, README.md).
 
 ## Архив
 
@@ -223,3 +224,5 @@
 - [x] BUG-086: Scheduled delivery не прерывает отправку при 403/429 от Telegram; готово когда при первой ошибке доставки выполняется break по юзеру, при 403 — деактивация is_active=false (main.py, bot/telegram_api.py, database/supabase_client.py).
 - [x] BUG-087: Админ-отчёт содержит нечитаемую статистику по парсерам и не отражает проблемы доставки; готово когда отчёт показывает только проблемы сбора, статус доставки и счётчики 403/429 (delivery/telegram.py, main.py).
 - [x] BUG-088: HH_ACCESS_TOKEN отсутствует в collect.yml; готово когда секрет пробрасывается в env шага python main.py (.github/workflows/collect.yml).
+- [x] Добавить безопасную диагностику тестового окружения: CLI и GitHub workflow проверяют Supabase, доступ к description, бот и админский чат Telegram, HH и при наличии токена Vercel; URL/ID читаются из variables, ключи из secrets, отчёт не содержит секретов и проверки не меняют данные (scripts/check_environment.py, .github/workflows/check_test_environment.yml, README.md).
+- [x] Зафиксировать контекст рефреша, реальные результаты диагностики, неизвестные связи инфраструктуры, семь фаз с критериями завершения, сохранение продуктового флоу, нового бота для одного проджект-менеджера с mute и отдельной ревизией функций; следующему чату поручена только фаза 1 (docs/refresh_plan.md, docs/context.md, README.md).

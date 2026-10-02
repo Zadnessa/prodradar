@@ -1,0 +1,44 @@
+name: Check Test Environment
+
+on:
+  push:
+    branches:
+      - 'codex/**'
+    paths:
+      - '.github/workflows/check_test_environment.yml'
+      - 'scripts/check_environment.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: prodradar-test
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install diagnostic dependencies
+        run: pip install requests supabase
+      - name: Check credentials and integrations without writes
+        run: python scripts/check_environment.py --require-hh --output environment-check.json
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          ADMIN_CHAT_ID: ${{ vars.ADMIN_CHAT_ID }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          HH_ACCESS_TOKEN: ${{ secrets.HH_ACCESS_TOKEN }}
+      - name: Save diagnostic result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: environment-check
+          path: environment-check.json
+          retention-days: 7

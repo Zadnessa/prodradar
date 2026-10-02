@@ -1,0 +1,99 @@
+{
+  "live": {
+    "runtime_sha": "137ccd1",
+    "deployment": "dpl_GYUgXTbt3u4tZXxBHmgjcVv7y5KF",
+    "greeting": "Привет, Катюша! :-)\n\nСобрала для тебя проекты и развитие бизнеса в одну ленту. Не нужно выбирать что-то одно.\n\nКакие грейды тебе показывать? Можно выбрать несколько или посмотреть все. Если грейд не указан, вакансию тоже покажу — вдруг там что-то интересное.\n\nПотом всё можно поменять в настройках. Компании, которые не подходят, можно скрыть.",
+    "callback_statuses": [
+      200,
+      200,
+      200
+    ],
+    "delivered_before": 115,
+    "delivered_after": 123,
+    "cards": [
+      {
+        "id": "ozon_137202417",
+        "title": "Менеджер проектов индивидуальных средств мобильности (велосипеды)",
+        "company": "Ozon",
+        "role_families": [
+          "project"
+        ],
+        "url": "https://career.ozon.ru/vacancy/menedzher-proektov-individualnykh-sredstv-mobilnosti-velosipedy-137202417/"
+      },
+      {
+        "id": "ozon_137796806",
+        "title": "Руководитель группы реализации проектов обучения",
+        "company": "Ozon",
+        "role_families": [
+          "project"
+        ],
+        "url": "https://career.ozon.ru/vacancy/rukovoditel-gruppy-realizatsii-proektov-obucheniya-137796806/"
+      },
+      {
+        "id": "sber_4533714",
+        "title": "Руководитель проектов по технологическому развитию клиентов",
+        "company": "Сбер",
+        "role_families": [
+          "project"
+        ],
+        "url": "https://rabota.sber.ru/search/4533714"
+      },
+      {
+        "id": "sber_4567001",
+        "title": "Delivery Lead (команда Закуп.AI)",
+        "company": "Сбер",
+        "role_families": [
+          "project"
+        ],
+        "url": "https://rabota.sber.ru/search/4567001"
+      },
+      {
+        "id": "sber_4572742",
+        "title": "Руководитель проектов",
+        "company": "Сбер",
+        "role_families": [
+          "project"
+        ],
+        "url": "https://rabota.sber.ru/search/4572742"
+      },
+      {
+        "id": "vk_54587",
+        "title": "Директор отдела по работе с клиентами (реклама)",
+        "company": "VK",
+        "role_families": [
+          "bizdev"
+        ],
+        "url": "https://team.vk.company/vacancy/54587/"
+      },
+      {
+        "id": "vk_54726",
+        "title": "Менеджер по работе с партнёрами",
+        "company": "VK",
+        "role_families": [
+          "bizdev"
+        ],
+        "url": "https://team.vk.company/vacancy/54726/"
+      },
+      {
+        "id": "ya_49086",
+        "title": "Менеджер проектов в команду стратегических партнёрств",
+        "company": "Яндекс",
+        "role_families": [
+          "project"
+        ],
+        "url": "https://yandex.ru/jobs/vacancies/menedzher-proektov-v-komandu-strategicheskih-partnyorstv-49086"
+      }
+    ],
+    "pending": 0
+  },
+  "reset": {
+    "profile": "test",
+    "chat_id": 707681263,
+    "verified": {
+      "admin_users": 0,
+      "admin_history": 0,
+      "admin_events": 0,
+      "active_slice": 374
+    }
+  }
+}

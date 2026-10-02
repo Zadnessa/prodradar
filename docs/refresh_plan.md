@@ -6,7 +6,12 @@
 settings/mute/pause/history; project приоритет2:1, двойные роли без дублей.
 До окончания первого шага ручная и scheduled доставка ждут. TEST ссылки
 прямые, без click redirect; исходная product аналитика не меняется.
-Сценарий и rationale: [test_bot_flow.md](test_bot_flow.md). Сведения ниже
+Сценарий и rationale: [test_bot_flow.md](test_bot_flow.md). Публикация: runtime137ccd1, TEST deploymentGYUgXTbt3u4tZXxBHmgjcVv7y5KF READY.
+97 local tests OK; real greeting и live grade/done callbacks проверены,
+8 доставленных6 project/2 bizdev, pending0. После проверки по поручению
+пользователя admin707681263 и его history/events удалены (0/0/0),374 active
+вакансии сохранены. Не делать новые отправки до пользовательского /start.
+Сведения ниже
 описывают предыдущую публикацию и историю настройки среза.
 
 # Новая разрешённая фаза — project/bizdev и простой test флоу, 2 октября 2026 (Москва)

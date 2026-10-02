@@ -41,3 +41,15 @@ sm:onboard:grade:N/done/all, sm:more:all, sm:seen:all:offset. Старые кн�
 Test format_vacancy_message использует прямой URL даже при заданном
 REDIRECT_BASE_URL; product redirect не изменён. /api/go пока остаётся для
 совместимости старых отправленных ссылок, новые test карточки его не используют.
+
+Публикация проверена2 октября2026 (Москва): runtime137ccd1, TEST production
+GYUgXTbt3u4tZXxBHmgjcVv7y5KF READY. 97 локальных регрессов прошли.
+Реальное приветствие отправлено без вакансий; grade toggle и done через
+опубликованный webhook вернули200. После done доставлены8:6 project/2 bizdev,
+delivered115→123; pending0. Прямые URL проверены formatter-регрессами.
+По отдельному поручению пользователя ПОСЛЕ smoke удалены только admin707681263
+из test users, его delivery/announced history и user_events. Проверка:0/0/0;
+374 active вакансии сохранены. Следующий /start создаёт нового пользователя
+и начинает мини-онбординг. Старые сообщения в Telegram этим не удаляются.
+Снята одна старая test сборка8MR; current/все aliases/rollback3Sq сохранены.
+Исходный production83b2b6GGhrwLU3nDU5PCJq1v2yhJ неизменён.

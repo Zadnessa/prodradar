@@ -16,7 +16,7 @@ from bot.telegram_api import _post
 from database.supabase_client import SupabaseService
 
 
-def check_environment(expected_bot="ProdRadar_bot", require_hh=False, require_vercel=False):
+def check_environment(expected_bot="ProdRadar_bot", require_hh=False, require_vercel=False, skip_hh=False):
     # Исключения HTTP-клиентов могут содержать URL с токеном Telegram.
     logging.disable(logging.CRITICAL)
     checks = []
@@ -85,7 +85,9 @@ def check_environment(expected_bot="ProdRadar_bot", require_hh=False, require_ve
             record("Telegram", "failed", error_type=type(exc).__name__)
 
     hh_token = os.getenv("HH_ACCESS_TOKEN")
-    if not hh_token:
+    if skip_hh:
+        record("HeadHunter:vacancies", "skipped", reason="source_pool_or_targeted_non_hh")
+    elif not hh_token:
         record("HH_ACCESS_TOKEN", "failed" if require_hh else "not_configured")
     else:
         try:
@@ -134,11 +136,13 @@ def check_environment(expected_bot="ProdRadar_bot", require_hh=False, require_ve
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--expected-bot", default="ProdRadar_bot")
-    parser.add_argument("--require-hh", action="store_true")
+    hh = parser.add_mutually_exclusive_group()
+    hh.add_argument("--require-hh", action="store_true")
+    hh.add_argument("--skip-hh", action="store_true", help="Без HH-запроса для cached или non-HH pool")
     parser.add_argument("--require-vercel", action="store_true")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    report = check_environment(args.expected_bot, args.require_hh, args.require_vercel)
+    report = check_environment(args.expected_bot, args.require_hh, args.require_vercel, args.skip_hh)
     if args.output:
         args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     for check in report["checks"]:

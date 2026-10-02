@@ -295,3 +295,10 @@ JSON вызвал timeout и не сохранился. Правило: загр
 затем атомарный commit_source_pool с expected count/advisory lock; failed
 stage не публикуется, очищается. Для исправления отдельного источника
 capture_pool_only допускает inspect_sources без повторного сбора остальных.
+
+### Несвязанный HH timeout блокирует адресный pool repair (BUG-110)
+Суть: check Actions36993264511 не прошёл из-за ConnectTimeout HH, хотя
+восстанавливались только Alfa/Sber. Для cached/адресного non-HH сбора check
+использует явный --skip-hh; статус skipped, не ready. Полный live/HH сбор
+по-прежнему проверяет HH. ClientOSError104 Т-Банка входит в прежний бюджет
+двух transport retries; HTTP5xx и TLS verification не обходятся.

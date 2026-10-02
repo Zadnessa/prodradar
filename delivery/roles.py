@@ -10,23 +10,24 @@ PROJECT_RULES = {
     'project_ru': r'\b(?:менеджер\w*|руководител[ья]|лидер\w*|директор\w*|координатор\w*|администратор\w*)\s+(?:[\w-]+\s+){0,5}(?:(?:спец)?проект\w*|программ\w*)\b',
     'project_adjective': r'\b(?:проектн\w*|проджект)\s*(?:менеджер|менеджмент|лид|руководитель)\b',
     'delivery_en': r'\bdelivery\s+(?:manager|lead|director)\b',
-    'project_office': r'\b(?:руководитель|директор)\s+(?:[\w-]+\s+){0,3}проектного\s+офиса\b',
+    'project_office': r'\b(?:менеджер|руководитель|директор)\s+(?:[\w-]+\s+){0,3}проектного\s+офиса\b',
 }
 BIZDEV_RULES = {
     'bizdev_en': r'\b(?:business\s+development|bizdev|bdm)\b',
     'new_business': r'\b(?:new\s+business|corporate\s+development)\s+(?:manager|director|lead)\b',
-    'bizdev_ru': r'\b(?:менеджер\w*|руководител[ья]|директор\w*|лидер\w*|глава)\s+(?:[\w-]+\s+){0,5}развити\w*\s+(?:[\w-]+\s+){0,2}бизнес\w*\b',
+    'bizdev_ru': r'\b(?:менеджер\w*|руководител[ья]|директор\w*|лидер\w*|глава)\s+(?:[\w-]+\s+){0,5}развити\w*\s+(?:(?:мал\w*|средн\w*|крупн\w*|международн\w*|нов\w*|цифров\w*|еком|ecom|и)\s+){0,5}бизнес\w*\b(?!\s+(?:процесс|продукт))',
     'partnerships_en': r'\b(?:strategic\s+)?partner(?:ship)?s?\s+(?:manager|lead|director|executive)\b|\b(?:head|director)\s+of\s+partnerships?\b',
-    'partnerships_ru': r'\b(?:менеджер\w*|руководител[ья]|директор\w*|лидер\w*)\s+(?:[\w-]+\s+){0,5}партнер\w*\b',
+    'partnerships_ru': r'\b(?:менеджер\w*|руководител[ья]|директор\w*|лидер\w*)\s+(?:[\w-]+\s+){0,5}развити\w*\s+(?:[\w-]+\s+){0,3}партнер\w*\b',
 }
 HARD_REJECT = {
     'internship': r'\b(?:стажер\w*|intern(?:ship)?|trainee)\b',
-    'engineering_or_analysis': r'\b(?:аналитик\w*|разработчик\w*|developer|engineer|дизайнер\w*|проектировщик\w*)\b',
+    'engineering_or_analysis': r'^(?:(?:ведущий|старший|главный|senior|lead|ml|системный|бизнес|продуктовый)\s+){0,3}(?:аналитик\w*|разработчик\w*|developer|engineer|инженер\w*|дизайнер\w*|проектировщик\w*)\b',
 }
 GREY_RULES = {
     'implementation': r'\b(?:менеджер|руководитель)\s+(?:[\w-]+\s+){0,3}внедрен\w*\b|\bimplementation\s+manager\b',
     'development': r'\b(?:менеджер|руководитель|директор|лидер)\s+(?:[\w-]+\s+){0,3}развити\w*\b',
     'direction': r'\b(?:менеджер|руководитель|директор|лидер|продюсер)\s+(?:[\w-]+\s+){0,2}(?:направлен\w*|стрим\w*|трансформаци\w*)\b',
+    'partner_accounts': r'\b(?:менеджер|руководитель)\s+(?:[\w-]+\s+){0,5}партнер\w*\b',
     'agile': r'\bscrum\s+master\b|\bagile\s+coach\b',
 }
 SIGNALS = {

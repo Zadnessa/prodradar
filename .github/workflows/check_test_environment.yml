@@ -74,8 +74,15 @@ jobs:
       - name: Install diagnostic dependencies
         run: pip install requests supabase
       - name: Check credentials and integrations without writes
-        run: python scripts/run_profile.py --profile test check --require-hh --output environment-check.json
+        run: |
+          python - <<'PY'
+          import os, subprocess
+          command = ['python', 'scripts/run_profile.py', '--profile', 'test', 'check', '--output', 'environment-check.json']
+          command.append('--skip-hh' if os.getenv('CHECK_SKIP_HH') == 'true' else '--require-hh')
+          subprocess.run(command, check=True)
+          PY
         env:
+          CHECK_SKIP_HH: ${{ inputs.use_source_pool == true || (inputs.capture_pool_only == true && inputs.inspect_sources != '' && !contains(inputs.inspect_sources, 'hh')) }}
           TEST_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           ADMIN_CHAT_ID: ${{ vars.ADMIN_CHAT_ID }}
           TEST_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}

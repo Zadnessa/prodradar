@@ -54,7 +54,8 @@ class TBankParser(BaseParser):
                         continue
                     response.raise_for_status()
                     value = await response.json() if as_json else await response.text(encoding='utf-8')
-            except (aiohttp.ServerDisconnectedError, aiohttp.ClientPayloadError, asyncio.TimeoutError):
+            except (aiohttp.ServerDisconnectedError, aiohttp.ClientOSError, aiohttp.ClientPayloadError,
+                    ConnectionResetError, asyncio.TimeoutError):
                 # POST getVacancies только читает каталог: повторяем тот же payload,
                 # не продвигаем offset и не принимаем оборванный ответ за страницу.
                 if attempt == 2:

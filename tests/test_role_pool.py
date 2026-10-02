@@ -80,3 +80,29 @@ class PoolPipelineTests(unittest.IsolatedAsyncioTestCase):
         db.get_existing_vacancy_hashes.assert_not_called()
         db.deactivate_missing_vacancies.assert_not_called()
         send.assert_not_called()
+
+class AdditionalPaginationTests(unittest.IsolatedAsyncioTestCase):
+    async def test_ozon_deduplicates_overlap_but_rejects_repeated_page(self):
+        from parsers.ozon import OzonParser
+        def page(ids, number):
+            return Response({'items': [{'internalUuid': str(i), 'hhId': i, 'title': 'Менеджер проекта',
+                                       'vacancyType': 'external_vacancy'} for i in ids],
+                             'meta': {'page': number, 'totalPages': 2, 'totalItems': 4}})
+        with patch('config.CAPTURE_ALL_ROLES', True):
+            parser = OzonParser()
+            result = await parser.parse(Session(page([1, 2], 1), page([2, 3], 2)), set(), {})
+            self.assertEqual(len(result), 3)
+            self.assertEqual(parser._duplicate_count, 1)
+            with self.assertRaises(ValueError):
+                await parser.parse(Session(page([1, 2], 1), page([1, 2], 2)), set(), {})
+
+    async def test_tbank_connection_reset_has_same_bounded_retry_budget(self):
+        import aiohttp
+        from parsers.tbank import TBankParser
+        class ResetResponse(Response):
+            async def __aenter__(self):
+                raise aiohttp.ClientOSError(104, 'Connection reset by peer')
+        session = Session(ResetResponse(), Response({'ok': True}))
+        with patch('parsers.tbank.asyncio.sleep', return_value=None):
+            self.assertEqual(await TBankParser()._request(session, 'get', 'https://www.tbank.ru/career/it/', as_json=True), {'ok': True})
+        self.assertEqual(len(session.calls), 2)

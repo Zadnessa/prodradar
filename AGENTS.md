@@ -89,3 +89,5 @@
 - В `supabase-py` нет метода `.not_in()`: использовать `.not_.in_("column", list)`.
 - `maybe_single()` на некоторых версиях Supabase может давать `406`; безопаснее делать обычный `select()` и проверять пустой список.
 - Любые утверждения AI-аудитора о коде проверяй по raw GitHub URL: аудитор может видеть кэшированную или устаревшую версию файла.
+
+- Test автосбор разрешён с3 октября2026: .github/workflows/schedule_test.yml в main запускает только codex/restore-test-bot/prodradar-test в10/19 Москва. Product workflow не включать. Scheduled gate не разрешает ранний запуск, workflow_dispatch по умолчанию read-only. Keepalive пишет только .github/test-schedule-heartbeat раз в30 дней без test secrets; collector contents:read. Подробнее docs/test_schedule.md.

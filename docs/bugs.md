@@ -267,3 +267,10 @@ filters отсекали новые роли до title classifier. Read-only Ac
 широкий каталог только нового test профиля, полнота пагинации по фактическому
 размеру/total, сохранённый атомарный pool без доставки для offline iteration.
 Product profile не расширять; 403/ошибки нельзя считать пустым каталогом.
+
+### runpy не добавляет scripts в sys.path для capture pool (BUG-106)
+Суть: pool entry point импортировал collect_test как top-level module, хотя
+run_profile выполняет его через runpy с корнем репозитория. Правило: импорт
+scripts.collect_test; regression запускает реальный entry point через runpy
+с замоканным main. Подготовительный Actions36991101137 отменён до сбора;
+следующий запуск проверяет исправленный entry point.

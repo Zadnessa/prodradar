@@ -1,6 +1,7 @@
 """Регрессии широкого каталога: короткие страницы не теряют вакансии."""
 
 import unittest
+import runpy
 from unittest.mock import patch
 
 from parsers.alfa import AlfaParser
@@ -51,3 +52,12 @@ class BroadCatalogTests(unittest.IsolatedAsyncioTestCase):
             result = await VKParser().parse(session, set(), {})
         self.assertEqual(result[0]['title'], 'Менеджер проектов')
         self.assertNotIn('tags', session.calls[0][1]['params'])
+
+
+class PoolEntryPointTests(unittest.TestCase):
+    def test_entry_point_resolves_script_package_under_runpy(self):
+        with patch('scripts.collect_test.main', return_value=0) as main:
+            with self.assertRaises(SystemExit) as exited:
+                runpy.run_path('scripts/capture_role_pool.py', run_name='__main__')
+        self.assertEqual(exited.exception.code, 0)
+        main.assert_called_once_with()

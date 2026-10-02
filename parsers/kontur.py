@@ -117,7 +117,7 @@ class KonturParser(BaseParser):
         del existing_ids
         del city_mappings
 
-        async with session.get(self.LIST_URL, headers=config.REQUEST_HEADERS) as response:
+        async with session.get(self.LIST_URL.split("?")[0] if config.CAPTURE_ALL_ROLES else self.LIST_URL, headers=config.REQUEST_HEADERS) as response:
             response.raise_for_status()
             html_text = await response.text()
 

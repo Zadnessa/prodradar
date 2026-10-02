@@ -104,3 +104,6 @@
 
 - `requirements.txt` — только зависимости Vercel webhook/redirect. Сборщик/парсеры/тесты источников устанавливаются из `requirements-collector.txt`; Playwright/curl_cffi/bs4 не добавлять в webhook requirements. `.vercelignore` исключает сборщик из функций. Git previews ветки восстановления отключены для предотвращения роста Function Storage.
 - Очистка Vercel через scripts/vercel_storage.py по умолчанию dry-run: полная пагинация и защита всех aliases/current/healthy rollbacks обязательны; historical original production не удаляются. Перед apply каждого кандидата повторно сверять защиту. Cron очистки не включать без отдельного поручения.
+
+- Новый test VACANCY_PROFILE=project_bizdev разрешён пользователем. Product profile сохраняет прежние native groups и title rules. Общие каталоги включать только CAPTURE_ALL_ROLES; source_pool/role schema создаётся исключительно в test БД. Пул заменяется атомарно отдельно на успешный source; failed/устаревший/неполный snapshot не разрешает cached delivery и не снимает предыдущие вакансии.
+- selection_profile/role_families/selection_version — реальные колонки новой test vacancies. Их нельзя запрашивать в исходной product БД; новые runtime projections должны быть условными. Не добавлять сервисные поля поверх vacancy вне колонок; причины классификации сохранять в source_json/отдельных аналитических данных.

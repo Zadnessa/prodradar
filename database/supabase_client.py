@@ -42,6 +42,35 @@ class SupabaseService:
         for index in range(0, len(items), chunk_size):
             yield items[index:index + chunk_size]
 
+    def store_source_pool(self, source, vacancies, metadata):
+        if config.VACANCY_PROFILE != "project_bizdev" or config.SUPABASE_URL.rstrip('/') != "https://jmsdxgylyjxwdwmdrmxw.supabase.co":
+            raise ValueError("Пул разрешён только в test")
+        self.client.rpc("replace_source_pool", {"p_source": source, "p_items": vacancies,
+                                                "p_metadata": metadata}).execute()
+
+    def fail_source_pool(self, source, error):
+        self.client.table("source_pool_status").upsert({"source_name": source, "status": "failed",
+            "captured_at": datetime.now(timezone.utc).isoformat(), "metadata": {"error": error}},
+            on_conflict="source_name").execute()
+
+    def load_source_pool(self, source, max_age_hours=24):
+        status_rows = self.client.table("source_pool_status").select("status,captured_at,raw_count,metadata").eq("source_name", source).execute().data or []
+        if len(status_rows) != 1 or status_rows[0]["status"] not in {"ready", "empty"}:
+            raise ValueError("Пул источника не подтверждён успешным сбором")
+        status = status_rows[0]
+        captured = datetime.fromisoformat(status["captured_at"].replace('Z', '+00:00'))
+        if datetime.now(timezone.utc) - captured > timedelta(hours=max_age_hours):
+            raise ValueError("Пул источника устарел")
+        vacancies = []
+        while True:
+            rows = self.client.table("source_pool").select("vacancy").eq("source_name", source).order("vacancy_id").range(len(vacancies), len(vacancies) + self.PAGE_SIZE - 1).execute().data or []
+            vacancies.extend(row["vacancy"] for row in rows)
+            if len(rows) < self.PAGE_SIZE:
+                break
+        if len(vacancies) != status["raw_count"]:
+            raise ValueError("Пул источника неполон")
+        return vacancies
+
     def get_existing_vacancy_ids(self):
         result = self.client.table("vacancies").select("id").execute()
         return {row["id"] for row in result.data or []}

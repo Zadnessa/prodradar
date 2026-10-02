@@ -144,7 +144,7 @@ class MtsParser(BaseParser):
                 if raw_id is None or str(raw_id) in seen_ids:
                     raise ValueError("MTS: отсутствующий или повторяющийся id страницы")
                 seen_ids.add(str(raw_id))
-                if not self._is_relevant_vacancy(item):
+                if not config.CAPTURE_ALL_ROLES and not self._is_relevant_vacancy(item):
                     continue
 
                 info = item.get("info") or {}

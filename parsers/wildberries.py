@@ -13,14 +13,37 @@ class WildberriesParser(BaseParser):
         del existing_ids
         headers = dict(config.REQUEST_HEADERS)
         headers["Referer"] = "https://career.rwb.ru/vacancies"
-        url = "https://career.rwb.ru/crm-api/api/v1/pub/vacancies?limit=200&offset=0&direction_ids[]=9"
-
-        async with session.get(url, headers=headers) as response:
-            response.raise_for_status()
-            payload = await response.json()
+        url = "https://career.rwb.ru/crm-api/api/v1/pub/vacancies"
+        items = []
+        seen_ids = set()
+        while True:
+            params = {"limit": 200, "offset": len(items)}
+            if not config.CAPTURE_ALL_ROLES:
+                params["direction_ids[]"] = 9
+            async with session.get(url, params=params, headers=headers) as response:
+                response.raise_for_status()
+                payload = await response.json()
+            data = payload.get("data") or {}
+            page_items = data.get("items")
+            if not isinstance(page_items, list):
+                raise ValueError("Wildberries: API не подтвердил список")
+            for item in page_items:
+                if item.get("id") is None or item["id"] in seen_ids:
+                    raise ValueError("Wildberries: отсутствующий или повторяющийся id")
+                seen_ids.add(item["id"])
+            items.extend(page_items)
+            if not config.CAPTURE_ALL_ROLES:
+                break
+            total = (data.get("range") or {}).get("count")
+            if not isinstance(total, int) or (not page_items and len(items) < total):
+                raise ValueError("Wildberries: неполный каталог")
+            if len(items) >= total:
+                if len(items) != total:
+                    raise ValueError("Wildberries: число вакансий не совпадает с count")
+                break
 
         vacancies = []
-        for item in payload.get("data", {}).get("items", []):
+        for item in items:
             vacancy_id = f"wb_{item.get('id')}"
             employment_types = item.get("employment_types") or []
             work_format = ", ".join(t.get("title", "") for t in employment_types if t.get("title")) or "Не указан"

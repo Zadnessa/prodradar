@@ -100,6 +100,8 @@ class VKParser(BaseParser):
 
         while True:
             params = {"limit": limit, "offset": offset, "tags": 2259}
+            if config.CAPTURE_ALL_ROLES:
+                params.pop("tags")
             async with session.get(base_url, headers=config.REQUEST_HEADERS, params=params) as response:
                 response.raise_for_status()
                 payload = await response.json()

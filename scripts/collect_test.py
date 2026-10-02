@@ -42,6 +42,7 @@ def check_target(project_ref):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project-ref", required=True)
+    parser.add_argument("--use-source-pool", action="store_true", help="Использовать проверенный свежий пул без повторного сбора")
     args = parser.parse_args()
     if os.getenv("PRODRADAR_PROFILE") != "test":
         print("Запустите сбор через scripts/run_profile.py --profile test collect")

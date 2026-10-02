@@ -15,12 +15,17 @@ class YandexParser(BaseParser):
         del existing_ids
         vacancies = []
         cursor = None
+        seen_ids = set()
+        seen_cursors = set()
+        total = None
 
         while True:
             params = {
                 "public_professions": "product-manager",
                 "page_size": 100,
             }
+            if config.CAPTURE_ALL_ROLES:
+                params.pop("public_professions")
             if cursor:
                 params["cursor"] = cursor
 
@@ -32,11 +37,16 @@ class YandexParser(BaseParser):
                 response.raise_for_status()
                 payload = await response.json()
 
+            total = payload.get("count")
             results = payload.get("results", [])
             if not results:
                 break
 
             for item in results:
+                raw_id = item.get("id")
+                if raw_id is None or raw_id in seen_ids:
+                    raise ValueError("Яндекс: отсутствующий или повторяющийся id")
+                seen_ids.add(raw_id)
                 vacancy = item.get("vacancy", {})
                 vacancy_cities = vacancy.get("cities") or item.get("cities") or []
                 cities = ", ".join(c.get("name", "") for c in vacancy_cities if c.get("name")) or "Не указан"
@@ -67,12 +77,14 @@ class YandexParser(BaseParser):
 
             parsed_next = urlparse(next_url)
             cursor_values = parse_qs(parsed_next.query).get("cursor")
-            if not cursor_values or not cursor_values[0]:
-                break
-
+            if not cursor_values or not cursor_values[0] or cursor_values[0] in seen_cursors:
+                raise ValueError("Яндекс: пагинация не продвигается")
             cursor = cursor_values[0]
+            seen_cursors.add(cursor)
             await asyncio.sleep(0.3)
 
+        if config.CAPTURE_ALL_ROLES and isinstance(total, int) and len(vacancies) != total:
+            raise ValueError("Яндекс: число вакансий не совпадает с count")
         return vacancies
 
     async def enrich(self, session, vacancy):

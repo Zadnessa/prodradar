@@ -258,3 +258,12 @@ city-dedup (полный raw каталог подтверждён), 25/25 produ
 четырьмя секциями; MTS32/VK24 собраны, Купер403reportedblocked. 224 active
 product сохранены, 0 skipped, 10 scheduled карточек доставлены; отдельная
 контрольная Т-Банка доставлена, test delivery43. Новых 5xx нет.
+
+### Product-only API группы скрывают целевые project/bizdev роли (BUG-105)
+Суть: новый target не мог достичь охвата фильтрацией product pool; VK tags2259,
+Ozon professionalRoles73, Alfa businessLine1020, Sber profAreas и другие native
+filters отсекали новые роли до title classifier. Read-only Actions36989764750
+подтвердил project tag2261 VK, Ozon role107 и роли вне product групп. Правило:
+широкий каталог только нового test профиля, полнота пагинации по фактическому
+размеру/total, сохранённый атомарный pool без доставки для offline iteration.
+Product profile не расширять; 403/ошибки нельзя считать пустым каталогом.

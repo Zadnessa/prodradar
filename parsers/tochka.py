@@ -4,6 +4,7 @@ import logging
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 
+import config
 from parsers.base import BaseParser
 from parsers.tls import source_ssl_context
 
@@ -72,6 +73,9 @@ class TochkaParser(BaseParser):
                 "specializations[]": "product-management",
                 "page": page,
             }
+            if config.CAPTURE_ALL_ROLES:
+                params.pop("category")
+                params.pop("specializations[]")
             async with session.get(base_url, params=params, ssl=source_ssl_context(base_url)) as response:
                 response.raise_for_status()
                 payload = await response.json()
@@ -101,6 +105,7 @@ class TochkaParser(BaseParser):
                         "url": f"https://hr.tochka.com/vacancies/catalog/{slug}/",
                         "published_at": None,
                         "description": None,
+                        "source_json": item,
                     }
                 )
 

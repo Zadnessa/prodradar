@@ -26,6 +26,8 @@ class OzonParser(BaseParser):
         base_url = "https://job-api.ozon.ru/v2/vacancy"
         page = 1
         vacancies = []
+        seen_ids = set()
+        api_count = 0
 
         while True:
             params = {
@@ -33,11 +35,19 @@ class OzonParser(BaseParser):
                 "meta.limit": 50,
                 "meta.page": page,
             }
+            if config.CAPTURE_ALL_ROLES:
+                params.pop("professionalRoles")
             async with session.get(base_url, headers=config.REQUEST_HEADERS, params=params) as response:
                 response.raise_for_status()
                 payload = await response.json()
 
-            for item in payload.get("items", []):
+            items = payload.get("items", [])
+            api_count += len(items)
+            for item in items:
+                raw_id = item.get("internalUuid") or item.get("hhId")
+                if raw_id is None or raw_id in seen_ids:
+                    raise ValueError("Ozon: отсутствующий или повторяющийся id")
+                seen_ids.add(raw_id)
                 if item.get("vacancyType") != "external_vacancy":
                     continue
                 title = (item.get("title", "") or "").strip()
@@ -61,10 +71,14 @@ class OzonParser(BaseParser):
             meta = payload.get("meta") or {}
             current_page = int(meta.get("page", page) or page)
             total_pages = int(meta.get("totalPages", current_page) or current_page)
+            if config.CAPTURE_ALL_ROLES and (current_page != page or (not items and current_page < total_pages)):
+                raise ValueError("Ozon: пагинация не продвигается")
             if current_page >= total_pages:
                 break
             page = current_page + 1
 
+        if config.CAPTURE_ALL_ROLES and isinstance(meta.get("totalItems"), int) and api_count != meta["totalItems"]:
+            raise ValueError("Ozon: неполный каталог относительно totalItems")
         return vacancies
 
     async def enrich(self, session, vacancy):

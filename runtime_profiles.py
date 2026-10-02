@@ -39,6 +39,7 @@ def select_profile(name):
     values["SUPABASE_URL"] = values["SUPABASE_URL"].rstrip("/")
     values["REDIRECT_BASE_URL"] = profile["redirect"]
     values["PRODRADAR_PROFILE"] = name
+    values["VACANCY_PROFILE"] = "project_bizdev" if name == "test" else "product"
     os.environ.update(values)
     return profile
 

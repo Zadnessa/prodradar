@@ -90,7 +90,7 @@ class MtsLinkParser(BaseParser):
 
     async def enrich(self, session, vacancy):
         vacancy_id = vacancy.get("id")
-        raw_id = self._raw_ids.get(vacancy_id)
+        raw_id = self._raw_ids.get(vacancy_id) or str(vacancy_id or "").removeprefix("mtslink_")
         if not raw_id:
             return vacancy
 

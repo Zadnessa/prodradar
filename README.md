@@ -407,3 +407,17 @@ MTS/VK проверяют полноту каталога. Недоступны�
 Для исследования project/bizdev input role_pool_probe в Check Test Environment
 читает первую страницу общих фирменных каталогов без DB/Telegram credentials
 и публикует публичные схемы/названия ролей через check annotations.
+
+Новый test срез project/bizdev использует полный доступный пул:
+
+```bash
+python scripts/run_profile.py --profile test prepare-roles
+python scripts/run_profile.py --profile test pool --project-ref jmsdxgylyjxwdwmdrmxw
+python scripts/run_profile.py --profile test collect --project-ref jmsdxgylyjxwdwmdrmxw --use-source-pool
+```
+
+prepare-roles создаёт source_pool/статусы и поля роли только в test БД; pool
+не отправляет карточки и не изменяет текущую выдачу. Check Test Environment
+input capture_pool_only сохраняет пул; collect_test + use_source_pool
+повторно фильтрует свежий проверенный пул, не повторяя список запросов API.
+Тестовый профиль теперь project_bizdev, production профиль остаётся product.

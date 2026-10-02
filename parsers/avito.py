@@ -74,6 +74,8 @@ class AvitoParser(BaseParser):
         headers["X-Requested-With"] = "XMLHttpRequest"
         url = "https://career.avito.com/vacancies/?action=filter&direction=upravlenie-produktom"
 
+        if config.CAPTURE_ALL_ROLES:
+            url = url.split("&direction=")[0]
         async with session.get(url, headers=headers) as response:
             response.raise_for_status()
             payload = await response.json()

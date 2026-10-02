@@ -58,13 +58,35 @@ class AlfaParser(BaseParser):
         city_map = self._build_option_map(option_lists, "cities")
         experience_map = self._build_option_map(option_lists, "experiences")
 
-        url = "https://job.alfabank.ru/api/vacancies?businessLine=1020&take=100"
-        async with session.get(url, headers=config.REQUEST_HEADERS, ssl=source_ssl_context(url)) as response:
-            response.raise_for_status()
-            payload = await response.json()
+        url = "https://job.alfabank.ru/api/vacancies"
+        items = []
+        seen_ids = set()
+        while True:
+            params = {"take": 200, "skip": len(items)} if config.CAPTURE_ALL_ROLES else {"businessLine": 1020, "take": 100}
+            async with session.get(url, params=params, headers=config.REQUEST_HEADERS,
+                                   ssl=source_ssl_context(url)) as response:
+                response.raise_for_status()
+                payload = await response.json()
+            page_items = payload.get("items")
+            if not isinstance(page_items, list):
+                raise ValueError("Альфа: API не подтвердил список")
+            for item in page_items:
+                if item.get("id") is None or item["id"] in seen_ids:
+                    raise ValueError("Альфа: отсутствующий или повторяющийся id")
+                seen_ids.add(item["id"])
+            items.extend(page_items)
+            if not config.CAPTURE_ALL_ROLES:
+                break
+            total = payload.get("total")
+            if not isinstance(total, int) or (not page_items and len(items) < total):
+                raise ValueError("Альфа: API не подтвердил полный каталог")
+            if len(items) >= total:
+                if len(items) != total:
+                    raise ValueError("Альфа: число вакансий не совпадает с total")
+                break
 
         vacancies = []
-        for item in payload.get("items", []):
+        for item in items:
             slug = item.get("slug") or ""
             city = city_map.get(str(item.get("cityId"))) or self._fallback_city_from_slug(city_mappings, slug)
             title = (item.get("name", "") or "").strip()

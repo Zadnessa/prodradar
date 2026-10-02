@@ -60,6 +60,8 @@ class X5Parser(BaseParser):
                 "page": page,
                 "page_size": 50,
             }
+            if config.CAPTURE_ALL_ROLES:
+                params.pop("vacancy_categories")
             async with session.get(self.LIST_URL, headers=config.REQUEST_HEADERS, params=params) as response:
                 response.raise_for_status()
                 payload = await response.json()
@@ -84,6 +86,7 @@ class X5Parser(BaseParser):
                         "experience": data.get("experience") or None,
                         "published_at": None,
                         "description": self._build_description(data),
+                        "source_json": item,
                         "url": self.VACANCY_URL_TEMPLATE.format(raw_id=raw_id_str),
                     }
                 )

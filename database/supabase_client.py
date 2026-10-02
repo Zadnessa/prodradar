@@ -109,6 +109,34 @@ class SupabaseService:
             raise ValueError("Пул источника неполон")
         return vacancies
 
+    def store_role_reviews(self, source, captured_at, vacancies):
+        self._guard_pool()
+        for chunk in self._chunked(vacancies, 30):
+            self.client.table("role_reviews").upsert([
+                {"source_name": source, "vacancy_id": v["id"], "catalog_captured_at": captured_at,
+                 "vacancy": v, "enriched_at": datetime.now(timezone.utc).isoformat()} for v in chunk],
+                on_conflict="source_name,vacancy_id").execute()
+
+    def merge_role_reviews(self, source, vacancies):
+        self._guard_pool()
+        status = self.client.table("source_pool_status").select("captured_at").eq("source_name", source).execute().data
+        if len(status or []) != 1:
+            raise ValueError("Нет однозначного snapshot для enrichment")
+        reviews = {}
+        offset = 0
+        while True:
+            rows = self.client.table("role_reviews").select("vacancy_id,vacancy").eq("source_name", source).eq(
+                "catalog_captured_at", status[0]["captured_at"]).order("vacancy_id").range(offset, offset + 999).execute().data or []
+            reviews.update({r["vacancy_id"]: r["vacancy"] for r in rows})
+            if len(rows) < 1000:
+                break
+            offset += 1000
+        for index, vacancy in enumerate(vacancies):
+            enriched = reviews.get(vacancy["id"])
+            if enriched and enriched.get("title") == vacancy.get("title"):
+                vacancies[index] = enriched
+        return vacancies
+
     def get_existing_vacancy_ids(self):
         result = self._vacancies_select("id").execute()
         return {row["id"] for row in result.data or []}

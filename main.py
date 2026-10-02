@@ -175,7 +175,7 @@ async def run():
                     raise ValueError(f"Парсер {parser_name} не найден в PARSER_REGISTRY")
                 parser = parser_cls()
                 if config.USE_SOURCE_POOL:
-                    vacancies = db.load_source_pool(parser_name)
+                    vacancies = db.merge_role_reviews(parser_name, db.load_source_pool(parser_name))
                     if parser_name == "sberhealth":
                         parser._build_id = browser_secrets.get("sberhealth_build_id")
                 else:

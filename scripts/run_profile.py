@@ -17,6 +17,7 @@ COMMANDS = {
     "audit": "scripts/audit_sources.py",
     "collect": "scripts/collect_test.py",
     "pool": "scripts/capture_role_pool.py",
+    "review-roles": "scripts/enrich_role_reviews.py",
     "prepare-roles": "scripts/prepare_role_pool.py",
     "collect-prod": "main.py",
 }
@@ -28,7 +29,7 @@ def main():
     parser.add_argument("command", choices=COMMANDS)
     parser.add_argument("arguments", nargs=argparse.REMAINDER)
     args = parser.parse_args()
-    if (args.command in ("collect", "pool", "prepare-roles", "prepare-github", "configure-github") and args.profile != "test") or (
+    if (args.command in ("collect", "pool", "review-roles", "prepare-roles", "prepare-github", "configure-github") and args.profile != "test") or (
         args.command == "collect-prod" and args.profile != "prod"
     ):
         parser.error("Команда сбора не соответствует профилю")

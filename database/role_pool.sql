@@ -96,3 +96,18 @@ REVOKE ALL ON FUNCTION public.commit_source_pool(text, uuid, integer, jsonb) FRO
 GRANT EXECUTE ON FUNCTION public.commit_source_pool(text, uuid, integer, jsonb) TO service_role;
 NOTIFY pgrst, 'reload schema';
 COMMIT;
+
+BEGIN;
+CREATE TABLE IF NOT EXISTS public.role_reviews (
+ source_name text NOT NULL,
+ vacancy_id text NOT NULL,
+ catalog_captured_at timestamptz NOT NULL,
+ vacancy jsonb NOT NULL,
+ enriched_at timestamptz NOT NULL DEFAULT now(),
+ PRIMARY KEY(source_name, vacancy_id)
+);
+ALTER TABLE public.role_reviews ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.role_reviews FROM anon, authenticated;
+GRANT ALL ON public.role_reviews TO service_role;
+NOTIFY pgrst, 'reload schema';
+COMMIT;

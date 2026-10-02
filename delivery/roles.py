@@ -3,6 +3,8 @@
 import re
 import unicodedata
 
+from delivery.role_aliases import ALIASES
+
 VERSION = 'project-bizdev-2026-10-02.3'
 
 PROJECT_RULES = {
@@ -27,6 +29,10 @@ HARD_REJECT = {
     'engineering_or_analysis': r'^(?:(?:ведущий|старший|главный|senior|lead|ml|системный|бизнес|продуктовый)\s+){0,3}(?:аналитик\w*|разработчик\w*|developer|engineer|инженер\w*|дизайнер\w*|проектировщик\w*)\b',
 }
 GREY_RULES = {
+    'launch': r'\b(?:менеджер|руководитель)\s+(?:[\w]+\s+){0,3}запуск\w*\b',
+    'customer_journey': r'\bcje\b|\bcustomer journey expert\b',
+    'operations': r'\b(?:operations|product operations)\s+manager\b|\bменеджер\s+операц\w*\b',
+    'producer': r'\bпродюсер\b|\bкоординатор\b',
     'implementation': r'\b(?:менеджер|руководитель)\s+(?:[\w-]+\s+){0,3}внедрен\w*\b|\bimplementation\s+manager\b',
     'development': r'\b(?:менеджер|руководитель|директор|лидер)\s+(?:[\w-]+\s+){0,3}развити\w*\b',
     'direction': r'\b(?:менеджер|руководитель|директор|лидер|продюсер)\s+(?:[\w-]+\s+){0,2}(?:направлен\w*|стрим\w*|трансформаци\w*)\b',
@@ -60,13 +66,13 @@ def native_groups(vacancy):
                 if value.get(key):
                     names(value[key])
     for key in ('group', 'group_name', 'category', 'direction', 'directions', 'prof_area',
-                'professionalRoles', 'mainCategory', 'mainSpecialization', 'specialty', 'tags', 'department'):
+                'specialization', 'businessLine', 'businessLineName', 'professionalRoles', 'mainCategory', 'mainSpecialization', 'specialty', 'tags', 'department'):
         names(source.get(key))
     names((source.get('info') or {}).get('category'))
     return list(dict.fromkeys(groups))
 
 
-def classify(vacancy, *, apply_blacklist=True, disambiguate=True, exclude_internships=False):
+def classify(vacancy, *, apply_blacklist=True, disambiguate=True, exclude_internships=False, enable_aliases=True):
     title = normalized(vacancy.get('title'))
     groups = native_groups(vacancy)
     body = normalized(vacancy.get('description'))
@@ -76,6 +82,14 @@ def classify(vacancy, *, apply_blacklist=True, disambiguate=True, exclude_intern
         rejected.append('internship')
     result = {'version': VERSION, 'status': 'rejected', 'families': [], 'zone': None,
               'rules': [], 'excluded_by': rejected, 'native_groups': groups, 'signals': signals}
+    if enable_aliases:
+        for alias in ALIASES:
+            if vacancy.get('company') != alias['company'] or title != normalized(alias['title']):
+                continue
+            if all(any(re.search(pattern, body) for pattern in group) for group in alias['evidence_patterns']):
+                result.update(status='selected', zone='semantic', families=alias['families'],
+                              rules=['company_alias:' + alias['id']], excluded_by=[])
+                return result
     if rejected:
         return result
     for family, rules in (('project', PROJECT_RULES), ('bizdev', BIZDEV_RULES)):

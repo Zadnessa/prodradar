@@ -95,6 +95,34 @@ class FlowTests(unittest.TestCase):
         self.db.get_undelivered_vacancies.assert_not_called()
         self.db.mark_delivered.assert_not_called()
 
+    def test_greeting_is_not_repeated_after_grade_edits_restart_or_completion(self):
+        user = {'filters': {'excluded_companies': ['Muted']}, 'onboarding_step': None}
+        self.db.get_user.side_effect = lambda _: user
+        self.db.update_user_filters.side_effect = lambda _, filters: user.update(filters=filters)
+        self.db.update_onboarding_step.side_effect = lambda _, step: user.update(onboarding_step=step)
+        with patch('bot.simple_flow.send_message', return_value={'message_id': 1}) as send, \
+             patch('bot.simple_flow.edit_message') as edit:
+            simple_flow.handle_simple_message(1, '/start', 'test', self.db)
+            simple_flow.handle_simple_callback('sm:onboard:grade:1', 1, 2, self.db)
+            simple_flow.handle_simple_message(1, '/start', 'test', self.db)
+            simple_flow.handle_simple_callback('sm:onboard:done', 1, 2, self.db)
+            simple_flow.handle_simple_message(1, '/start', 'test', self.db)
+            texts = [c.args[1] for c in send.call_args_list] + [c.args[2] for c in edit.call_args_list]
+        self.assertEqual(sum('Привет, Катюша!' in text for text in texts), 1)
+        self.assertEqual(sum('Катюша' in text for text in texts), 1)
+        self.assertEqual(user['filters']['grades'], ['Middle'])
+        self.assertEqual(user['filters']['excluded_companies'], ['Muted'])
+        self.db.clear_delivery_history.assert_not_called()
+
+    def test_existing_incomplete_onboarding_does_not_regreet_after_upgrade(self):
+        self.db.get_user.return_value = {'filters': {'grades': ['Senior']},
+                                         'onboarding_step': simple_flow.ONBOARDING_STEP}
+        with patch('bot.simple_flow.send_message', return_value={'message_id': 1}) as send:
+            simple_flow.handle_simple_message(1, '/start', 'test', self.db)
+        self.assertNotIn('Привет', send.call_args.args[1])
+        self.assertNotIn('Катюша', send.call_args.args[1])
+        self.db.get_undelivered_vacancies.assert_not_called()
+
     def test_old_more_button_cannot_skip_first_onboarding(self):
         self.db.get_user.return_value = {'filters': {}}
         with patch('bot.simple_flow.send_message'):

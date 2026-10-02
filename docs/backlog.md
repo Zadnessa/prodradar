@@ -243,3 +243,5 @@
 - [x] VK enrich: добавить проверку existing значений grade и description перед перезаписью; description заменять только если len(new) > len(current) (parsers/vk.py).
 
 - [x] Снизить sales/account шум в TEST project/bizdev: вычитать 374 описания недорогими аудиторами, проверить rollback и клиентский delivery, пересмотреть ошибочные labels; 374→257, 5 mixed учтены как возможная потеря, атомарный переотбор без сброса users/history (delivery/roles.py, delivery/role_exclusions.py, scripts/evaluate_role_precision.py, scripts/reselect_test_roles.py, tests/test_role_precision.py, docs/test_role_precision.md).
+
+- [x] Оставить имя/приветствие только в первом TEST сообщении, мужской голос бота и различимые primary/success действия; повторный старт/grade edit и существующий онбординг не повторяют приветствие, грейды/mute/history сохраняются (bot/simple_flow.py, tests/test_project_flow.py).

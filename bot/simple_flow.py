@@ -12,27 +12,29 @@ from delivery.telegram import format_vacancy_message
 PAGE_SIZE = 8
 ONBOARDING_STEP = "simple_grade"
 COMPLETED_KEY = "simple_onboarding_completed"
+GREETING_KEY = "simple_greeting_shown"
 
 
 def onboarding_completed(user):
     return bool(((user or {}).get("filters") or {}).get(COMPLETED_KEY))
 
 
-def show_onboarding(chat_id, db=None, message_id=None):
+def show_onboarding(chat_id, db=None, message_id=None, *, greet=False):
     db = db or SupabaseService()
     user = db.get_user(chat_id) or {}
     selected = effective_filters(user.get("filters"))["grades"]
-    text = ("Привет, Катюша! :-)\n\n"
-            "Собрала для тебя проекты и развитие бизнеса в одну ленту. "
-            "Не нужно выбирать что-то одно.\n\n"
-            "Какие грейды тебе показывать? Можно выбрать несколько или посмотреть все. "
+    text = ("Какие грейды показывать? Можно выбрать несколько или посмотреть все. "
             "Если грейд не указан, вакансию тоже покажу — вдруг там что-то интересное.\n\n"
             "Потом всё можно поменять в настройках. Компании, которые не подходят, можно скрыть.")
+    if greet:
+        text = ("Привет, Катюша! :-)\n\n"
+                "Собрал проекты и развитие бизнеса в одну ленту. "
+                "Не нужно выбирать что-то одно.\n\n") + text
     rows = [[{"text": ("✓ " if grade in selected else "") + grade,
               "callback_data": f"sm:onboard:grade:{index}"} for index, grade in enumerate(GRADE_OPTIONS)]]
     rows.extend([
         [{"text": "Поехали смотреть вакансии :-)" if selected else "Показать все грейды :-)",
-          "callback_data": "sm:onboard:done", "style": "success"}],
+          "callback_data": "sm:onboard:done", "style": "primary"}],
     ])
     if selected:
         rows.append([{"text": "Посмотреть все грейды", "callback_data": "sm:onboard:all", "style": "success"}])
@@ -42,8 +44,16 @@ def show_onboarding(chat_id, db=None, message_id=None):
 
 
 def _begin_onboarding(chat_id, db):
+    user = db.get_user(chat_id) or {}
+    filters = dict(user.get("filters") or {})
+    # Старый незавершённый онбординг тоже уже показывал приветствие.
+    greet = not (filters.get(GREETING_KEY) or onboarding_completed(user) or
+                 user.get("onboarding_step") == ONBOARDING_STEP)
+    if not filters.get(GREETING_KEY):
+        filters[GREETING_KEY] = True
+        db.update_user_filters(chat_id, filters)
     db.update_onboarding_step(chat_id, ONBOARDING_STEP)
-    return show_onboarding(chat_id, db)
+    return show_onboarding(chat_id, db, greet=greet)
 
 
 def effective_filters(filters):
@@ -88,16 +98,16 @@ def show_vacancies(chat_id, db=None, family="all", include_delivered=False, offs
     remaining = max(len(vacancies) - offset - len(delivered), 0)
     if remaining:
         callback = f"sm:seen:all:{offset + PAGE_SIZE}" if include_delivered else "sm:more:all"
-        rows.append([{"text": f"Ещё вакансии ({remaining})", "callback_data": callback}])
+        rows.append([{"text": f"Ещё вакансии ({remaining})", "callback_data": callback, "style": "primary"}])
     if not vacancies and not include_delivered:
-        rows.append([{"text": "Посмотреть текущие ещё раз", "callback_data": "sm:seen:all:0"}])
-    rows.append([{"text": "Настройки", "callback_data": "sm:settings"}])
+        rows.append([{"text": "Посмотреть текущие ещё раз", "callback_data": "sm:seen:all:0", "style": "primary"}])
+    rows.append([{"text": "Настройки", "callback_data": "sm:settings", "style": "success"}])
     if not vacancies:
-        text = "Катюша, непросмотренных вакансий по этим настройкам пока нет :-)"
+        text = "Непросмотренных вакансий по этим настройкам пока нет :-)"
         if filters["grades"]:
             text += " Можно изменить грейды в настройках."
     else:
-        text = f"Вот ещё {len(delivered)} вакансий для тебя :-) " + (f"Осталось: {remaining}." if remaining else "На сегодня всё в этой подборке.")
+        text = f"Ещё вакансий: {len(delivered)} :-) " + (f"Осталось: {remaining}." if remaining else "На сегодня всё в этой подборке.")
     send_message(chat_id, text, reply_markup={"inline_keyboard": rows})
     db.log_event(chat_id, "simple_vacancies_shown", {"family": "all", "delivered": len(delivered), "remaining": remaining})
     return delivered
@@ -115,10 +125,10 @@ def show_settings(chat_id, db=None, message_id=None):
     rows = [[{"text": ("✓ " if grade in selected else "") + grade, "callback_data": f"sm:grade:{index}"}
              for index, grade in enumerate(GRADE_OPTIONS)]]
     rows.extend([
-        [{"text": "Все грейды", "callback_data": "sm:grades:all"}],
+        [{"text": "Все грейды", "callback_data": "sm:grades:all", "style": "success"}],
         [{"text": "Скрытые компании", "callback_data": "sm:blocked"}],
         [{"text": "Возобновить рассылку" if paused else "Пауза рассылки", "callback_data": "sm:pause"}],
-        [{"text": "К вакансиям :-)", "callback_data": "sm:more:all", "style": "success"}],
+        [{"text": "К вакансиям :-)", "callback_data": "sm:more:all", "style": "primary"}],
     ])
     if message_id:
         edit_message(chat_id, message_id, text, reply_markup={"inline_keyboard": rows})
@@ -132,7 +142,7 @@ def show_blocked(chat_id, db=None):
     companies = {c["name"]: c for c in db.get_enabled_companies()}
     rows = [[{"text": f"Вернуть {name}", "callback_data": f"sm:unmute:{companies[name]['slug']}"}]
             for name in excluded if name in companies and companies[name].get("slug")]
-    rows.append([{"text": "Настройки", "callback_data": "sm:settings"}])
+    rows.append([{"text": "Настройки", "callback_data": "sm:settings", "style": "primary"}])
     send_message(chat_id, "Скрытые компании: " + escape(", ".join(excluded) if excluded else "нет"),
                  reply_markup={"inline_keyboard": rows})
 
@@ -161,9 +171,9 @@ def handle_simple_callback(data, chat_id, message_id, db=None):
         filters[COMPLETED_KEY] = True
         db.update_user_filters(chat_id, filters)
         db.update_onboarding_step(chat_id, None)
-        edit_message(chat_id, message_id, "Поехали, Катюша! :-)\nПроекты и развитие бизнеса — в одной ленте.")
+        edit_message(chat_id, message_id, "Поехали! :-)\nПроекты и развитие бизнеса — в одной ленте.")
         send_message(chat_id, "В каждой карточке — прямая ссылка на вакансию. "
-                     "А если компания не твоя, нажми команду скрытия под карточкой.",
+                     "Неподходящую компанию можно скрыть командой под карточкой.",
                      reply_markup=build_main_reply_keyboard())
         return show_vacancies(chat_id, db)
     if data.startswith("sm:seen:"):
@@ -210,7 +220,7 @@ def handle_simple_message(chat_id, text, username=None, db=None, **profile):
         db.upsert_user(chat_id, username, **profile)
         if not onboarding_completed(db.get_user(chat_id)):
             return _begin_onboarding(chat_id, db)
-        send_message(chat_id, "Привет, Катюша! :-) Давай посмотрим, что ещё есть для тебя.",
+        send_message(chat_id, "Открываю вакансии :-)",
                      reply_markup=build_main_reply_keyboard())
         return show_vacancies(chat_id, db)
     if text in {"/settings", "Настройки"}:
@@ -233,6 +243,6 @@ def handle_simple_message(chat_id, text, username=None, db=None, **profile):
         return show_vacancies(chat_id, db)
     if not onboarding_completed(db.get_user(chat_id)):
         return _begin_onboarding(chat_id, db)
-    return send_message(chat_id, "Катюша, нажми «Вакансии», чтобы продолжить :-) "
+    return send_message(chat_id, "Продолжить просмотр — «Вакансии» :-) "
                         "В «Настройках» можно поменять грейды и вернуть скрытые компании.",
                         reply_markup=build_main_reply_keyboard())

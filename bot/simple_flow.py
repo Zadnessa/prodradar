@@ -158,4 +158,8 @@ def handle_simple_message(chat_id, text, username=None, db=None, **profile):
         if text.startswith("/unmute_"):
             return handle_unmute(chat_id, text[len("/unmute_"):], db=db)
         return handle_mute(chat_id, text[len("/mute_"):], db=db)
-    return show_vacancies(chat_id, db)
+    if text in {"Вакансии", "/vacancies"}:
+        return show_vacancies(chat_id, db)
+    return send_message(chat_id, "Нажми «Вакансии» для проектного поиска или «Настройки» для грейдов и mute.",
+                        reply_markup=build_main_reply_keyboard())
+

@@ -4382,6 +4382,709 @@
           "source": "yandex"
         }
       ]
+    },
+    {
+      "title": "Business Analyst (МГТС)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_711489976390388959",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Business Intelligence Analyst (B2C Marketing)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "hh_kaspersky_137647099",
+          "company": "Касперский",
+          "source": "hh_kaspersky"
+        }
+      ]
+    },
+    {
+      "title": "Customer Journey Expert в команду «Госпрограммы и Прайсинг ИЖС»",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "185",
+          "company": "ДомКлик",
+          "source": "domclick"
+        }
+      ]
+    },
+    {
+      "title": "HR-бизнес-партнёр команды автономного транспорта",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_37770",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Principal Business Analyst",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "2gis_565",
+          "company": "2ГИС",
+          "source": "2gis"
+        }
+      ]
+    },
+    {
+      "title": "T&D партнёр клиентского сервиса",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8091",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Аналитик-программист",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_669549507729424928",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Бизнес-партнёр клиентского сервиса",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8192",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Бизнес-партнёр по персоналу розницы",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "x5_68a5305e884f1d152d4bec7e",
+          "company": "Пятёрочка",
+          "source": "x5"
+        },
+        {
+          "id": "x5_698c24dce52f4849a4513bbe",
+          "company": "Пятёрочка",
+          "source": "x5"
+        },
+        {
+          "id": "x5_698d3f48b84b51d266510755",
+          "company": "Пятёрочка",
+          "source": "x5"
+        }
+      ]
+    },
+    {
+      "title": "Ведущий продакт-менеджер AI/ML-продукта Business Insights",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8064",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Клиентский бизнес-партнёр",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "kontur_5665",
+          "company": "Контур",
+          "source": "kontur"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер IT-образовательных программ в ВУЗах [МТС Веб Сервисы]",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_628969623710077680",
+          "company": "MWS.AI",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по привлечению B2B-партнёров",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48819",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по привлечению и подключению партнёров",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_46717",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по привлечению партнёров",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "partner-moskva",
+          "company": "Точка",
+          "source": "tochka"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по работе с B2B‑партнёрами (аренда электровелосипедов) в Яндекс Байк",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_43418",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по работе с ключевыми партнёрами (Китай) в Маркет",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_47066",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по работе с партнёрами",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "vk_54726",
+          "company": "VK",
+          "source": "vk"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по работе с партнёрами (программа лояльности ОЗОН Банка)",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ozon_137259973",
+          "company": "Ozon",
+          "source": "ozon"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по работе с партнёрами Data&Analytics в Yandex Cloud",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48895",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по работе с партнёрами‑курьерами",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_46939",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер по расширению партнёрской базы",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_48732",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер продукта (Программа лояльности)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_703632203145281851",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер продукта в партнёрский финтех Яндекс Go",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_47367",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
+    },
+    {
+      "title": "Менеджер сопровождения партнёрских интеграций",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "vk_54504",
+          "company": "VK",
+          "source": "vk"
+        }
+      ]
+    },
+    {
+      "title": "Партнёр онлайн-доставки",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "x5_39c09e42-695d-416f-a7a9-781a0b000b9f",
+          "company": "X5 Tech",
+          "source": "x5"
+        }
+      ]
+    },
+    {
+      "title": "Партнёр по поиску новых абонентов",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_344423565275173869",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344483967350608860",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344672721596073477",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344680237528780099",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344680286790878690",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687056280097742",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687059543264644",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687788911760381",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687790207796744",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687792778907043",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687794137859551",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687815541392880",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687817051345864",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687819416929748",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687820993988060",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687822327776734",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687823988721106",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687825339303440",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687826685658575",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687827604214772",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687828963167664",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687829021885922",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687830313733550",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687830582169006",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687832041786706",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687837678932946",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687839134354807",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344687843714532915",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344694632644347396",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344694639468481897",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344694641104262115",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344695348406522857",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344695352483384733",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344695383449931142",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344695384670471715",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344695391331026479",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344695392606094911",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344695393990215221",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344770967576250962",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344771005052357227",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_344778456900307544",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_425657256214791356",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_425657258588767366",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_425657260929191704",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_425657262195871530",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_425657267682021134",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_425657433386386619",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_425657439916920614",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_425657442316062506",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_425657468832449720",
+          "company": "МТС",
+          "source": "mts"
+        },
+        {
+          "id": "mts_425657471684579088",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Партнёр по поиску новых абонентов (м. Петровский парк)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_344687841898402788",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Продуктовый редактор (Программа лояльности)",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_707227204697719073",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель группы программных интеграций",
+      "families": [],
+      "label": "review",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "wb_39762",
+          "company": "Wildberries",
+          "source": "wildberries"
+        }
+      ]
+    },
+    {
+      "title": "Руководитель центра социальных и благотворительных программ",
+      "families": [
+        "project"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "mts_699136520346403100",
+          "company": "МТС",
+          "source": "mts"
+        }
+      ]
+    },
+    {
+      "title": "Старший менеджер стратегических партнёрств",
+      "families": [
+        "bizdev"
+      ],
+      "label": "target",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "avito_8126",
+          "company": "Avito",
+          "source": "avito"
+        }
+      ]
+    },
+    {
+      "title": "Старший финансовый партнёр в Заботу",
+      "families": [],
+      "label": "other",
+      "split": "calibration",
+      "examples": [
+        {
+          "id": "ya_49064",
+          "company": "Яндекс",
+          "source": "yandex"
+        }
+      ]
     }
   ]
 }

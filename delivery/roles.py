@@ -3,7 +3,7 @@
 import re
 import unicodedata
 
-VERSION = 'project-bizdev-2026-10-02.1'
+VERSION = 'project-bizdev-2026-10-02.2'
 
 PROJECT_RULES = {
     'project_en': r'\b(?:project|program(?:me)?)\s+(?:manager|lead|director|coordinator)\b',
@@ -17,6 +17,8 @@ BIZDEV_RULES = {
     'bizdev_en': r'\b(?:business\s+development|bizdev|bdm)\b',
     'new_business': r'\b(?:new\s+business|corporate\s+development)\s+(?:manager|director|lead)\b',
     'bizdev_ru': r'\b(?:менеджер\w*|руководител[ья]|директор\w*|лидер\w*|глава)\s+(?:[\w-]+\s+){0,5}развити\w*\s+(?:(?:мал\w*|средн\w*|крупн\w*|международн\w*|нов\w*|цифров\w*|еком|ecom|и)\s+){0,5}бизнес\w*\b(?!\s+(?:процесс|продукт))',
+    'partner_growth_ru': r'\b(?:менеджер|руководитель|директор)\s+(?:[\w]+\s+){0,3}(?:привлечени\w*|расширени\w*)\s+(?:[\w]+\s+){0,3}партнер\w*\b',
+    'strategic_partnerships_ru': r'\b(?:менеджер|руководитель|директор)\s+(?:стратегическ\w*\s+)?партнерств\w*\b',
     'partnerships_en': r'\b(?:strategic\s+)?partner(?:ship)?s?\s+(?:manager|lead|director|executive)\b|\b(?:head|director)\s+of\s+partnerships?\b',
     'partnerships_ru': r'\b(?:менеджер\w*|руководител[ья]|директор\w*|лидер\w*)\s+(?:[\w-]+\s+){0,5}развити\w*\s+(?:[\w-]+\s+){0,3}партнер\w*\b',
 }

@@ -102,6 +102,9 @@ class SupabaseService:
             vacancies.extend(row["vacancy"] for row in rows)
             if len(rows) < self.PAGE_SIZE:
                 break
+        final_status = self.client.table("source_pool_status").select("status,captured_at,raw_count").eq("source_name", source).execute().data or []
+        if len(final_status) != 1 or any(final_status[0][key] != status[key] for key in ("status", "captured_at", "raw_count")):
+            raise ValueError("Пул изменился во время чтения")
         if len(vacancies) != status["raw_count"]:
             raise ValueError("Пул источника неполон")
         return vacancies

@@ -21,6 +21,57 @@ Production/исходный бот не изменяются; работать �
 позволяет итерировать без повторных сетевых прогонов. Ниже — история предыдущей
 фазы; её запреты нового UI/project/bizdev отменены текущим поручением.
 
+## Точная точка продолжения после semantic прохода, 2 октября 2026 UTC
+
+Код сохранён в текущей ветке до SHA1fdec681dda908a0f9c86b423f8f527c0d37c5fe.
+49 company aliases проверяют реальные обязанности, не отрасль/монетизацию.
+Live resolve_role догружает известный alias до фильтрации; ошибки не снимают
+старую вакансию. Native negative regressions сохраняют одноимённые partner
+roles с операционным onboarding, technical presale, product discovery и admin.
+88 локальных тестов прошли. Native_role_cohorts fixture содержит полные
+подборки: Ozon10736/partners10, VK226110/specialty26324, Sber project50,
+WB project5 — 135 членств с пересечениями. Текущие calibration регрессы
+сохраняют все размеченные target без FP; это не независимые 95% всех компаний.
+Первичный Sber holdout v2 до исправлений93.0% сохранён в reports.
+
+Shadow review всех22 доступных источников Actions36996007091 success.
+Raw source_pool12270; Купер failed403, не считать empty. Actions36999672905
+на0c61786 успешно обновил native metadata МТС2453, Авиасейлс31,
+МТС Линк11, Lamoda9. Новые snapshots инвалидируют старые role_reviews;
+повторный targeted review36999877381 success. После исправления shared native
+category МТС повторный review37000201725 на1fdec68 success:112 candidates,
+112 descriptions,0 failures; Telegram не отправлял. МТС native категория
+«Управление продуктами/проектами/процессами» содержит29 записей — её поштучный
+audit по обязанностям ещё не завершён. Не зачислять её в verified six cohorts.
+
+Simple flow код: /start сразу8 project, отдельный bizdev fallback, grade/mute/
+pause, explicit sm:seen:family:offset без очистки delivery history. Disabled
+companies скрыты; все страницы загружаются до пользовательских фильтров.
+Новейший webhook НЕ опубликован. TEST Vercel production остаётся
+предыдущим dpl_8MRFgWvvZ2FSwrRTfqsA9iRwres9; preview19834bd
+(dpl_T3XvAw89VPZ96pZ8qDfxKtj325GW) также не содержит последних aliases/фиксов.
+Vercel test env PRODRADAR_PROFILE=test, VACANCY_PROFILE=project_bizdev уже
+выставлены для preview/production. Не использовать исходный Telegram token.
+Новый project/bizdev срез ещё НЕ сохранялся в core vacancies и не доставлялся;
+старые product записи в test сохраняются и должны быть скрыты profile query.
+
+Блокер: exec-server transport disconnected; cloud_environment.environment_status
+показывает desired/observed running, connectivity=offline, failure=null.
+Это не отказ GitHub/token. GitHub MCP доступен; PR129 обновлён/остаётся draft.
+После восстановления среды: сверить git с remote (этот handoff добавлен через
+GitHub MCP), дочитать МТС29 и другие native группы, сохранить честные metrics,
+запустить collect_test+use_source_pool=true (свежее24h; stale требует refresh),
+опубликовать последний slim payload только в prodradar-test, проверить live
+/start/settings/mute/pause и actual delivered. Скрипт slim deploy находится
+в /tmp/prodradar-deploy-slim-production.py; при потере /tmp восстановить его
+по принципу api/bot/database/delivery/*.py +config.py/requirements.txt/vercel.json.
+TEST Vercel project prj_3WEWtX8vujb0llpvmuA1Umovf623,
+team team_OIdVeiXMtcQdNxXpseWNqQtV; original project не трогать.
+После test deploy безопасно убрать новые лишние deployments через существующий
+vercel_storage helper с полной повторной проверкой защиты каждого DELETE.
+Не включать cron, не merge, не подменять blocked sites HH.
+
+
 # Рефреш ProductRadar: контекст и фазы
 
 Этот документ определяет границы работы для продолжения в другом чате.

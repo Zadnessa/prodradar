@@ -21,54 +21,49 @@ Production/исходный бот не изменяются; работать �
 позволяет итерировать без повторных сетевых прогонов. Ниже — история предыдущей
 фазы; её запреты нового UI/project/bizdev отменены текущим поручением.
 
-## Точная точка продолжения после semantic прохода, 2 октября 2026 UTC
+## Проверенное состояние test, 2 октября 2026 (Москва)
 
-Код сохранён в текущей ветке до SHA1fdec681dda908a0f9c86b423f8f527c0d37c5fe.
-49 company aliases проверяют реальные обязанности, не отрасль/монетизацию.
-Live resolve_role догружает известный alias до фильтрации; ошибки не снимают
-старую вакансию. Native negative regressions сохраняют одноимённые partner
-roles с операционным onboarding, technical presale, product discovery и admin.
-88 локальных тестов прошли. Native_role_cohorts fixture содержит полные
-подборки: Ozon10736/partners10, VK226110/specialty26324, Sber project50,
-WB project5 — 135 членств с пересечениями. Текущие calibration регрессы
-сохраняют все размеченные target без FP; это не независимые 95% всех компаний.
-Первичный Sber holdout v2 до исправлений93.0% сохранён в reports.
+Runtime SHA969e5d12aebd557dd377a9b63fceb1f88ddb99ee, classifier
+project-bizdev-2026-10-02.5, 50 company aliases с подтверждёнными обязанностями.
+22 доступных source snapshots содержат12270 объявлений. Core collect
+[37004468351](https://github.com/Zadnessa/prodradar/actions/runs/37004468351)
+сохранил374 active project_bizdev:248 project и132 bizdev,6 относятся к обеим
+семьям. У всех374 есть описание;0 битых/деактивированных. Последний прогон
+отправил10 карточек. Workflow failure отражает только unavailable Купер403;
+остальные источники, запись и доставка завершены. Dodo остаётся на прежней
+test паузе; новых подтверждённых career5xx нет. Не повторять исчерпанные
+подходы Купера и не считать его пустым успешным источником.
 
-Shadow review всех22 доступных источников Actions36996007091 success.
-Raw source_pool12270; Купер failed403, не считать empty. Actions36999672905
-на0c61786 успешно обновил native metadata МТС2453, Авиасейлс31,
-МТС Линк11, Lamoda9. Новые snapshots инвалидируют старые role_reviews;
-повторный targeted review36999877381 success. После исправления shared native
-category МТС повторный review37000201725 на1fdec68 success:112 candidates,
-112 descriptions,0 failures; Telegram не отправлял. МТС native категория
-«Управление продуктами/проектами/процессами» содержит29 записей — её поштучный
-audit по обязанностям ещё не завершён. Не зачислять её в verified six cohorts.
+Новый slim TEST production опубликован: dpl_3SqDHaVNywS8oXH2mfi2A5GwcQgy,
+READY, stable https://prodradar-test.vercel.app/api/webhook.
+TEST project prj_3WEWtX8vujb0llpvmuA1Umovf623,
+team team_OIdVeiXMtcQdNxXpseWNqQtV. Authenticated live /start и /settings
+вернули200; /start отправил8 карточек, delivered91→99. Все8 IDs из test
+project_bizdev с family project. Webhook pending0, last_error отсутствует.
+Не очищали delivery history. Исходный bot/token/production не использовали.
+Simple flow: /start сразу8 project, bizdev отдельным fallback, grade/mute/pause,
+sm:seen:family:offset явно возвращает просмотренное без сброса истории.
+88 локальных тестов прошли; Actions запустил88, optional PyNaCl skipped1.
 
-Simple flow код: /start сразу8 project, отдельный bizdev fallback, grade/mute/
-pause, explicit sm:seen:family:offset без очистки delivery history. Disabled
-companies скрыты; все страницы загружаются до пользовательских фильтров.
-Новейший webhook НЕ опубликован. TEST Vercel production остаётся
-предыдущим dpl_8MRFgWvvZ2FSwrRTfqsA9iRwres9; preview19834bd
-(dpl_T3XvAw89VPZ96pZ8qDfxKtj325GW) также не содержит последних aliases/фиксов.
-Vercel test env PRODRADAR_PROFILE=test, VACANCY_PROFILE=project_bizdev уже
-выставлены для preview/production. Не использовать исходный Telegram token.
-Новый project/bizdev срез ещё НЕ сохранялся в core vacancies и не доставлялся;
-старые product записи в test сохраняются и должны быть скрыты profile query.
+Отчёт [test_role_slice.md](test_role_slice.md) содержит размеры7 полностью
+размеченных native категорий (164 членства с пересечениями), доли отбора,
+FN/FP, проверку обязанностей и абляцию. МТС29 дочитаны: version.4 пропускала
+1 из10 project — пресейл полного цикла. Version.5 получает10/10 без FP;
+исходная оценка сохранена в mts_native_before_alias.json. После фикса это
+calibration; 100% этих регрессов не доказывают независимые95% всех компаний.
+34 выбранных названия широкого пула пока вне title gold; полный native audit
+остальных компаний и независимая новая контрольная выборка ещё нужны.
+Снимок metrics/ошибок: test_role_slice_metrics.json. Не считать долю взятых
+объявлений из группы полнотой относительно подтверждённых target.
 
-Блокер: exec-server transport disconnected; cloud_environment.environment_status
-показывает desired/observed running, connectivity=offline, failure=null.
-Это не отказ GitHub/token. GitHub MCP доступен; PR129 обновлён/остаётся draft.
-После восстановления среды: сверить git с remote (этот handoff добавлен через
-GitHub MCP), дочитать МТС29 и другие native группы, сохранить честные metrics,
-запустить collect_test+use_source_pool=true (свежее24h; stale требует refresh),
-опубликовать последний slim payload только в prodradar-test, проверить live
-/start/settings/mute/pause и actual delivered. Скрипт slim deploy находится
-в /tmp/prodradar-deploy-slim-production.py; при потере /tmp восстановить его
-по принципу api/bot/database/delivery/*.py +config.py/requirements.txt/vercel.json.
-TEST Vercel project prj_3WEWtX8vujb0llpvmuA1Umovf623,
-team team_OIdVeiXMtcQdNxXpseWNqQtV; original project не трогать.
-После test deploy безопасно убрать новые лишние deployments через существующий
-vercel_storage helper с полной повторной проверкой защиты каждого DELETE.
+Рабочая машина временно теряла связь (connectivity=offline); бот и GitHub
+оставались доступны. Среда восстановлена, код синхронизирован, сбор и
+публикация выше выполнены. Offline не означает отключение бота/токенов.
+
+После публикации удалены ещё2 устаревших непривязанных test deployments:
+8pv3wo8BQGN6aCBWmKu9mESdgtoz и4DSVaw86DX684mdEHXxDTfbL3ReN.
+Current/aliases и здоровый rollback8MRFgWvvZ2FSwrRTfqsA9iRwres9 сохранены.
+Original production не тронут, billed Function Storage GB API не показывает.
 Не включать cron, не merge, не подменять blocked sites HH.
 
 

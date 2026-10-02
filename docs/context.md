@@ -1,3 +1,18 @@
+<!-- Project test опубликован, 2 октября 2026 Москва -->
+ProdRadar_bot перешёл на project_bizdev:374 active (248 project/132 bizdev,
+6 пересечений), description374/374; native пул12270 из22 ready источников.
+Classifier.5/50 verified aliases, runtime969e5d1 опубликован в TEST production
+3SqDHaVNywS8oXH2mfi2A5GwcQgy. Live /start:200/8 project cards/delivered+8;
+/settings200; webhook pending0/без ошибок. Core Actions37004468351 отправил10,
+0 битых; failure только Купер unavailable403. Исходная production неизменна.
+Категории/FN/FP/абляции: test_role_slice.md и test_role_slice_metrics.json.
+7 категорий полностью размечены; это calibration, остальные native группы
+не объявлены проверенными95%. Runtime хранит248 project, но это ещё не
+утверждение об экспертной релевантности каждой неразмеченной вакансии.
+Среда после временной потери соединения восстановлена; бот не был offline.
+Дополнительная cleanup удалила2 old test builds, сохранила все aliases/rollback;
+остаток26 deployments,28 alias bindings. Billed GB не доступны через API.
+
 <!-- Новый test профиль, 2 октября 2026 Москва -->
 Пользователь разрешил project management + business development срез и /start
 сразу в вакансии. Product whitelist имеет prefilter → exact (без blacklist) →

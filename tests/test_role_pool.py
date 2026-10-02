@@ -106,3 +106,14 @@ class AdditionalPaginationTests(unittest.IsolatedAsyncioTestCase):
         with patch('parsers.tbank.asyncio.sleep', return_value=None):
             self.assertEqual(await TBankParser()._request(session, 'get', 'https://www.tbank.ru/career/it/', as_json=True), {'ok': True})
         self.assertEqual(len(session.calls), 2)
+
+class WorkflowShapeTests(unittest.TestCase):
+    def test_replacing_probe_does_not_remove_workflow_jobs(self):
+        from pathlib import Path
+        workflow = Path('.github/workflows/check_test_environment.yml').read_text()
+        self.assertIn('\npermissions:\n', workflow)
+        self.assertIn('\njobs:\n', workflow)
+        for job in ['check', 'collect', 'diagnose', 'setup_github', 'inspect', 'enrich_role_pool']:
+            self.assertIn(f'\n  {job}:\n', workflow)
+        self.assertIn('      collect_test:\n', workflow)
+        self.assertIn('      enrich_role_pool:\n        description:', workflow)

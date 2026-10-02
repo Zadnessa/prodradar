@@ -9,6 +9,7 @@ COHORTS = {
     'vk_business_263': ('vk', 'specialty', 'id', '263'),
     'sber_project_specializations': ('sber', 'specialization', None, None),
     'wb_project_direction': ('wildberries', 'direction_title', None, 'Управление проектами'),
+    'mts_shared_management': ('mts', 'info', 'category', 'Управление продуктами/проектами/процессами'),
 }
 
 
@@ -54,7 +55,13 @@ def evaluate_native_cohorts(pool, gold, classifier=classify):
             metrics[family] = {'true_positive': tp, 'false_positive': fp, 'false_negative': fn,
                                'recall': tp / (tp + fn) if tp + fn else None,
                                'precision': tp / (tp + fp) if tp + fp else None, 'errors': errors}
+        decisions = {v['id']: classifier(v) for v in records}
+        selected = [v for v in records if decisions[v['id']]['status'] == 'selected']
         reports[name] = {'native_records': len(records),
+                         'selected_records': len(selected),
+                         'selection_rate': len(selected) / len(records) if records else None,
+                         'selected_by_family': {f: sum(f in decisions[v['id']]['families'] for v in records) for f in ('project', 'bizdev')},
+                         'excluded_records': [{'id': v['id'], 'title': v['title'], 'decision': decisions[v['id']]} for v in records if decisions[v['id']]['status'] != 'selected'],
                          'audited_records': sum(v['id'] in labels and v['title'] == labels[v['id']]['title'] for v in records),
                          'unaudited_ids': [v['id'] for v in records if v['id'] not in labels or v['title'] != labels[v['id']]['title']],
                          'missing_snapshot_ids': sorted(set(labels) - available), 'metrics': metrics}

@@ -5,7 +5,7 @@ import unicodedata
 
 from delivery.role_aliases import ALIASES
 
-VERSION = 'project-bizdev-2026-10-02.4'
+VERSION = 'project-bizdev-2026-10-02.5'
 
 PROJECT_RULES = {
     'project_en': r'\b(?:project|program(?:me)?)\s+(?:manager|lead|director|coordinator)\b',

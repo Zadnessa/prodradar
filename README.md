@@ -464,3 +464,7 @@ VK2261/specialty263, Sber project specializations, WB project direction.
 В main/user выдаче скрыты disabled компании, все страницы загружаются до
 grade/mute фильтрации. `source_json` сохраняет native metadata API МТС,
 МТС Линк, Авиасейлс и Lamoda для следующего аудита групп.
+
+Отчёт о размерах категорий работодателей, долях отбора и ошибках:
+[docs/test_role_slice.md](docs/test_role_slice.md). `selection_rate` считается
+от всех записей группы; recall только от подтверждённых положительных ролей.

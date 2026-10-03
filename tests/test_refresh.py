@@ -402,20 +402,20 @@ class BackupTests(unittest.TestCase):
                 preserve_platform_defaults('BEGIN;\nCOMMIT;', grants, target, 'postgres')
 
     def test_test_collector_rejects_original_database_before_api_calls(self):
-        with patch('scripts.collect_test._post') as telegram, \
-                patch('scripts.collect_test.SupabaseService') as database:
+        with patch.dict(os.environ, {'PRODRADAR_PROFILE': 'test'}), \
+                patch('scripts.collect_test._post') as telegram:
             with self.assertRaises(ValueError):
                 check_target('ykbtejjedefibdgyfgov')
             telegram.assert_not_called()
-            database.assert_not_called()
 
     def test_test_collector_rejects_original_bot_before_database_access(self):
-        with patch.dict(os.environ, {'SUPABASE_URL': 'https://isolated.supabase.co'}), \
+        with patch.dict(os.environ, {'PRODRADAR_PROFILE': 'test',
+                                   'SUPABASE_URL': 'https://jmsdxgylyjxwdwmdrmxw.supabase.co'}), \
                 patch('scripts.collect_test._post', return_value={'username': 'findproductjob_bot'}), \
-                patch('scripts.collect_test.SupabaseService') as database:
+                patch('scripts.collect_test.run') as collect:
             with self.assertRaises(ValueError):
-                check_target('isolated')
-            database.assert_not_called()
+                check_target('jmsdxgylyjxwdwmdrmxw')
+            collect.assert_not_called()
 
     def test_schema_export_keeps_bigint_identity_limits_and_private_rls(self):
         catalog = {name: [] for name in ('tables', 'columns', 'sequences', 'constraints', 'functions',

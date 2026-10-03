@@ -1,4 +1,4 @@
-"""Ручной сбор только в отдельную БД и только для @ProdRadar_bot."""
+"""Сбор только в тестовую БД и для пользователей @ProdRadar_bot."""
 
 import argparse
 import asyncio
@@ -10,33 +10,24 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from bot.telegram_api import _post
-from database.supabase_client import SupabaseService
 from main import run
+from runtime_profiles import PROFILES
 
 
-ORIGINAL_PROJECT_REF = "ykbtejjedefibdgyfgov"
+class TestTargetError(ValueError):
+    """Причина остановки, которую можно вывести без раскрытия реквизитов."""
 
 
 def check_target(project_ref):
-    if not project_ref or project_ref == ORIGINAL_PROJECT_REF:
-        raise ValueError("Исходная БД запрещена для тестового сбора")
+    if os.getenv("PRODRADAR_PROFILE") != "test":
+        raise TestTargetError("Нужен явный профиль test")
+    if project_ref != PROFILES["test"]["project_ref"]:
+        raise TestTargetError("Сбор разрешён только в настроенную тестовую БД")
     if os.getenv("SUPABASE_URL", "").rstrip('/') != f"https://{project_ref}.supabase.co":
-        raise ValueError("SUPABASE_URL не совпадает с ожидаемой отдельной БД")
+        raise TestTargetError("SUPABASE_URL не совпадает с ожидаемой тестовой БД")
     identity = _post("getMe", {}, allow_retry=False)
-    if not identity or identity.get("username") != "ProdRadar_bot":
-        raise ValueError("Тестовый сбор разрешён только для @ProdRadar_bot")
-    admin_chat_id = int(os.environ["ADMIN_CHAT_ID"])
-    db = SupabaseService()
-    # Сканируем и неактивных: перенос старых пользователей в тест недопустим.
-    offset = 0
-    while True:
-        result = db.client.table("users").select("chat_id").range(offset, offset + 999).execute()
-        users = result.data or []
-        if any(row["chat_id"] != admin_chat_id for row in users):
-            raise ValueError("В тестовой БД найдены пользователи кроме администратора")
-        if len(users) < 1000:
-            break
-        offset += 1000
+    if not identity or not identity.get("is_bot") or identity.get("username") != PROFILES["test"]["bot"]:
+        raise TestTargetError("Тестовый сбор разрешён только для @ProdRadar_bot")
 
 
 def main():
@@ -51,6 +42,9 @@ def main():
     logging.disable(logging.CRITICAL)
     try:
         check_target(args.project_ref)
+    except TestTargetError as exc:
+        print(f"Тестовый сбор остановлен до записи и рассылки: {exc}")
+        return 1
     except Exception as exc:
         print(f"Тестовый сбор остановлен до записи и рассылки: {type(exc).__name__}")
         return 1

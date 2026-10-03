@@ -2,6 +2,7 @@
 
 import logging
 import re
+from urllib.parse import quote, urlsplit
 
 from bs4 import BeautifulSoup
 
@@ -12,61 +13,92 @@ logger = logging.getLogger(__name__)
 
 
 class DomClickParser(BaseParser):
-    async def parse(self, session, existing_ids, city_mappings):
-        del existing_ids, city_mappings
+    LIST_URL = "https://career.domclick.ru/api/v1/vacancy/"
+    DETAIL_URL = "https://career.domclick.ru/api/v1/vacancy/detail/{slug}/"
+    WORK_FORMAT_MAP = {"ON_SITE": "Офис", "REMOTE": "Удалёнка", "HYBRID": "Гибрид"}
 
-        url = "https://rabota-bff.domclick.ru/api/v1/vacancies"
-        headers = {
+    def __init__(self):
+        self._slugs = {}
+
+    @staticmethod
+    def _headers():
+        return {
             **config.REQUEST_HEADERS,
-            "Referer": "https://career.domclick.ru/",
+            "Referer": "https://career.domclick.ru/vacancies",
+            "Accept": "application/json",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Dest": "empty",
         }
 
-        async with session.get(url, headers=headers) as response:
-            if response.status == 404:
-                return []
-            response.raise_for_status()
-            payload = await response.json()
-
+    async def parse(self, session, existing_ids, city_mappings):
+        del existing_ids, city_mappings
+        self._slugs = {}
         vacancies = []
-        for item in payload.get("data") or []:
-            area_name = (item.get("area") or {}).get("name") or "Не указан"
-            schedule_name = (item.get("schedule") or {}).get("name") or "Не указан"
-            experience_name = (item.get("experience") or {}).get("name") or "не указан"
-
-            vacancies.append(
-                {
-                    "id": str(item.get("id")),
+        offset, limit = 0, 100
+        seen_ids = set()
+        while True:
+            async with session.get(self.LIST_URL, headers=self._headers(),
+                                   params={"limit": limit, "offset": offset}) as response:
+                response.raise_for_status()
+                payload = await response.json()
+            if not isinstance(payload, dict) or payload.get("success") is not True or not isinstance(payload.get("result"), list):
+                raise ValueError("ДомКлик: неожиданный формат списка вакансий")
+            items = payload["result"]
+            for item in items:
+                if item.get("id") is None or not item.get("slug") or not item.get("title"):
+                    raise ValueError("ДомКлик: отсутствуют обязательные поля вакансии")
+                vacancy_id = str(item["id"])
+                if vacancy_id in seen_ids:
+                    raise ValueError("ДомКлик: повторяющиеся id в пагинации")
+                seen_ids.add(vacancy_id)
+                self._slugs[vacancy_id] = item["slug"]
+                work_formats = (item.get("vacancycontent") or {}).get("work_format") or []
+                vacancies.append({
+                    "id": vacancy_id,
                     "company": "ДомКлик",
-                    "title": (item.get("name") or "").strip(),
+                    "title": item["title"].strip(),
                     "grade": None,
-                    "city": area_name,
-                    "work_format": schedule_name,
-                    "url": f"https://career.domclick.ru/vacancy/{item.get('slug') or ''}",
+                    "city": (item.get("area") or {}).get("name") or "Не указан",
+                    "work_format": ", ".join(self.WORK_FORMAT_MAP.get(value, value) for value in work_formats)
+                        or (item.get("schedule") or {}).get("name") or "Не указан",
+                    "url": f"https://career.domclick.ru/vacancy/{quote(item['slug'], safe='')}",
                     "description": None,
-                    "experience": experience_name,
+                    "experience": (item.get("experience") or {}).get("name") or "не указан",
                     "published_at": None,
-                }
-            )
+                    "source_json": item,
+                })
+            pagination = payload.get("pagination") or {}
+            total = pagination.get("total")
+            page_limit = pagination.get("limit") or limit
+            if not isinstance(page_limit, int) or page_limit <= 0:
+                raise ValueError("ДомКлик: неверный limit в пагинации")
+            if total is not None and len(vacancies) >= total:
+                if len(vacancies) != total:
+                    raise ValueError("ДомКлик: число вакансий не совпадает с total")
+                break
+            if len(items) < page_limit:
+                if total is not None and len(vacancies) != total:
+                    raise ValueError("ДомКлик: неполная пагинация")
+                break
+            offset += len(items)
 
         return vacancies
 
     async def enrich(self, session, vacancy):
-        vacancy_id = vacancy.get("id")
-        if not vacancy_id:
+        slug = self._slugs.get(vacancy.get("id")) or urlsplit(vacancy.get("url") or "").path.rstrip('/').rsplit('/', 1)[-1]
+        if not slug:
             return vacancy
-
-        url = f"https://rabota-bff.domclick.ru/api/v1/vacancies/{vacancy_id}"
-        headers = {
-            **config.REQUEST_HEADERS,
-            "Referer": "https://career.domclick.ru/",
-        }
+        url = self.DETAIL_URL.format(slug=quote(slug, safe=''))
 
         try:
-            async with session.get(url, headers=headers) as response:
+            async with session.get(url, headers=self._headers()) as response:
                 response.raise_for_status()
                 payload = await response.json()
 
-            description_html = ((payload.get("data") or {}).get("description") or "").strip()
+            if payload.get("success") is not True or not isinstance(payload.get("result"), dict):
+                raise ValueError("ДомКлик: неожиданный формат detail")
+            description_html = (((payload["result"].get("vacancycontent") or {}).get("description")) or "").strip()
             if not description_html:
                 return vacancy
 

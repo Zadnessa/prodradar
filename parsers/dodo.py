@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+import re
 
 from bs4 import BeautifulSoup
 
@@ -13,12 +14,26 @@ logger = logging.getLogger(__name__)
 
 
 class DodoParser(BaseParser):
+    def __init__(self):
+        self._api_url = None
+
     async def parse(self, session, existing_ids, city_mappings):
         del existing_ids
-        url = "https://career-api.dodoteam.ru/api/v1/vacancies"
+        # Адрес backend берём из публичной Nuxt-конфигурации, как фронтенд сайта.
+        async with session.get("https://dodoteam.ru/vacancies", headers=config.REQUEST_HEADERS) as response:
+            response.raise_for_status()
+            html = await response.text()
+        match = re.search(r'apiURL\s*:\s*["\'](https://[^"\']+)["\']', html)
+        if not match:
+            raise ValueError("Dodo: apiURL не найден в публичной конфигурации")
+        self._api_url = match.group(1).rstrip('/')
+        url = self._api_url + "/api/v1/vacancies"
         async with session.get(url, headers=config.REQUEST_HEADERS) as response:
             response.raise_for_status()
             payload = await response.json()
+
+        if not isinstance(payload, dict) or not isinstance(payload.get("data"), list):
+            raise ValueError("Dodo: неожиданный формат списка вакансий")
 
         vacancies = []
         for group in payload.get("data", []):
@@ -39,7 +54,7 @@ class DodoParser(BaseParser):
                     "city": normalize_city(city_mappings, item.get("vacancy_location") or ""),
                     "work_format": work_format,
                     "experience": "Не указан",
-                    "url": f"https://dodoteam.ru/vacancy/{vacancy_id}",
+                    "url": f"https://dodoteam.ru/vacancy?vacancyId={vacancy_id}",
                     "published_at": None,
                     "description": None,
                     "source_json": item,
@@ -53,7 +68,9 @@ class DodoParser(BaseParser):
         if not raw_id:
             return vacancy
 
-        url = f"https://career-api.dodoteam.ru/api/v1/pages/vacancy/{raw_id}"
+        if not self._api_url:
+            raise ValueError("Dodo: сначала должен быть выполнен parse()")
+        url = f"{self._api_url}/api/v1/pages/vacancy/{raw_id}"
         try:
             async with session.get(url, headers=config.REQUEST_HEADERS) as response:
                 response.raise_for_status()

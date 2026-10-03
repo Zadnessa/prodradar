@@ -117,7 +117,7 @@ class KonturParser(BaseParser):
         del existing_ids
         del city_mappings
 
-        async with session.get(self.LIST_URL, headers=config.REQUEST_HEADERS) as response:
+        async with session.get(self.LIST_URL.split("?")[0] if config.CAPTURE_ALL_ROLES else self.LIST_URL, headers=config.REQUEST_HEADERS) as response:
             response.raise_for_status()
             html_text = await response.text()
 
@@ -139,11 +139,15 @@ class KonturParser(BaseParser):
                 continue
             seen_ids.add(vacancy_id)
 
-            title, grade = self._extract_title_and_grade(link.get_text(" ", strip=True))
+            title_element = link.select_one("[class*='vacancy__title']")
+            if title_element is None:
+                raise ValueError("Контур: не найден отдельный заголовок карточки")
+            title, grade = self._extract_title_and_grade(title_element.get_text(" ", strip=True))
 
             card = link.find_parent(attrs={"data-vacancy-id": True}) or link.find_parent("li") or link.parent
-            city_el = card.select_one("[class*='city']") if card else None
-            format_el = card.select_one("[class*='format']") if card else None
+            metadata = link.select("[class*='vacancy__description'] > span")
+            city_el = metadata[0] if metadata else None
+            format_el = metadata[1] if len(metadata) > 1 else None
 
             city = self._clean_text(city_el.get_text(" ", strip=True) if city_el else "") or "Не указан"
             work_format = self._clean_text(format_el.get_text(" ", strip=True) if format_el else "") or "Не указан"
@@ -196,11 +200,7 @@ class KonturParser(BaseParser):
                 if localities:
                     new_city = ", ".join(localities)
                     current_city = str(vacancy.get("city") or "").strip()
-                    should_replace_city = (
-                        "и ещё" in current_city.lower()
-                        or current_city.count(",") < new_city.count(",")
-                    )
-                    if should_replace_city or not current_city:
+                    if current_city in ("", "Не указан"):
                         vacancy["city"] = new_city
 
             if not json_ld_description:

@@ -89,7 +89,7 @@ def _prepare_vacancy(vacancy, city_mappings):
         if inferred_experience is not None:
             vacancy["experience"] = inferred_experience
     title_lower = vacancy.get("title", "").strip().lower()
-    for pattern, override_grade in GRADE_OVERRIDE_PATTERNS:
+    for pattern, override_grade in (GRADE_OVERRIDE_PATTERNS if config.VACANCY_PROFILE == "product" else []):
         if re.search(pattern, title_lower):
             vacancy["grade"] = override_grade
             break
@@ -106,6 +106,15 @@ async def run():
     db = SupabaseService()
     companies = db.get_enabled_companies()
     city_mappings = db.get_city_mappings()
+    import os
+    requested_sources = set(os.getenv("RADAR_POOL_SOURCES", "").split())
+    if requested_sources:
+        if not config.SOURCE_POOL_ONLY:
+            raise ValueError("Ограничение источников разрешено только без доставки")
+        enabled = {c.get("parser_name") for c in companies}
+        if not requested_sources <= enabled:
+            raise ValueError("Неизвестный или отключённый source")
+        companies = [c for c in companies if c.get("parser_name") in requested_sources]
 
     try:
         browser_secrets = await fetch_browser_secrets()
@@ -149,7 +158,7 @@ async def run():
     random.shuffle(hh_names)
     ordered_parser_names = other_names + hh_names
 
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(trust_env=True, timeout=aiohttp.ClientTimeout(total=60)) as session:
         hh_captcha_detected = False
 
         for index, parser_name in enumerate(ordered_parser_names):
@@ -165,7 +174,18 @@ async def run():
                 if not parser_cls:
                     raise ValueError(f"Парсер {parser_name} не найден в PARSER_REGISTRY")
                 parser = parser_cls()
-                vacancies = await parser.parse(session, empty_existing_ids, city_mappings, browser_secrets=browser_secrets)
+                if config.USE_SOURCE_POOL:
+                    vacancies = db.merge_role_reviews(parser_name, db.load_source_pool(parser_name))
+                    if parser_name == "sberhealth":
+                        parser._build_id = browser_secrets.get("sberhealth_build_id")
+                else:
+                    vacancies = await parser.parse(session, empty_existing_ids, city_mappings, browser_secrets=browser_secrets)
+                if config.CAPTURE_ALL_ROLES and not config.USE_SOURCE_POOL:
+                    db.store_source_pool(parser_name, vacancies, {
+                        "scope": "native_catalog" if parser_name != "tbank" else "IT/back-office",
+                        "api_total": getattr(parser, "_api_total_count", None),
+                        "api_collected": getattr(parser, "_api_collected_count", None),
+                        "duplicates": getattr(parser, "_duplicate_count", 0)})
                 if config.TEST_MODE:
                     vacancies = vacancies[: config.TEST_LIMIT]
                 all_collected.extend(vacancies)
@@ -185,7 +205,11 @@ async def run():
                     hh_captcha_detected = True
                     logging.warning("HH captcha detected, пропускаем оставшиеся HH-парсеры")
             except Exception as exc:
+                if parser_name in HH_PARSER_NAMES and getattr(parser, "captcha_hit", False):
+                    hh_captcha_detected = True
                 classified_error = _classify_parser_error(parser_name, exc)
+                if config.SOURCE_POOL_ONLY:
+                    db.fail_source_pool(parser_name, classified_error)
                 parser_errors.append(classified_error[:150])
                 parser_stats[parser_name] = classified_error.replace(f"{parser_name} ", "", 1)
                 logging.error("Ошибка парсера %s: %s", parser_name, str(exc)[:500])
@@ -198,6 +222,13 @@ async def run():
             ):
                 await asyncio.sleep(random.uniform(2.0, 4.0))
 
+        if config.SOURCE_POOL_ONLY:
+            print(json.dumps({"pool_only": True, "raw_count": len(all_collected), "sources": parser_stats,
+                              "errors": parser_errors}, ensure_ascii=False), flush=True)
+            if parser_errors:
+                raise RuntimeError("Частичный source pool; неуспешные источники не заменены пустым списком")
+            return
+
         before_filter = len(all_collected)
         filtered = []
         blacklist_hits = 0
@@ -207,7 +238,20 @@ async def run():
         grey_hits = 0
         regex_blacklist_rejected = 0
         grey_blacklist_rejected = 0
+        role_enrichment_failed_ids = set()
         for vacancy in all_collected:
+            if config.VACANCY_PROFILE == "project_bizdev":
+                from delivery.roles import classify, apply_selection, resolve_role
+                try:
+                    decision = await resolve_role(session, vacancy, parsers_by_company.get(vacancy.get("company")))
+                except Exception as exc:
+                    role_enrichment_failed_ids.add(vacancy["id"])
+                    parser_errors.append(f"role enrichment {vacancy['id']}: {type(exc).__name__}")
+                    continue
+                if decision["status"] == "selected":
+                    filtered.append(apply_selection(vacancy, decision))
+                    exact_hits += 1
+                continue
             zone = classify_title(vacancy["title"])
             if zone is None:
                 title_normalized = vacancy["title"].strip().lower()
@@ -244,6 +288,8 @@ async def run():
                     grey_hits += 1
                 filtered.append(vacancy)
         all_collected = filtered
+        if config.VACANCY_PROFILE == "project_bizdev":
+            all_collected_ids = {vacancy["id"] for vacancy in filtered} | role_enrichment_failed_ids
         logging.info(
             "Фильтрация заголовков: %s -> %s (отсеяно %s, из них blacklist: %s)",
             before_filter,
@@ -281,6 +327,9 @@ async def run():
                 if parser:
                     vacancy = await parser.enrich(session, vacancy)
 
+                if config.VACANCY_PROFILE == "project_bizdev":
+                    apply_selection(vacancy, classify(vacancy))
+                    content_hash = compute_content_hash(vacancy)
                 _prepare_vacancy(vacancy, city_mappings)
                 vacancy["content_hash"] = content_hash
 
@@ -353,13 +402,27 @@ async def run():
             bot_id = user.get("bot_id") or "main"
 
             user_detail = db.get_user(chat_id)
-            if (user_detail or {}).get("onboarding_step") is not None:
+            if config.SIMPLE_BOT_FLOW:
+                from bot.simple_flow import onboarding_completed
+                awaiting_simple_onboarding = not onboarding_completed(user_detail)
+            else:
+                awaiting_simple_onboarding = False
+            if (user_detail or {}).get("onboarding_step") is not None or awaiting_simple_onboarding:
                 skipped_onboarding += 1
                 continue
 
             try:
-                undelivered = db.get_undelivered_vacancies(chat_id, limit=200)
+                if config.SIMPLE_BOT_FLOW:
+                    from bot.simple_flow import _all_available
+                    undelivered = _all_available(db, chat_id)
+                else:
+                    undelivered = db.get_undelivered_vacancies(chat_id, limit=200)
                 user_filters = user.get("filters") or {}
+                if config.SIMPLE_BOT_FLOW:
+                    from bot.simple_flow import effective_filters
+                    user_filters = effective_filters(user_filters)
+                    enabled_names = {c["name"] for c in db.get_enabled_companies()}
+                    undelivered = [v for v in undelivered if set(v.get("role_families") or []) & {"project", "bizdev"} and v.get("company") in enabled_names]
                 user_grades = user_filters.get("grades") or []
                 filtered_vacancies = filter_vacancies_for_user(undelivered, user_filters)
                 filtered_vacancies = rank_vacancies(filtered_vacancies, user_grades)
@@ -494,6 +557,8 @@ async def run():
         skipped_onboarding,
         len(parser_errors) + len(failed_users),
     )
+    if parser_errors or failed_users:
+        raise RuntimeError("Прогон завершён с ошибками; подробности в отчёте и логах")
 
 
 if __name__ == "__main__":

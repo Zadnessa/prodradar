@@ -2,6 +2,16 @@
 
 import os
 
+VACANCY_PROFILE = os.getenv("VACANCY_PROFILE", "product")
+if VACANCY_PROFILE not in {"product", "project_bizdev"}:
+    raise ValueError("Неизвестный VACANCY_PROFILE")
+if VACANCY_PROFILE == "project_bizdev" and os.getenv("PRODRADAR_PROFILE") != "test":
+    raise ValueError("project_bizdev разрешён только в явном test профиле")
+CAPTURE_ALL_ROLES = VACANCY_PROFILE == "project_bizdev" or os.getenv("RADAR_CAPTURE_ALL_ROLES") == "1"
+SOURCE_POOL_ONLY = os.getenv("RADAR_SOURCE_POOL_ONLY") == "1"
+USE_SOURCE_POOL = os.getenv("RADAR_USE_SOURCE_POOL") == "1"
+SIMPLE_BOT_FLOW = VACANCY_PROFILE == "project_bizdev" and os.getenv("PRODRADAR_PROFILE") == "test"
+
 SHOW_DESCRIPTION = False
 TEST_MODE = False
 TEST_LIMIT = 3

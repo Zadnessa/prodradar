@@ -1,10 +1,16 @@
 """Парсер вакансий T-Bank."""
 
 import asyncio
+import json
 import logging
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
+
+import aiohttp
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 from parsers.base import BaseParser
+from parsers.tls import source_ssl_context
 import config
 
 
@@ -18,6 +24,51 @@ class TBankParser(BaseParser):
         "Гибрид": "Гибрид",
         "Офис": "Офис",
     }
+
+    async def _request(self, session, method, url, *, as_json=False, **kwargs):
+        rate_limited = False
+        disconnected = False
+        for attempt in range(3):
+            try:
+                async with getattr(session, method)(url, headers=config.REQUEST_HEADERS,
+                                                    ssl=source_ssl_context(url), **kwargs) as response:
+                    if response.status == 429 and attempt < 2:
+                        rate_limited = True
+                        retry_after = (getattr(response, 'headers', {}) or {}).get('Retry-After')
+                        delay = 30 * (attempt + 1)
+                        if retry_after:
+                            try:
+                                minimum_delay = float(retry_after)
+                            except ValueError:
+                                try:
+                                    minimum_delay = (parsedate_to_datetime(retry_after) -
+                                                     datetime.now(timezone.utc)).total_seconds()
+                                except (ValueError, TypeError):
+                                    minimum_delay = 0
+                            delay = max(delay, minimum_delay)
+                        # Длинный Retry-After не сокращаем: ждём следующего сбора.
+                        if delay > 60:
+                            response.raise_for_status()
+                        await response.text()
+                        await asyncio.sleep(delay)
+                        continue
+                    response.raise_for_status()
+                    value = await response.json() if as_json else await response.text(encoding='utf-8')
+            except (aiohttp.ServerDisconnectedError, aiohttp.ClientOSError, aiohttp.ClientPayloadError,
+                    ConnectionResetError, asyncio.TimeoutError):
+                # POST getVacancies только читает каталог: повторяем тот же payload,
+                # не продвигаем offset и не принимаем оборванный ответ за страницу.
+                if attempt == 2:
+                    raise
+                disconnected = True
+                logger.warning('T-Bank: временный обрыв ответа, повтор %s/2', attempt + 1)
+                await asyncio.sleep(5 * (attempt + 1))
+                continue
+            if rate_limited:
+                self._recovered_rate_limits = getattr(self, '_recovered_rate_limits', 0) + 1
+            if disconnected:
+                self._recovered_disconnects = getattr(self, '_recovered_disconnects', 0) + 1
+            return value
 
     @staticmethod
     def _build_grade(tags):
@@ -101,32 +152,72 @@ class TBankParser(BaseParser):
 
     async def parse(self, session, existing_ids, city_mappings):
         del existing_ids
-        url = "https://www.tbank.ru/pfpjobs/papi/getVacancies"
-        pagination = {"it": {"limit": 100, "offset": 0}}
+        self._recovered_rate_limits = 0
+        self._recovered_disconnects = 0
+        page_url = 'https://www.tbank.ru/career/it/'
+        soup = BeautifulSoup(await self._request(session, 'get', page_url), 'html.parser')
+        state_tag = soup.find('script', id='__TRAMVAI_STATE__')
+        if not state_tag:
+            raise ValueError('T-Bank: публичное состояние каталога не найдено')
+        stores = json.loads(state_tag.string or '{}').get('stores') or {}
+        api_base = (stores.get('environment') or {}).get('VACANCIES_PUBLIC_API')
+        if not isinstance(api_base, str) or not api_base.startswith('https://'):
+            raise ValueError('T-Bank: публичный каталог не подтвердил API URL')
+        url = api_base.rstrip('/') + '/getVacancies'
+        pagination = {"limit": 100, "offset": 0}
         collected = []
+        seen_ids = set()
+        self._api_collected_count = 0
+        self._api_total_count = None
 
         while True:
             payload = {
-                "filters": {"tcareer_it_profession": ["product-management"]},
+                # Реальный публичный POST снят через DevTools кнопки каталога.
+                # searchFiasIds исключён: сбор не ограничивается default city.
+                "filters": {"generatedGraphQL": {
+                    "type": "T_CAREER", "status": "ACTIVE",
+                    "includeSeoAndPcPublications": False,
+                    "includeInternshipPublications": True,
+                    "userGroup": {"groups": ["Control"], "type": "SPECIFIC"},
+                    "collapsePredstavitelPublications": True,
+                    "or": [{"category": category} for category in (
+                        "tcareer_it", "tcareer_back_office")],
+                }},
                 "pagination": pagination,
             }
 
-            async with session.post(url, headers=config.REQUEST_HEADERS, json=payload) as response:
-                response.raise_for_status()
-                result = await response.json()
+            result = await self._request(session, 'post', url, as_json=True, json=payload)
 
-            body = result.get("payload", {})
-            collected.extend(body.get("vacancies", []))
-
-            next_pagination = ((body.get("nextPagination") or {}).get("it") or {})
-            if next_pagination.get("isFinished", True):
+            body = result.get("payload")
+            if result.get("resultCode") != "OK" or not isinstance(body, dict):
+                raise ValueError("T-Bank: API не подтвердил успешный список")
+            items = body.get("vacancies")
+            next_pagination = body.get("nextPagination")
+            if not isinstance(items, list) or not isinstance(next_pagination, dict):
+                raise ValueError("T-Bank: неверный контракт списка/пагинации")
+            for item in items:
+                raw_id = item.get("urlSlug")
+                if not raw_id or raw_id in seen_ids:
+                    raise ValueError("T-Bank: отсутствующий или повторяющийся id страницы")
+                seen_ids.add(raw_id)
+            collected.extend(items)
+            total = next_pagination.get("totalCount")
+            self._api_total_count = total
+            self._api_collected_count = len(collected)
+            finished = next_pagination.get("isFinished")
+            if not isinstance(total, int) or not isinstance(finished, bool):
+                raise ValueError("T-Bank: API не подтвердил totalCount/isFinished")
+            if finished:
+                if len(collected) != total:
+                    raise ValueError("T-Bank: неполный список относительно totalCount")
+                if not collected and (stores.get('vacanciesStore') or {}).get('vacancies'):
+                    raise ValueError('T-Bank: API пуст, хотя публичный каталог содержит вакансии')
                 break
-            pagination = {
-                "it": {
-                    "limit": pagination["it"]["limit"],
-                    "offset": next_pagination.get("offset", pagination["it"]["offset"]),
-                }
-            }
+            offset = next_pagination.get("offset")
+            if not items or not isinstance(offset, int) or offset <= pagination["offset"]:
+                raise ValueError("T-Bank: пагинация не продвигается")
+            pagination = {"limit": pagination["limit"], "offset": offset}
+            await asyncio.sleep(5)
 
         vacancies_by_key = {}
         ordered_keys = []
@@ -168,14 +259,12 @@ class TBankParser(BaseParser):
 
     async def enrich(self, session, vacancy):
         try:
-            async with session.get(vacancy["url"], headers=config.REQUEST_HEADERS) as response:
-                response.raise_for_status()
-                html = await response.text(encoding="utf-8")
+            html = await self._request(session, 'get', vacancy['url'])
         except Exception as exc:
             logger.warning("T-Bank enrich: не удалось загрузить HTML для %s: %s", vacancy.get("url"), exc)
             return vacancy
         finally:
-            await asyncio.sleep(0.3)
+            await asyncio.sleep(5)
 
         try:
             soup = BeautifulSoup(html, "html.parser")
@@ -191,6 +280,7 @@ class TBankParser(BaseParser):
                 sections.get("Описание"),
                 sections.get("Обязанности"),
                 sections.get("Требования"),
+                sections.get("Мы предлагаем"),
             ]
             summary = "\n\n".join(part for part in summary_parts if part).strip()
             current_description = vacancy.get("description") or ""

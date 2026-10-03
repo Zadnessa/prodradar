@@ -1,5 +1,10 @@
 {
   "version": 2,
+  "git": {
+    "deploymentEnabled": {
+      "codex/restore-test-bot": false
+    }
+  },
   "builds": [
     {"src": "api/webhook.py", "use": "@vercel/python"},
     {"src": "api/go.py", "use": "@vercel/python"}

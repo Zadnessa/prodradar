@@ -1,6 +1,8 @@
 """Парсер вакансий МТС Линк."""
 
 import re
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from parsers.base import BaseParser
 
@@ -10,9 +12,7 @@ class MtsLinkParser(BaseParser):
 
     LIST_URL = "https://mts-link.ru/api/huntflow/vacancies"
     DETAIL_URL_TEMPLATE = "https://mts-link.ru/api/huntflow/vacancy/{raw_id}"
-    LIST_PARAMS = {"categoryId": 221722}
     REQUEST_HEADERS = {
-        "Authorization": "Bearer 2|2wCaeLyzKYCbM4H7qq8pS10pmP5rdolUJM0em2D6",
         "Origin": "https://job.mts-link.ru",
         "Referer": "https://job.mts-link.ru/",
         "Accept": "*/*",
@@ -31,11 +31,13 @@ class MtsLinkParser(BaseParser):
         if not raw_date or not raw_timezone:
             return None
 
-        date_base = str(raw_date).split(".", maxsplit=1)[0].strip()
-        if " " not in date_base:
-            return None
-
-        return f"{date_base.replace(' ', 'T', 1)}{raw_timezone}"
+        value = datetime.fromisoformat(str(raw_date))
+        if value.tzinfo is None:
+            if raw_timezone.startswith(("+", "-")):
+                value = datetime.fromisoformat(value.isoformat() + raw_timezone)
+            else:
+                value = value.replace(tzinfo=ZoneInfo(raw_timezone))
+        return value.isoformat()
 
     @staticmethod
     def _strip_html(value):
@@ -47,11 +49,15 @@ class MtsLinkParser(BaseParser):
 
         async with session.get(
             self.LIST_URL,
-            params=self.LIST_PARAMS,
             headers=self.REQUEST_HEADERS,
         ) as response:
             response.raise_for_status()
             items = await response.json()
+
+        # Публичный endpoint сайта не требует Bearer. Старый categoryId может
+        # молча вернуть [], поэтому роли отбираются общим фильтром pipeline.
+        if not isinstance(items, list):
+            raise ValueError("МТС Линк: неожиданный формат списка вакансий")
 
         vacancies = []
         for item in items or []:
@@ -76,6 +82,7 @@ class MtsLinkParser(BaseParser):
                     "experience": item.get("workExperience"),
                     "published_at": self._build_published_at(item.get("created")),
                     "description": "",
+                    "source_json": item,
                     "url": f"https://job.mts-link.ru/vacancy/?id={raw_id}",
                 }
             )
@@ -84,7 +91,7 @@ class MtsLinkParser(BaseParser):
 
     async def enrich(self, session, vacancy):
         vacancy_id = vacancy.get("id")
-        raw_id = self._raw_ids.get(vacancy_id)
+        raw_id = self._raw_ids.get(vacancy_id) or str(vacancy_id or "").removeprefix("mtslink_")
         if not raw_id:
             return vacancy
 

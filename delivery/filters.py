@@ -1,5 +1,7 @@
 """Фильтрация вакансий по пользовательским настройкам."""
 
+import config
+
 
 def _is_missing(value):
     if value is None:
@@ -71,7 +73,7 @@ def filter_vacancies_for_user(vacancies, user_filters):
         grade = vacancy.get("grade")
         if grades_filter:
             if _is_missing(grade):
-                if only_lead_plus_selected:
+                if only_lead_plus_selected and not config.SIMPLE_BOT_FLOW:
                     grade_ok = False
                 else:
                     grade_ok = not strict_mode

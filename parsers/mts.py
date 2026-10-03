@@ -116,6 +116,7 @@ class MtsParser(BaseParser):
         offset = 0
         total = None
         vacancies = []
+        seen_ids = set()
 
         while total is None or offset < total:
             payload = {
@@ -130,14 +131,20 @@ class MtsParser(BaseParser):
             data_payload = data.get("data") or {}
             page_info = data_payload.get("pageInfo") or {}
             page_total = page_info.get("total")
-            if isinstance(page_total, int):
-                total = page_total
-            elif total is None:
-                total = 0
-
-            page_items = data_payload.get("vacancies") or []
+            if not isinstance(page_total, int) or page_total < 0:
+                raise ValueError("MTS: API не подтвердил total")
+            if total is not None and total != page_total:
+                raise ValueError("MTS: total изменился во время сбора")
+            total = page_total
+            page_items = data_payload.get("vacancies")
+            if not isinstance(page_items, list) or (not page_items and len(seen_ids) < total):
+                raise ValueError("MTS: неполная страница каталога")
             for item in page_items:
-                if not self._is_relevant_vacancy(item):
+                raw_id = item.get("id")
+                if raw_id is None or str(raw_id) in seen_ids:
+                    raise ValueError("MTS: отсутствующий или повторяющийся id страницы")
+                seen_ids.add(str(raw_id))
+                if not config.CAPTURE_ALL_ROLES and not self._is_relevant_vacancy(item):
                     continue
 
                 info = item.get("info") or {}
@@ -157,14 +164,16 @@ class MtsParser(BaseParser):
                         "experience": info.get("experience"),
                         "published_at": self._parse_russian_date(info.get("date")),
                         "description": None,
+                        "source_json": item,
                         "url": f"https://job.mts.ru/vacancy/{raw_id_str}",
                     }
                 )
 
-            offset += limit
+            offset += len(page_items)
             if offset >= total:
                 break
-
+        if len(seen_ids) != total:
+            raise ValueError("MTS: неполный список относительно total")
         return vacancies
 
     async def enrich(self, session, vacancy):
@@ -199,4 +208,3 @@ class MtsParser(BaseParser):
                 vacancy["description"] = new_description
 
         return vacancy
-

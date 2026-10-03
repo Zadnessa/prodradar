@@ -1,0 +1,5 @@
+# Сборщик запускается в GitHub Actions, браузер не нужен Vercel webhook.
+-r requirements.txt
+beautifulsoup4
+playwright
+curl_cffi

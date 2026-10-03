@@ -8,6 +8,9 @@ from http.server import BaseHTTPRequestHandler
 import aiohttp
 import httpx
 import requests
+
+import config
+from bot.simple_flow import handle_simple_message, handle_simple_callback
 from postgrest.exceptions import APIError
 
 from bot.handlers import (
@@ -46,6 +49,36 @@ def _is_transient_error(exc):
     return isinstance(exc, TRANSIENT_EXCEPTIONS)
 
 
+def _read_request_body(headers, stream):
+    """Читает обычное тело или HTTP chunks, которые передаёт Vercel proxy."""
+    if headers.get("Transfer-Encoding", "").lower() != "chunked":
+        return stream.read(int(headers.get("Content-Length", 0)))
+    chunks = []
+    total = 0
+    while True:
+        line = stream.readline(128)
+        if not line.endswith(b"\r\n"):
+            raise ValueError("Некорректный размер HTTP chunk")
+        size = int(line.split(b";", 1)[0].strip(), 16)
+        if size < 0 or total + size > 2 * 1024 * 1024:
+            raise ValueError("Слишком большое тело webhook")
+        if size == 0:
+            # Не ждём EOF: proxy может оставить соединение открытым.
+            trailer_bytes = 0
+            while True:
+                trailer = stream.readline(8192)
+                trailer_bytes += len(trailer)
+                if not trailer.endswith(b"\r\n") or trailer_bytes > 8192:
+                    raise ValueError("Некорректные HTTP trailers")
+                if trailer == b"\r\n":
+                    return b"".join(chunks)
+        chunk = stream.read(size)
+        if len(chunk) != size or stream.read(2) != b"\r\n":
+            raise ValueError("Оборванный HTTP chunk")
+        chunks.append(chunk)
+        total += size
+
+
 class handler(BaseHTTPRequestHandler):
     """HTTP handler для Telegram update."""
 
@@ -68,8 +101,7 @@ class handler(BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps({"ok": False, "error": "forbidden"}).encode("utf-8"))
                 return
 
-            content_len = int(self.headers.get("Content-Length", 0))
-            body = self.rfile.read(content_len)
+            body = _read_request_body(self.headers, self.rfile)
             update = json.loads(body.decode("utf-8"))
             logging.info(
                 "Webhook update received: callback=%s message=%s",
@@ -101,7 +133,9 @@ class handler(BaseHTTPRequestHandler):
 
                 prefix = data.split(":", 1)[0] if ":" in data else data
 
-                if prefix == "ob" and chat_id and message_id:
+                if config.SIMPLE_BOT_FLOW and prefix not in {"mute", "unmute", "unmute_all"} and chat_id and message_id:
+                    handle_simple_callback(data, chat_id, message_id, db=db)
+                elif prefix == "ob" and chat_id and message_id:
                     handle_callback(data, chat_id, message_id, callback_message, db=db)
                 elif prefix == "st" and chat_id and message_id:
                     handle_settings_callback(data, chat_id, message_id, callback_message, db=db)
@@ -139,7 +173,10 @@ class handler(BaseHTTPRequestHandler):
                     self.wfile.write(json.dumps({"ok": True}).encode("utf-8"))
                     return
 
-                if text == "/start":
+                if config.SIMPLE_BOT_FLOW:
+                    handle_simple_message(chat_id, text, username, db=db, language_code=language_code,
+                                          is_premium=is_premium, first_name=first_name, last_name=last_name)
+                elif text == "/start":
                     handle_start(
                         chat_id,
                         username,

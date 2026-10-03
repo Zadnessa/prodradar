@@ -1,0 +1,250 @@
+name: Check Test Environment
+run-name: ${{ inputs.setup_github != 'none' && inputs.setup_github != '' && format('Setup prodradar-test {0} {1}', inputs.setup_github, inputs.setup_request) || 'Check Test Environment' }}
+
+on:
+  push:
+    branches:
+      - 'codex/**'
+    paths:
+      - '.github/workflows/check_test_environment.yml'
+      - 'scripts/check_environment.py'
+  workflow_dispatch:
+    inputs:
+      setup_github:
+        description: 'Настройка только prodradar-test через отдельный PAT'
+        type: choice
+        options: [none, export-key, apply]
+        default: none
+      setup_request:
+        description: 'Несекретный ID автоматической настройки'
+        type: string
+        required: false
+      encrypted_settings:
+        description: 'Пакет настроек с зашифрованными секретами; без plaintext'
+        type: string
+        required: false
+      audit_sources:
+        description: 'Read-only аудит фирменных API без доступа к БД и Telegram'
+        type: boolean
+        required: false
+        default: false
+      source_catalog:
+        description: 'JSON справочников тестовой БД; без секретов и пользователей'
+        type: string
+        required: false
+      capture_pool_only:
+        description: 'Сохранить общий test пул без доставки и изменения выдачи'
+        type: boolean
+        default: false
+      use_source_pool:
+        description: 'При collect_test использовать свежий сохранённый пул'
+        type: boolean
+        default: false
+      enrich_role_pool:
+        description: 'Догрузить описания кандидатов из сохранённого пула без доставки'
+        type: boolean
+        default: false
+      inspect_sources:
+        description: 'Источники через пробел: диагностика или ограниченный capture_pool_only'
+        type: string
+        required: false
+      collect_test:
+        description: 'После успешной проверки вручную собрать вакансии в тестовую БД'
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    if: github.event_name != 'workflow_dispatch' || (inputs.audit_sources != true && (inputs.inspect_sources == '' || inputs.capture_pool_only == true) && inputs.enrich_role_pool != true && (inputs.setup_github == 'none' || inputs.setup_github == ''))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: prodradar-test
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install diagnostic dependencies
+        run: pip install requests supabase
+      - name: Check credentials and integrations without writes
+        run: |
+          python - <<'PY'
+          import os, subprocess
+          command = ['python', 'scripts/run_profile.py', '--profile', 'test', 'check', '--output', 'environment-check.json']
+          command.append('--skip-hh' if os.getenv('CHECK_SKIP_HH') == 'true' else '--require-hh')
+          subprocess.run(command, check=True)
+          PY
+        env:
+          CHECK_SKIP_HH: ${{ inputs.use_source_pool == true || (inputs.capture_pool_only == true && inputs.inspect_sources != '' && !contains(inputs.inspect_sources, 'hh')) }}
+          TEST_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          ADMIN_CHAT_ID: ${{ vars.ADMIN_CHAT_ID }}
+          TEST_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          TEST_TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          HH_ACCESS_TOKEN: ${{ secrets.HH_ACCESS_TOKEN }}
+      - name: Save diagnostic result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: environment-check
+          path: environment-check.json
+          retention-days: 7
+
+  collect:
+    if: github.event_name == 'workflow_dispatch' && (inputs.collect_test == true || inputs.capture_pool_only == true) && inputs.audit_sources != true && (inputs.inspect_sources == '' || inputs.capture_pool_only == true) && inputs.enrich_role_pool != true && (inputs.setup_github == 'none' || inputs.setup_github == '')
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    environment: prodradar-test
+    concurrency:
+      group: prodradar-test-collector
+      cancel-in-progress: false
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      TEST_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      TEST_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      TEST_TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      ADMIN_CHAT_ID: ${{ vars.ADMIN_CHAT_ID }}
+      HH_ACCESS_TOKEN: ${{ secrets.HH_ACCESS_TOKEN }}
+      REDIRECT_BASE_URL: prodradar-test.vercel.app
+      CAPTURE_POOL_ONLY: ${{ inputs.capture_pool_only }}
+      USE_SOURCE_POOL: ${{ inputs.use_source_pool }}
+      RADAR_POOL_SOURCES: ${{ inputs.capture_pool_only && inputs.inspect_sources || '' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-collector.txt
+      - run: playwright install chromium --with-deps
+      - run: python -m unittest discover -s tests -v
+      - name: Verify isolation, then collect into the test database
+        run: |
+          python - <<'PY'
+          import os, subprocess
+          pool = os.getenv('CAPTURE_POOL_ONLY') == 'true'
+          command = ['python', 'scripts/run_profile.py', '--profile', 'test', 'pool' if pool else 'collect', '--project-ref', 'jmsdxgylyjxwdwmdrmxw']
+          if not pool and os.getenv('USE_SOURCE_POOL') == 'true':
+              command.append('--use-source-pool')
+          subprocess.run(command, check=True)
+          PY
+
+  diagnose:
+    if: github.event_name == 'workflow_dispatch' && inputs.audit_sources == true && inputs.capture_pool_only != true && inputs.collect_test != true && (inputs.inspect_sources == '' || inputs.capture_pool_only == true) && inputs.enrich_role_pool != true && (inputs.setup_github == 'none' || inputs.setup_github == '')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      SOURCE_CATALOG: ${{ inputs.source_catalog }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-collector.txt
+      - run: playwright install chromium --with-deps
+      - run: python -m unittest discover -s tests -v
+      - name: Read official APIs without database credentials or Telegram token
+        run: >-
+          python scripts/audit_sources.py --catalog-env SOURCE_CATALOG
+          --sources alfa tochka tbank mts vk kuper sberhealth
+          --full-enrich-sources alfa tochka tbank mts vk kuper sberhealth
+          --output remote-sources-check.json --vacancies-output remote-vacancies.json
+      - name: Save public source audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: remote-source-audit
+          path: |
+            remote-sources-check.json
+            remote-vacancies.json
+          retention-days: 7
+
+  setup_github:
+    if: github.event_name == 'workflow_dispatch' && (inputs.setup_github == 'export-key' || inputs.setup_github == 'apply') && inputs.capture_pool_only != true && inputs.collect_test != true && inputs.audit_sources != true && (inputs.inspect_sources == '' || inputs.capture_pool_only == true) && inputs.enrich_role_pool != true
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: prodradar-test
+    concurrency:
+      group: prodradar-test-github-setup
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ secrets.PRODRADAR_GITHUB_TOKEN }}
+      ENCRYPTED_SETTINGS: ${{ inputs.encrypted_settings }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - name: Export only the public environment key
+        if: inputs.setup_github == 'export-key'
+        run: python scripts/setup_test_github.py --export-key github-environment-key.json
+      - name: Apply only encrypted test credentials and test variables
+        if: inputs.setup_github == 'apply'
+        run: python scripts/setup_test_github.py --settings-env ENCRYPTED_SETTINGS
+      - name: Save public key
+        if: inputs.setup_github == 'export-key' && success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-environment-public-key
+          path: github-environment-key.json
+          retention-days: 7
+
+  inspect:
+    if: github.event_name == 'workflow_dispatch' && inputs.inspect_sources != '' && inputs.capture_pool_only != true && inputs.enrich_role_pool != true && inputs.collect_test != true && inputs.audit_sources != true && (inputs.setup_github == 'none' || inputs.setup_github == '')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      INSPECT_SOURCES: ${{ inputs.inspect_sources }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-collector.txt
+      - run: playwright install chromium --with-deps
+      - name: Inspect browser metadata and HTTP transport without database or Telegram access
+        run: |
+          python - <<'PY'
+          import os, subprocess
+          names = os.environ['INSPECT_SOURCES'].split()
+          subprocess.run(['python', 'scripts/inspect_source_browser.py', '--sources', *names,
+                          '--compare-http', '--output', 'source-inspection.json'], check=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: source-inspection
+          path: source-inspection.json
+          retention-days: 7
+
+  enrich_role_pool:
+    if: github.event_name == 'workflow_dispatch' && inputs.enrich_role_pool == true && inputs.capture_pool_only != true && inputs.collect_test != true && inputs.audit_sources != true && (inputs.setup_github == 'none' || inputs.setup_github == '')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: prodradar-test
+    concurrency:
+      group: prodradar-test-collector
+      cancel-in-progress: false
+    env:
+      TEST_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      TEST_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      TEST_TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      ADMIN_CHAT_ID: ${{ vars.ADMIN_CHAT_ID }}
+      HH_ACCESS_TOKEN: ${{ secrets.HH_ACCESS_TOKEN }}
+      REVIEW_SOURCES: ${{ inputs.inspect_sources }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-collector.txt
+      - run: playwright install chromium --with-deps
+      - run: python scripts/run_profile.py --profile test review-roles

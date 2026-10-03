@@ -62,6 +62,8 @@ def format_company_emoji(company_meta):
 
 def build_redirect_url(vacancy, company_meta, chat_id, source):
     _ = company_meta
+    if config.SIMPLE_BOT_FLOW:
+        return vacancy.get("url", "")
     try:
         vercel_url = (os.getenv("REDIRECT_BASE_URL") or "").strip()
         original_url = vacancy.get("url", "")        
@@ -125,6 +127,12 @@ def format_vacancy_message(vacancy, company_meta, chat_id=None, source="on_deman
         f"<b>{_escape_html(vacancy.get('title', ''))}</b>",
         "",
     ]
+    if config.SIMPLE_BOT_FLOW:
+        families = vacancy.get("role_families") or []
+        labels = [label for family, label in (("project", "Проекты"), ("bizdev", "Развитие бизнеса"))
+                  if family in families]
+        if labels:
+            lines.insert(2, "<i>" + " · ".join(labels) + "</i>")
 
     grade = vacancy.get("grade")
     if _is_empty_field(grade):

@@ -1,6 +1,7 @@
 """Парсер вакансий Alfa-Bank."""
 
 from parsers.base import BaseParser
+from parsers.tls import source_ssl_context
 import config
 
 
@@ -48,7 +49,8 @@ class AlfaParser(BaseParser):
         del existing_ids
         options_url = "https://job.alfabank.ru/api/optionLists"
         options_params = [("listIds", "archetypes"), ("listIds", "cities"), ("listIds", "experiences")]
-        async with session.get(options_url, headers=config.REQUEST_HEADERS, params=options_params) as response:
+        async with session.get(options_url, headers=config.REQUEST_HEADERS, params=options_params,
+                               ssl=source_ssl_context(options_url)) as response:
             response.raise_for_status()
             option_lists = await response.json()
 
@@ -56,13 +58,46 @@ class AlfaParser(BaseParser):
         city_map = self._build_option_map(option_lists, "cities")
         experience_map = self._build_option_map(option_lists, "experiences")
 
-        url = "https://job.alfabank.ru/api/vacancies?businessLine=1020&take=100"
-        async with session.get(url, headers=config.REQUEST_HEADERS) as response:
-            response.raise_for_status()
-            payload = await response.json()
+        url = "https://job.alfabank.ru/api/vacancies"
+        items = []
+        seen_ids = set()
+        api_count = 0
+        while True:
+            params = {"take": 200, "skip": api_count} if config.CAPTURE_ALL_ROLES else {"businessLine": 1020, "take": 100}
+            async with session.get(url, params=params, headers=config.REQUEST_HEADERS,
+                                   ssl=source_ssl_context(url)) as response:
+                response.raise_for_status()
+                payload = await response.json()
+            page_items = payload.get("items")
+            if not isinstance(page_items, list):
+                raise ValueError("Альфа: API не подтвердил список")
+            api_count += len(page_items)
+            new_ids = 0
+            for item in page_items:
+                if item.get("id") is None:
+                    raise ValueError("Альфа: отсутствующий id")
+                if item["id"] in seen_ids:
+                    continue
+                seen_ids.add(item["id"])
+                new_ids += 1
+                items.append(item)
+            if page_items and new_ids == 0:
+                raise ValueError("Альфа: страница повторяет собранные ids")
+            if not config.CAPTURE_ALL_ROLES:
+                break
+            total = payload.get("total")
+            if not isinstance(total, int) or (not page_items and api_count < total):
+                raise ValueError("Альфа: API не подтвердил полный каталог")
+            if api_count >= total:
+                if api_count != total:
+                    raise ValueError("Альфа: число вакансий не совпадает с total")
+                break
 
+        self._api_total_count = payload.get("total")
+        self._api_collected_count = api_count
+        self._duplicate_count = api_count - len(items)
         vacancies = []
-        for item in payload.get("items", []):
+        for item in items:
             slug = item.get("slug") or ""
             city = city_map.get(str(item.get("cityId"))) or self._fallback_city_from_slug(city_mappings, slug)
             title = (item.get("name", "") or "").strip()

@@ -26,6 +26,8 @@ class OzonParser(BaseParser):
         base_url = "https://job-api.ozon.ru/v2/vacancy"
         page = 1
         vacancies = []
+        seen_ids = set()
+        api_count = 0
 
         while True:
             params = {
@@ -33,11 +35,23 @@ class OzonParser(BaseParser):
                 "meta.limit": 50,
                 "meta.page": page,
             }
+            if config.CAPTURE_ALL_ROLES:
+                params.pop("professionalRoles")
             async with session.get(base_url, headers=config.REQUEST_HEADERS, params=params) as response:
                 response.raise_for_status()
                 payload = await response.json()
 
-            for item in payload.get("items", []):
+            items = payload.get("items", [])
+            api_count += len(items)
+            new_ids = 0
+            for item in items:
+                raw_id = item.get("internalUuid") or item.get("hhId")
+                if raw_id is None:
+                    raise ValueError("Ozon: отсутствующий id")
+                if raw_id in seen_ids:
+                    continue
+                seen_ids.add(raw_id)
+                new_ids += 1
                 if item.get("vacancyType") != "external_vacancy":
                     continue
                 title = (item.get("title", "") or "").strip()
@@ -58,13 +72,22 @@ class OzonParser(BaseParser):
                     }
                 )
 
+            if items and new_ids == 0:
+                raise ValueError("Ozon: страница повторяет ранее собранные ids")
             meta = payload.get("meta") or {}
             current_page = int(meta.get("page", page) or page)
             total_pages = int(meta.get("totalPages", current_page) or current_page)
+            if config.CAPTURE_ALL_ROLES and (current_page != page or (not items and current_page < total_pages)):
+                raise ValueError("Ozon: пагинация не продвигается")
             if current_page >= total_pages:
                 break
             page = current_page + 1
 
+        if config.CAPTURE_ALL_ROLES and isinstance(meta.get("totalItems"), int) and api_count != meta["totalItems"]:
+            raise ValueError("Ozon: неполный каталог относительно totalItems")
+        self._api_total_count = meta.get("totalItems")
+        self._api_collected_count = api_count
+        self._duplicate_count = api_count - len(seen_ids)
         return vacancies
 
     async def enrich(self, session, vacancy):

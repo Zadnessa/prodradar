@@ -12,9 +12,7 @@
 
 
 ## После релиза
-- [ ] T-052 Создать песочницу: второй проект Vercel на тот же репозиторий, env-переменные старого бота (@ProductRadar_bot), отдельная база Supabase (free tier), установить webhook; документировать два окружения в README (infra/, README.md).
 - [ ] T-010 Контрактный тест: для каждого парсера из PARSER_REGISTRY прогнать parse() на фикстуре и проверить, что все vacancy["company"] присутствуют в companies.name; тест падает при рассинхроне (tests/, parsers/, fixtures/).
-- [ ] T-025 MTS Link bearer-токен вынести в env, добавить обработку 401 и skip без падения пайплайна (parsers/mtslink.py, config.py).
 - [ ] T-026 On-demand витрина и ранжирование: первая пачка — витрина, дальше — релевантностное ранжирование (delivery/telegram.py, bot/handlers.py).
 - [ ] T-027 Сводка `N новых + M ранее просмотренных` в scheduled/выдаче (delivery/telegram.py, bot/handlers.py).
 - [ ] T-028 Scheduled: сценарий `new=0, announced>0` с action-oriented кнопками (bot/handlers.py).
@@ -35,7 +33,6 @@
 - [ ] T-043 Аудит хардкода по всем парсерам: полный скан 28 парсеров, замена хардкода на конфиг/БД (parsers/).
 - [ ] T-044 Сбор фидбека по формату выдачи (карточки vs дайджест) (docs/).
 - [ ] T-045 Inline mute-кнопка на карточке вакансии (delivery/telegram.py, bot/handlers.py).
-- [ ] T-049 VK enrich: добавить проверку existing значений grade и description перед перезаписью; description заменять только если len(new) > len(current) (parsers/vk.py).
 - [ ] T-050 AGENTS.md: добавить callback-префиксы more:new:, more:new:all:, more:new:stop в документацию (AGENTS.md).
 - [ ] T-051 Вернуть технические PM-вакансии после AI-классификации по категориям (классик, growth, tech, AI/ML); до AI-фазы отсекать blacklist-ом (config.py, ai/).
 - [x] T-057 BUG-079: on-demand zero-state показывает кнопку просмотренных, если новых нет и все подходящие вакансии уже delivered; готово когда в zero-state есть CTA `more:reseen:0`, а пагинация работает через `more:reseen:*` (bot/handlers.py, database/supabase_client.py, docs/).
@@ -67,9 +64,10 @@
 - [ ] sanitize_description как общая функция очистки HTML (utils/, parsers/).
 - [ ] Хардинг delivery pipeline по нагрузке (SQL anti-join, батчинг Telegram, параллелизация) (delivery/, database/).
 - [ ] Чистка хардкодов источников и общий extractor HTML-секций (parsers/).
-- [ ] MTS Link — автоматическое получение токена или переход на HH как fallback-источник (parsers/mtslink.py, parsers/hh.py).
 - [ ] Аудит всех парсеров на соблюдение контракта enrich() (parsers/).
 - [ ] Фикстуры parsers и минимальные контрактные тесты parse/enrich (fixtures/, tests/).
+
+- [ ] Восстановить фирменный каталог Купера после 403 карьерного сайта; получить публичные метаданные, подтвердить полный API и описания, без HH-подмены; готово когда read-only audit и test collector подтверждают полноту (parsers/kuper.py, docs/api_spec.md, docs/refresh_plan.md).
 
 ### AI
 
@@ -223,3 +221,28 @@
 - [x] BUG-086: Scheduled delivery не прерывает отправку при 403/429 от Telegram; готово когда при первой ошибке доставки выполняется break по юзеру, при 403 — деактивация is_active=false (main.py, bot/telegram_api.py, database/supabase_client.py).
 - [x] BUG-087: Админ-отчёт содержит нечитаемую статистику по парсерам и не отражает проблемы доставки; готово когда отчёт показывает только проблемы сбора, статус доставки и счётчики 403/429 (delivery/telegram.py, main.py).
 - [x] BUG-088: HH_ACCESS_TOKEN отсутствует в collect.yml; готово когда секрет пробрасывается в env шага python main.py (.github/workflows/collect.yml).
+- [x] Добавить безопасную диагностику тестового окружения: CLI и GitHub workflow проверяют Supabase, доступ к description, бот и админский чат Telegram, HH и при наличии токена Vercel; URL/ID читаются из variables, ключи из secrets, отчёт не содержит секретов и проверки не меняют данные (scripts/check_environment.py, .github/workflows/check_test_environment.yml, README.md).
+- [x] Зафиксировать контекст рефреша, реальные результаты диагностики, неизвестные связи инфраструктуры, семь фаз с критериями завершения, сохранение продуктового флоу, нового бота для одного проджект-менеджера с mute и отдельной ревизией функций; следующему чату поручена только фаза 1 (docs/refresh_plan.md, docs/context.md, README.md).
+
+- [x] MTS Link bearer-токен вынести в env, добавить обработку 401 и skip без падения пайплайна (parsers/mtslink.py, config.py).
+
+- [x] Сохранить прикладную SQL-схему public и все шесть таблиц исходного продукта; подтверждено восстановлением PostgreSQL 17, сравнением значений, каталога и RLS, подготовлена транзакционная загрузка только справочников в пустую тестовую БД (scripts/backup_schema.py, scripts/provision_test_database.py, docs/refresh_plan.md).
+
+- [x] MTS Link — автоматическое получение токена или переход на HH как fallback-источник; фирменный list/detail теперь публичный и не требует Bearer, восстановлен прямой сбор без categoryId, подтверждены 11 вакансий и ответ detail (parsers/mtslink.py, tests/test_refresh.py, docs/refresh_plan.md).
+- [x] Проверить новые секреты среды Codex и выполнить HTTP-тест webhook `@ProdRadar_bot`; готово когда Vercel и HH проходят реальные API-проверки, а настроенный обработчик принимает аутентифицированный запрос (scripts/check_environment.py, api/webhook.py, README.md).
+- [x] Завершить песочницу @ProdRadar_bot: настроить пустую БД jmsdxgylyjxwdwmdrmxw и Vercel prodradar-test, перенести только тестовый webhook, проверить прежний флоу; готово когда изоляция и delivery подтверждены, ресурсы и проверки описаны в refresh_plan (scripts/, .github/workflows/collect_test.yml, README.md, docs/refresh_plan.md).
+
+- [x] Добавить явные профили test/prod до импорта config с проверкой project ref, Telegram identity и redirect без fallback на общие реквизиты; test подтверждён реальными API, prod требует отдельные PROD_* (runtime_profiles.py, scripts/run_profile.py, tests/test_profiles.py, .github/workflows/).
+
+- [x] Подготовить автоматическую настройку только GitHub environment prodradar-test через Actions PAT, sealed-box перенос проверенных test-реквизитов и отдельный read-only check; bootstrap PAT добавлен через GitHub UI, полный перенос и read-only check подтверждены Actions 36932808570/36932843737/36932886519 (scripts/configure_test_github.py, scripts/setup_test_github.py, scripts/prepare_test_github.py, .github/workflows/check_test_environment.yml, tests/test_github_setup.py).
+
+- [x] Уменьшить рост бесплатной Vercel Function Storage: отделить collector/browser зависимости и payload от webhook, отключить preview ветки восстановления, безопасно удалить 28 неиспользуемых deployments с сохранением 28 aliases/current/rollbacks (requirements*.txt, .vercelignore, vercel.json, scripts/vercel_storage.py, tests/test_vercel_storage.py).
+
+- [x] Защитить Т-Банк от обрывов read-only ответов, MTS/VK от неполной пагинации, VK от перезаписи enrichment, Купер от ложного empty success при blocked career (parsers/, tests/test_refresh.py).
+
+- [x] VK enrich: добавить проверку existing значений grade и description перед перезаписью; description заменять только если len(new) > len(current) (parsers/vk.py).
+
+- [x] Снизить sales/account шум в TEST project/bizdev: вычитать 374 описания недорогими аудиторами, проверить rollback и клиентский delivery, пересмотреть ошибочные labels; 374→257, 5 mixed учтены как возможная потеря, атомарный переотбор без сброса users/history (delivery/roles.py, delivery/role_exclusions.py, scripts/evaluate_role_precision.py, scripts/reselect_test_roles.py, tests/test_role_precision.py, docs/test_role_precision.md).
+
+- [x] Оставить имя/приветствие только в первом TEST сообщении, мужской голос бота и различимые primary/success действия; повторный старт/grade edit и существующий онбординг не повторяют приветствие, грейды/mute/history сохраняются (bot/simple_flow.py, tests/test_project_flow.py).
+- [x] Исправить остановку TEST-сбора после регистрации второго пользователя: проверять профиль, точную БД и identity бота; регрессии сохраняют запрет других БД/ботов и безопасную диагностику без удаления users/history (scripts/collect_test.py, tests/test_test_collector.py, docs/bugs.md).

@@ -36,12 +36,36 @@ class SberParser(BaseParser):
         ]
 
         items = []
-        for prof_area in prof_areas:
-            url = f"{base_url}?skip=0&take=200&profAreas={prof_area}"
-            async with session.get(url, headers=config.REQUEST_HEADERS) as response:
-                response.raise_for_status()
-                payload = await response.json()
-            items.extend(payload.get("data", {}).get("vacancies", []))
+        for prof_area in ([None] if config.CAPTURE_ALL_ROLES else prof_areas):
+            skip = 0
+            seen_page_ids = set()
+            while True:
+                params = {"skip": skip, "take": 200}
+                if prof_area:
+                    params["profAreas"] = prof_area
+                async with session.get(base_url, params=params, headers=config.REQUEST_HEADERS) as response:
+                    response.raise_for_status()
+                    payload = await response.json()
+                data = payload.get("data") or {}
+                page_items = data.get("vacancies")
+                if not isinstance(page_items, list):
+                    raise ValueError("Сбер: API не подтвердил список")
+                for item in page_items:
+                    raw_id = item.get("internalId")
+                    if raw_id is None or raw_id in seen_page_ids:
+                        raise ValueError("Сбер: отсутствующий или повторяющийся id страницы")
+                    seen_page_ids.add(raw_id)
+                items.extend(page_items)
+                skip += len(page_items)
+                if not config.CAPTURE_ALL_ROLES:
+                    break
+                total = data.get("total")
+                if not isinstance(total, int) or (not page_items and skip < total):
+                    raise ValueError("Сбер: неполный каталог")
+                if skip >= total:
+                    if skip != total:
+                        raise ValueError("Сбер: число вакансий не совпадает с total")
+                    break
 
         seen_internal_ids = set()
         vacancies = []

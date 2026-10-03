@@ -96,14 +96,24 @@ class VKParser(BaseParser):
         limit = 50
         offset = 0
         vacancies = []
+        seen_ids = set()
 
         while True:
             params = {"limit": limit, "offset": offset, "tags": 2259}
+            if config.CAPTURE_ALL_ROLES:
+                params.pop("tags")
             async with session.get(base_url, headers=config.REQUEST_HEADERS, params=params) as response:
                 response.raise_for_status()
                 payload = await response.json()
 
-            for item in payload.get("results", []):
+            items = payload.get("results")
+            if not isinstance(items, list):
+                raise ValueError("VK: API не подтвердил список")
+            for item in items:
+                raw_id = item.get("id")
+                if raw_id is None or raw_id in seen_ids:
+                    raise ValueError("VK: отсутствующий или повторяющийся id страницы")
+                seen_ids.add(raw_id)
                 raw_work_format = (item.get("work_format") or "").strip().lower()
                 work_map = {
                     "комбинированный": "Гибрид",
@@ -131,10 +141,13 @@ class VKParser(BaseParser):
 
             next_url = payload.get("next")
             if not next_url:
+                total = payload.get("count")
+                if isinstance(total, int) and len(seen_ids) != total:
+                    raise ValueError("VK: неполный список относительно count")
                 break
             next_offset = parse_qs(urlparse(next_url).query).get("offset", [None])[0]
-            if next_offset is None:
-                break
+            if next_offset is None or not items or int(next_offset) <= offset:
+                raise ValueError("VK: пагинация не продвигается")
             offset = int(next_offset)
 
         return vacancies
@@ -151,13 +164,7 @@ class VKParser(BaseParser):
         try:
             soup = BeautifulSoup(html, "html.parser")
             grade = self._normalize_grade_text(self._extract_grade_from_level_block(soup))
-            if not grade:
-                meta = soup.find("meta", attrs={"name": "description"})
-                content = meta.get("content", "") if meta else ""
-                match = re.search(r"уровня\s+([\w,\s]+?)(?:\s+в\s+проект|\s+с\s+графиком)", content, flags=re.IGNORECASE)
-                if match:
-                    grade = self._normalize_grade_text(match.group(1).strip())
-            if grade:
+            if grade and vacancy.get("grade") in (None, "", "Не указан"):
                 vacancy["grade"] = grade
 
             description_parts = [
@@ -165,7 +172,7 @@ class VKParser(BaseParser):
                 self._extract_section_text_from_h3(soup, "Требования"),
             ]
             description = "\n\n".join(part for part in description_parts if part).strip()
-            if description:
+            if len(description) > len(vacancy.get("description") or ""):
                 vacancy["description"] = description
         finally:
             await asyncio.sleep(0.5)

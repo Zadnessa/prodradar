@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+import os
 import re
 import time
 
@@ -24,8 +25,10 @@ async def fetch_browser_secrets():
     results = {}
 
     async with async_playwright() as p:
+        proxy_url = os.getenv("HTTPS_PROXY") or os.getenv("HTTP_PROXY")
         browser = await p.chromium.launch(
             headless=True,
+            **({"proxy": {"server": proxy_url}} if proxy_url else {}),
             args=[
                 "--disable-blink-features=AutomationControlled",
                 "--no-first-run",
@@ -45,7 +48,6 @@ async def fetch_browser_secrets():
             page = await context.new_page()
             try:
                 await page.goto(task["url"], timeout=30_000)
-                await page.wait_for_load_state("networkidle")
 
                 if task["extract"] == "html":
                     await asyncio.sleep(5)

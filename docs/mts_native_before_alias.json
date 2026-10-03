@@ -1,0 +1,406 @@
+{
+  "version": ".4",
+  "method": "Native MTS cohort labelled by duties before evaluating classifier .4; subsequently used for alias calibration.",
+  "cohort": {
+    "native_records": 29,
+    "selected_records": 9,
+    "selection_rate": 0.3103448275862069,
+    "selected_by_family": {
+      "project": 9,
+      "bizdev": 0
+    },
+    "excluded_records": [
+      {
+        "id": "mts_655737047138441084",
+        "title": "Руководитель направления клиентской сегментации B2B",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "review",
+          "families": [],
+          "zone": "grey",
+          "rules": [
+            "direction"
+          ],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_666598979303113243",
+        "title": "Product owner (Линейка CORE тарифов)",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "monetization",
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_668824047210988066",
+        "title": "Менеджер продукта ATS",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_669142244669789288",
+        "title": "Менеджер клиентского опыта Центра видеонаблюдения и безопасности",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_693721860126280936",
+        "title": "Ведущий пресейл-менеджер ИСС (автосекретарь, телефония, МТС Link)",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_693851975992737872",
+        "title": "Менеджер по продукту в стрим Микрокредитование",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": []
+        }
+      },
+      {
+        "id": "mts_698555947240390963",
+        "title": "Менеджер продукта (Видеоаналитика)",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_699338030040744213",
+        "title": "Руководитель центра CDP (Customer Data Platform)",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_702186897367105633",
+        "title": "Владелец продукта в стрим Микрокредитование",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": []
+        }
+      },
+      {
+        "id": "mts_703631471042104526",
+        "title": "Менеджер по клиентскому опыту (Телеком)",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_703632203145281851",
+        "title": "Менеджер продукта (Программа лояльности)",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_703918958377435420",
+        "title": "Менеджер по продукту (B2B тарифы)",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_704259946044195097",
+        "title": "Chief Product Officer/CPO",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_704594414739128602",
+        "title": "Менеджер продукта (Высокодоходный сегмент)",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_704668232119749839",
+        "title": "Менеджер продукта (Скоринги)",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_709059103082676495",
+        "title": "Product owner (МТС Оптимус)",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "monetization",
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_709066199526280443",
+        "title": "Старший менеджер продукта (Видеонаблюдение B2B/B2G)",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_710025251177627911",
+        "title": "Продуктовый лидер направления волоконной сенсорики (МГТС)",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "review",
+          "families": [],
+          "zone": "grey",
+          "rules": [
+            "direction"
+          ],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "monetization",
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_711171089790664809",
+        "title": "Бизнес-лидер направления ИИ-помощник",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "review",
+          "families": [],
+          "zone": "grey",
+          "rules": [
+            "direction"
+          ],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": [
+            "partnerships"
+          ]
+        }
+      },
+      {
+        "id": "mts_711186198726443102",
+        "title": "Владелец Продукта",
+        "decision": {
+          "version": "project-bizdev-2026-10-02.4",
+          "status": "rejected",
+          "families": [],
+          "zone": null,
+          "rules": [],
+          "excluded_by": [],
+          "native_groups": [
+            "Управление продуктами/проектами/процессами"
+          ],
+          "signals": []
+        }
+      }
+    ],
+    "audited_records": 29,
+    "unaudited_ids": [],
+    "missing_snapshot_ids": [],
+    "metrics": {
+      "project": {
+        "true_positive": 9,
+        "false_positive": 0,
+        "false_negative": 1,
+        "recall": 0.9,
+        "precision": 1.0,
+        "errors": [
+          {
+            "id": "mts_693721860126280936",
+            "title": "Ведущий пресейл-менеджер ИСС (автосекретарь, телефония, МТС Link)",
+            "expected": true,
+            "actual": false
+          }
+        ]
+      },
+      "bizdev": {
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 0,
+        "recall": null,
+        "precision": null,
+        "errors": []
+      }
+    }
+  }
+}

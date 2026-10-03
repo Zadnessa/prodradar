@@ -1,0 +1,26 @@
+{
+  "schedule_workflow_id": 373139509,
+  "state": "active",
+  "default_branch": "main",
+  "activated_by_pr": 130,
+  "main_commit": "8a8493b47ce44fd229d6c510561ea21bd44b3aab",
+  "first_run_moscow": "2026-10-03T10:00:00+03:00",
+  "daily_moscow": [
+    "10:00",
+    "19:00"
+  ],
+  "utc_cron": [
+    "0 7 * * *",
+    "0 16 * * *"
+  ],
+  "read_only_check_run": 37014895434,
+  "check_conclusion": "success",
+  "collect_conclusion": "skipped",
+  "keepalive_conclusion": "skipped",
+  "original_workflow_id": 245897389,
+  "original_state": "disabled_inactivity",
+  "original_deployment": "dpl_83b2b6GGhrwLU3nDU5PCJq1v2yhJ",
+  "test_deployment": "dpl_7R3FGMGFum1cTssHASTB1UcB3TeN",
+  "tests_local": 103,
+  "vercel_metadata_builds": "CANCELED"
+}

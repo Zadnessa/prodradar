@@ -53,9 +53,9 @@ class LamodaParser(BaseParser):
                         "work_format": None,
                         "url": f"https://job.lamoda.ru/vacancies/{slug}",
                         "description": None,
+                        "source_json": item,
                         "experience": None,
                         "published_at": item.get("externalPublicationDate"),
-                        "_raw_id": raw_id,
                     }
                 )
 
@@ -72,9 +72,8 @@ class LamodaParser(BaseParser):
         return vacancies
 
     async def enrich(self, session, vacancy):
-        raw_id = vacancy.get("_raw_id")
-        if raw_id is None:
-            vacancy.pop("_raw_id", None)
+        raw_id = str(vacancy.get("id") or "").removeprefix("lamoda_")
+        if not raw_id:
             return vacancy
 
         details_url = f"https://job.lamoda.ru/api/hr/vacancies/{raw_id}"
@@ -106,5 +105,4 @@ class LamodaParser(BaseParser):
             logger.warning("Ошибка enrichment Lamoda для %s: %s", vacancy.get("id"), exc)
             return vacancy
         finally:
-            vacancy.pop("_raw_id", None)
             await asyncio.sleep(0.3)

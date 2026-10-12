@@ -1,0 +1,144 @@
+name: Audit Test Delivery
+on:
+  push:
+    branches: ['codex/audit-test-delivery']
+    paths: ['.github/workflows/audit_test_delivery.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: prodradar-test
+    concurrency:
+      group: prodradar-test-collector
+      cancel-in-progress: false
+    env:
+      TEST_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      TEST_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      ADMIN_CHAT_ID: ${{ vars.ADMIN_CHAT_ID }}
+      PRODRADAR_PROFILE: test
+      VACANCY_PROFILE: project_bizdev
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: 2110223fa572c4ef722850142be0a15fd74be846
+          path: runtime
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Сверить грейды, project/bizdev и доставку без изменения БД
+        run: |
+          python - <<'PY'
+          import collections
+          import json
+          import os
+          import sys
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+          from datetime import datetime, timezone
+          
+          sys.path.insert(0, "runtime")
+          from delivery.filters import filter_vacancies_for_user
+          
+          expected = "https://jmsdxgylyjxwdwmdrmxw.supabase.co"
+          url = os.environ.get("TEST_SUPABASE_URL", "").strip().rstrip("/")
+          key = os.environ.get("TEST_SUPABASE_KEY", "").strip()
+          admin = int(os.environ["ADMIN_CHAT_ID"])
+          if url != expected or not key:
+              raise SystemExit("Неверный адрес TEST или отсутствует тестовый ключ")
+          
+          def read_table(table, columns):
+              rows = []
+              while True:
+                  params = urllib.parse.urlencode({"select": columns, "limit": 1000, "offset": len(rows)})
+                  request = urllib.request.Request(url + "/rest/v1/" + table + "?" + params,
+                      headers={"apikey": key, "Authorization": "Bearer " + key, "Accept": "application/json"})
+                  try:
+                      with urllib.request.urlopen(request, timeout=30) as response:
+                          page = json.load(response)
+                  except urllib.error.HTTPError as error:
+                      raise SystemExit("Чтение " + table + ": HTTP " + str(error.code)) from None
+                  except Exception as error:
+                      raise SystemExit("Чтение " + table + ": " + type(error).__name__) from None
+                  if not isinstance(page, list):
+                      raise SystemExit("Некорректный ответ таблицы " + table)
+                  rows.extend(page)
+                  if len(page) < 1000:
+                      return rows
+          
+          def role_counts(rows):
+              result = {"total": len(rows), "project_only": 0, "bizdev_only": 0,
+                        "project_and_bizdev": 0, "other": 0}
+              for row in rows:
+                  families = set(row.get("role_families") or [])
+                  result["project_and_bizdev" if {"project", "bizdev"} <= families
+                         else "project_only" if "project" in families
+                         else "bizdev_only" if "bizdev" in families else "other"] += 1
+              return result
+          
+          users = read_table("users", "chat_id,filters,is_active,bot_id,paused,onboarding_step")
+          companies = read_table("companies", "name,is_enabled")
+          vacancies = read_table("vacancies",
+              "id,company,grade,city,work_format,is_active,selection_profile,role_families")
+          history = read_table("user_vacancy_delivery", "user_chat_id,vacancy_id,status,delivered_at")
+          by_id = {v["id"]: v for v in vacancies}
+          active = [v for v in vacancies if v.get("is_active") and v.get("selection_profile") == "project_bizdev"]
+          enabled = {c["name"] for c in companies if c.get("is_enabled")}
+          pool = [v for v in active if v.get("company") in enabled
+                  and set(v.get("role_families") or []) & {"project", "bizdev"}]
+          report = {"snapshot_at": datetime.now(timezone.utc).isoformat(), "profile": "test",
+                    "database_writes": 0, "telegram_calls": 0, "active_core": role_counts(active),
+                    "enabled_role_pool": role_counts(pool), "registered_users": len(users), "users": []}
+          completed = [u for u in users if u.get("is_active") and (u.get("bot_id") or "main") == "main"
+                       and (u.get("filters") or {}).get("simple_onboarding_completed")
+                       and u.get("onboarding_step") is None and u["chat_id"] != admin]
+          for index, user in enumerate(users, 1):
+              user_id = user["chat_id"]
+              filters = user.get("filters") or {}
+              effective = {"grades": filters.get("grades") or [],
+                           "excluded_companies": filters.get("excluded_companies") or []}
+              user_rows = [h for h in history if h["user_chat_id"] == user_id]
+              delivered = {h["vacancy_id"] for h in user_rows if h.get("status") == "delivered"}
+              sent_dates = [h["delivered_at"] for h in user_rows if h.get("status") == "delivered" and h.get("delivered_at")]
+              selected = filter_vacancies_for_user(pool, effective)
+              pending = [v for v in selected if v["id"] not in delivered]
+              no_grades = filter_vacancies_for_user(pool, {"excluded_companies": effective["excluded_companies"]})
+              is_completed = bool(filters.get("simple_onboarding_completed")) and user.get("onboarding_step") is None
+              label = ("admin" if user_id == admin else "colleague" if len(completed) == 1 and user in completed
+                       else "other_user_" + str(index))
+              report["users"].append({
+                  "label": label, "active": bool(user.get("is_active")), "paused": bool(user.get("paused")),
+                  "onboarding_completed": is_completed, "effective_filters": effective,
+                  "saved_role_preferences": {k: filters[k] for k in
+                      ("roles", "role", "role_families", "families", "directions", "tracks", "job_types") if k in filters},
+                  "delivered_history_total": len(delivered),
+                  "history_statuses": dict(collections.Counter(h.get("status") for h in user_rows)),
+                  "delivered_known_roles": role_counts([by_id[v] for v in delivered if v in by_id]),
+                  "delivered_deleted_or_unknown": len(delivered - set(by_id)),
+                  "eligible_active": role_counts(selected),
+                  "already_delivered_eligible_active": role_counts([v for v in selected if v["id"] in delivered]),
+                  "pending": role_counts(pending),
+                  "pending_with_all_grades": role_counts([v for v in no_grades if v["id"] not in delivered]),
+                  "last_delivered_at": max(sent_dates) if sent_dates else None,
+              })
+          print("TEST_DELIVERY_AUDIT=" + json.dumps(report, ensure_ascii=False))
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
+              summary.write("## Проверка доставки TEST\n\n")
+              summary.write("Активных в общем срезе: " + str(len(active)) + ".\n\n")
+              summary.write("| Пользователь | Отправлено за историю | Подходит сейчас | Из них уже отправлено | Осталось |\n")
+              summary.write("|---|---:|---:|---:|---:|\n")
+              for user in report["users"]:
+                  summary.write("| " + user["label"] + " | " + str(user["delivered_history_total"])
+                      + " | " + str(user["eligible_active"]["total"]) + " | "
+                      + str(user["already_delivered_eligible_active"]["total"]) + " | "
+                      + str(user["pending"]["total"]) + " |\n")
+          PY

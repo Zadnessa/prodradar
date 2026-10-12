@@ -148,3 +148,6 @@ prodradar/
 10:00 и19:00 Москва. Код берётся из codex/restore-test-bot, только test secrets;
 исходный product workflow остаётся отключённым. Контракт и ручная проверка без
 доставки: [docs/test_schedule.md](docs/test_schedule.md).
+
+Проверка тестовых фильтров и накопленной доставки project/bizdev без записи
+в БД и без рассылки: [docs/test_delivery_audit.md](docs/test_delivery_audit.md).

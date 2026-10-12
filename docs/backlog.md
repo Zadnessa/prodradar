@@ -223,3 +223,4 @@
 - [x] BUG-086: Scheduled delivery не прерывает отправку при 403/429 от Telegram; готово когда при первой ошибке доставки выполняется break по юзеру, при 403 — деактивация is_active=false (main.py, bot/telegram_api.py, database/supabase_client.py).
 - [x] BUG-087: Админ-отчёт содержит нечитаемую статистику по парсерам и не отражает проблемы доставки; готово когда отчёт показывает только проблемы сбора, статус доставки и счётчики 403/429 (delivery/telegram.py, main.py).
 - [x] BUG-088: HH_ACCESS_TOKEN отсутствует в collect.yml; готово когда секрет пробрасывается в env шага python main.py (.github/workflows/collect.yml).
+- [x] Read-only аудит TEST-доставки: сопоставить users.filters, project/bizdev и user_vacancy_delivery; готово когда GitHub Actions показывает подходящий пул, доставку и остаток без изменения БД и отправки сообщений (.github/workflows/audit_test_delivery.yml, docs/test_delivery_audit.md).

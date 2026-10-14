@@ -112,6 +112,7 @@ for group in groups:
     nice_any = {e["id"] for e in evidence if e["status"] == "nice"}
     examples = group["examples"]
     assert 1 <= len(examples) <= 3
+    assert len(ids) == 1 or len(examples) >= 2, ("Нужны примеры нескольких вакансий", group["id"])
     for example in examples:
         assert any(e["id"] == str(example["id"]) and e["quote"] == example["quote"]
                    and e["scope"] == example["scope"] for e in evidence), (group["id"], example)

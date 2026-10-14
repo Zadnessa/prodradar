@@ -1,0 +1,46 @@
+name: Career Closet Workbook
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/career-closet]
+    paths:
+      - .github/workflows/career_closet_build.yml
+      - .github/career_closet/accepted.json
+      - .github/career_closet/taxonomy.json
+      - .github/career_closet/build_workbook.py
+
+permissions:
+  contents: write
+
+jobs:
+  workbook:
+    if: github.ref == 'refs/heads/codex/career-closet'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Установить библиотеку Excel
+        run: python -m pip install openpyxl==3.1.5
+      - name: Проверить исходники и собрать Excel
+        run: python .github/career_closet/build_workbook.py
+      - name: Сохранить готовый карьерный шкаф
+        uses: actions/upload-artifact@v4
+        with:
+          name: career-closet-workbook
+          path: output/*
+          retention-days: 30
+          if-no-files-found: error
+      - name: Сохранить Excel в ветке исследования
+        run: |
+          cp output/Карьерный_шкаф.xlsx .github/career_closet/Карьерный_шкаф.xlsx
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/career_closet/Карьерный_шкаф.xlsx
+          if ! git diff --cached --quiet; then
+            git commit -m "Сохранить готовый карьерный шкаф в Excel"
+            git push origin HEAD:refs/heads/codex/career-closet
+          fi

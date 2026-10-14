@@ -223,7 +223,7 @@ for track, color in [("project", NAVY), ("commercial", GREEN)]:
         examples = []
         for ex in group["examples"]:
             job = by_id[str(ex["id"])]
-            examples.append(f'«{ex["quote"]}»\n{job["company"]} · {job["title"]}')
+            examples.append(f'«{ex["quote"]}» — {job["company"]}')
         values = [group["label"], "\n\n".join(examples), group["count"],
                   f"=C{r}/$C$3", group["nice"], None, None, None,
                   category_names.get(group["category"], group["category"]), group["active"]]
@@ -234,8 +234,8 @@ for track, color in [("project", NAVY), ("commercial", GREEN)]:
         ws.cell(r, 4).data_type = "f"
         ws.cell(r, 4).number_format = "0%"
         ws.cell(r, 5).number_format = "0"
-        ws.row_dimensions[r].height = min(360, max(100, 22 * sum(
-            max(1, len(line) // 76 + 1) for line in values[1].split("\n"))))
+        ws.row_dimensions[r].height = min(409, max(80, 18 * sum(
+            max(1, len(line) // 65 + 1) for line in values[1].split("\n"))))
     put(ws, 3, 1, "База для долей")
     put(ws, 3, 3, counts[track], bold=True)
     ws.freeze_panes = "C5"
@@ -249,7 +249,7 @@ for track, color in [("project", NAVY), ("commercial", GREEN)]:
     dv.add(f"F5:F{ws.max_row}")
     ws.conditional_formatting.add(f"D5:D{ws.max_row}", ColorScaleRule(
         start_type="min", start_color="EDF3F6", end_type="max", end_color="A4C9C0"))
-    for c, width in {"A":38,"B":86,"C":15,"D":10,"E":15,"F":16,"G":36,"H":39,"I":22,"J":13}.items():
+    for c, width in {"A":32,"B":66,"C":13,"D":8,"E":14,"F":14,"G":30,"H":33,"I":20,"J":12}.items():
         ws.column_dimensions[c].width = width
     ws.print_title_rows = "1:4"
     ws.sheet_properties.pageSetUpPr.fitToPage = True
@@ -271,7 +271,7 @@ for r, e in enumerate(all_evidence, 5):
         put(evidence_ws, r, c, value, LIGHT if r % 2 else None)
     evidence_ws.cell(r, 7).hyperlink = job["url"]
     evidence_ws.cell(r, 7).font = Font(name="Calibri", size=11, color="165EA6", underline="single")
-    evidence_ws.row_dimensions[r].height = min(150, max(44, len(e["quote"]) // 90 * 16 + 44))
+    evidence_ws.row_dimensions[r].height = min(409, max(44, len(e["quote"]) // 90 * 16 + 44))
 header(evidence_ws, 4, headers)
 for c, width in {"A":22,"B":38,"C":20,"D":92,"E":20,"F":55,"G":36,"H":20,"I":24}.items():
     evidence_ws.column_dimensions[c].width = width

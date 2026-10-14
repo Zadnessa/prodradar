@@ -148,3 +148,12 @@ prodradar/
 10:00 и19:00 Москва. Код берётся из codex/restore-test-bot, только test secrets;
 исходный product workflow остаётся отключённым. Контракт и ручная проверка без
 доставки: [docs/test_schedule.md](docs/test_schedule.md).
+
+## Карьерный шкаф
+
+Разовый срез тестовых вакансий и ручной разбор хранятся в `.github/career_closet/`.
+После независимой проверки `accepted.json` и `taxonomy.json` сборщик
+`build_workbook.py` создаёт Excel с двумя треками, частотами, цитатами и пустыми
+полями самооценки. Workflow `Career Closet Workbook` выполняет только сборку
+из сохранённых файлов; доступ к БД и отправка сообщений ему не нужны.
+Готовый Excel доступен в артефакте `career-closet-workbook` соответствующего запуска.

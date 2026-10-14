@@ -1,4 +1,4 @@
-"""Build the accepted career maps; only validation, arithmetic and presentation."""
+"""Сборка принятых карьерных карт: проверки, арифметика и оформление."""
 from __future__ import annotations
 
 import argparse
@@ -44,7 +44,8 @@ GUIDE = [
     "Шкала 1-5. 1 - нет опыта; 2 - нужна помощь; 3 - работаю самостоятельно; 4 - решаю сложные задачи; 5 - могу обучать.",
     "Вклад зависит от оценки и частоты навыка. Оценка 1 даёт нулевой вклад, 3 - половину веса, 5 - полный вес.",
     "В итог входят 20 самых частых общих навыков. Специализации и отраслевые условия оцените отдельно.",
-    "Заполните тёплые ячейки. В комментарии приведите свой пример, в действиях запишите следующий шаг. Для общей оценки нужны все 20 оценок.",
+    "Заполните тёплые ячейки. В комментарии приведите свой пример, в действиях запишите следующий шаг. "
+    "Строки с цветной полосой у оценки входят в итог. Для общей оценки нужны все 20 оценок.",
 ]
 EVIDENCE_HEADERS = [
     "Трек", "Навык", "Статус", "Цитата", "Компания", "Вакансия", "Ссылка",
@@ -105,7 +106,7 @@ def load_data(original, maps):
     require(len(updates) == len(source_updates), "Дубли исходных исправлений")
     by_id = {str(row["id"]): row for row in rows}
     require(set(updates) <= set(by_id), "Исправления неизвестных вакансий")
-    # Source overrides precede every literal quote and role-evidence check.
+    # Сначала применяем исправления источников, затем проверяем цитаты и формулировки роли.
     for row in rows:
         row.update(updates.get(str(row["id"]), {}))
     review = read_json(original / manifest["review_file"])
@@ -206,9 +207,9 @@ def load_data(original, maps):
             require(ids, "Навык без учитываемых вакансий", group["id"])
             known = {signature(item) for item in counted}
             examples = group["examples"]
-            require(1 <= len(examples) <= 3 and len({signature(ex) for ex in examples}) == len(examples),
+            require(1 <= len(examples) <= 3 and len({ex["quote"] for ex in examples}) == len(examples),
                     "Нужны от одного до трёх разных точных примеров", group["id"])
-            require(len(examples) == min(3, len(known)),
+            require(len(examples) == min(3, len({item["quote"] for item in counted})),
                     "Не хватает доступных точных примеров", group["id"])
             for example in examples:
                 require(signature(example) in known, "Пример не принадлежит навыку", (group["id"], example))
@@ -251,7 +252,7 @@ def load_data(original, maps):
 
 def put(ws, row, col, value, fill=None, bold=False, color=INK, size=11):
     cell = ws.cell(row, col, value)
-    # Preserve quotes and vacancy names literally; leading "=" must remain text.
+    # Цитаты и названия сохраняем буквально. Знак "=" в начале не превращает текст в формулу.
     if isinstance(value, str):
         cell.data_type = "s"
     cell.font = Font(name="Calibri", size=size, color=color, bold=bold)
@@ -300,6 +301,11 @@ def row_formulas(ws, row):
     contribution.fill = PatternFill("solid", fgColor=STRIPE if row % 2 == 0 else WHITE)
 
 
+def track_caption(data, track):
+    return (f'Срез 14 октября 2026 · {data["counts"][track]} вакансий в сохранённом пуле, включая архивные. '
+            + GUIDE[0])
+
+
 def build_workbook(data, output):
     wb = Workbook()
     wb.remove(wb.active)
@@ -311,8 +317,7 @@ def build_workbook(data, output):
         ws = wb.create_sheet(title)
         common_setup(ws, COLORS[track], title)
         last = FIRST + len(data["groups"][track]) - 1
-        merged(ws, "A2:I2",
-               f'Срез 14 октября 2026 · {data["counts"][track]} вакансий в сохранённом пуле, включая архивные. {GUIDE[0]}')
+        merged(ws, "A2:I2", track_caption(data, track))
         ws.row_dimensions[2].height = 34
         for row, message in [(3, GUIDE[1]), (4, GUIDE[2]), (5, GUIDE[3]), (7, GUIDE[4])]:
             merged(ws, f"A{row}:I{row}", message)
@@ -353,6 +358,8 @@ def build_workbook(data, output):
                 "ProdRadar",
             )
             if group["scored"]:
+                ws.cell(row, 1).fill = PatternFill("solid", fgColor="E6EEF4" if track == "project" else "E4F0EF")
+                ws.cell(row, 1).font = Font(name="Calibri", size=11, bold=True, color=COLORS[track])
                 ws.cell(row, 6).border = Border(left=Side(style="medium", color=COLORS[track]))
             ws.row_dimensions[row].height = min(409, max(
                 105, row_height(group["label"], 26), row_height(group["description"], 40),
@@ -490,7 +497,7 @@ def recalculate(path, data):
     with tempfile.TemporaryDirectory(prefix="career-recalculated-") as temporary:
         recalculated = run_calc(path.resolve(), Path(temporary))
         shutil.copy2(recalculated, path)
-    # Never save through openpyxl after Calc: saving would erase formula caches.
+    # После Calc не сохраняем файл через openpyxl, чтобы не потерять рассчитанные значения.
     verify_workbook(path, data, cached=True)
 
 
@@ -616,6 +623,10 @@ def own_text(data):
              "342 вакансии, включая 41 исключённую. Названия и формулировки роли сохранены из источников.",
              "Сначала общие навыки, затем предметная практика и обязательные отрасли. "
              "Первые 20 общих навыков входят в общую оценку; остальные строки помогают спланировать развитие."]
+    texts.extend(track_caption(data, track) for track in TRACKS)
+    texts.extend(("Карьерный шкаф", "Проектный и коммерческий треки по срезу 14 октября 2026", "Да", "Нет"))
+    texts.extend(band + suffix for band in BANDS.values()
+                 for suffix in (". Входит в общую оценку.", ". Для плана развития."))
     for groups in data["groups"].values():
         for group in groups:
             texts.extend((group["label"], group["description"]))

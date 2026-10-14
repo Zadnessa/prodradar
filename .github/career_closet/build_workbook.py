@@ -239,6 +239,7 @@ for track, color in [("project", NAVY), ("commercial", GREEN)]:
             max(1, len(line) // 65 + 1) for line in values[1].split("\n"))))
     put(ws, 3, 1, "База для долей")
     put(ws, 3, 3, counts[track], bold=True)
+    ws.row_dimensions[3].hidden = True
     ws.freeze_panes = "C5"
     ws.auto_filter.ref = f"A4:J{ws.max_row}"
     dv = DataValidation(type="whole", operator="between", formula1=1, formula2=5, allow_blank=True)

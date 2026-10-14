@@ -1,0 +1,40 @@
+name: Career Closet Short Source
+on:
+  push:
+    branches: [codex/career-closet]
+    paths: [.github/workflows/career_closet_short_source.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-source:
+    if: github.ref == 'refs/heads/codex/career-closet'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install beautifulsoup4==4.13.5
+      - name: Прочитать открытую ссылку вакансии
+        run: |
+          python - <<'PY'
+          import json, urllib.request
+          from datetime import datetime, timezone
+          from bs4 import BeautifulSoup
+          url = "https://l.tbank.ru/vac_ko"
+          result = {"id":"tbank_dff54014-1b4f-4f54-97be-d15d58af174a","requested_url":url,"checked_at":datetime.now(timezone.utc).isoformat()}
+          try:
+              request = urllib.request.Request(url, headers={"User-Agent":"Mozilla/5.0","Accept-Language":"ru-RU,ru;q=0.9"})
+              with urllib.request.urlopen(request, timeout=40) as response:
+                  html = response.read(4_000_000).decode("utf-8", errors="replace")
+                  result.update(status=response.status, url=response.url)
+              soup = BeautifulSoup(html, "html.parser")
+              for node in soup(["script","style","nav","footer"]):
+                  node.decompose()
+              main = soup.find("main") or soup.find("article") or soup
+              result["text"] = main.get_text("\n",strip=True)
+          except Exception as exc:
+              result["error"] = str(exc)
+          print("CAREER_PUBLIC=" + json.dumps(result,ensure_ascii=False))
+          PY

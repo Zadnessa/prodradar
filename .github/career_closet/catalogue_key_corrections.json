@@ -1,0 +1,57 @@
+{
+  "changes": [
+    {
+      "track": "project",
+      "items": [
+        {
+          "index": 264,
+          "key": "[\"project\",\"domain\",\"Работа с блогерами и инфлюенсерами\"]",
+          "count": 1,
+          "evidence": [
+            {
+              "id": "avito_8182",
+              "quote": "работали с блогерами и инфлюенсерами и понимаете, как выстраивать с ними взаимовыгодные партнёрства",
+              "scope": "description",
+              "status": "required"
+            }
+          ]
+        }
+      ],
+      "removed_indices": []
+    },
+    {
+      "track": "commercial",
+      "items": [
+        {
+          "index": 610,
+          "key": "[\"commercial\",\"industry\",\"Управленческий опыт в банках от трёх лет\"]",
+          "count": 1,
+          "evidence": [
+            {
+              "id": "sber_4551551",
+              "quote": "имеете управленческий опыт в банковской сфере от 3 х лет",
+              "scope": "description",
+              "status": "required"
+            }
+          ]
+        },
+        {
+          "index": 612,
+          "key": "[\"commercial\",\"domain\",\"Банковские продукты и процессы\"]",
+          "count": 1,
+          "evidence": [
+            {
+              "id": "sber_4551551",
+              "quote": "глубоко понимаете банковские продукты, банковские процессы",
+              "scope": "description",
+              "status": "required"
+            }
+          ]
+        }
+      ],
+      "removed_indices": [
+        1407
+      ]
+    }
+  ]
+}

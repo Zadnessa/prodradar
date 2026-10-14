@@ -1,0 +1,175 @@
+{
+  "track": "commercial",
+  "items": [
+    {
+      "index": 1431,
+      "key": "[\"commercial\",\"skill\",\"Работа с конверсией\"]",
+      "evidence": [
+        {
+          "id": "avito_8276",
+          "quote": "понимаете, как работать с конверсией",
+          "scope": "description",
+          "status": "required"
+        }
+      ]
+    },
+    {
+      "index": 1432,
+      "key": "[\"commercial\",\"skill\",\"Стоимость и окупаемость лидов\"]",
+      "evidence": [
+        {
+          "id": "avito_8276",
+          "quote": "стоимостью и окупаемостью лидов",
+          "scope": "description",
+          "status": "required"
+        }
+      ]
+    },
+    {
+      "index": 1433,
+      "key": "[\"commercial\",\"skill\",\"Подготовка бизнес-кейсов\"]",
+      "evidence": [
+        {
+          "id": "sber_4536799",
+          "quote": "навыки подготовки бизнес кейсов",
+          "scope": "description",
+          "status": "required"
+        }
+      ]
+    },
+    {
+      "index": 1434,
+      "key": "[\"commercial\",\"skill\",\"Подготовка дорожных карт\"]",
+      "evidence": [
+        {
+          "id": "sber_4536799",
+          "quote": "навыки подготовки бизнес кейсов, дорожных карт",
+          "scope": "description",
+          "status": "required"
+        }
+      ]
+    }
+  ],
+  "removed_indices": [
+    250,
+    530
+  ],
+  "changed_items": [
+    {
+      "index": 491,
+      "key": "[\"commercial\",\"industry\",\"Рынок складской недвижимости\"]",
+      "count": 1,
+      "evidence": [
+        {
+          "id": "ozon_137585501",
+          "quote": "Знание рынка складской недвижимости",
+          "scope": "description",
+          "status": "required"
+        }
+      ]
+    }
+  ],
+  "map_findings": {
+    "status": "REVISE",
+    "financial_group": {
+      "id": "commercial_061",
+      "current_label": "Финансовое моделирование и расчёт экономики бизнеса",
+      "current_frequency": 50,
+      "current_nice_subset": 1,
+      "partition": {
+        "financial_modeling": [
+          133,
+          317,
+          442,
+          560,
+          802
+        ],
+        "roi_unit_economics_business_cases": [
+          20,
+          116,
+          125,
+          132,
+          179,
+          215,
+          250,
+          316,
+          496,
+          547,
+          621,
+          713,
+          809,
+          832,
+          853,
+          1042,
+          1224,
+          1234,
+          1254,
+          1267,
+          1273,
+          1286,
+          1293,
+          1327,
+          1381
+        ],
+        "financial_client_portfolio_analysis": [
+          545,
+          899,
+          908,
+          951,
+          985,
+          1227,
+          1270,
+          1310
+        ],
+        "general_business_effect": [
+          90,
+          1126,
+          1141,
+          1304,
+          1416
+        ],
+        "cost_capex_calculations": [
+          267,
+          383
+        ],
+        "asset_valuation": [
+          652
+        ],
+        "move_to_commercial_054": [
+          534
+        ],
+        "move_to_commercial_176": [
+          533
+        ],
+        "move_to_commercial_188": [
+          661
+        ],
+        "move_to_commercial_025": [
+          919,
+          1208
+        ],
+        "split_source_record": [
+          530
+        ]
+      }
+    },
+    "people_management": [
+      {
+        "track": "project",
+        "group_id": "project_034",
+        "index": 1398,
+        "problem": "«лидерские качества» не доказывает руководства сотрудниками",
+        "quote": "лидерские качества",
+        "suggestion": "Отдельная skill-группа «Лидерские качества»"
+      },
+      {
+        "track": "commercial",
+        "group_id": "commercial_012",
+        "index": 1305,
+        "problem": "Руководство бизнесом/продуктом/программой с финансовым результатом не равно руководству сотрудниками",
+        "quote": "Руководили сложным кросс-функциональным бизнесом, продуктом или программой и отвечали за коммерческий и финансовый результат",
+        "suggestion": "commercial_064: опыт коммерческого управления"
+      }
+    ]
+  }
+}

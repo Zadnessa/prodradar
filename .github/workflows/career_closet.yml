@@ -1,0 +1,75 @@
+name: Career Closet Snapshot
+on:
+  push:
+    branches: ['codex/career-closet']
+    paths: ['.github/workflows/career_closet.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: prodradar-test
+    concurrency:
+      group: prodradar-test-collector
+      cancel-in-progress: false
+    env:
+      TEST_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      TEST_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Прочитать полный накопленный пул вакансий без изменения БД
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+          from datetime import datetime, timezone
+          
+          url = os.environ.get("TEST_SUPABASE_URL", "").strip().rstrip("/")
+          key = os.environ.get("TEST_SUPABASE_KEY", "").strip()
+          if url != "https://jmsdxgylyjxwdwmdrmxw.supabase.co" or not key:
+              raise SystemExit("Нужны точный TEST URL и тестовый ключ")
+          rows = []
+          while True:
+              query = urllib.parse.urlencode({
+                  "select": "id,title,company,url,grade,city,experience,description,is_active,selection_profile,role_families,first_seen_at,last_seen_at,source_json",
+                  "selection_profile": "eq.project_bizdev", "order": "id.asc", "limit": 1000, "offset": len(rows)})
+              request = urllib.request.Request(url + "/rest/v1/vacancies?" + query,
+                  headers={"apikey": key, "Authorization": "Bearer " + key, "Accept": "application/json"})
+              try:
+                  with urllib.request.urlopen(request, timeout=40) as response:
+                      page = json.load(response)
+              except urllib.error.HTTPError as error:
+                  raise SystemExit("Чтение вакансий: HTTP " + str(error.code)) from None
+              if not isinstance(page, list):
+                  raise SystemExit("Неверный формат вакансий")
+              rows.extend(page)
+              if len(page) < 1000:
+                  break
+          canonical = json.dumps(rows, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+          meta = {"snapshot_at": datetime.now(timezone.utc).isoformat(), "profile": "test",
+                  "scope": "Все сохранённые вакансии project_bizdev, активные и архивные",
+                  "total": len(rows), "active": sum(bool(r["is_active"]) for r in rows),
+                  "companies": len({r["company"] for r in rows}),
+                  "source_sha256": hashlib.sha256(canonical.encode()).hexdigest(),
+                  "database_writes": 0, "telegram_calls": 0}
+          with open("vacancies.json", "w", encoding="utf-8") as output:
+              json.dump({"meta": meta, "rows": rows}, output, ensure_ascii=False, indent=2)
+          print("CAREER_META=" + json.dumps(meta, ensure_ascii=False))
+          for row in rows:
+              print("CAREER_ROW=" + json.dumps(row, ensure_ascii=False, separators=(",", ":")))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: career-closet-source
+          path: vacancies.json
+          retention-days: 30

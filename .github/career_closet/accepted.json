@@ -1,0 +1,52 @@
+{
+  "meta": {
+    "snapshot_at": "2026-10-14T09:41:52.614024+00:00",
+    "profile": "test",
+    "scope": "Все сохранённые вакансии project_bizdev, активные и архивные",
+    "total": 342,
+    "active": 230,
+    "companies": 22,
+    "source_sha256": "b9e07fed99152c31caf720af15bbe0ee1a77a2bec4ca35311ef80335e3e3daf8",
+    "database_writes": 0,
+    "telegram_calls": 0
+  },
+  "source_files": [
+    "input_batch_1.json",
+    "input_batch_2.json",
+    "input_batch_3.json",
+    "input_batch_4.json",
+    "input_batch_5.json"
+  ],
+  "analysis_files": [
+    "analysis_batch_1.json",
+    "analysis_batch_2.json",
+    "analysis_batch_3.json",
+    "analysis_batch_4.json",
+    "analysis_batch_5.json"
+  ],
+  "review_file": "review_overrides.json",
+  "source_overrides_file": "source_overrides.json",
+  "expected_tracks": {
+    "commercial": 118,
+    "project": 183,
+    "exclude": 41
+  },
+  "data_blobs": {
+    "input_batch_1.json": "95b2c7415367235c2434dd7fea93ecbbc587b197",
+    "input_batch_2.json": "a012649b2109a6d869e4e57e905d76ce108c8041",
+    "input_batch_3.json": "7591a66e311f86e71cce6ed491af4c31ba435a70",
+    "input_batch_4.json": "88ff580c53415aa2eb994b8e3d77f54f4ff45f16",
+    "input_batch_5.json": "65da46f7e5e2fac29293c52bc9c25a5c4eb04b18",
+    "analysis_batch_1.json": "1ee0839f8a967012054c9e7124055bb6376251a1",
+    "analysis_batch_2.json": "d57de56f7fc3ae0ae3a138377a14fea29675a2bd",
+    "analysis_batch_3.json": "0563b29b52c0333bb35c220dea8829215cd1a2cd",
+    "analysis_batch_4.json": "99ba549c76971e5a5e1a66a50808d31d16869c73",
+    "analysis_batch_5.json": "a6a8ab26dece9aeb0386d5f9b64f6fde5a93b978",
+    "review_overrides.json": "a9bef2bda71a27bf1eea1c04adc20101d26dee6d",
+    "source_overrides.json": "25a82772d12b12063c3927d9c5716bb61c376055",
+    "taxonomy.json": "29bdd530ed691ea797dafac7e60e80e38d849e17"
+  },
+  "expected_requirements": 5307,
+  "accepted_groups": 671,
+  "note": "Смысловая классификация, группировка и выбор примеров выполнены вручную; сборщик проверяет сохранённые решения и выполняет арифметику."
+}

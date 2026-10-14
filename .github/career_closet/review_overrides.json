@@ -1,0 +1,5132 @@
+{
+  "status": "ACCEPT",
+  "applies_to": "Авторские analysis_batch_1…5 после применения replacements; финальная карта проходит отдельную проверку в рамках этого же этапа.",
+  "coverage": {
+    "decision_records_read": 342,
+    "source_ids_checked": 342,
+    "unique_source_ids": 342,
+    "missing_ids": [],
+    "duplicate_ids": [],
+    "original_excluded_records_read": 45,
+    "original_product_exclusions_read": 15,
+    "original_review_records_read": 101,
+    "full_professional_text_records_read": 156,
+    "full_professional_text_ids": [
+      "2gis_572",
+      "avito_8220",
+      "alfa_36415",
+      "alfa_38865",
+      "mts_668422481601626624",
+      "mts_703630231977591046",
+      "vk_51868",
+      "ya_49086",
+      "avito_8241",
+      "ya_48485",
+      "ya_46689",
+      "vk_54825",
+      "x5_6840fd9f6165113cefd3ec37",
+      "mts_699618428972961018",
+      "153",
+      "ozon_137128882",
+      "vk_51914",
+      "alfa_36548",
+      "alfa_37478",
+      "alfa_37573",
+      "alfa_38509",
+      "alfa_38811",
+      "alfa_38981",
+      "avito_7982",
+      "avito_8043",
+      "avito_8084",
+      "avito_8167",
+      "avito_8182",
+      "avito_8268",
+      "avito_8276",
+      "mts_668813062752436789",
+      "mts_671581018020381115",
+      "mts_684699398390677811",
+      "mts_696334248075854089",
+      "wb_39083",
+      "ya_29703",
+      "ya_37587",
+      "ya_42335",
+      "ya_45436",
+      "ya_47792",
+      "ya_47797",
+      "ya_48347",
+      "ya_48759",
+      "ya_49105",
+      "vk_54847",
+      "vk_54867",
+      "vk_54976",
+      "wb_36757",
+      "wb_38500",
+      "wb_39762",
+      "wb_40163",
+      "sber_4568026",
+      "tbank_dff54014-1b4f-4f54-97be-d15d58af174a",
+      "mts_704301789536583951",
+      "mts_714456480287296723",
+      "mtslink_4327951",
+      "ozon_136746448",
+      "ozon_137202417",
+      "ozon_137262908",
+      "ozon_137680238",
+      "ozon_137796806",
+      "ozon_138257244",
+      "ozon_138430549",
+      "sber_4539959",
+      "sber_4542620",
+      "sber_4553319",
+      "sber_4559002",
+      "sber_4566346",
+      "sber_4566358",
+      "sber_4566426",
+      "sber_4567856",
+      "sber_4569406",
+      "sber_4569727",
+      "sber_4572524",
+      "sber_4573458",
+      "sber_4573817",
+      "sber_4575710",
+      "sber_4578904",
+      "mts_696360580830724415",
+      "mts_699136520346403100",
+      "mts_703629336481107141",
+      "mts_710121344334823693",
+      "mts_711517698982412594",
+      "mts_716740686245792960",
+      "ozon_134655808",
+      "ozon_135154732",
+      "ozon_136163722",
+      "ozon_137301040",
+      "ozon_137304631",
+      "ozon_137535746",
+      "ozon_137803576",
+      "ozon_137807234",
+      "ozon_137869054",
+      "ozon_138301409",
+      "ozon_138301529",
+      "ozon_138182789",
+      "sber_4510276",
+      "sber_4518681",
+      "sber_4518683",
+      "sber_4532202",
+      "sber_4534122",
+      "sber_4536799",
+      "sber_4548835",
+      "sber_4551551",
+      "sber_4554648",
+      "sber_4559848",
+      "sber_4562429",
+      "sber_4563930",
+      "sber_4565167",
+      "sber_4569327",
+      "sber_4569367",
+      "sber_4569655",
+      "sber_4570416",
+      "sber_4570623",
+      "sber_4571691",
+      "sber_4573184",
+      "sber_4574070",
+      "sber_4575286",
+      "sber_4577268",
+      "sber_4578746",
+      "sberhealth_4349801",
+      "tbank_ab639331-c18f-440c-8b09-f8846fbbe840",
+      "vk_54504",
+      "vk_54659",
+      "ya_14525",
+      "ya_32553",
+      "ya_45414",
+      "ya_45527",
+      "ya_47482",
+      "ya_47668",
+      "ya_48036",
+      "ya_48205",
+      "ya_48515",
+      "ya_48522",
+      "ya_48728",
+      "ya_48944",
+      "ya_48963",
+      "ya_49217",
+      "sber_4543944",
+      "sber_4572941",
+      "sber_4574674",
+      "tbank_6625fb68-eba7-48bc-abf7-fa02193a8de8",
+      "2gis_563",
+      "kontur_5655",
+      "lamoda_2537",
+      "mts_654195280089976561",
+      "ozon_137958237",
+      "vk_54901",
+      "ya_48811",
+      "sber_4576115",
+      "avito_8124",
+      "avito_8108",
+      "mts_685872834714537206",
+      "mts_693741414042832103",
+      "mts_713664931488071959",
+      "hh_kaspersky_137332083"
+    ],
+    "industry_requirement_entries_checked_in_context": 191,
+    "original_requirement_quotes_checked": 5246,
+    "original_role_quotes_checked": 342,
+    "source_quote_errors": 0,
+    "native_additional_status_errors": 0,
+    "input_source_sha256": "b9e07fed99152c31caf720af15bbe0ee1a77a2bec4ca35311ef80335e3e3daf8",
+    "result_tracks": {
+      "commercial": 118,
+      "project": 183,
+      "exclude": 41
+    },
+    "result_requirement_entries": 5307,
+    "map_review_status": "accepted",
+    "final_taxonomy_commit": "4e832a78b15c5f57f3e60161c9be4f2069c1442c",
+    "final_map_groups": {
+      "project": 348,
+      "commercial": 323,
+      "total": 671
+    },
+    "final_map_keys": {
+      "project": 2187,
+      "commercial": 1422,
+      "total": 3609
+    },
+    "final_map_key_coverage_errors": 0,
+    "final_industry_group_category_errors": 0,
+    "final_map_example_errors": 0,
+    "final_frequency_denominators": {
+      "project": 183,
+      "commercial": 118
+    }
+  },
+  "replacements": [
+    {
+      "id": "avito_8167",
+      "track": "project",
+      "reason": "Реализует социальные и ESG-проекты, развивает партнёрства и отвечает за совместные мероприятия. PR и освещение составляют заметную часть смешанной роли.",
+      "role_evidence": "инициировать и контролировать реализацию и освещение социальных и ESG-проектов компании",
+      "exclusion": null,
+      "review": true,
+      "requirements": [
+        {
+          "concept": "Инициация и контроль реализации проектов",
+          "category": "skill",
+          "status": "task",
+          "quote": "инициировать и контролировать реализацию и освещение социальных и ESG-проектов компании",
+          "scope": "description"
+        },
+        {
+          "concept": "PR и освещение проектов",
+          "category": "skill",
+          "status": "task",
+          "quote": "работать над видимостью команды социальных проектов",
+          "scope": "description"
+        },
+        {
+          "concept": "Развитие партнёрств",
+          "category": "skill",
+          "status": "task",
+          "quote": "поддерживать текущие партнёрства и развивать новые",
+          "scope": "description"
+        },
+        {
+          "concept": "Организация мероприятий",
+          "category": "skill",
+          "status": "task",
+          "quote": "отвечать за организацию собственных и совместных с партнёрами мероприятий",
+          "scope": "description"
+        },
+        {
+          "concept": "PR социальных проектов",
+          "category": "experience",
+          "status": "required",
+          "quote": "имеете опыт работы в PR в области социальных проектов",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление сотрудниками",
+          "category": "skill",
+          "status": "required",
+          "quote": "управляли командой",
+          "scope": "description"
+        },
+        {
+          "concept": "Контакты в СМИ",
+          "category": "skill",
+          "status": "required",
+          "quote": "имеете контакты в деловых и общественно-политических СМИ",
+          "scope": "description"
+        },
+        {
+          "concept": "Внешние переговоры",
+          "category": "skill",
+          "status": "required",
+          "quote": "владеете навыками переговоров",
+          "scope": "description"
+        },
+        {
+          "concept": "Объяснение сложных тем",
+          "category": "skill",
+          "status": "required",
+          "quote": "умеете понятно рассказывать о сложных темах",
+          "scope": "description"
+        },
+        {
+          "concept": "Антикризисные переговоры",
+          "category": "skill",
+          "status": "required",
+          "quote": "имеете навыки антикризисных переговоров",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "avito_8126",
+      "track": "commercial",
+      "reason": "Создаёт партнёрства на данных и отвечает за их экономику и коммерческий результат. Продуктовые интеграции служат монетизации партнёрских моделей.",
+      "role_evidence": "строить экономику партнёрских моделей и отвечать за их коммерческий результат",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Монетизация данных",
+          "category": "skill",
+          "status": "task",
+          "quote": "искать и формировать новые возможности для монетизации данных Авито: от готовых data-продуктов до нестандартных партнёрских моделей",
+          "scope": "description"
+        },
+        {
+          "concept": "Поиск целевых компаний и индустрий",
+          "category": "skill",
+          "status": "task",
+          "quote": "находить компании и индустрии, где данные партнера могут решать реальные бизнес-задачи",
+          "scope": "description"
+        },
+        {
+          "concept": "Партнёрства от идеи до запуска",
+          "category": "experience",
+          "status": "required",
+          "quote": "имеете опыт самостоятельного ведения крупных партнёрств от идеи до запуска",
+          "scope": "description"
+        },
+        {
+          "concept": "Discovery и ценностное предложение",
+          "category": "skill",
+          "status": "task",
+          "quote": "проводить дискавери с потенциальными партнёрами: разбираться в их задачах, находить точки пересечения и формировать ценностное предложение",
+          "scope": "description"
+        },
+        {
+          "concept": "Бизнес-кейсы",
+          "category": "skill",
+          "status": "task",
+          "quote": "формировать бизнес-кейс",
+          "scope": "description"
+        },
+        {
+          "concept": "Экономика партнёрских моделей",
+          "category": "skill",
+          "status": "task",
+          "quote": "строить экономику партнёрских моделей и отвечать за их коммерческий результат",
+          "scope": "description"
+        },
+        {
+          "concept": "Переговоры с руководителями",
+          "category": "skill",
+          "status": "required",
+          "quote": "умеете вести переговоры и работать с руководителями высокого уровня",
+          "scope": "description"
+        },
+        {
+          "concept": "Кросс-функциональная координация",
+          "category": "skill",
+          "status": "task",
+          "quote": "выстраивать кросс-функциональную проектную работу с внутренними командами данных, аналитики, продукта, продаж, финансов, юристов, информационной безопасности и другими командами Авито",
+          "scope": "description"
+        },
+        {
+          "concept": "Масштабирование партнёрских интеграций",
+          "category": "skill",
+          "status": "task",
+          "quote": "искать способы масштабировать успешные кейсы: превращать отдельные интеграции и пилоты в системные продукты на данных и направления бизнеса",
+          "scope": "description"
+        },
+        {
+          "concept": "Исследование рынка данных и AI",
+          "category": "skill",
+          "status": "task",
+          "quote": "следить за рынком монетизации данных, продуктов на данных и AI, находить интересные практики и адаптировать их для Авито",
+          "scope": "description"
+        },
+        {
+          "concept": "Воронка партнёрств",
+          "category": "skill",
+          "status": "task",
+          "quote": "формировать понятную картину по воронке партнёрств на данных: какие гипотезы проверяем, что запускаем, где есть потенциал роста и где стоит остановиться",
+          "scope": "description"
+        },
+        {
+          "concept": "Коммерциализация data, ML и AI",
+          "category": "experience",
+          "status": "required",
+          "quote": "имеете опыт коммерциализации решений на данных, ML и AI",
+          "scope": "description"
+        },
+        {
+          "concept": "Risk-скоринг, обогащение данных и propensity-модели",
+          "category": "domain",
+          "status": "required",
+          "quote": "понимаете как работают risk-скоринг, обогащение данных и модели склонности",
+          "scope": "description"
+        },
+        {
+          "concept": "Банки, страхование, финтех, реклама или другие компании на данных",
+          "category": "industry",
+          "status": "unclear",
+          "quote": "работали с банками, страховыми компаниями, финтехом, рекламой или другими компаниями, где данные играют ключевую роль",
+          "scope": "description"
+        },
+        {
+          "concept": "Работа с компаниями, где данные создают ценность",
+          "category": "experience",
+          "status": "required",
+          "quote": "работали с банками, страховыми компаниями, финтехом, рекламой или другими компаниями, где данные играют ключевую роль",
+          "scope": "description"
+        },
+        {
+          "concept": "API и сложные B2B-интеграции",
+          "category": "domain",
+          "status": "required",
+          "quote": "запускали API, онлайн-интеграции или другие сложные B2B-интеграции",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ бизнес-моделей и взаимной ценности",
+          "category": "skill",
+          "status": "required",
+          "quote": "умеете разбираться в сложных бизнес-моделях и находить взаимную ценность",
+          "scope": "description"
+        },
+        {
+          "concept": "Несколько инициатив, сроки и стейкхолдеры",
+          "category": "skill",
+          "status": "required",
+          "quote": "умеете управлять несколькими инициативами одновременно, держать сроки, стейкхолдеров и результат",
+          "scope": "description"
+        },
+        {
+          "concept": "Работа на стыке бизнеса и технологий",
+          "category": "skill",
+          "status": "required",
+          "quote": "умеете работать на стыке бизнеса и технологий",
+          "scope": "description"
+        },
+        {
+          "concept": "Data- и ML-продукты и бизнес-эффект",
+          "category": "domain",
+          "status": "required",
+          "quote": "хорошо понимаете, как устроены data- и ML-продукты и где они могут создавать бизнес-эффект",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "avito_8276",
+      "track": "commercial",
+      "reason": "Повышает коммерческую активность заказчиков и выручку через воронки, партнёрскую программу и операционные процессы. Продуктовые барьеры присутствуют, но основной результат выражен в seller-метриках и экономике лидов.",
+      "role_evidence": "прогнозировали метрики селлеров и влияли на них: GMV, ревенью, средний чек",
+      "exclusion": null,
+      "review": true,
+      "requirements": [
+        {
+          "concept": "Конверсия заказчиков в размещение смен",
+          "category": "skill",
+          "status": "task",
+          "quote": "улучшать конверсию от входа в сервис до размещения большего количества смен со стороны заказчиков",
+          "scope": "description"
+        },
+        {
+          "concept": "Выявление барьеров и приоритизация решений",
+          "category": "skill",
+          "status": "task",
+          "quote": "находить продуктовые и операционные барьеры, приоритизировать решения и оценивать эффект",
+          "scope": "description"
+        },
+        {
+          "concept": "Матрица и кросс-функциональные проекты",
+          "category": "skill",
+          "status": "required",
+          "quote": "умеете структурировать задачи и лидировать проекты в матричной команде, включая продукт, продажи и операции",
+          "scope": "description"
+        },
+        {
+          "concept": "Автоматизация устойчивых процессов",
+          "category": "skill",
+          "status": "task",
+          "quote": "превращать проекты в измеримые, автоматизированные и устойчивые процессы",
+          "scope": "description"
+        },
+        {
+          "concept": "Расчёт обратной воронки",
+          "category": "skill",
+          "status": "task",
+          "quote": "собрать для крупной продуктовой сети калькулятор обратной воронки: сколько заявок нужно, чтобы закрыть месячный план по сменам, с разбивкой по дням",
+          "scope": "description"
+        },
+        {
+          "concept": "Партнёрская программа и выплаты",
+          "category": "skill",
+          "status": "task",
+          "quote": "запустить партнёрскую программу для торговых точек:определить механику выплат",
+          "scope": "description"
+        },
+        {
+          "concept": "Маршрутизация заявок",
+          "category": "skill",
+          "status": "task",
+          "quote": "настроить маршрутизацию заявок",
+          "scope": "description"
+        },
+        {
+          "concept": "Партнёрская отчётность",
+          "category": "skill",
+          "status": "task",
+          "quote": "подготовить отчётность для партнёров",
+          "scope": "description"
+        },
+        {
+          "concept": "Исследование рынка и конкурентов",
+          "category": "skill",
+          "status": "task",
+          "quote": "исследовать рынок, конкурентов и риски",
+          "scope": "description"
+        },
+        {
+          "concept": "Гипотезы, пилоты и масштабирование",
+          "category": "method",
+          "status": "task",
+          "quote": "формулировать гипотезы;проверять их на пилотах;масштабировать успешные решения до устойчивого процесса",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт запуска проектов от 4 лет",
+          "category": "experience",
+          "status": "required",
+          "quote": "имеете опыт запуска проектов в такси, доставке, e-grocery или транзакционной бизнес-модели в big tech-компании от 4 лет",
+          "scope": "description"
+        },
+        {
+          "concept": "Такси, доставка, e-grocery или транзакционный big tech",
+          "category": "industry",
+          "status": "unclear",
+          "quote": "имеете опыт запуска проектов в такси, доставке, e-grocery или транзакционной бизнес-модели в big tech-компании от 4 лет",
+          "scope": "description"
+        },
+        {
+          "concept": "Проекты в транзакционных бизнес-моделях или перечисленных секторах",
+          "category": "domain",
+          "status": "required",
+          "quote": "имеете опыт запуска проектов в такси, доставке, e-grocery или транзакционной бизнес-модели в big tech-компании от 4 лет",
+          "scope": "description"
+        },
+        {
+          "concept": "Проекты полного цикла",
+          "category": "experience",
+          "status": "required",
+          "quote": "управляли полным циклом проектов: от запуска до анализа результата",
+          "scope": "description"
+        },
+        {
+          "concept": "Прогноз и рост коммерческих seller-метрик",
+          "category": "skill",
+          "status": "required",
+          "quote": "прогнозировали метрики селлеров и влияли на них: GMV, ревенью, средний чек",
+          "scope": "description"
+        },
+        {
+          "concept": "Массовые пользовательские воронки",
+          "category": "experience",
+          "status": "required",
+          "quote": "работали со сложными пользовательскими воронками, в том числе с десятками тысяч пользователей в месяц",
+          "scope": "description"
+        },
+        {
+          "concept": "Работа с конверсией",
+          "category": "skill",
+          "status": "required",
+          "quote": "понимаете, как работать с конверсией",
+          "scope": "description"
+        },
+        {
+          "concept": "Стоимость и окупаемость лидов",
+          "category": "skill",
+          "status": "required",
+          "quote": "стоимостью и окупаемостью лидов",
+          "scope": "description"
+        },
+        {
+          "concept": "AI-инструменты",
+          "category": "tool",
+          "status": "required",
+          "quote": "уверенно используете AI-инструменты в ежедневной работе",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "ya_47792",
+      "track": "exclude",
+      "reason": "Основной результат — постоянное административное сопровождение обращения с отходами: вывоз, архивы, договоры, запасы и переписка. Координация отдельных акций входит в эту функцию.",
+      "role_evidence": "вести электронный и бумажный архивы экологической документации",
+      "exclusion": "other",
+      "review": true,
+      "requirements": []
+    },
+    {
+      "id": "ya_48347",
+      "track": "commercial",
+      "reason": "Привлекает пользователей контентных сервисов в Финтех и программу лояльности через кросс-сервисные проекты и эксперименты. Роль координирует бизнес-юниты; самостоятельное развитие отдельного продукта не заявлено.",
+      "role_evidence": "Вы будете придумывать и вместе со смежными командами реализовывать кросс-сервисные проекты, в рамках которых десятки миллионов пользователей контентных сервисов становятся пользователями Финтеха и программы лояльности Свои Плюсы.",
+      "exclusion": null,
+      "review": true,
+      "requirements": [
+        {
+          "concept": "Кросс-сервисное привлечение клиентов",
+          "category": "skill",
+          "status": "task",
+          "quote": "Вы будете придумывать и вместе со смежными командами реализовывать кросс-сервисные проекты, в рамках которых десятки миллионов пользователей контентных сервисов становятся пользователями Финтеха и программы лояльности Свои Плюсы.",
+          "scope": "native:duties"
+        },
+        {
+          "concept": "Эксперименты в клиентском привлечении",
+          "category": "method",
+          "status": "task",
+          "quote": "Вам предстоит запускать на поверхностях Плюса и контентных сервисов различные эксперименты для вовлечения пользователей в Финтех и программу лояльности.",
+          "scope": "native:duties"
+        },
+        {
+          "concept": "Координация бизнес-юнитов",
+          "category": "skill",
+          "status": "task",
+          "quote": "Вы будете связующим звеном между всеми задействованными бизнес-юнитами для консолидации контекста и презентации статусов и будущих планов топ-менеджменту Фантеха.",
+          "scope": "native:duties"
+        },
+        {
+          "concept": "Финансовое моделирование",
+          "category": "skill",
+          "status": "required",
+          "quote": "можете не только сделать финансовую модель за несколько часов",
+          "scope": "native:key_qualifications"
+        },
+        {
+          "concept": "Дизайн и интерпретация A/B-тестов",
+          "category": "method",
+          "status": "required",
+          "quote": "предметно обсудить с аналитиками сетап и результаты А/B-теста",
+          "scope": "native:key_qualifications"
+        },
+        {
+          "concept": "Аналитическое мышление",
+          "category": "skill",
+          "status": "required",
+          "quote": "Аналитически мыслите",
+          "scope": "native:key_qualifications"
+        },
+        {
+          "concept": "Структурирование информации",
+          "category": "skill",
+          "status": "required",
+          "quote": "Умеете структурировать информацию",
+          "scope": "native:key_qualifications"
+        },
+        {
+          "concept": "Презентация мыслей и результатов",
+          "category": "skill",
+          "status": "required",
+          "quote": "ёмко выражаете мысли в любом формате (на слайдах, текстом или голосом)",
+          "scope": "native:key_qualifications"
+        },
+        {
+          "concept": "Top-down разбор проблем",
+          "category": "method",
+          "status": "required",
+          "quote": "применяете top-down-подход при разборе проблем",
+          "scope": "native:key_qualifications"
+        },
+        {
+          "concept": "Внутренние коммуникации и согласование",
+          "category": "skill",
+          "status": "required",
+          "quote": "Имеете развитые коммуникативные навыки: умеете договариваться с коллегами в сложных ситуациях",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "sber_4568026",
+      "track": "project",
+      "reason": "Организует полный цикл IT-поставки и релизов программы внедрения криптопродуктов, управляет командной координацией, зависимостями и качеством.",
+      "role_evidence": "организация полного цикла поставки ценности продукта от требований до внедрения в ПРОМ",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Полный цикл IT-поставки",
+          "category": "domain",
+          "status": "required",
+          "quote": "понимание полного цикла внедрения ценности продукта от подготовки требований до внедрения в ПРОМ",
+          "scope": "description"
+        },
+        {
+          "concept": "Релизное планирование",
+          "category": "skill",
+          "status": "task",
+          "quote": "подготовка релизного плана с учетом приоритетов, рисков и зависимостей",
+          "scope": "description"
+        },
+        {
+          "concept": "Согласование релизов",
+          "category": "skill",
+          "status": "task",
+          "quote": "согласование релизов с архитекторами, инфраструктурой и безопасностью",
+          "scope": "description"
+        },
+        {
+          "concept": "План внедрения",
+          "category": "skill",
+          "status": "task",
+          "quote": "подготовка плана внедрения ценности продукта совместно со смежными командами",
+          "scope": "description"
+        },
+        {
+          "concept": "Межфункциональная координация",
+          "category": "skill",
+          "status": "task",
+          "quote": "координация работы кросс функциональных команд",
+          "scope": "description"
+        },
+        {
+          "concept": "Интеграционные и приёмо-сдаточные испытания",
+          "category": "domain",
+          "status": "task",
+          "quote": "организация кросс командного ИФТ, ПСИ с выводом в ПРОД",
+          "scope": "description"
+        },
+        {
+          "concept": "Дашборды и метрики процесса",
+          "category": "skill",
+          "status": "task",
+          "quote": "дашбордов для отслеживание метрик производственного процесса",
+          "scope": "description"
+        },
+        {
+          "concept": "Улучшение delivery-процесса",
+          "category": "skill",
+          "status": "task",
+          "quote": "развитие delivery процесса на основе предсказуемости сроков, качества релизов и эффективности команды",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт Delivery Lead или Manager от трёх лет",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт от 3 х лет в роли Delivery Lead / Delivery Manager",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление командой и IT-поставкой",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт управления кросс функциональной командой и поставкой IT продуктов",
+          "scope": "description"
+        },
+        {
+          "concept": "Scrum и Kanban",
+          "category": "method",
+          "status": "required",
+          "quote": "знание Agile подходов реализации ценности (Scrum, Kanban) и опыт практического применения",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление бэклогом",
+          "category": "skill",
+          "status": "required",
+          "quote": "навыки управления back логом",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление сроками",
+          "category": "skill",
+          "status": "required",
+          "quote": "навыки управления back логом и сроками",
+          "scope": "description"
+        },
+        {
+          "concept": "Учёт зависимостей в планировании",
+          "category": "skill",
+          "status": "required",
+          "quote": "с учетом зависимостей и рисков",
+          "scope": "description"
+        },
+        {
+          "concept": "Учёт рисков в планировании",
+          "category": "skill",
+          "status": "required",
+          "quote": "с учетом зависимостей и рисков",
+          "scope": "description"
+        },
+        {
+          "concept": "Типы интеграционных взаимодействий",
+          "category": "domain",
+          "status": "required",
+          "quote": "понимание типов интеграционных взаимодействий",
+          "scope": "description"
+        },
+        {
+          "concept": "Архитектура систем",
+          "category": "domain",
+          "status": "required",
+          "quote": "вариантов построения архитектуры систем",
+          "scope": "description"
+        },
+        {
+          "concept": "CI/CD",
+          "category": "method",
+          "status": "required",
+          "quote": "организации CI/CD",
+          "scope": "description"
+        },
+        {
+          "concept": "Подходы к тестированию",
+          "category": "domain",
+          "status": "required",
+          "quote": "подходов к тестированию",
+          "scope": "description"
+        },
+        {
+          "concept": "SDD",
+          "category": "method",
+          "status": "required",
+          "quote": "понимание принципов SDD",
+          "scope": "description"
+        },
+        {
+          "concept": "Внедрение AI в производственный процесс",
+          "category": "experience",
+          "status": "nice",
+          "quote": "опыт внедрения AI инструментов или AI агентов в производственный процесс",
+          "scope": "description"
+        },
+        {
+          "concept": "Технический опыт разработки, аналитики, QA или архитектуры",
+          "category": "domain",
+          "status": "nice",
+          "quote": "технический бэкграунд в разработке, аналитике, QA или архитектуре",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт скрам-мастера",
+          "category": "experience",
+          "status": "nice",
+          "quote": "опыт работы Scrum мастером",
+          "scope": "description"
+        },
+        {
+          "concept": "Jira",
+          "category": "tool",
+          "status": "required",
+          "quote": "навыки работы с продуктами линейки Atlassian (Jira, Confluence)",
+          "scope": "description"
+        },
+        {
+          "concept": "Confluence",
+          "category": "tool",
+          "status": "required",
+          "quote": "навыки работы с продуктами линейки Atlassian (Jira, Confluence)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "mtslink_4327951",
+      "track": "project",
+      "reason": "Ведёт технические событийные проекты под ключ: организует подрядчиков, задания, сметы и бюджет. Видеопроизводство является предметной областью поставки, самостоятельное создание контента не заявлено.",
+      "role_evidence": "Реализация проектов под ключ: онлайн-трансляции, телемосты, многокамерные съёмки, телепроизводство, работа с онлайн-платформой, техническое обеспечение мероприятий на территории России и за рубежом",
+      "exclusion": null,
+      "review": true,
+      "requirements": [
+        {
+          "concept": "Реализация проектов под ключ",
+          "category": "skill",
+          "status": "task",
+          "quote": "Реализация проектов под ключ: онлайн-трансляции, телемосты, многокамерные съёмки, телепроизводство, работа с онлайн-платформой, техническое обеспечение мероприятий на территории России и за рубежом",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление подрядчиками",
+          "category": "skill",
+          "status": "task",
+          "quote": "Взаимодействие с подрядчиками: постановка и контроль исполнения творческих и технических задач",
+          "scope": "description"
+        },
+        {
+          "concept": "Подготовка смет",
+          "category": "skill",
+          "status": "task",
+          "quote": "Формирование смет",
+          "scope": "description"
+        },
+        {
+          "concept": "Коммерческие предложения",
+          "category": "skill",
+          "status": "task",
+          "quote": "составление коммерческих предложений",
+          "scope": "description"
+        },
+        {
+          "concept": "Технические задания",
+          "category": "skill",
+          "status": "required",
+          "quote": "Умение находить информацию, самостоятельно формулировать и ставить ТЗ",
+          "scope": "description"
+        },
+        {
+          "concept": "Документооборот",
+          "category": "skill",
+          "status": "task",
+          "quote": "документооборот",
+          "scope": "description"
+        },
+        {
+          "concept": "Контроль бюджета проекта",
+          "category": "skill",
+          "status": "task",
+          "quote": "Контроль исполнения бюджета",
+          "scope": "description"
+        },
+        {
+          "concept": "Технический продакшен, события или видеопроизводство",
+          "category": "experience",
+          "status": "required",
+          "quote": "Опыт работы в техническом продакшене, event-индустрии, теле или видеопроизводстве",
+          "scope": "description"
+        },
+        {
+          "concept": "Технологии трансляций и съёмок",
+          "category": "domain",
+          "status": "required",
+          "quote": "Понимание принципов проведения онлайн-трансляций, телемостов, многокамерных съёмок",
+          "scope": "description"
+        },
+        {
+          "concept": "Самостоятельное ведение работы",
+          "category": "skill",
+          "status": "required",
+          "quote": "Высокая степень самостоятельности в работе",
+          "scope": "description"
+        },
+        {
+          "concept": "Тайм-менеджмент",
+          "category": "method",
+          "status": "required",
+          "quote": "владение инструментами тайм-менеджмента",
+          "scope": "description"
+        },
+        {
+          "concept": "Коммуникация",
+          "category": "skill",
+          "status": "required",
+          "quote": "Хорошие коммуникативные и презентационные навыки",
+          "scope": "description"
+        },
+        {
+          "concept": "Презентации",
+          "category": "skill",
+          "status": "required",
+          "quote": "Хорошие коммуникативные и презентационные навыки",
+          "scope": "description"
+        },
+        {
+          "concept": "Поиск информации",
+          "category": "skill",
+          "status": "required",
+          "quote": "Умение находить информацию",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "ozon_137680238",
+      "track": "project",
+      "reason": "Организует производство и запуск рекламных спецпроектов, контролирует бюджет, взаимодействие участников и KPI. Креативные идеи и рекламные механики делают роль смешанной.",
+      "role_evidence": "Организация и координация продакшен-процессов: взаимодействие с отделами разработки, дизайна и заказчиками",
+      "exclusion": null,
+      "review": true,
+      "requirements": [
+        {
+          "concept": "Разработка креативных идей",
+          "category": "skill",
+          "status": "task",
+          "quote": "Разработка креативных идей для спецпроектов",
+          "scope": "description"
+        },
+        {
+          "concept": "Презентация идей",
+          "category": "skill",
+          "status": "required",
+          "quote": "Навыки переговоров и презентации идей",
+          "scope": "description"
+        },
+        {
+          "concept": "Бюджет проекта",
+          "category": "skill",
+          "status": "task",
+          "quote": "Оценка бюджета продакшена и контроль его исполнения.",
+          "scope": "description"
+        },
+        {
+          "concept": "Медиапланы",
+          "category": "skill",
+          "status": "task",
+          "quote": "Проверка и корректировка медиапланов",
+          "scope": "description"
+        },
+        {
+          "concept": "Координация участников проекта",
+          "category": "skill",
+          "status": "task",
+          "quote": "Организация и координация продакшен-процессов: взаимодействие с отделами разработки, дизайна и заказчиками",
+          "scope": "description"
+        },
+        {
+          "concept": "Запуск проектов",
+          "category": "skill",
+          "status": "task",
+          "quote": "Запуск проектов, контроль выполнения KPI, мониторинг эффективности",
+          "scope": "description"
+        },
+        {
+          "concept": "Контроль KPI и эффективности",
+          "category": "skill",
+          "status": "task",
+          "quote": "контроль выполнения KPI, мониторинг эффективности",
+          "scope": "description"
+        },
+        {
+          "concept": "Отчётность",
+          "category": "skill",
+          "status": "task",
+          "quote": "Подготовка промежуточных и итоговых отчетов",
+          "scope": "description"
+        },
+        {
+          "concept": "Рекламные механики",
+          "category": "domain",
+          "status": "task",
+          "quote": "Разработка рекламных механик в рамках спецпроектов.",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт спецпроектов",
+          "category": "experience",
+          "status": "required",
+          "quote": "Опыт работы над спецпроектами от года",
+          "scope": "description"
+        },
+        {
+          "concept": "Креативное продюсирование",
+          "category": "experience",
+          "status": "required",
+          "quote": "Опыт в креативном продюсировании",
+          "scope": "description"
+        },
+        {
+          "concept": "Процесс разработки лендингов",
+          "category": "domain",
+          "status": "required",
+          "quote": "Базовое понимание процесса разработки лендингов",
+          "scope": "description"
+        },
+        {
+          "concept": "Творчество и аналитика",
+          "category": "skill",
+          "status": "required",
+          "quote": "Умение работать на стыке творчества и аналитики",
+          "scope": "description"
+        },
+        {
+          "concept": "Внешние переговоры",
+          "category": "skill",
+          "status": "required",
+          "quote": "Навыки переговоров и презентации идей",
+          "scope": "description"
+        },
+        {
+          "concept": "Адаптация решений к изменению требований",
+          "category": "skill",
+          "status": "required",
+          "quote": "Гибкость и способность решать задачи в условиях меняющихся требований.",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "sber_4578746",
+      "track": "commercial",
+      "reason": "Помогает корпоративным клиентам получить эффект от технологических решений и развивает отношения с партнёрами. Реализация проектов входит в сопровождение клиентского успеха.",
+      "role_evidence": "внедрение проектов технологического развития и ИИ трансформации, структурирование решений с использованием экосистемы и партнёров",
+      "exclusion": null,
+      "review": true,
+      "requirements": [
+        {
+          "concept": "Стратегические сессии и переговоры",
+          "category": "skill",
+          "status": "task",
+          "quote": "проведение и участие в стратегических диалогах, сессиях и переговорах",
+          "scope": "description"
+        },
+        {
+          "concept": "Цели бизнеса и технологические гипотезы",
+          "category": "skill",
+          "status": "task",
+          "quote": "помощь в формулировании целей развития бизнеса и формировании гипотез технологического развития и ИИ трансформации",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ бизнес-модели и процессов",
+          "category": "skill",
+          "status": "task",
+          "quote": "совместное с клиентом описание и анализ бизнес модели и процессов",
+          "scope": "description"
+        },
+        {
+          "concept": "Приоритизация инициатив",
+          "category": "skill",
+          "status": "task",
+          "quote": "помощь в формировании и приоритизации проектных инициатив по технологическому развитию",
+          "scope": "description"
+        },
+        {
+          "concept": "Развитие партнёрских отношений",
+          "category": "skill",
+          "status": "task",
+          "quote": "развитие отношений с партнёрами",
+          "scope": "description"
+        },
+        {
+          "concept": "Координация клиента и партнёров",
+          "category": "skill",
+          "status": "task",
+          "quote": "организация эффективной коммуникации в треугольнике «Клиент — Партнёр — Сбер»",
+          "scope": "description"
+        },
+        {
+          "concept": "Внедрение технологических проектов",
+          "category": "skill",
+          "status": "task",
+          "quote": "внедрение проектов технологического развития и ИИ трансформации",
+          "scope": "description"
+        },
+        {
+          "concept": "Сквозные процессы реализации",
+          "category": "skill",
+          "status": "task",
+          "quote": "организация сквозных процессов для реализации проектов ИИ трансформации и технологического развития клиентов",
+          "scope": "description"
+        },
+        {
+          "concept": "Оценка эффекта технологий",
+          "category": "skill",
+          "status": "task",
+          "quote": "максимизация выгоды от использования ИИ и других фокусных технологий",
+          "scope": "description"
+        },
+        {
+          "concept": "Внедрение проектных стандартов",
+          "category": "skill",
+          "status": "task",
+          "quote": "внедрение стандартов работы и методологий реализации проектов",
+          "scope": "description"
+        },
+        {
+          "concept": "Клиентские мероприятия",
+          "category": "skill",
+          "status": "task",
+          "quote": "поддержка организации мероприятий для клиентов (презентации, форумы, воркшопы)",
+          "scope": "description"
+        },
+        {
+          "concept": "Высшее профильное образование",
+          "category": "education",
+          "status": "required",
+          "quote": "высшее образование (экономическое, техническое, математическое)",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт корпоративных продаж, сервисов или проектов",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт работы на позициях: менеджер по продажам крупным корпоративным клиентам, старший менеджер по нефинансовым сервисам или руководитель проектов",
+          "scope": "description"
+        },
+        {
+          "concept": "AI-архитектура и технологии",
+          "category": "domain",
+          "status": "required",
+          "quote": "базовое понимание архитектуры ИИ трансформации и ключевых технологий (Cloud, Fintech, Data Science, IoT)",
+          "scope": "description"
+        },
+        {
+          "concept": "Работа с бизнес-процессами",
+          "category": "skill",
+          "status": "required",
+          "quote": "умение работать с бизнес процессами компании на уровне выполнения задач",
+          "scope": "description"
+        },
+        {
+          "concept": "Agile и Waterfall",
+          "category": "method",
+          "status": "required",
+          "quote": "навыки управления проектами по методологиям Agile/Waterfall",
+          "scope": "description"
+        },
+        {
+          "concept": "Банковские продукты",
+          "category": "domain",
+          "status": "required",
+          "quote": "знание основных финансовых Core продуктов банка",
+          "scope": "description"
+        },
+        {
+          "concept": "Нефинансовые сервисы экосистемы",
+          "category": "domain",
+          "status": "required",
+          "quote": "нефинансовых сервисов экосистемы",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "sber_4574674",
+      "track": "commercial",
+      "reason": "Запускает партнёрства и каналы до коммерческого результата, отвечает за переговоры, экономику сделок и KPI.",
+      "role_evidence": "запускать новые партнерства, продукты, каналы продаж или пилотные проекты от идеи до коммерческого результата",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Развитие партнёрств и каналов",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт в business development / партнерских продажах / развитии каналов от 3 лет",
+          "scope": "description"
+        },
+        {
+          "concept": "Банки, страхование, инвестиции, финтех или экосистемы",
+          "category": "industry",
+          "status": "unclear",
+          "quote": "опыт в банках, страховании, инвестициях, финтехе или крупных экосистемах",
+          "scope": "description"
+        },
+        {
+          "concept": "Банки, страхование, инвестиции, финтех или экосистемы",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт в банках, страховании, инвестициях, финтехе или крупных экосистемах",
+          "scope": "description"
+        },
+        {
+          "concept": "Переговоры с ЛПР",
+          "category": "skill",
+          "status": "task",
+          "quote": "вести сложные переговоры и согласования на уровне ЛПР и топ менеджмента партнеров",
+          "scope": "description"
+        },
+        {
+          "concept": "Воронка и эффективность канала",
+          "category": "skill",
+          "status": "required",
+          "quote": "умение работать с цифрами: анализировать воронку, продажи, конверсию, потенциал канала и эффективность инициатив",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление стейкхолдерами без полномочий",
+          "category": "skill",
+          "status": "required",
+          "quote": "умение выстраивать отношения с несколькими стейкхолдерами одновременно и двигать проект в условиях отсутствия прямого административного ресурса",
+          "scope": "description"
+        },
+        {
+          "concept": "Экономика сделки",
+          "category": "skill",
+          "status": "required",
+          "quote": "понимание экономики сделки: объем продаж, доходность, комиссия, маржинальность, потенциал клиента/партнера",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление проектами и KPI",
+          "category": "skill",
+          "status": "task",
+          "quote": "управлять проектами и достигать KPI",
+          "scope": "description"
+        },
+        {
+          "concept": "AI-инструменты",
+          "category": "tool",
+          "status": "required",
+          "quote": "опыт работы с ИИ инструментами",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "tbank_6625fb68-eba7-48bc-abf7-fa02193a8de8",
+      "track": "project",
+      "reason": "Ведёт маркетинговые спецпроекты и мероприятия от идеи до реализации, управляя задачами, сроками, участниками и бюджетом.",
+      "role_evidence": "Вести спецпроекты от создания идеи до реализации, продвижения и подготовки отчетности",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Digital, медиа, BTL или работа на стороне бренда",
+          "category": "industry",
+          "status": "unclear",
+          "quote": "опыт работы в digital, медиа или\nBTL-агентстве\nлибо на стороне бренда",
+          "scope": "description"
+        },
+        {
+          "concept": "Digital, медиа, BTL или работа на стороне бренда",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт работы в digital, медиа или\nBTL-агентстве\nлибо на стороне бренда",
+          "scope": "description"
+        },
+        {
+          "concept": "Полный цикл проектов",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт ведения проектов от идеи до реализации, включая планирование задач, сроков и бюджета",
+          "scope": "description"
+        },
+        {
+          "concept": "Планирование задач и сроков",
+          "category": "skill",
+          "status": "required",
+          "quote": "планирование задач, сроков и бюджета",
+          "scope": "description"
+        },
+        {
+          "concept": "Бюджет проектов",
+          "category": "skill",
+          "status": "required",
+          "quote": "планирование задач, сроков и бюджета",
+          "scope": "description"
+        },
+        {
+          "concept": "Координация участников",
+          "category": "skill",
+          "status": "required",
+          "quote": "Умеете выстраивать взаимодействие внутри команды и координировать участников проекта",
+          "scope": "description"
+        },
+        {
+          "concept": "Креативные идеи",
+          "category": "skill",
+          "status": "task",
+          "quote": "Реализовывать креативные идеи для digital и офлайн-спецпроектов",
+          "scope": "description"
+        },
+        {
+          "concept": "Защита идей",
+          "category": "skill",
+          "status": "task",
+          "quote": "Презентовать и защищать идеи перед командой",
+          "scope": "description"
+        },
+        {
+          "concept": "Медиапланы",
+          "category": "skill",
+          "status": "task",
+          "quote": "составлять медиапланы",
+          "scope": "description"
+        },
+        {
+          "concept": "Метрики успеха",
+          "category": "skill",
+          "status": "task",
+          "quote": "определять основные метрики успеха проекта",
+          "scope": "description"
+        },
+        {
+          "concept": "Агентства, партнёры и подрядчики",
+          "category": "skill",
+          "status": "task",
+          "quote": "Взаимодействовать с внутренними командами, агентствами, партнерами и подрядчиками",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ результатов кампаний",
+          "category": "skill",
+          "status": "task",
+          "quote": "Готовить посткампейны по результатам проектов и формулировать выводы на будущее",
+          "scope": "description"
+        },
+        {
+          "concept": "Годовой календарь активности",
+          "category": "skill",
+          "status": "task",
+          "quote": "Вести календарь событий и спецпроектов, планировать годовую активность и бюджет",
+          "scope": "description"
+        },
+        {
+          "concept": "Креативный продакшн",
+          "category": "domain",
+          "status": "required",
+          "quote": "Знаете основы продакшна и понимаете процесс создания креативов, баннеров, лендингов и других материалов",
+          "scope": "description"
+        },
+        {
+          "concept": "Диаграммы Ганта",
+          "category": "method",
+          "status": "required",
+          "quote": "Умеете планировать проекты и работать с диаграммами Ганта",
+          "scope": "description"
+        },
+        {
+          "concept": "Подготовка презентаций",
+          "category": "skill",
+          "status": "required",
+          "quote": "Умеете готовить презентации",
+          "scope": "description"
+        },
+        {
+          "concept": "Excel",
+          "category": "tool",
+          "status": "required",
+          "quote": "работать в Excel",
+          "scope": "description"
+        },
+        {
+          "concept": "Инфоповоды и тренды",
+          "category": "domain",
+          "status": "required",
+          "quote": "Следите за актуальными инфоповодами, трендами и новостями",
+          "scope": "description"
+        },
+        {
+          "concept": "Автомобильная культура",
+          "category": "domain",
+          "status": "required",
+          "quote": "Интересуетесь автомобилями и автомобильной культурой",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "vk_54825",
+      "track": "commercial",
+      "reason": "Закупает рекламу у инфлюенсеров, добивается выгодных условий и повышает коммерческую эффективность размещений и партнёрской сети.",
+      "role_evidence": "Обеспечение максимальной коммерческой эффективности закупок за счёт переговоров, получения эксклюзивных условий, дополнительных бонусов, скидок и приоритетного доступа к рекламным размещениям",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Высшее образование",
+          "category": "education",
+          "status": "required",
+          "quote": "Высшее образование",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт медиабаинга или аккаунтинга",
+          "category": "experience",
+          "status": "required",
+          "quote": "Опыт работы медиабаером, аккаунт-менеджером или менеджером по работе с инфлюенсерами от двух лет",
+          "scope": "description"
+        },
+        {
+          "concept": "Агентство или сторона бренда",
+          "category": "experience",
+          "status": "required",
+          "quote": "в рекламном агентстве, инфлюенс-агентстве или на стороне бренда",
+          "scope": "description"
+        },
+        {
+          "concept": "Рынок инфлюенс-маркетинга",
+          "category": "industry",
+          "status": "required",
+          "quote": "Глубокое понимание рынка инфлюенс-маркетинга, знание ведущих агентств, менеджеров и ключевых инфлюенсеров",
+          "scope": "description"
+        },
+        {
+          "concept": "Сеть контактов",
+          "category": "skill",
+          "status": "nice",
+          "quote": "Наличие собственной базы теплых контактов среди блогеров, менеджеров и агентств будет существенным преимуществом",
+          "scope": "description"
+        },
+        {
+          "concept": "Коммерческие переговоры",
+          "category": "skill",
+          "status": "required",
+          "quote": "Подтверждённый опыт ведения переговоров и достижения выгодных коммерческих условий, включая получение дополнительных скидок, бонусов, эксклюзивных условий и приоритетного размещения",
+          "scope": "description"
+        },
+        {
+          "concept": "Рекламные бюджеты и сметы",
+          "category": "skill",
+          "status": "required",
+          "quote": "Опыт формирования и ведения рекламных бюджетов, подготовки смет и контроля финансовых показателей рекламных кампаний",
+          "scope": "description"
+        },
+        {
+          "concept": "Excel",
+          "category": "tool",
+          "status": "required",
+          "quote": "Уверенное владение Microsoft Excel, Word, PowerPoint, Excel, включая работу с формулами, сводными таблицами и анализом данных",
+          "scope": "description"
+        },
+        {
+          "concept": "Word",
+          "category": "tool",
+          "status": "required",
+          "quote": "Microsoft Excel, Word, PowerPoint",
+          "scope": "description"
+        },
+        {
+          "concept": "PowerPoint",
+          "category": "tool",
+          "status": "required",
+          "quote": "Microsoft Excel, Word, PowerPoint",
+          "scope": "description"
+        },
+        {
+          "concept": "Стрессоустойчивость",
+          "category": "skill",
+          "status": "required",
+          "quote": "Высокий уровень стрессоустойчивости",
+          "scope": "description"
+        },
+        {
+          "concept": "Работа при сжатых сроках и нагрузке",
+          "category": "skill",
+          "status": "required",
+          "quote": "способность эффективно работать в условиях сжатых сроков, высокой нагрузки",
+          "scope": "description"
+        },
+        {
+          "concept": "Параллельные проекты",
+          "category": "skill",
+          "status": "required",
+          "quote": "нескольких параллельных проектов",
+          "scope": "description"
+        },
+        {
+          "concept": "Адаптация процессов",
+          "category": "skill",
+          "status": "required",
+          "quote": "Адаптивность, гибкость мышления и готовность быстро перестраивать процессы",
+          "scope": "description"
+        },
+        {
+          "concept": "Самостоятельные решения",
+          "category": "skill",
+          "status": "required",
+          "quote": "Умение самостоятельно принимать решения",
+          "scope": "description"
+        },
+        {
+          "concept": "Приоритизация",
+          "category": "skill",
+          "status": "required",
+          "quote": "расставлять приоритеты",
+          "scope": "description"
+        },
+        {
+          "concept": "Реакция на форс-мажор",
+          "category": "skill",
+          "status": "required",
+          "quote": "оперативно реагировать на форс-мажорные ситуации",
+          "scope": "description"
+        },
+        {
+          "concept": "Грамотная коммуникация",
+          "category": "skill",
+          "status": "required",
+          "quote": "Развитые коммуникативные навыки, грамотная устная и письменная речь",
+          "scope": "description"
+        },
+        {
+          "concept": "Долгосрочные партнёрские отношения",
+          "category": "skill",
+          "status": "required",
+          "quote": "умение выстраивать долгосрочные партнёрские отношения с блогерами, агентствами и партнёрами",
+          "scope": "description"
+        },
+        {
+          "concept": "Полный цикл рекламных закупок",
+          "category": "skill",
+          "status": "task",
+          "quote": "Полный цикл закупки рекламных размещений у инфлюенсеров",
+          "scope": "description"
+        },
+        {
+          "concept": "Подбор инфлюенсеров",
+          "category": "skill",
+          "status": "task",
+          "quote": "Подбор релевантных инфлюенсеров",
+          "scope": "description"
+        },
+        {
+          "concept": "Медиапланы",
+          "category": "skill",
+          "status": "task",
+          "quote": "формирование медиапланов",
+          "scope": "description"
+        },
+        {
+          "concept": "Коммерческие предложения",
+          "category": "skill",
+          "status": "task",
+          "quote": "Подготовка коммерческих предложений",
+          "scope": "description"
+        },
+        {
+          "concept": "Контроль реализации кампаний",
+          "category": "skill",
+          "status": "task",
+          "quote": "Контроль всех этапов реализации рекламных кампаний от согласования условий до выхода рекламной интеграции",
+          "scope": "description"
+        },
+        {
+          "concept": "Контроль KPI кампаний",
+          "category": "skill",
+          "status": "task",
+          "quote": "Контроль выполнения KPI рекламных кампаний, своевременное выявление отклонений и принятие мер для достижения плановых показателей",
+          "scope": "description"
+        },
+        {
+          "concept": "Координация команд и подрядчиков",
+          "category": "skill",
+          "status": "task",
+          "quote": "Координация работы с внутренними командами, подрядчиками и партнёрами",
+          "scope": "description"
+        },
+        {
+          "concept": "Оптимизация закупок и процессов",
+          "category": "skill",
+          "status": "task",
+          "quote": "повышение эффективности закупок, оптимизацию процессов и развитие партнёрской сети",
+          "scope": "description"
+        },
+        {
+          "concept": "Расширение пула инфлюенсеров",
+          "category": "skill",
+          "status": "task",
+          "quote": "расширения пула инфлюенсеров",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ эффективности закупок",
+          "category": "skill",
+          "status": "task",
+          "quote": "Анализ эффективности закупок",
+          "scope": "description"
+        },
+        {
+          "concept": "Отчётность по показателям",
+          "category": "skill",
+          "status": "task",
+          "quote": "подготовка отчётности по ключевым показателям",
+          "scope": "description"
+        },
+        {
+          "concept": "Рекомендации по размещениям",
+          "category": "skill",
+          "status": "task",
+          "quote": "формирование рекомендаций по оптимизации размещений",
+          "scope": "description"
+        },
+        {
+          "concept": "Мониторинг рынка",
+          "category": "skill",
+          "status": "task",
+          "quote": "Мониторинг рынка, поиск новых инфлюенсеров, агентств и инструментов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "sber_4575286",
+      "track": "exclude",
+      "reason": "Основной результат — методология безопасной разработки, оценка соответствия ГОСТ, внутренние стандарты и консультации командам. Общий пункт об управлении проектами обслуживает эту профессиональную функцию.",
+      "role_evidence": "разработка/актуализация/проверка ВНД, Стандартов, Процессов Компании с учетом требований по РБПО",
+      "exclusion": "other",
+      "review": true,
+      "requirements": []
+    },
+    {
+      "id": "tbank_dff54014-1b4f-4f54-97be-d15d58af174a",
+      "track": "project",
+      "reason": "Организует образовательные и карьерные мероприятия, координирует смежные команды, вузы и школьные площадки. Помощь с трудоустройством входит в реализацию этих программ.",
+      "role_evidence": "Организовывать обучающие курсы и карьерные мероприятия в вузах Москвы, Санкт-Петербурга и других городов",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Организация образовательных курсов",
+          "category": "skill",
+          "status": "task",
+          "quote": "Организовывать обучающие курсы и карьерные мероприятия в вузах Москвы, Санкт-Петербурга и других городов",
+          "scope": "native:public_full_text"
+        },
+        {
+          "concept": "Организация карьерных мероприятий",
+          "category": "skill",
+          "status": "task",
+          "quote": "Организовывать обучающие курсы и карьерные мероприятия в вузах Москвы, Санкт-Петербурга и других городов",
+          "scope": "native:public_full_text"
+        },
+        {
+          "concept": "Помощь студентам с трудоустройством",
+          "category": "skill",
+          "status": "task",
+          "quote": "Помогать студентам и выпускникам с трудоустройством в компанию",
+          "scope": "native:public_full_text"
+        },
+        {
+          "concept": "Внутренние проектные коммуникации",
+          "category": "skill",
+          "status": "task",
+          "quote": "Много общаться со смежными командами по проектам",
+          "scope": "native:public_full_text"
+        },
+        {
+          "concept": "Организация школьных мероприятий",
+          "category": "skill",
+          "status": "task",
+          "quote": "Организовывать экскурсии, олимпиады и другие мероприятия для школьников",
+          "scope": "native:public_full_text"
+        },
+        {
+          "concept": "Взаимодействие с образовательными участниками",
+          "category": "skill",
+          "status": "task",
+          "quote": "Взаимодействовать с преподавателями, студентами, школами и учителями",
+          "scope": "native:public_full_text"
+        },
+        {
+          "concept": "Высшее техническое образование или обучение",
+          "category": "education",
+          "status": "nice",
+          "quote": "Получили высшее техническое образование или учитесь на технической специальности",
+          "scope": "native:public_full_text"
+        },
+        {
+          "concept": "Опыт офлайн-мероприятий",
+          "category": "experience",
+          "status": "nice",
+          "quote": "Имеете опыт организации\nофлайн-мероприятий",
+          "scope": "native:public_full_text"
+        },
+        {
+          "concept": "Коммуникация с людьми",
+          "category": "skill",
+          "status": "nice",
+          "quote": "Готовы много общаться с людьми",
+          "scope": "native:public_full_text"
+        },
+        {
+          "concept": "Работа со студентами или школьниками",
+          "category": "experience",
+          "status": "nice",
+          "quote": "Имеете опыт работы со студентами или школьниками",
+          "scope": "native:public_full_text"
+        },
+        {
+          "concept": "Структурирование и обработка информации",
+          "category": "skill",
+          "status": "nice",
+          "quote": "Понимаете, как структурировать информацию и эффективно ее обрабатывать",
+          "scope": "native:public_full_text"
+        },
+        {
+          "concept": "Декомпозиция задач",
+          "category": "skill",
+          "status": "nice",
+          "quote": "Хорошо декомпозируете задачи",
+          "scope": "native:public_full_text"
+        },
+        {
+          "concept": "Соблюдение сроков",
+          "category": "skill",
+          "status": "nice",
+          "quote": "соблюдаете дедлайны",
+          "scope": "native:public_full_text"
+        }
+      ]
+    },
+    {
+      "id": "sber_4351924",
+      "track": "commercial",
+      "reason": "Поддерживает продажи корпоративных банковских продуктов: управляет pipeline, помогает клиентским менеджерам и обеспечивает бизнес-планы. Пилоты служат улучшению этого направления.",
+      "role_evidence": "мониторить организацию и контролировать формирование Pipeline по фокусным продуктам обеспечивать выполнение бизнес планов",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Развитие коммерческого направления",
+          "category": "skill",
+          "status": "task",
+          "quote": "сопровождать и развивать направление продуктов корпоративного блока",
+          "scope": "description"
+        },
+        {
+          "concept": "Проверка гипотез и пилоты",
+          "category": "method",
+          "status": "task",
+          "quote": "проводить тестирование гипотез, пилотировать новые инструменты и продукты",
+          "scope": "description"
+        },
+        {
+          "concept": "Методологическая поддержка продаж",
+          "category": "skill",
+          "status": "task",
+          "quote": "обеспечивать методологическую поддержку клиентским менеджерам по продуктам",
+          "scope": "description"
+        },
+        {
+          "concept": "Разбор клиентских кейсов и обратная связь",
+          "category": "skill",
+          "status": "task",
+          "quote": "анализировать спорные кейсы, предоставлять обратную связь от клиентов и клиентских менеджеров",
+          "scope": "description"
+        },
+        {
+          "concept": "Контроль воронки и бизнес-планов",
+          "category": "skill",
+          "status": "task",
+          "quote": "мониторить организацию и контролировать формирование Pipeline по фокусным продуктам обеспечивать выполнение бизнес планов",
+          "scope": "description"
+        },
+        {
+          "concept": "Улучшение процессов и продуктов",
+          "category": "skill",
+          "status": "task",
+          "quote": "участвовать в организации продуктовых Гемб, направлять предложения в ЦА по улучшению и доработке",
+          "scope": "description"
+        },
+        {
+          "concept": "Высшее экономическое образование",
+          "category": "education",
+          "status": "required",
+          "quote": "высшее экономическое образование",
+          "scope": "description"
+        },
+        {
+          "concept": "Корпоративные банковские продукты",
+          "category": "domain",
+          "status": "required",
+          "quote": "знание корпоративных банковских продуктов и процессов",
+          "scope": "description"
+        },
+        {
+          "concept": "Работа с крупнейшими клиентами",
+          "category": "domain",
+          "status": "required",
+          "quote": "понимание бизнес ритма блока крупнейших клиентов",
+          "scope": "description"
+        },
+        {
+          "concept": "Внешнеэкономическая деятельность",
+          "category": "domain",
+          "status": "required",
+          "quote": "понимание ВЭД",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление проектами",
+          "category": "skill",
+          "status": "required",
+          "quote": "навыки управления проектами",
+          "scope": "description"
+        },
+        {
+          "concept": "Системное мышление",
+          "category": "skill",
+          "status": "required",
+          "quote": "системное и аналитическое мышление",
+          "scope": "description"
+        },
+        {
+          "concept": "Аналитическое мышление",
+          "category": "skill",
+          "status": "required",
+          "quote": "аналитическое мышление",
+          "scope": "description"
+        },
+        {
+          "concept": "Переговоры",
+          "category": "skill",
+          "status": "required",
+          "quote": "навыки ведения переговоров",
+          "scope": "description"
+        },
+        {
+          "concept": "Эффективная коммуникация",
+          "category": "skill",
+          "status": "required",
+          "quote": "эффективной коммуникации",
+          "scope": "description"
+        },
+        {
+          "concept": "ИИ-инструменты",
+          "category": "tool",
+          "status": "required",
+          "quote": "активное применение современных ИИ инструментов в работе",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "sber_4548835",
+      "track": "commercial",
+      "reason": "Повышает эффективность комплаенс-процессов и клиентского обслуживания через анализ, автоматизацию и контроль метрик. Есть развитие рабочего места аналитика, но основная задача шире этого продукта.",
+      "role_evidence": "анализ эффективности процессов комплаенс, выявление проблемных зон, формирование предложений по улучшению и оптимизации",
+      "exclusion": null,
+      "review": true,
+      "requirements": [
+        {
+          "concept": "Анализ и оптимизация процессов",
+          "category": "skill",
+          "status": "task",
+          "quote": "анализ эффективности процессов комплаенс, выявление проблемных зон, формирование предложений по улучшению и оптимизации",
+          "scope": "description"
+        },
+        {
+          "concept": "Оценка качества AI-агентов",
+          "category": "domain",
+          "status": "task",
+          "quote": "анализ эффективности деятельности агентов в процессах комплаенс, улучшение качества их работы",
+          "scope": "description"
+        },
+        {
+          "concept": "Межфункциональная координация",
+          "category": "skill",
+          "status": "task",
+          "quote": "взаимодействие с командами бизнеса в рамках кросс функциональных задач",
+          "scope": "description"
+        },
+        {
+          "concept": "Автоматизация рабочего места",
+          "category": "domain",
+          "status": "task",
+          "quote": "формирование и внедрение стратегии развития рабочего места аналитика, в том числе с использованием GenAI технологий",
+          "scope": "description"
+        },
+        {
+          "concept": "Бизнес-, функциональные и интеграционные требования",
+          "category": "skill",
+          "status": "required",
+          "quote": "опыт проработки бизнес требований, описания бизнес процессов, написания и согласования функциональных/нефункциональных требований, требований к интеграции",
+          "scope": "description"
+        },
+        {
+          "concept": "Постановка и контроль IT-задач",
+          "category": "skill",
+          "status": "task",
+          "quote": "постановка задач в бэклоги ИТ команд и контроль реализации",
+          "scope": "description"
+        },
+        {
+          "concept": "A/B-тестирование и пилоты",
+          "category": "method",
+          "status": "task",
+          "quote": "реализация a/b тестирования, запуск и сопровождение пилотных проектов",
+          "scope": "description"
+        },
+        {
+          "concept": "Описание процессов",
+          "category": "skill",
+          "status": "task",
+          "quote": "разработка и актуализация схем процессов",
+          "scope": "description"
+        },
+        {
+          "concept": "Контроль процессных метрик",
+          "category": "skill",
+          "status": "task",
+          "quote": "контроль за целевыми метриками процессов",
+          "scope": "description"
+        },
+        {
+          "concept": "Высшее экономическое, техническое или юридическое образование",
+          "category": "education",
+          "status": "required",
+          "quote": "высшее экономическое, техническое или юридическое образование",
+          "scope": "description"
+        },
+        {
+          "concept": "Операционные процессы банка",
+          "category": "domain",
+          "status": "required",
+          "quote": "глубокое понимание операционных процессов банка",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт полного цикла проектов",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт участия или управления проектами (от формирования концепции до реализации проекта)",
+          "scope": "description"
+        },
+        {
+          "concept": "Визуализация информации",
+          "category": "skill",
+          "status": "required",
+          "quote": "навыки структурирования и визуализации информации",
+          "scope": "description"
+        },
+        {
+          "concept": "Материалы для стейкхолдеров",
+          "category": "skill",
+          "status": "required",
+          "quote": "подготовки материалов для коммуникаций со стейкхолдерами",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ и систематизация информации",
+          "category": "skill",
+          "status": "required",
+          "quote": "аналитическое мышление и умение систематизировать информацию, работать с большим объемом информации",
+          "scope": "description"
+        },
+        {
+          "concept": "Многозадачность",
+          "category": "skill",
+          "status": "required",
+          "quote": "в режиме многозадачности",
+          "scope": "description"
+        },
+        {
+          "concept": "Коммуникация",
+          "category": "skill",
+          "status": "required",
+          "quote": "развитые коммуникативные навыки",
+          "scope": "description"
+        },
+        {
+          "concept": "Переговоры",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт ведения переговоров",
+          "scope": "description"
+        },
+        {
+          "concept": "Самостоятельность и самоорганизация",
+          "category": "skill",
+          "status": "required",
+          "quote": "высокий уровень самостоятельности и самоорганизованност",
+          "scope": "description"
+        },
+        {
+          "concept": "Работа с ПК",
+          "category": "tool",
+          "status": "required",
+          "quote": "уверенное владение ПК",
+          "scope": "description"
+        },
+        {
+          "concept": "MS Office",
+          "category": "tool",
+          "status": "required",
+          "quote": "знание MS Office",
+          "scope": "description"
+        },
+        {
+          "concept": "Табличные инструменты",
+          "category": "tool",
+          "status": "required",
+          "quote": "MS Excel: формулы, сводные таблицы",
+          "scope": "description"
+        },
+        {
+          "concept": "Автоматизация и агентизация процессов",
+          "category": "experience",
+          "status": "nice",
+          "quote": "опыт в трансформации и редизайне процессов с фокусом на автоматизацию и агентизацию",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "sber_4551551",
+      "track": "commercial",
+      "reason": "Развивает эффективность территориального банка через продажи, прибыль и портфель бизнес-экспериментов. Региональные проекты и change-повестка — способы достижения этих бизнес-целей.",
+      "role_evidence": "организовывать и обеспечивать исполнение планов продаж продуктовой полки",
+      "exclusion": null,
+      "review": true,
+      "requirements": [
+        {
+          "concept": "Управление change-повесткой",
+          "category": "skill",
+          "status": "task",
+          "quote": "развивать и сопровождать change повестки Территориального банка",
+          "scope": "description"
+        },
+        {
+          "concept": "Запуск региональных проектов",
+          "category": "skill",
+          "status": "task",
+          "quote": "разрабатывать и запускать комплексные региональные проекты: от анализа потребностей региона и разработки уникальных решений до контроля внедрения и тиражирования лучших практик",
+          "scope": "description"
+        },
+        {
+          "concept": "Обеспечение планов продаж",
+          "category": "skill",
+          "status": "task",
+          "quote": "организовывать и обеспечивать исполнение планов продаж продуктовой полки",
+          "scope": "description"
+        },
+        {
+          "concept": "Цифровая трансформация и органы власти",
+          "category": "skill",
+          "status": "task",
+          "quote": "инициировать и продвигать проекты цифровой трансформации регионов (включая Russia AI transformation RAIT) в сотрудничестве с органами власти",
+          "scope": "description"
+        },
+        {
+          "concept": "ESG-проекты и отчётность",
+          "category": "domain",
+          "status": "task",
+          "quote": "координировать ESG повестки: отслеживать достижение целей, реализовывать проекты и формировать ESG отчетность для руководства",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление портфелем экспериментов",
+          "category": "skill",
+          "status": "task",
+          "quote": "управлять портфелем бизнес экспериментов ТБ: инициировать проекты, распределять финансирование, контролировать эффективность и достижение целей",
+          "scope": "description"
+        },
+        {
+          "concept": "Распределение финансирования",
+          "category": "skill",
+          "status": "task",
+          "quote": "распределять финансирование",
+          "scope": "description"
+        },
+        {
+          "concept": "Организация встреч руководителей",
+          "category": "skill",
+          "status": "task",
+          "quote": "обеспечивать сопровождение гемба топ руководителей Сбера в территориальных банках, готовить программу, материалы, отчёты и протоколы поручений",
+          "scope": "description"
+        },
+        {
+          "concept": "Решение системных проблем",
+          "category": "skill",
+          "status": "required",
+          "quote": "видите взаимосвязи, выявляете системные проблемы и предлагаете практические решения",
+          "scope": "description"
+        },
+        {
+          "concept": "Высшее образование",
+          "category": "education",
+          "status": "required",
+          "quote": "специалист с высшим образованием",
+          "scope": "description"
+        },
+        {
+          "concept": "Управленческий опыт в банках от трёх лет",
+          "category": "industry",
+          "status": "required",
+          "quote": "имеете управленческий опыт в банковской сфере от 3 х лет",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт бизнес-подразделений",
+          "category": "experience",
+          "status": "required",
+          "quote": "имеете опыт работы в бизнес подразделениях",
+          "scope": "description"
+        },
+        {
+          "concept": "Межфункциональные проекты",
+          "category": "experience",
+          "status": "required",
+          "quote": "реализации кросс функциональных проектов, управления кросс функциональных проектов",
+          "scope": "description"
+        },
+        {
+          "concept": "Банковские продукты и процессы",
+          "category": "domain",
+          "status": "required",
+          "quote": "глубоко понимаете банковские продукты, банковские процессы",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт разработки AI-агентов",
+          "category": "experience",
+          "status": "required",
+          "quote": "имеете опыт участия в проектах по разработке AI агентов",
+          "scope": "description"
+        },
+        {
+          "concept": "Внутренние коммуникации и топ-менеджмент",
+          "category": "skill",
+          "status": "required",
+          "quote": "уверенно ведёте операционные коммуникации, эффективно взаимодействуете с топ менеджментом, умеете выстраивать диалог между различными подразделениями",
+          "scope": "description"
+        },
+        {
+          "concept": "Системное мышление",
+          "category": "skill",
+          "status": "required",
+          "quote": "обладаете системным мышлением",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "sber_4563930",
+      "track": "commercial",
+      "reason": "Помогает корпоративным клиентам получить эффект от технологических решений и развивает отношения с партнёрами. Реализация проектов входит в сопровождение клиентского успеха.",
+      "role_evidence": "помощь в разработке и достижении целей технологического развития, максимизация выгоды от использования ИИ и других фокусных технологий",
+      "exclusion": null,
+      "review": true,
+      "requirements": [
+        {
+          "concept": "Стратегические диалоги и переговоры",
+          "category": "skill",
+          "status": "task",
+          "quote": "проведение и участие в стратегических диалогах, сессиях и переговорах",
+          "scope": "description"
+        },
+        {
+          "concept": "Цели бизнеса и гипотезы трансформации",
+          "category": "skill",
+          "status": "task",
+          "quote": "помощь в формулировании целей развития бизнеса и формировании гипотез технологического развития и ИИ трансформации",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ бизнес-модели и процессов клиента",
+          "category": "skill",
+          "status": "task",
+          "quote": "совместное с клиентом описание и анализ бизнес модели и процессов",
+          "scope": "description"
+        },
+        {
+          "concept": "Приоритизация проектных инициатив",
+          "category": "skill",
+          "status": "task",
+          "quote": "помощь в формировании и приоритизации проектных инициатив по технологическому развитию",
+          "scope": "description"
+        },
+        {
+          "concept": "Развитие партнёрств",
+          "category": "skill",
+          "status": "task",
+          "quote": "развитие отношений с партнёрами",
+          "scope": "description"
+        },
+        {
+          "concept": "Клиентская и партнёрская коммуникация",
+          "category": "skill",
+          "status": "task",
+          "quote": "организация эффективной коммуникации в треугольнике «Клиент — Партнёр — Сбер»",
+          "scope": "description"
+        },
+        {
+          "concept": "Внедрение технологических проектов",
+          "category": "skill",
+          "status": "task",
+          "quote": "внедрение проектов технологического развития и ИИ трансформации, структурирование решений с использованием экосистемы и партнёров",
+          "scope": "description"
+        },
+        {
+          "concept": "Организация сквозной реализации",
+          "category": "skill",
+          "status": "task",
+          "quote": "организация сквозных процессов для реализации проектов ИИ трансформации и технологического развития клиентов",
+          "scope": "description"
+        },
+        {
+          "concept": "Внедрение проектных стандартов",
+          "category": "skill",
+          "status": "task",
+          "quote": "внедрение стандартов работы и методологий реализации проектов в подразделениях банка",
+          "scope": "description"
+        },
+        {
+          "concept": "Клиентские мероприятия",
+          "category": "skill",
+          "status": "task",
+          "quote": "поддержка организации мероприятий для клиентов (презентации, форумы, воркшопы)",
+          "scope": "description"
+        },
+        {
+          "concept": "Высшее экономическое, техническое или математическое образование",
+          "category": "education",
+          "status": "required",
+          "quote": "высшее образование (экономическое, техническое, математическое)",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт клиентского успеха, нефинансовых сервисов или проектов",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт работы на позициях: менеджер по успеху клиентов, старший менеджер по нефинансовым сервисам или руководитель проектов",
+          "scope": "description"
+        },
+        {
+          "concept": "Архитектура AI-трансформации и ключевые технологии",
+          "category": "domain",
+          "status": "required",
+          "quote": "базовое понимание архитектуры ИИ трансформации и ключевых технологий (Cloud, Fintech, Data Science, IoT)",
+          "scope": "description"
+        },
+        {
+          "concept": "Работа с бизнес-процессами",
+          "category": "skill",
+          "status": "required",
+          "quote": "умение работать с бизнес процессами компании на уровне выполнения задач",
+          "scope": "description"
+        },
+        {
+          "concept": "Agile и Waterfall",
+          "category": "method",
+          "status": "required",
+          "quote": "навыки управления проектами по методологиям Agile/Waterfall",
+          "scope": "description"
+        },
+        {
+          "concept": "Банковские продукты и экосистемные сервисы",
+          "category": "domain",
+          "status": "required",
+          "quote": "знание основных финансовых Core продуктов банка и нефинансовых сервисов экосистемы",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "sber_4565167",
+      "track": "commercial",
+      "reason": "Помогает корпоративным клиентам получить эффект от технологических решений и развивает отношения с партнёрами. Реализация проектов входит в сопровождение клиентского успеха.",
+      "role_evidence": "помощь в разработке и достижении целей технологического развития, максимизация выгоды от использования ИИ и других фокусных технологий",
+      "exclusion": null,
+      "review": true,
+      "requirements": [
+        {
+          "concept": "Стратегические диалоги и переговоры",
+          "category": "skill",
+          "status": "task",
+          "quote": "проведение и участие в стратегических диалогах, сессиях и переговорах",
+          "scope": "description"
+        },
+        {
+          "concept": "Цели бизнеса и гипотезы трансформации",
+          "category": "skill",
+          "status": "task",
+          "quote": "помощь в формулировании целей развития бизнеса и формировании гипотез технологического развития и ИИ трансформации",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ бизнес-модели и процессов клиента",
+          "category": "skill",
+          "status": "task",
+          "quote": "совместное с клиентом описание и анализ бизнес модели и процессов",
+          "scope": "description"
+        },
+        {
+          "concept": "Приоритизация проектных инициатив",
+          "category": "skill",
+          "status": "task",
+          "quote": "помощь в формировании и приоритизации проектных инициатив по технологическому развитию",
+          "scope": "description"
+        },
+        {
+          "concept": "Развитие партнёрств",
+          "category": "skill",
+          "status": "task",
+          "quote": "развитие отношений с партнёрами",
+          "scope": "description"
+        },
+        {
+          "concept": "Клиентская и партнёрская коммуникация",
+          "category": "skill",
+          "status": "task",
+          "quote": "организация эффективной коммуникации в треугольнике «Клиент — Партнёр — Сбер»",
+          "scope": "description"
+        },
+        {
+          "concept": "Внедрение технологических проектов",
+          "category": "skill",
+          "status": "task",
+          "quote": "внедрение проектов технологического развития и ИИ трансформации, структурирование решений с использованием экосистемы и партнёров",
+          "scope": "description"
+        },
+        {
+          "concept": "Организация сквозной реализации",
+          "category": "skill",
+          "status": "task",
+          "quote": "организация сквозных процессов для реализации проектов ИИ трансформации и технологического развития клиентов",
+          "scope": "description"
+        },
+        {
+          "concept": "Внедрение проектных стандартов",
+          "category": "skill",
+          "status": "task",
+          "quote": "внедрение стандартов работы и методологий реализации проектов в подразделениях банка",
+          "scope": "description"
+        },
+        {
+          "concept": "Клиентские мероприятия",
+          "category": "skill",
+          "status": "task",
+          "quote": "поддержка организации мероприятий для клиентов (презентации, форумы, воркшопы)",
+          "scope": "description"
+        },
+        {
+          "concept": "Высшее экономическое, техническое или математическое образование",
+          "category": "education",
+          "status": "required",
+          "quote": "высшее образование (экономическое, техническое, математическое)",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт клиентского успеха, нефинансовых сервисов или проектов",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт работы на позициях: менеджер по успеху клиентов, старший менеджер по нефинансовым сервисам или руководитель проектов",
+          "scope": "description"
+        },
+        {
+          "concept": "Архитектура AI-трансформации и ключевые технологии",
+          "category": "domain",
+          "status": "required",
+          "quote": "базовое понимание архитектуры ИИ трансформации и ключевых технологий (Cloud, Fintech, Data Science, IoT)",
+          "scope": "description"
+        },
+        {
+          "concept": "Работа с бизнес-процессами",
+          "category": "skill",
+          "status": "required",
+          "quote": "умение работать с бизнес процессами компании на уровне выполнения задач",
+          "scope": "description"
+        },
+        {
+          "concept": "Agile и Waterfall",
+          "category": "method",
+          "status": "required",
+          "quote": "навыки управления проектами по методологиям Agile/Waterfall",
+          "scope": "description"
+        },
+        {
+          "concept": "Банковские продукты и экосистемные сервисы",
+          "category": "domain",
+          "status": "required",
+          "quote": "знание основных финансовых Core продуктов банка и нефинансовых сервисов экосистемы",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "sber_4536799",
+      "track": "commercial",
+      "reason": "Выводит банковское направление на рынок Индии: оценивает спрос и барьеры, выстраивает внешние отношения и обосновывает экономику входа. Это международное развитие бизнеса с проектной реализацией.",
+      "role_evidence": "реализацией стратегии вывода нового банковского продукта (ориентированного на привлечение пассивов/депозитов) на рынок Индии",
+      "exclusion": null,
+      "review": true,
+      "requirements": [
+        {
+          "concept": "Запуск банковского продукта с нуля",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт запуска банковского продукта с нуля",
+          "scope": "description"
+        },
+        {
+          "concept": "Выход на международные рынки",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт вывода продуктов на новые международные рынки",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ зарубежного рынка",
+          "category": "skill",
+          "status": "required",
+          "quote": "опыт проведения комплексного анализа зарубежного рынка: конкурентная среда, спрос на банковские продукты, ценовые параметры, культурные и деловые особенности",
+          "scope": "description"
+        },
+        {
+          "concept": "Преодоление барьеров входа",
+          "category": "skill",
+          "status": "required",
+          "quote": "способность выявлять барьеры входа (регуляторные, налоговые, инфраструктурные) и предлагать пути их преодоления",
+          "scope": "description"
+        },
+        {
+          "concept": "Подготовка бизнес-кейсов",
+          "category": "skill",
+          "status": "required",
+          "quote": "навыки подготовки бизнес кейсов",
+          "scope": "description"
+        },
+        {
+          "concept": "Подготовка дорожных карт",
+          "category": "skill",
+          "status": "required",
+          "quote": "навыки подготовки бизнес кейсов, дорожных карт",
+          "scope": "description"
+        },
+        {
+          "concept": "Финансовое моделирование",
+          "category": "skill",
+          "status": "required",
+          "quote": "финансовых моделей",
+          "scope": "description"
+        },
+        {
+          "concept": "Взаимодействие с внешними стейкхолдерами",
+          "category": "skill",
+          "status": "task",
+          "quote": "управление стейкхолдерами: взаимодействия с RBI (консультации), местными IT вендорами",
+          "scope": "description"
+        },
+        {
+          "concept": "Работа с регуляторами",
+          "category": "skill",
+          "status": "task",
+          "quote": "взаимодействия с регуляторами или консультантами по финансовому праву",
+          "scope": "description"
+        },
+        {
+          "concept": "Бюджет запуска",
+          "category": "skill",
+          "status": "required",
+          "quote": "опыт бюджетирование и ROI: расчета стоимости вывода продукта",
+          "scope": "description"
+        },
+        {
+          "concept": "P&L и окупаемость",
+          "category": "skill",
+          "status": "required",
+          "quote": "прогноз P&L, обоснование затрат",
+          "scope": "description"
+        },
+        {
+          "concept": "Высшее образование",
+          "category": "education",
+          "status": "required",
+          "quote": "высшее образование",
+          "scope": "description"
+        },
+        {
+          "concept": "Банковская сфера от восьми-десяти лет",
+          "category": "industry",
+          "status": "required",
+          "quote": "не менее 8–10 лет в банковской сфере",
+          "scope": "description"
+        },
+        {
+          "concept": "Руководство проектами или развитием продукта",
+          "category": "experience",
+          "status": "required",
+          "quote": "минимум 3 года — на руководящих позициях по проектной деятельности и/или направлению развития продукта",
+          "scope": "description"
+        },
+        {
+          "concept": "Успешное внедрение банковских проектов",
+          "category": "experience",
+          "status": "required",
+          "quote": "подтвержденные кейсы внедрения проектов в банковском секторе с зафиксированным положительным финансовым результатом",
+          "scope": "description"
+        },
+        {
+          "concept": "Торговое финансирование",
+          "category": "domain",
+          "status": "required",
+          "quote": "понимание механизмов и продуктов торгового финансирования (эскроу счета в недвижимости, аккредитивы физических лиц)",
+          "scope": "description"
+        },
+        {
+          "concept": "Структурирование международных сделок",
+          "category": "skill",
+          "status": "required",
+          "quote": "опыт структурирования сделок с учетом международных стандартов",
+          "scope": "description"
+        },
+        {
+          "concept": "Учёт, риски и обеспечение трансграничных сделок",
+          "category": "domain",
+          "status": "required",
+          "quote": "знание особенностей учета, рисков и обеспечения в трансграничных сделках",
+          "scope": "description"
+        },
+        {
+          "concept": "Английский C1–C2",
+          "category": "language",
+          "status": "required",
+          "quote": "английский язык: свободное владение (C1–C2",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "sber_4569655",
+      "track": "project",
+      "reason": "Ведёт межфункциональный проект создания финансовой аналитической системы: планы, бэклог, требования и команды. Финансовый анализ значителен, но связан с внедрением системы.",
+      "role_evidence": "управлением кросс функциональным проектом в части продуктов физических лиц по построению системы глубокой аналитики и оперативного реагирования на риски и возможности",
+      "exclusion": null,
+      "review": true,
+      "requirements": [
+        {
+          "concept": "Межфункциональное управление проектом",
+          "category": "skill",
+          "status": "task",
+          "quote": "управлением кросс функциональным проектом в части продуктов физических лиц по построению системы глубокой аналитики",
+          "scope": "description"
+        },
+        {
+          "concept": "Планирование и приоритизация бэклога",
+          "category": "skill",
+          "status": "task",
+          "quote": "формированием плана работ команды проекта, приоритизацией задач и управлением общим бэклогом развития аналитической системы",
+          "scope": "description"
+        },
+        {
+          "concept": "Финансовый анализ банковской отчётности",
+          "category": "skill",
+          "status": "required",
+          "quote": "владеете финансовым анализом управленческой отчетности банка",
+          "scope": "description"
+        },
+        {
+          "concept": "Улучшение финансовой эффективности",
+          "category": "skill",
+          "status": "task",
+          "quote": "разработкой предложений по повышению финансовой эффективности и внедрением новых решений для повышения прибыли Банка",
+          "scope": "description"
+        },
+        {
+          "concept": "Организация сквозных процессов и встреч",
+          "category": "skill",
+          "status": "task",
+          "quote": "организацией рабочих мероприятий, выстраиванием сквозных процессов работы аналитики, проведением синхронизаций",
+          "scope": "description"
+        },
+        {
+          "concept": "Координация IT, DS и аналитиков",
+          "category": "skill",
+          "status": "task",
+          "quote": "координацией работы кросс функциональных команд, планированием деятельности IT, DS и аналитических команд",
+          "scope": "description"
+        },
+        {
+          "concept": "Контроль целей команды",
+          "category": "skill",
+          "status": "task",
+          "quote": "контроль достижения командами поставленных целей",
+          "scope": "description"
+        },
+        {
+          "concept": "Приоритизация и согласование требований",
+          "category": "skill",
+          "status": "task",
+          "quote": "приоритизацией и синхронизация требований по различным направлениям",
+          "scope": "description"
+        },
+        {
+          "concept": "Аналитические материалы",
+          "category": "skill",
+          "status": "task",
+          "quote": "подготовкой аналитических и презентационных материалов",
+          "scope": "description"
+        },
+        {
+          "concept": "Презентации руководству",
+          "category": "skill",
+          "status": "required",
+          "quote": "обладаете сильными навыками публичного выступления перед топ менеджментом крупных коммерческих компаний",
+          "scope": "description"
+        },
+        {
+          "concept": "Высшее образование в экономике, финансах, математике, IT или бизнес-анализе",
+          "category": "education",
+          "status": "required",
+          "quote": "имеете высшее образование в областях экономики, финансов, математики, информационных технологий или бизнес аналитики",
+          "scope": "description"
+        },
+        {
+          "concept": "ALM-риски",
+          "category": "domain",
+          "status": "required",
+          "quote": "знаете ALM риски банка и способы их митигации",
+          "scope": "description"
+        },
+        {
+          "concept": "Лидерство и коммуникация",
+          "category": "skill",
+          "status": "required",
+          "quote": "имеете сильные лидерские и коммуникативные навыками, способность работать на стыке бизнеса, финансов и IT",
+          "scope": "description"
+        },
+        {
+          "concept": "Банковский сектор от пяти лет",
+          "category": "industry",
+          "status": "required",
+          "quote": "имеете опыт работы в банковском секторе минимум 5 лет",
+          "scope": "description"
+        },
+        {
+          "concept": "Финансовое моделирование P&L",
+          "category": "skill",
+          "status": "required",
+          "quote": "финансовое моделирования PnL продуктов банка",
+          "scope": "description"
+        },
+        {
+          "concept": "Системное мышление и структурирование",
+          "category": "skill",
+          "status": "required",
+          "quote": "имеете системное мышление и структурный подход",
+          "scope": "description"
+        },
+        {
+          "concept": "Контроль качества данных",
+          "category": "skill",
+          "status": "required",
+          "quote": "умеете выстраивать процессы контроля качества данных",
+          "scope": "description"
+        },
+        {
+          "concept": "AI-инструменты",
+          "category": "tool",
+          "status": "required",
+          "quote": "имеете опыт работы с ИИ инструментами",
+          "scope": "description"
+        },
+        {
+          "concept": "Ценообразование и юнит-экономика",
+          "category": "skill",
+          "status": "required",
+          "quote": "имеете глубокое понимание ценообразования и unit экономики розничных банковских продуктов",
+          "scope": "description"
+        },
+        {
+          "concept": "Розничные банковские продукты",
+          "category": "domain",
+          "status": "required",
+          "quote": "имеете глубокое понимание ценообразования и unit экономики розничных банковских продуктов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "ozon_137633682",
+      "track": "project",
+      "reason": "Ведёт межфункциональные проекты операционной эффективности от планирования до внедрения, управляя ресурсами, сроками и рисками.",
+      "role_evidence": "Управлять кросс-функциональными проектами полного цикла — от постановки целей и планирования до внедрения и оценки результатов",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Опыт сложных межфункциональных проектов",
+          "category": "experience",
+          "status": "required",
+          "quote": "Опыт управления сложными проектами в кросс-функциональных командах от 3 лет",
+          "scope": "description"
+        },
+        {
+          "concept": "Запуски и внедрения",
+          "category": "experience",
+          "status": "required",
+          "quote": "Опыт запуска и внедрения проектов или продуктов от идеи до реализации",
+          "scope": "description"
+        },
+        {
+          "concept": "Оптимизация бизнес-процессов",
+          "category": "skill",
+          "status": "task",
+          "quote": "Анализировать и оптимизировать бизнес-процессы для повышения операционной эффективности и качества",
+          "scope": "description"
+        },
+        {
+          "concept": "Координация участников",
+          "category": "skill",
+          "status": "task",
+          "quote": "Координировать работу кросс-функциональных для достижения целей проекта",
+          "scope": "description"
+        },
+        {
+          "concept": "Планирование ресурсов",
+          "category": "skill",
+          "status": "task",
+          "quote": "Управлять ресурсами проекта, сроками, рисками и приоритетами",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление сроками",
+          "category": "skill",
+          "status": "task",
+          "quote": "Управлять ресурсами проекта, сроками, рисками и приоритетами",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление рисками",
+          "category": "skill",
+          "status": "task",
+          "quote": "Управлять ресурсами проекта, сроками, рисками и приоритетами",
+          "scope": "description"
+        },
+        {
+          "concept": "Приоритизация",
+          "category": "skill",
+          "status": "task",
+          "quote": "Управлять ресурсами проекта, сроками, рисками и приоритетами",
+          "scope": "description"
+        },
+        {
+          "concept": "Аналитические материалы",
+          "category": "skill",
+          "status": "task",
+          "quote": "Готовить аналитические материалы и презентации по результатам проектов для ключевых стейкхолдеров",
+          "scope": "description"
+        },
+        {
+          "concept": "Презентации",
+          "category": "skill",
+          "status": "task",
+          "quote": "Готовить аналитические материалы и презентации по результатам проектов для ключевых стейкхолдеров",
+          "scope": "description"
+        },
+        {
+          "concept": "Масштабирование изменений",
+          "category": "skill",
+          "status": "task",
+          "quote": "Участвовать в масштабировании решений и обеспечивать устойчивость внедрённых изменений",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ больших массивов данных",
+          "category": "skill",
+          "status": "required",
+          "quote": "Умение работать с большими массивами данных",
+          "scope": "description"
+        },
+        {
+          "concept": "Фулфилмент или дарксторы",
+          "category": "domain",
+          "status": "required",
+          "quote": "Знание процессов на Фулфилментах и/или Дарксторах",
+          "scope": "description"
+        },
+        {
+          "concept": "Структурирование информации",
+          "category": "skill",
+          "status": "required",
+          "quote": "умение структурировать информацию",
+          "scope": "description"
+        },
+        {
+          "concept": "Выводы и измеримые показатели",
+          "category": "skill",
+          "status": "required",
+          "quote": "формулировать выводы и выражать результаты в измеримых показателях",
+          "scope": "description"
+        },
+        {
+          "concept": "Коммуникация со стейкхолдерами",
+          "category": "skill",
+          "status": "required",
+          "quote": "умение выстраивать взаимодействие с разными командами и стейкхолдерами",
+          "scope": "description"
+        },
+        {
+          "concept": "Решения в условиях неопределённости",
+          "category": "skill",
+          "status": "required",
+          "quote": "готовность принимать решения в условиях неопределенности",
+          "scope": "description"
+        },
+        {
+          "concept": "Адаптация к изменениям",
+          "category": "skill",
+          "status": "required",
+          "quote": "Готовность работать в высоком темпе и адаптироваться к изменениям",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "ozon_137804555",
+      "track": "project",
+      "reason": "Ведёт внедрение и масштабирование WMS-автоматизации на складах: от аудита и ТЗ до тестирования и релизов без остановки операций.",
+      "role_evidence": "Лидировать проекты автоматизации складских процессов: от аудита текущих процессов «как есть» (As Is) до внедрения изменений и масштабирования решений на распределительные центры",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Опыт складской автоматизации или WMS",
+          "category": "experience",
+          "status": "required",
+          "quote": "Опыт работы от 3 лет в управлении проектами автоматизации складской логистики или внедрения/развития WMS-систем",
+          "scope": "description"
+        },
+        {
+          "concept": "Аудит AS-IS",
+          "category": "method",
+          "status": "task",
+          "quote": "от аудита текущих процессов «как есть» (As Is)",
+          "scope": "description"
+        },
+        {
+          "concept": "Внедрение и масштабирование",
+          "category": "skill",
+          "status": "task",
+          "quote": "до внедрения изменений и масштабирования решений на распределительные центры",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление изменениями",
+          "category": "skill",
+          "status": "task",
+          "quote": "Управлять изменениями при оптимизации топологии склада, стратегий размещения, отбора, пополнения и инвентаризации в WMS",
+          "scope": "description"
+        },
+        {
+          "concept": "Защита проектов",
+          "category": "skill",
+          "status": "task",
+          "quote": "Защищать проекты автоматизации перед бизнесом",
+          "scope": "description"
+        },
+        {
+          "concept": "Окупаемость автоматизации",
+          "category": "skill",
+          "status": "task",
+          "quote": "рассчитывать окупаемость внедрения нового складского оборудования и софта",
+          "scope": "description"
+        },
+        {
+          "concept": "Сбор и формализация требований",
+          "category": "skill",
+          "status": "task",
+          "quote": "Собирать и формализовывать требования",
+          "scope": "description"
+        },
+        {
+          "concept": "Выявление узких мест",
+          "category": "skill",
+          "status": "task",
+          "quote": "работать со складским менеджментом для выявления «узких мест» в приёмке, комплектации и отгрузке",
+          "scope": "description"
+        },
+        {
+          "concept": "Технические задания",
+          "category": "skill",
+          "status": "task",
+          "quote": "разрабатывать ТЗ на доработку WMS",
+          "scope": "description"
+        },
+        {
+          "concept": "Интеграции WMS",
+          "category": "domain",
+          "status": "task",
+          "quote": "её интеграцию с другими системами и оборудованием",
+          "scope": "description"
+        },
+        {
+          "concept": "UAT",
+          "category": "method",
+          "status": "task",
+          "quote": "Организовывать UAT на складе",
+          "scope": "description"
+        },
+        {
+          "concept": "Риски непрерывности операций",
+          "category": "skill",
+          "status": "task",
+          "quote": "минимизировать риски остановки операционной деятельности при релизах",
+          "scope": "description"
+        },
+        {
+          "concept": "Обучение персонала",
+          "category": "skill",
+          "status": "task",
+          "quote": "обучать линейный персонал",
+          "scope": "description"
+        },
+        {
+          "concept": "Разбор системных ошибок",
+          "category": "skill",
+          "status": "task",
+          "quote": "Мониторить системные ошибки WMS, приводящие к потерям или задержкам сборки, и инициировать их устранение",
+          "scope": "description"
+        },
+        {
+          "concept": "Приоритизация доработок",
+          "category": "skill",
+          "status": "task",
+          "quote": "Приоритизировать доработки WMS совместно с внутренней или внешней командой разработки",
+          "scope": "description"
+        },
+        {
+          "concept": "Ведение бэклога",
+          "category": "skill",
+          "status": "task",
+          "quote": "вести бэклог",
+          "scope": "description"
+        },
+        {
+          "concept": "Проектирование KPI-дашбордов",
+          "category": "skill",
+          "status": "task",
+          "quote": "Проектировать складские KPI-дашборды (скорость сборки, утилизация ёмкости склада, выработка персонала).",
+          "scope": "description"
+        },
+        {
+          "concept": "Складские процессы и FIFO/FEFO",
+          "category": "domain",
+          "status": "required",
+          "quote": "Отличное знание складской операционки: топология, адресное хранение, принципы FIFO/FEFO, организация зон приёмки и комплектации",
+          "scope": "description"
+        },
+        {
+          "concept": "Релизы без остановки склада",
+          "category": "experience",
+          "status": "required",
+          "quote": "Опыт успешных релизов ИТ-продуктов на «живых» складских объектах без остановки отгрузок",
+          "scope": "description"
+        },
+        {
+          "concept": "BPMN и EPC",
+          "category": "method",
+          "status": "required",
+          "quote": "Уверенное владение инструментами описания бизнес-процессов (BPMN, EPC)",
+          "scope": "description"
+        },
+        {
+          "concept": "API и шины данных",
+          "category": "domain",
+          "status": "required",
+          "quote": "понимание архитектуры интеграционных решений (API, шины данных)",
+          "scope": "description"
+        },
+        {
+          "concept": "SQL",
+          "category": "tool",
+          "status": "required",
+          "quote": "Навыки работы с базами данных (SQL) для самостоятельной выгрузки логов и аналитики движений ТМЦ",
+          "scope": "description"
+        },
+        {
+          "concept": "Запуск складов с нуля",
+          "category": "experience",
+          "status": "nice",
+          "quote": "Будет преимуществом — опыт запуска складов с нуля",
+          "scope": "description"
+        },
+        {
+          "concept": "Роботизированные складские системы",
+          "category": "domain",
+          "status": "nice",
+          "quote": "Будет преимуществом — опыт работы с роботизированными системами (AGV, конвейерные линии) или технологиями Pick-to-Light / Voice Picking.",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "sber_4532202",
+      "track": "project",
+      "reason": "Управляет портфелем AI Research-проектов и переводом исследований в работающие решения. Стратегические и рыночные задачи дополняют ответственность за координацию и реализацию стрима.",
+      "role_evidence": "самостоятельное управление портфелем AI Research проектов: приоритизация направлений, оценка прогресса, формирование рекомендаций для руководства",
+      "exclusion": null,
+      "review": true,
+      "requirements": [
+        {
+          "concept": "Управление портфелем проектов",
+          "category": "skill",
+          "status": "task",
+          "quote": "самостоятельное управление портфелем AI Research проектов: приоритизация направлений, оценка прогресса, формирование рекомендаций для руководства",
+          "scope": "description"
+        },
+        {
+          "concept": "Улучшение процессов внедрения исследований",
+          "category": "skill",
+          "status": "task",
+          "quote": "выстраивание и улучшение процессов конверсии AI R&D → Production: от диагностики узких мест до внедрения операционных изменений",
+          "scope": "description"
+        },
+        {
+          "concept": "Координация распределённых команд",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт управления распределёнными или кросс функциональными командами",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление зависимостями и барьерами",
+          "category": "skill",
+          "status": "task",
+          "quote": "управление зависимостями, устранение операционных барьеров",
+          "scope": "description"
+        },
+        {
+          "concept": "Сбор и приоритизация бизнес-запросов",
+          "category": "skill",
+          "status": "task",
+          "quote": "сбор и структурирование запросов от бизнес подразделений на привлечение AI исследователей; приоритизация и трансляция задач в понятные для R&D команды форматы",
+          "scope": "description"
+        },
+        {
+          "concept": "Бизнес-концепции и рыночный потенциал",
+          "category": "skill",
+          "status": "task",
+          "quote": "формирование бизнес концепций, оценка рыночного потенциала",
+          "scope": "description"
+        },
+        {
+          "concept": "Фасилитация стратегических сессий",
+          "category": "skill",
+          "status": "task",
+          "quote": "организация и фасилитация стратегических сессий, рабочих групп и мероприятий",
+          "scope": "description"
+        },
+        {
+          "concept": "Консалтинг и технологический бизнес",
+          "category": "experience",
+          "status": "required",
+          "quote": "2–3 года в консалтинге (Big 3, Tier 2, Big 4 или сильные российские компании) + последующий опыт в крупной технологической компании или tech driven бизнесе суммарно от 5 лет",
+          "scope": "description"
+        },
+        {
+          "concept": "Консалтинг",
+          "category": "industry",
+          "status": "required",
+          "quote": "2–3 года в консалтинге (Big 3, Tier 2, Big 4 или сильные российские компании)",
+          "scope": "description"
+        },
+        {
+          "concept": "Технологическая компания или tech-driven бизнес",
+          "category": "industry",
+          "status": "unclear",
+          "quote": "последующий опыт в крупной технологической компании или tech driven бизнесе",
+          "scope": "description"
+        },
+        {
+          "concept": "Самостоятельное ведение стрима",
+          "category": "experience",
+          "status": "required",
+          "quote": "подтверждённый опыт самостоятельного ведения проектного стрима или направления: постановка задач, управление стейкхолдерами, ответственность за результат",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление стейкхолдерами",
+          "category": "skill",
+          "status": "required",
+          "quote": "управление стейкхолдерами",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ проблем и гипотез",
+          "category": "skill",
+          "status": "required",
+          "quote": "сильные аналитические навыки: структурирование сложных проблем, построение гипотез, работа с неопределённостью",
+          "scope": "description"
+        },
+        {
+          "concept": "Презентации для высшего руководства",
+          "category": "skill",
+          "status": "required",
+          "quote": "умение создавать убедительные презентации с чётким сторилайном для аудитории уровня C suite",
+          "scope": "description"
+        },
+        {
+          "concept": "Самостоятельность в неопределённости",
+          "category": "skill",
+          "status": "required",
+          "quote": "проактивность, умение работать автономно в условиях высокой неопределённости",
+          "scope": "description"
+        },
+        {
+          "concept": "Английский Upper Intermediate и выше",
+          "category": "language",
+          "status": "required",
+          "quote": "английский — Upper Intermediate и выше (чтение академических статей, участие в международных встречах)",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт AI/ML или R&D-команд",
+          "category": "domain",
+          "status": "nice",
+          "quote": "опыт работы с AI/ML командами или R&D подразделениями: понимание цикла исследований, специфики работы учёных и инженеров, процессов от эксперимента до деплоя",
+          "scope": "description"
+        },
+        {
+          "concept": "Ландшафт AI/ML",
+          "category": "domain",
+          "status": "nice",
+          "quote": "глубокое понимание ландшафта AI/ML: архитектуры моделей, тренды в исследованиях, ключевые игроки",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт AI-продуктов или платформ",
+          "category": "domain",
+          "status": "nice",
+          "quote": "опыт в AI продуктах или AI платформах на стороне индустрии",
+          "scope": "description"
+        },
+        {
+          "concept": "MLOps и ModelOps",
+          "category": "domain",
+          "status": "nice",
+          "quote": "понимание процессов MLOps / ModelOps и типичных барьеров при переходе research → production",
+          "scope": "description"
+        },
+        {
+          "concept": "Финтех, банки или регулируемые отрасли",
+          "category": "industry",
+          "status": "nice",
+          "quote": "опыт работы в финтехе, банковском секторе или регулируемых отраслях",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "alfa_37110",
+      "track": "commercial",
+      "reason": "Основной результат — рост продаж зарплатных карт и улучшение каналов привлечения. Проектные инициативы служат достижению коммерческих KPI.",
+      "role_evidence": "Обеспечивать достижение KPI по количеству проданных и открытых зарплатных карт юридическими клиентами",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Развитие процессов продаж",
+          "category": "skill",
+          "status": "task",
+          "quote": "Разрабатывать и запускать проекты по развитию и оптимизации процессов продаж зарплатных карт для юридических лиц в сегменте ММБ",
+          "scope": "description"
+        },
+        {
+          "concept": "Координация каналов и продуктовой команды",
+          "category": "skill",
+          "status": "task",
+          "quote": "Координировать взаимодействие с каналами продаж и продукт‑командой, обеспечивая согласованность действий",
+          "scope": "description"
+        },
+        {
+          "concept": "Аналитика продаж и портфеля",
+          "category": "skill",
+          "status": "task",
+          "quote": "Управлять аналитикой продаж и портфеля карт, формировать отчёты и рекомендации для повышения показателей",
+          "scope": "description"
+        },
+        {
+          "concept": "Улучшение процессов на основе данных",
+          "category": "skill",
+          "status": "task",
+          "quote": "Внедрять улучшения в процессах на основе данных, контролировать их эффективность",
+          "scope": "description"
+        },
+        {
+          "concept": "Контроль коммерческих KPI",
+          "category": "skill",
+          "status": "task",
+          "quote": "Обеспечивать достижение KPI по количеству проданных и открытых зарплатных карт юридическими клиентами",
+          "scope": "description"
+        },
+        {
+          "concept": "Контроль сроков и ресурсов",
+          "category": "skill",
+          "status": "task",
+          "quote": "контролировать сроки и ресурсы",
+          "scope": "description"
+        },
+        {
+          "concept": "Высшее образование",
+          "category": "education",
+          "status": "required",
+          "quote": "Высшее образование",
+          "scope": "description"
+        },
+        {
+          "concept": "Банковская сфера",
+          "category": "industry",
+          "status": "required",
+          "quote": "Опыт в банковской сфере",
+          "scope": "description"
+        },
+        {
+          "concept": "Зарплатные проекты или розничные продукты",
+          "category": "domain",
+          "status": "nice",
+          "quote": "преимущественно - опыт в зарплатных проектах или розничных продуктах",
+          "scope": "description"
+        },
+        {
+          "concept": "Табличные функции и сводные таблицы",
+          "category": "tool",
+          "status": "required",
+          "quote": "Уверенное владение продвинутыми функциями (VLOOKUP, INDEX/MATCH, сводные таблицы)",
+          "scope": "description"
+        },
+        {
+          "concept": "VBA и автоматизация отчётов",
+          "category": "tool",
+          "status": "required",
+          "quote": "Написание макросов (VBA) для автоматизации отчетов и обработки данных",
+          "scope": "description"
+        },
+        {
+          "concept": "Подготовка презентаций",
+          "category": "skill",
+          "status": "required",
+          "quote": "Создание структурированных, визуально понятных, красивых презентаций для стратегических сессий и отчетов",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ больших массивов данных",
+          "category": "skill",
+          "status": "required",
+          "quote": "Работа с большими массивами данных, выявление закономерностей, формулирование выводов",
+          "scope": "description"
+        },
+        {
+          "concept": "Agile и Waterfall",
+          "category": "method",
+          "status": "required",
+          "quote": "Опыт использования методологий (Agile, Waterfall)",
+          "scope": "description"
+        },
+        {
+          "concept": "Jira и Trello",
+          "category": "tool",
+          "status": "required",
+          "quote": "инструментов (Jira, Trello)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "alfa_38728",
+      "track": "project",
+      "reason": "Координирует миграцию клиентов на целевую систему, организует работу подразделений и контролирует результаты проекта.",
+      "role_evidence": "Координировать процесс перевода клиентов на целевую систему/процесс",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Координация клиентской миграции",
+          "category": "skill",
+          "status": "task",
+          "quote": "Координировать процесс перевода клиентов на целевую систему/процесс",
+          "scope": "description"
+        },
+        {
+          "concept": "Организация взаимодействия с клиентами",
+          "category": "skill",
+          "status": "task",
+          "quote": "Прорабатывать и организовывать процессы взаимодействия с клиентами",
+          "scope": "description"
+        },
+        {
+          "concept": "Критерии отбора клиентов",
+          "category": "skill",
+          "status": "task",
+          "quote": "Формировать параметры отбора клиентов",
+          "scope": "description"
+        },
+        {
+          "concept": "Постановка и контроль задач подразделений",
+          "category": "skill",
+          "status": "task",
+          "quote": "Ставить задачи и контролировать результаты работы всех задействованных подразделений",
+          "scope": "description"
+        },
+        {
+          "concept": "Аналитика и рекомендации по проекту",
+          "category": "skill",
+          "status": "task",
+          "quote": "Управлять аналитикой проекта, формировать отчёты и рекомендации для повышения результатов",
+          "scope": "description"
+        },
+        {
+          "concept": "Отчётность о статусе проекта",
+          "category": "skill",
+          "status": "task",
+          "quote": "Составлять отчетность о текущем статусе проекта",
+          "scope": "description"
+        },
+        {
+          "concept": "Улучшение процесса по обратной связи",
+          "category": "skill",
+          "status": "task",
+          "quote": "Получать обратную связь от участников проекта с целью оптимизации процесса",
+          "scope": "description"
+        },
+        {
+          "concept": "Бизнес-требования",
+          "category": "skill",
+          "status": "task",
+          "quote": "Формировать бизнес‑требования по оптимизации процесса",
+          "scope": "description"
+        },
+        {
+          "concept": "Высшее образование",
+          "category": "education",
+          "status": "required",
+          "quote": "Наличие высшего образования",
+          "scope": "description"
+        },
+        {
+          "concept": "Банковская сфера",
+          "category": "industry",
+          "status": "required",
+          "quote": "Опыт в банковской сфере",
+          "scope": "description"
+        },
+        {
+          "concept": "Зарплатные проекты или корпоративные продукты",
+          "category": "domain",
+          "status": "nice",
+          "quote": "преимущественно - опыт в зарплатных проектах или корпоративных продуктах",
+          "scope": "description"
+        },
+        {
+          "concept": "Работа со стейкхолдерами и командами",
+          "category": "skill",
+          "status": "required",
+          "quote": "Сильные организаторские навыки: умение работать с большим количеством стейкхолдеров и команд",
+          "scope": "description"
+        },
+        {
+          "concept": "Excel",
+          "category": "tool",
+          "status": "required",
+          "quote": "Уверенное владение продвинутыми функциями Excel, сводные таблицы",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ больших массивов данных",
+          "category": "skill",
+          "status": "required",
+          "quote": "Работа с большими массивами данных, выявление закономерностей, формулирование выводов",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление рисками",
+          "category": "skill",
+          "status": "required",
+          "quote": "Навыки управления рисками",
+          "scope": "description"
+        },
+        {
+          "concept": "Конфликты приоритетов и эскалация",
+          "category": "skill",
+          "status": "required",
+          "quote": "разрешения конфликтов в приоритетах и эскалаций",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "alfa_39133",
+      "track": "commercial",
+      "reason": "Развивает продажи РКО и эффективность каналов, управляя коммерческими инициативами и IT-доработками. Главный результат — рост показателей продаж.",
+      "role_evidence": "Координировать работу каналов менеджерских и цифровых продаж: внедрять скрипты, интерфейсы, тарифы, акции, обучение",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Развитие продаж полного цикла",
+          "category": "skill",
+          "status": "task",
+          "quote": "Управлять проектами по развитию продаж РКО: от формулировки идеи до внедрения и масштабирования",
+          "scope": "description"
+        },
+        {
+          "concept": "Оптимизация бизнес-процессов",
+          "category": "skill",
+          "status": "task",
+          "quote": "Прорисовывать и оптимизировать бизнес-процессы (включая BPMN-схемы), находить узкие места и предлагать решения",
+          "scope": "description"
+        },
+        {
+          "concept": "BPMN",
+          "category": "method",
+          "status": "task",
+          "quote": "включая BPMN-схемы",
+          "scope": "description"
+        },
+        {
+          "concept": "Бэклог и приоритизация",
+          "category": "skill",
+          "status": "task",
+          "quote": "Формировать бэклог задач для кросс-функциональной команды (каналы продаж, IT, маркетинг, риск-менеджмент), расставлять приоритеты",
+          "scope": "description"
+        },
+        {
+          "concept": "Постановка и контроль задач",
+          "category": "skill",
+          "status": "task",
+          "quote": "назначать ответственных и контролировать выполнение",
+          "scope": "description"
+        },
+        {
+          "concept": "Технические требования",
+          "category": "skill",
+          "status": "task",
+          "quote": "писать технические требования",
+          "scope": "description"
+        },
+        {
+          "concept": "Согласование архитектуры",
+          "category": "domain",
+          "status": "task",
+          "quote": "участвовать в согласовании архитектуры",
+          "scope": "description"
+        },
+        {
+          "concept": "Контроль сроков и эскалация рисков",
+          "category": "skill",
+          "status": "task",
+          "quote": "контролировать сроки, эскалировать риски",
+          "scope": "description"
+        },
+        {
+          "concept": "Координация каналов продаж",
+          "category": "skill",
+          "status": "task",
+          "quote": "Координировать работу каналов менеджерских и цифровых продаж",
+          "scope": "description"
+        },
+        {
+          "concept": "Внедрение продажных механик",
+          "category": "skill",
+          "status": "task",
+          "quote": "внедрять скрипты, интерфейсы, тарифы, акции, обучение",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ конверсий, CPA и оттока",
+          "category": "skill",
+          "status": "task",
+          "quote": "Анализировать эффективность внедрённых изменений: конверсии, CPA, сроки, отток клиентов — и корректировать план",
+          "scope": "description"
+        },
+        {
+          "concept": "Обоснование инициатив руководству",
+          "category": "skill",
+          "status": "task",
+          "quote": "Готовить много презентаций для руководства с обоснованием инициатив, прогнозами и результатами",
+          "scope": "description"
+        },
+        {
+          "concept": "Контроль ресурсов",
+          "category": "skill",
+          "status": "task",
+          "quote": "контролировать сроки и ресурсы",
+          "scope": "description"
+        },
+        {
+          "concept": "Высшее образование",
+          "category": "education",
+          "status": "required",
+          "quote": "Высшее образование",
+          "scope": "description"
+        },
+        {
+          "concept": "Банковская сфера",
+          "category": "industry",
+          "status": "required",
+          "quote": "Опыт в банковской сфере",
+          "scope": "description"
+        },
+        {
+          "concept": "РКО",
+          "category": "domain",
+          "status": "nice",
+          "quote": "преимущественно - опыт в продукте РКО",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт проектов роста продаж",
+          "category": "experience",
+          "status": "required",
+          "quote": "Опыт управления проектами, направленными на увеличение продаж",
+          "scope": "description"
+        },
+        {
+          "concept": "Табличные функции и сводные таблицы",
+          "category": "tool",
+          "status": "required",
+          "quote": "Уверенное владение продвинутыми функциями (VLOOKUP, INDEX/MATCH, сводные таблицы)",
+          "scope": "description"
+        },
+        {
+          "concept": "Подготовка презентаций",
+          "category": "skill",
+          "status": "required",
+          "quote": "Создание структурированных, визуально понятных, красивых презентаций для стратегических сессий и отчетов",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ больших массивов данных",
+          "category": "skill",
+          "status": "required",
+          "quote": "Работа с большими массивами данных, выявление закономерностей, формулирование выводов",
+          "scope": "description"
+        },
+        {
+          "concept": "Agile и Waterfall",
+          "category": "method",
+          "status": "required",
+          "quote": "Опыт использования методологий (Agile, Waterfall)",
+          "scope": "description"
+        },
+        {
+          "concept": "Jira и Trello",
+          "category": "tool",
+          "status": "required",
+          "quote": "инструментов (Jira, Trello)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "alfa_39105",
+      "track": "project",
+      "reason": "Ведёт сложные интеграционные IT-проекты платежей и обеспечивает delivery нескольких команд разработки.",
+      "role_evidence": "Ведение ит-проектов по направлению Платежи и переводы (физические лица)",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Организация delivery",
+          "category": "skill",
+          "status": "task",
+          "quote": "Обеспечение процесса деливери",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление несколькими командами разработки",
+          "category": "skill",
+          "status": "task",
+          "quote": "Управление тремя командами разработки на ежедневной основе (включая веб и мобильную разработку)",
+          "scope": "description"
+        },
+        {
+          "concept": "Взаимодействие с разработкой, бизнесом и ИБ",
+          "category": "skill",
+          "status": "task",
+          "quote": "Регулярное взаимодействие со смежными командами разработки, с бизнесом и кибербезопасностью",
+          "scope": "description"
+        },
+        {
+          "concept": "Техническое высшее образование",
+          "category": "education",
+          "status": "required",
+          "quote": "Высшее техническое образование",
+          "scope": "description"
+        },
+        {
+          "concept": "Банковская сфера и финтех",
+          "category": "industry",
+          "status": "required",
+          "quote": "Опыт в банковской сфере и финтехе",
+          "scope": "description"
+        },
+        {
+          "concept": "Платёжные решения",
+          "category": "domain",
+          "status": "nice",
+          "quote": "желательно платежные решения",
+          "scope": "description"
+        },
+        {
+          "concept": "Сложные интеграционные IT-проекты от 3 лет",
+          "category": "experience",
+          "status": "required",
+          "quote": "Опыт управления сложными интеграционными ит-проектами от 3х лет",
+          "scope": "description"
+        },
+        {
+          "concept": "IT-опыт от 8 лет",
+          "category": "experience",
+          "status": "required",
+          "quote": "Общий опыт в ит- от 8 лет",
+          "scope": "description"
+        },
+        {
+          "concept": "Разработка или системная аналитика",
+          "category": "domain",
+          "status": "required",
+          "quote": "Предыдущий бэкграунд в качестве разработчика, са и тд обязателен",
+          "scope": "description"
+        },
+        {
+          "concept": "Agile и Waterfall",
+          "category": "method",
+          "status": "required",
+          "quote": "Опыт применения методологий (Agile, Waterfall)",
+          "scope": "description"
+        },
+        {
+          "concept": "Jira и Trello",
+          "category": "tool",
+          "status": "required",
+          "quote": "инструментов (Jira, Trello)",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт управления несколькими командами",
+          "category": "experience",
+          "status": "required",
+          "quote": "Опыт управления 2 и более командами в рамках проекта",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "ozon_137520477",
+      "track": "project",
+      "reason": "Координирует разработку процессинга и технические проекты стабильности, превращая планы в регулярные релизы.",
+      "role_evidence": "Превращать планы в регулярные инкрементальные релизы, проводить демо и презентации для стейкхолдеров",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Опыт ИТ-проектов или продуктов",
+          "category": "experience",
+          "status": "required",
+          "quote": "Опыт работы менеджером проектов/продуктов в IT от 5-и лет",
+          "scope": "description"
+        },
+        {
+          "concept": "Координация разработки",
+          "category": "skill",
+          "status": "task",
+          "quote": "Координировать проекты команды, которая занимается разработкой высоконагруженных сервисов со сложной бизнес логикой",
+          "scope": "description"
+        },
+        {
+          "concept": "Надёжность, скорость и безопасность",
+          "category": "domain",
+          "status": "task",
+          "quote": "вести проекты для улучшения стабильности, скорости и безопасности",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление ожиданиями стейкхолдеров",
+          "category": "skill",
+          "status": "task",
+          "quote": "Активно управлять ожиданиями стейкхолдеров",
+          "scope": "description"
+        },
+        {
+          "concept": "Декомпозиция задач",
+          "category": "skill",
+          "status": "task",
+          "quote": "Вместе с командой декомпозировать задачи",
+          "scope": "description"
+        },
+        {
+          "concept": "Проектная документация",
+          "category": "skill",
+          "status": "task",
+          "quote": "вести проектную документацию",
+          "scope": "description"
+        },
+        {
+          "concept": "Дорожные карты",
+          "category": "skill",
+          "status": "task",
+          "quote": "составлять роадмапы",
+          "scope": "description"
+        },
+        {
+          "concept": "Ревью архитектуры",
+          "category": "domain",
+          "status": "task",
+          "quote": "проводить ревью архитектурных решений",
+          "scope": "description"
+        },
+        {
+          "concept": "Релизный процесс",
+          "category": "skill",
+          "status": "task",
+          "quote": "Превращать планы в регулярные инкрементальные релизы",
+          "scope": "description"
+        },
+        {
+          "concept": "Демо и презентации",
+          "category": "skill",
+          "status": "task",
+          "quote": "проводить демо и презентации для стейкхолдеров",
+          "scope": "description"
+        },
+        {
+          "concept": "Работа с несколькими заказчиками",
+          "category": "skill",
+          "status": "required",
+          "quote": "Умение вести проекты с большим количеством бизнес-заказчиков, ожидающих разное от одного проекта",
+          "scope": "description"
+        },
+        {
+          "concept": "Согласование процесса от требований до архитектуры",
+          "category": "skill",
+          "status": "required",
+          "quote": "Способность продумать и согласовать процесс — от требований заказчика до взаимодействия сервисов в архитектуре",
+          "scope": "description"
+        },
+        {
+          "concept": "Жизненный цикл разработки",
+          "category": "domain",
+          "status": "required",
+          "quote": "Знание цикла разработки",
+          "scope": "description"
+        },
+        {
+          "concept": "Алгоритмические требования",
+          "category": "skill",
+          "status": "required",
+          "quote": "Умение переводить описание процессов в алгоритмические требования для разработки",
+          "scope": "description"
+        },
+        {
+          "concept": "Банковские процессы",
+          "category": "domain",
+          "status": "nice",
+          "quote": "Понимание банковских процессов: как операционных, так и взаимодействие между системами",
+          "scope": "description"
+        },
+        {
+          "concept": "SQL",
+          "category": "tool",
+          "status": "nice",
+          "quote": "Умение работать с аналитикой: SQL, системы аналитической визуализации",
+          "scope": "description"
+        },
+        {
+          "concept": "Аналитическая визуализация",
+          "category": "tool",
+          "status": "nice",
+          "quote": "Умение работать с аналитикой: SQL, системы аналитической визуализации",
+          "scope": "description"
+        },
+        {
+          "concept": "Системный анализ",
+          "category": "experience",
+          "status": "nice",
+          "quote": "Опыт в системном анализе",
+          "scope": "description"
+        },
+        {
+          "concept": "UML",
+          "category": "method",
+          "status": "nice",
+          "quote": "умение составлять UML диаграммы",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "sber_4566318",
+      "track": "project",
+      "reason": "Управляет релизной поставкой HR-систем, миграцией процесса и работой межфункциональных команд, улучшает качество и скорость выпуска.",
+      "role_evidence": "организовать миграцию релизного управления и процесса онбординга Пульс с Jira/Confluence на СберТрек",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Анализ и улучшение процессов поставки",
+          "category": "skill",
+          "status": "task",
+          "quote": "анализировать текущие релизные и производственные процессы, выявлять узкие места и внедрять улучшения",
+          "scope": "description"
+        },
+        {
+          "concept": "Онбординг сервисов",
+          "category": "domain",
+          "status": "task",
+          "quote": "совершенствовать, оптимизировать и сопровождать процесс онбординга новых сервисов",
+          "scope": "description"
+        },
+        {
+          "concept": "Защита интересов подразделения",
+          "category": "skill",
+          "status": "task",
+          "quote": "участвовать в качестве лидера приложения в рабочих группах по стандартам, представлять и защищать интересы блока",
+          "scope": "description"
+        },
+        {
+          "concept": "Миграция релизного процесса",
+          "category": "skill",
+          "status": "task",
+          "quote": "организовать миграцию релизного управления и процесса онбординга Пульс с Jira/Confluence на СберТрек",
+          "scope": "description"
+        },
+        {
+          "concept": "Межфункциональная координация",
+          "category": "skill",
+          "status": "task",
+          "quote": "координировать кросс функциональные команды (разработку, тестирование, сопровождение)",
+          "scope": "description"
+        },
+        {
+          "concept": "Контроль стандартов и рисков",
+          "category": "skill",
+          "status": "task",
+          "quote": "обеспечивать соблюдение стандартов банка и минимизировать риски",
+          "scope": "description"
+        },
+        {
+          "concept": "Руководство и развитие команды",
+          "category": "skill",
+          "status": "required",
+          "quote": "способность управлять командой: контролировать исполнение целей, мотивировать, оценивать производительность и развивать сотрудников",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт релизного управления от двух лет",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт релизного управления от 2 лет: планирование релизов, управление рисками, ведение документации",
+          "scope": "description"
+        },
+        {
+          "concept": "Автоматизация релизного процесса",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт автоматизации релизного процесса",
+          "scope": "description"
+        },
+        {
+          "concept": "Спецификации для разработчиков",
+          "category": "skill",
+          "status": "required",
+          "quote": "умение писать спецификации для разработчиков",
+          "scope": "description"
+        },
+        {
+          "concept": "Банковский процесс П1518",
+          "category": "domain",
+          "status": "nice",
+          "quote": "знание производственного процесса банка П1518 и опыт разработки собственных релизных/производственных процессов на этой базе будут преимуществами",
+          "scope": "description"
+        },
+        {
+          "concept": "Jenkins",
+          "category": "tool",
+          "status": "required",
+          "quote": "Jenkins",
+          "scope": "description"
+        },
+        {
+          "concept": "DPM",
+          "category": "tool",
+          "status": "required",
+          "quote": "DPM",
+          "scope": "description"
+        },
+        {
+          "concept": "Методология и визуализация процессов",
+          "category": "skill",
+          "status": "required",
+          "quote": "наличие навыков методологии процессов — систематизация и структурирование: разработка методик, визуализация workflow, унификация подходов",
+          "scope": "description"
+        },
+        {
+          "concept": "Jira",
+          "category": "tool",
+          "status": "required",
+          "quote": "Jira, Confluence",
+          "scope": "description"
+        },
+        {
+          "concept": "Confluence",
+          "category": "tool",
+          "status": "required",
+          "quote": "Jira, Confluence",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "tbank_68869650-7937-426e-890f-248de8cd641e",
+      "track": "commercial",
+      "reason": "Привлекает стратегических партнёров, ведёт коммерческие сделки и повышает эффективность каналов привлечения.",
+      "role_evidence": "Контролировать этапы сделок, риски и следующие шаги, заключать партнерские договоры и соглашения",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Поиск партнёров",
+          "category": "skill",
+          "status": "task",
+          "quote": "Искать потенциальных партнеров через различные каналы",
+          "scope": "description"
+        },
+        {
+          "concept": "Оценка партнёрских проектов",
+          "category": "skill",
+          "status": "task",
+          "quote": "Анализировать и ранжировать партнерские проекты",
+          "scope": "description"
+        },
+        {
+          "concept": "Координация сделки",
+          "category": "skill",
+          "status": "task",
+          "quote": "Координировать работу с внутренними командами по сделкам",
+          "scope": "description"
+        },
+        {
+          "concept": "Согласование условий и интеграций",
+          "category": "skill",
+          "status": "task",
+          "quote": "согласовывать сроки интеграции, юридические условия и маркетинговые активности",
+          "scope": "description"
+        },
+        {
+          "concept": "Коммерческие предложения",
+          "category": "skill",
+          "status": "task",
+          "quote": "Подготавливать коммерческие предложения, презентации и индивидуальные пакеты для партнеров",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление сделками и рисками",
+          "category": "skill",
+          "status": "task",
+          "quote": "Контролировать этапы сделок, риски и следующие шаги",
+          "scope": "description"
+        },
+        {
+          "concept": "Партнёрские договоры",
+          "category": "skill",
+          "status": "task",
+          "quote": "заключать партнерские договоры и соглашения",
+          "scope": "description"
+        },
+        {
+          "concept": "Развитие отношений и обучение партнёров",
+          "category": "skill",
+          "status": "task",
+          "quote": "Поддерживать отношения с партнерами: проводить обучение и организовывать нетворкинг",
+          "scope": "description"
+        },
+        {
+          "concept": "Бизнес-мероприятия",
+          "category": "skill",
+          "status": "task",
+          "quote": "Участвовать в проведении бизнес-мероприятий",
+          "scope": "description"
+        },
+        {
+          "concept": "Партнёрские выплаты и обязательства",
+          "category": "skill",
+          "status": "task",
+          "quote": "контролировать выплаты и бонусы и выполнять обязательства перед партнерами",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ аудитории и каналов привлечения",
+          "category": "skill",
+          "status": "task",
+          "quote": "Анализировать целевую аудиторию партнеров и крупных клиентов, оценивать эффективность каналов привлечения лидов",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт финансовых B2B-продаж",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт работы в продажах финансовых продуктов B2B в крупном бизнесе от 2 лет",
+          "scope": "description"
+        },
+        {
+          "concept": "Финансовые услуги",
+          "category": "industry",
+          "status": "required",
+          "quote": "опыт работы в продажах финансовых продуктов B2B в крупном бизнесе от 2 лет",
+          "scope": "description"
+        },
+        {
+          "concept": "Развитие бизнеса и управление проектами",
+          "category": "experience",
+          "status": "required",
+          "quote": "опыт стратегического развития бизнеса и управления проектами",
+          "scope": "description"
+        },
+        {
+          "concept": "Интернет-эквайринг и интеграции",
+          "category": "domain",
+          "status": "required",
+          "quote": "Знаете продукт «Интернет-эквайринг», имеете опыт участия в проектах по его интеграции в компаниях крупного бизнеса",
+          "scope": "description"
+        },
+        {
+          "concept": "Высшее профильное образование",
+          "category": "education",
+          "status": "required",
+          "quote": "высшее образование в сфере экономики, финансов или менеджмента",
+          "scope": "description"
+        },
+        {
+          "concept": "Переговоры C-level",
+          "category": "skill",
+          "status": "required",
+          "quote": "Умеете вести переговоры на уровне\nC-level",
+          "scope": "description"
+        },
+        {
+          "concept": "Грамотная речь",
+          "category": "skill",
+          "status": "required",
+          "quote": "грамотно излагать мысли устно и письменно",
+          "scope": "description"
+        },
+        {
+          "concept": "Презентации",
+          "category": "skill",
+          "status": "required",
+          "quote": "проводить презентации",
+          "scope": "description"
+        },
+        {
+          "concept": "CRM",
+          "category": "tool",
+          "status": "required",
+          "quote": "Умеете работать с\nCRM-системами",
+          "scope": "description"
+        },
+        {
+          "concept": "Jira",
+          "category": "tool",
+          "status": "required",
+          "quote": "включая Jira и Confluence",
+          "scope": "description"
+        },
+        {
+          "concept": "Confluence",
+          "category": "tool",
+          "status": "required",
+          "quote": "включая Jira и Confluence",
+          "scope": "description"
+        },
+        {
+          "concept": "Аналитические инструменты",
+          "category": "tool",
+          "status": "required",
+          "quote": "инструментами аналитики",
+          "scope": "description"
+        },
+        {
+          "concept": "Сбор и интерпретация данных",
+          "category": "skill",
+          "status": "required",
+          "quote": "собирать, структурировать и интерпретировать данные",
+          "scope": "description"
+        },
+        {
+          "concept": "Китайский или английский",
+          "category": "language",
+          "status": "required",
+          "quote": "Владеете китайским или английским языком",
+          "scope": "description"
+        },
+        {
+          "concept": "Банковские продукты для бизнеса",
+          "category": "domain",
+          "status": "nice",
+          "quote": "знание банковских продуктов для бизнеса (РКО, кредитование, зарплатные проекты, казначейское сопровождение, эквайринг)",
+          "scope": "description"
+        },
+        {
+          "concept": "Контакты ЛПР крупного бизнеса",
+          "category": "skill",
+          "status": "nice",
+          "quote": "наличие деловых контактов с ЛПР компаний крупного бизнеса",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "alfa_36548",
+      "track": "project",
+      "reason": "Отвечает за полный цикл внедрения ML-решений, их интеграцию и вывод в промышленную эксплуатацию. Сильная техническая составляющая служит реализации портфеля проектов.",
+      "role_evidence": "Преобразовывать бизнес‑требования в технические задания и вести полный цикл внедрения AI/ML‑решений от идеи до продакшн.",
+      "exclusion": null,
+      "review": true,
+      "requirements": [
+        {
+          "concept": "Алгоритмы и жизненный цикл ML-моделей",
+          "category": "domain",
+          "status": "task",
+          "quote": "Понимать алгоритмы машинного обучения, метрики качества моделей и их жизненный цикл.",
+          "scope": "description"
+        },
+        {
+          "concept": "Перевод бизнес-требований в ТЗ",
+          "category": "skill",
+          "status": "task",
+          "quote": "Преобразовывать бизнес‑требования в технические задания",
+          "scope": "description"
+        },
+        {
+          "concept": "Внедрение AI/ML полного цикла",
+          "category": "skill",
+          "status": "task",
+          "quote": "вести полный цикл внедрения AI/ML‑решений от идеи до продакшн.",
+          "scope": "description"
+        },
+        {
+          "concept": "Интеграция ML в операционные системы",
+          "category": "domain",
+          "status": "task",
+          "quote": "Интегрировать ML‑модели во все каналы операций (ДБО, эквайринг, эмиссия, отделения)",
+          "scope": "description"
+        },
+        {
+          "concept": "Проектная документация",
+          "category": "skill",
+          "status": "task",
+          "quote": "Разрабатывать и поддерживать проектную документацию (ФТ, BRD и др.)",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление портфелем ML-проектов",
+          "category": "skill",
+          "status": "task",
+          "quote": "Формировать портфель ML‑проектов, выявлять зоны автоматизации и выводить решения в продакшн.",
+          "scope": "description"
+        },
+        {
+          "concept": "Архитектурные требования",
+          "category": "domain",
+          "status": "task",
+          "quote": "Определять архитектурные требования к взаимодействию моделей с системами принятия решений",
+          "scope": "description"
+        },
+        {
+          "concept": "A/B-тестирование",
+          "category": "method",
+          "status": "task",
+          "quote": "организовывать A/B‑тестирование",
+          "scope": "description"
+        },
+        {
+          "concept": "Модельный риск",
+          "category": "domain",
+          "status": "task",
+          "quote": "управлять модельным риском",
+          "scope": "description"
+        },
+        {
+          "concept": "Межфункциональное взаимодействие",
+          "category": "skill",
+          "status": "task",
+          "quote": "Сотрудничать с командами мониторинга, аналитики, Data Science и бизнес‑подразделениями для достижения целей направления.",
+          "scope": "description"
+        },
+        {
+          "concept": "Математическое или экономическое образование",
+          "category": "education",
+          "status": "required",
+          "quote": "Математическое/экономическое образование",
+          "scope": "description"
+        },
+        {
+          "concept": "Образование в ведущем вузе",
+          "category": "education",
+          "status": "required",
+          "quote": "Сильнейшие вузы страны – в первую очередь Высшая Школа экономики и математические вузы",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт передовых AI-компаний или вендоров",
+          "category": "experience",
+          "status": "required",
+          "quote": "Работа в передовых компаниях с точки зрения внедрения AI (Сбербанк, Яндекс, Телекомы) или топовые вендоры",
+          "scope": "description"
+        },
+        {
+          "concept": "Руководство кросс-функциональной командой",
+          "category": "experience",
+          "status": "required",
+          "quote": "Опыт руководства кросс-функциональной командой (DS, аналитика, бизнес)",
+          "scope": "description"
+        },
+        {
+          "concept": "Банковские бизнес-процессы",
+          "category": "domain",
+          "status": "required",
+          "quote": "Опыт создания или оптимизации банковских бизнес-процессов",
+          "scope": "description"
+        },
+        {
+          "concept": "Внедрение изменений в продукты и процессы",
+          "category": "skill",
+          "status": "required",
+          "quote": "Понимание принципов внедрения изменений в продукты и процессы (бэклог, синхронизация команд)",
+          "scope": "description"
+        },
+        {
+          "concept": "Разработка и промышленное внедрение ML",
+          "category": "domain",
+          "status": "required",
+          "quote": "Опыт разработки и внедрения ML-моделей в промышленную эксплуатацию",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "alfa_38811",
+      "track": "project",
+      "reason": "Управляет внедрением AI/ML-решений и портфелем автоматизации банковских процессов от идеи до промышленной эксплуатации.",
+      "role_evidence": "Управлять полным циклом внедрения AI/ML-решений — от идеи до промышленной эксплуатации",
+      "exclusion": null,
+      "review": true,
+      "requirements": [
+        {
+          "concept": "Алгоритмы и жизненный цикл ML",
+          "category": "domain",
+          "status": "task",
+          "quote": "Знать и понимать основные принципы и алгоритмы машинного обучения, метрики качества моделей и жизненный цикл их разработки",
+          "scope": "description"
+        },
+        {
+          "concept": "Рыночные AI-решения",
+          "category": "domain",
+          "status": "task",
+          "quote": "Понимать современные рыночные решения в области AI",
+          "scope": "description"
+        },
+        {
+          "concept": "Перевод бизнес-требований в технические задачи",
+          "category": "skill",
+          "status": "task",
+          "quote": "Анализировать бизнес-требования и транслировать их в технические задачи",
+          "scope": "description"
+        },
+        {
+          "concept": "AI/ML-внедрения полного цикла",
+          "category": "skill",
+          "status": "task",
+          "quote": "Управлять полным циклом внедрения AI/ML-решений — от идеи до промышленной эксплуатации",
+          "scope": "description"
+        },
+        {
+          "concept": "Проектная документация",
+          "category": "skill",
+          "status": "task",
+          "quote": "Разрабатывать и поддерживать проектную документацию (ФТ, BRD и др.) по вопросам внедрения ML в процессы банка",
+          "scope": "description"
+        },
+        {
+          "concept": "Портфель ML-проектов",
+          "category": "skill",
+          "status": "task",
+          "quote": "Формировать и развивать портфель ML-проектов, расширяя покрытие процессов ML-моделями",
+          "scope": "description"
+        },
+        {
+          "concept": "Выявление возможностей автоматизации",
+          "category": "skill",
+          "status": "task",
+          "quote": "Изучать процессы бизнес-линии банка, выявлять зоны автоматизации и предлагать решения с последующим выводом в продакшн",
+          "scope": "description"
+        },
+        {
+          "concept": "Математическое или экономическое образование",
+          "category": "education",
+          "status": "required",
+          "quote": "Математическое/экономическое образование",
+          "scope": "description"
+        },
+        {
+          "concept": "Образование в ведущем вузе",
+          "category": "education",
+          "status": "required",
+          "quote": "Сильнейшие вузы страны – в первую очередь Высшая Школа экономики и математические вузы",
+          "scope": "description"
+        },
+        {
+          "concept": "Опыт передовых AI-компаний или вендоров",
+          "category": "experience",
+          "status": "required",
+          "quote": "Работа в передовых компаниях с точки зрения внедрения AI (Сбербанк, Яндекс, Телекомы) или топовые вендоры",
+          "scope": "description"
+        },
+        {
+          "concept": "Руководство кросс-функциональной командой",
+          "category": "experience",
+          "status": "required",
+          "quote": "Опыт руководства кросс-функциональной командой (DS, аналитика, бизнес)",
+          "scope": "description"
+        },
+        {
+          "concept": "Банковские бизнес-процессы",
+          "category": "domain",
+          "status": "required",
+          "quote": "Опыт создания или оптимизации банковских бизнес-процессов",
+          "scope": "description"
+        },
+        {
+          "concept": "Изменения в продуктах и процессах",
+          "category": "skill",
+          "status": "required",
+          "quote": "Понимание принципов внедрения изменений в продукты и процессы (бэклог, синхронизация команд)",
+          "scope": "description"
+        },
+        {
+          "concept": "Разработка и промышленное внедрение ML",
+          "category": "domain",
+          "status": "required",
+          "quote": "Опыт разработки и внедрения ML-моделей в промышленную эксплуатацию",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "kontur_5655",
+      "track": "project",
+      "reason": "Ведёт внедрения полного цикла для клиентов, управляет архитектурой, требованиями, задачами разработки и ожиданиями заказчика. Требования кандидату отсутствуют, но обязанности достаточны для отбора.",
+      "role_evidence": "Контролировать реализацию проектов на всех стадиях.",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Presale и клиентские переговоры",
+          "category": "skill",
+          "status": "task",
+          "quote": "Проводить presale-встречи с отделом продаж, вести переговоры с IT-директорами, бухгалтерами, руководителями проектов, аналитиками, системными архитекторами и разработчиками.",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ тендерной документации",
+          "category": "skill",
+          "status": "task",
+          "quote": "Анализировать тендерную документацию",
+          "scope": "description"
+        },
+        {
+          "concept": "Коммерческие предложения",
+          "category": "skill",
+          "status": "task",
+          "quote": "участвовать в формировании коммерческих предложений.",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ IT-инфраструктуры и процессов клиента",
+          "category": "skill",
+          "status": "task",
+          "quote": "Анализировать IT-инфраструктуру клиента и бизнес-процессы по налоговой отчетности, прояснять требования.",
+          "scope": "description"
+        },
+        {
+          "concept": "Проектная документация",
+          "category": "skill",
+          "status": "task",
+          "quote": "Оформлять и согласовывать проектную документацию.",
+          "scope": "description"
+        },
+        {
+          "concept": "Архитектура внедряемого решения",
+          "category": "domain",
+          "status": "task",
+          "quote": "Проектировать целевую архитектуру решения и согласовывать ее с заказчиком, проектным офисом и командой разработки.",
+          "scope": "description"
+        },
+        {
+          "concept": "Задачи разработке и контроль исполнения",
+          "category": "skill",
+          "status": "task",
+          "quote": "Ставить задачи разработке, следить за выполнением",
+          "scope": "description"
+        },
+        {
+          "concept": "Управление ожиданиями заказчика",
+          "category": "skill",
+          "status": "task",
+          "quote": "управлять ожиданиями заказчика по срокам",
+          "scope": "description"
+        },
+        {
+          "concept": "Внедрение проекта полного цикла",
+          "category": "skill",
+          "status": "task",
+          "quote": "Контролировать реализацию проектов на всех стадиях.",
+          "scope": "description"
+        },
+        {
+          "concept": "Несколько проектов одновременно",
+          "category": "skill",
+          "status": "task",
+          "quote": "Вести от шести до восьми проектов одновременно.",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "ozon_137585501",
+      "track": "commercial",
+      "reason": "Развивает инфраструктурный портфель через поиск складской недвижимости, оценку предложений и переговоры об аренде.",
+      "role_evidence": "Организовывать переговоры в согласовании предварительных и долгосрочных договоров аренды, контроль сроков согласования и подписания договоров аренды",
+      "exclusion": null,
+      "review": false,
+      "requirements": [
+        {
+          "concept": "Поиск недвижимости и участков",
+          "category": "skill",
+          "status": "task",
+          "quote": "Осуществлять поиск объектов недвижимости и земельных участков для размещения инфраструктурных объектов Компании",
+          "scope": "description"
+        },
+        {
+          "concept": "Работа с собственниками и брокерами",
+          "category": "skill",
+          "status": "task",
+          "quote": "Взаимодействовать с брокерами, агентами, консультантами, собственниками объектов недвижимости и земельных участков",
+          "scope": "description"
+        },
+        {
+          "concept": "Документы по объектам",
+          "category": "skill",
+          "status": "task",
+          "quote": "Предоставлять информации и документов по объектам, потенциально подходящим для развития",
+          "scope": "description"
+        },
+        {
+          "concept": "Проверка объектов и партнёров",
+          "category": "skill",
+          "status": "task",
+          "quote": "Проверять объекты недвижимости, земельных участков, потенциальных партнёров ответственными службами Компании",
+          "scope": "description"
+        },
+        {
+          "concept": "Оценка коммерческих предложений",
+          "category": "skill",
+          "status": "task",
+          "quote": "Осуществлять первичную оценку коммерческих предложений (локаций, объектов)",
+          "scope": "description"
+        },
+        {
+          "concept": "Оценка технического соответствия",
+          "category": "skill",
+          "status": "task",
+          "quote": "анализ на соответствие техническим требованиям, срокам реализации проектов, анализ рисков",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ рисков",
+          "category": "skill",
+          "status": "task",
+          "quote": "анализ рисков",
+          "scope": "description"
+        },
+        {
+          "concept": "Переговоры об аренде",
+          "category": "skill",
+          "status": "task",
+          "quote": "Организовывать переговоры в согласовании предварительных и долгосрочных договоров аренды",
+          "scope": "description"
+        },
+        {
+          "concept": "Контроль договорных сроков",
+          "category": "skill",
+          "status": "task",
+          "quote": "контроль сроков согласования и подписания договоров аренды",
+          "scope": "description"
+        },
+        {
+          "concept": "Анализ рынка и конкурентов",
+          "category": "skill",
+          "status": "task",
+          "quote": "Вести аналитику рынка складской недвижимости, анализ конкурентов.",
+          "scope": "description"
+        },
+        {
+          "concept": "Соблюдение регламентов",
+          "category": "skill",
+          "status": "task",
+          "quote": "Контроль и обеспечение соответствия процесса поиска и выбора объектов недвижимости и земельных участков регламентам Компании.",
+          "scope": "description"
+        },
+        {
+          "concept": "Высшее образование",
+          "category": "education",
+          "status": "required",
+          "quote": "Высшее образование",
+          "scope": "description"
+        },
+        {
+          "concept": "Складская недвижимость",
+          "category": "industry",
+          "status": "required",
+          "quote": "Опыт работы в сфере складской недвижимости от 3 лет",
+          "scope": "description"
+        },
+        {
+          "concept": "Сделки с индустриальной недвижимостью",
+          "category": "experience",
+          "status": "required",
+          "quote": "Наличие опыта сделок по складской/индустриальной недвижимости",
+          "scope": "description"
+        },
+        {
+          "concept": "Законодательство о недвижимости",
+          "category": "domain",
+          "status": "required",
+          "quote": "Знание законодательства, регулирующего гражданские правоотношения в области недвижимости",
+          "scope": "description"
+        },
+        {
+          "concept": "Требования к недвижимости и земле",
+          "category": "domain",
+          "status": "required",
+          "quote": "норм и требований предъявляемым к объектам складской недвижимости и земельным участкам",
+          "scope": "description"
+        },
+        {
+          "concept": "Рынок складской недвижимости",
+          "category": "industry",
+          "status": "required",
+          "quote": "Знание рынка складской недвижимости",
+          "scope": "description"
+        },
+        {
+          "concept": "Стандарты складских объектов",
+          "category": "domain",
+          "status": "required",
+          "quote": "Знание основных стандартов складской недвижимости, технических требований, предъявляемый к объектам соответствующего класса.",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "avito_8182",
+      "track": "project",
+      "reason": "Ведёт маркетинговые спецпроекты полного цикла с производством, запуском, командой, подрядчиками и бюджетом. Креативная часть делает роль смешанной, но ответственность за реализацию явно выделена.",
+      "role_evidence": "полноценное ведение спецпроектов: от инсайта и креативной идеи до производства, запуска и пост‑аналитики",
+      "exclusion": null,
+      "review": true,
+      "requirements": [
+        {
+          "concept": "Маркетинговые проекты полного цикла",
+          "category": "skill",
+          "status": "task",
+          "quote": "полноценное ведение спецпроектов: от инсайта и креативной идеи до производства, запуска и пост‑аналитики",
+          "scope": "description"
+        },
+        {
+          "concept": "Офлайн- и digital-поддержка",
+          "category": "domain",
+          "status": "task",
+          "quote": "работа на стыке офлайн- и диджитал-поддержки",
+          "scope": "description"
+        },
+        {
+          "concept": "Развитие бренда",
+          "category": "skill",
+          "status": "task",
+          "quote": "поиск новых возможностей для развития бренда",
+          "scope": "description"
+        },
+        {
+          "concept": "Органическое распространение проектов",
+          "category": "experience",
+          "status": "required",
+          "quote": "запускали проекты, которые органически распространялись",
+          "scope": "description"
+        },
+        {
+          "concept": "Межфункциональные коммуникации",
+          "category": "skill",
+          "status": "task",
+          "quote": "работа в тесном взаимодействии с командами маркетинговых коммуникаций и маркетинга вертикали",
+          "scope": "description"
+        },
+        {
+          "concept": "Формирование проектной команды",
+          "category": "skill",
+          "status": "task",
+          "quote": "сбор кросс‑функциональной команды и управление ей",
+          "scope": "description"
+        },
+        {
+          "concept": "Стейкхолдеры и подрядчики",
+          "category": "skill",
+          "status": "task",
+          "quote": "взаимодействие со стейкхолдерами и внешними подрядчиками",
+          "scope": "description"
+        },
+        {
+          "concept": "Бюджет проекта",
+          "category": "skill",
+          "status": "task",
+          "quote": "управление бюджетом и документооборотом",
+          "scope": "description"
+        },
+        {
+          "concept": "Документооборот",
+          "category": "skill",
+          "status": "task",
+          "quote": "управление бюджетом и документооборотом",
+          "scope": "description"
+        },
+        {
+          "concept": "Маркетинг от 5 лет",
+          "category": "experience",
+          "status": "required",
+          "quote": "имеете опыт в маркетинге не менее пяти лет",
+          "scope": "description"
+        },
+        {
+          "concept": "IT-компания",
+          "category": "industry",
+          "status": "nice",
+          "quote": "желательно в IT-компании",
+          "scope": "description"
+        },
+        {
+          "concept": "Руководство командой от 1,5 лет",
+          "category": "experience",
+          "status": "required",
+          "quote": "не менее полутора лет управляли командой в прямом подчинении",
+          "scope": "description"
+        },
+        {
+          "concept": "Работа с блогерами и инфлюенсерами",
+          "category": "domain",
+          "status": "required",
+          "quote": "работали с блогерами и инфлюенсерами и понимаете, как выстраивать с ними взаимовыгодные партнёрства",
+          "scope": "description"
+        },
+        {
+          "concept": "Спецпроекты, интеграции и закупка размещений",
+          "category": "experience",
+          "status": "required",
+          "quote": "занимались спецпроектами, интеграциями в шоу и закупкой размещений у авторов",
+          "scope": "description"
+        }
+      ]
+    }
+  ],
+  "provenance": [
+    {
+      "id": "ya_47792",
+      "url": "https://komanda.yandex.ru/remote/back_office/koordinator_ekoproektov",
+      "checked_at": "2026-10-14",
+      "role_quote": "вести электронный и бумажный архивы экологической документации"
+    },
+    {
+      "id": "tbank_dff54014-1b4f-4f54-97be-d15d58af174a",
+      "url": "https://education.tbank.ru/start/intern_education/",
+      "checked_at": "2026-10-14T10:40:12.665151+00:00",
+      "role_quote": "Организовывать обучающие курсы и карьерные мероприятия в вузах Москвы, Санкт-Петербурга и других городов"
+    }
+  ],
+  "notes": [
+    "Пилот принят с содержательной коррекцией строительной границы: ya_45436 — инженер строительного контроля, exclude/other. Сроки или бюджет не являются отдельным критерием отбора.",
+    "Самостоятельный внутренний цифровой продукт тоже product. ozon_137262908 оставлен exclude/product + review; для такого вывода не требуется буквальное слово «стратегия».",
+    "CRM-кампании, коммерческие каналы и кросс-сервисное привлечение клиентов не становятся product от A/B, бэклога или пользовательских поверхностей. Основной результат ya_48347 — коммерческое привлечение.",
+    "Смешанные отраслевые и функциональные альтернативы сохранены полностью как required experience/domain. Industry unclear не доказывает секторный gate и не входит в частоты.",
+    "Знание конкретных банковских продуктов, операций и складских процессов — предметная компетенция domain. Прямой опыт работы в секторе и знание делового рынка остаются industry.",
+    "У wb_38500 сохранён отраслевой unclear: область действия «кроссбордер как преимущество» в единой строке неоднозначна. Кроссбордер отдельно nice; обязательность e-commerce не утверждается.",
+    "Все native_sections.additional_requirements и локальные «желательно/приветствуется/плюс» сохраняют nice. В sber_4568026 дополнительный раздел — nice. В полном источнике Т-Банка «Идеально, если» — nice.",
+    "Типы язык/образование/инструменты/методы и контрольные короткие включённые тексты проверены на пропуски. MS Office не развёрнут в неуказанные приложения, SQL не выведен из взаимодействия с аналитиками, стек компании не превращён в личное владение всеми инструментами.",
+    "Не объединять стейкхолдеров с аналитикой, финансовые модели с общим анализом, бюджет проекта с коммерческой экономикой, руководство сотрудниками с координацией смежников, внешние переговоры с внутренними коммуникациями.",
+    "Частота general — число уникальных вакансий с required/task/nice в группе; «Из них — плюс» — nice subset. Одно ID считается максимум один раз. Industry считается только required; nice/unclear остаются в доказательствах вне частот.",
+    "Для редкой группы достаточно одной доступной цитаты. Недостающие 2–3 примера не выдумывать и не получать смешением разных навыков.",
+    "Исходники, авторские батчи, БД, бот, Telegram, резюме и контакты не изменялись. Собственные PR и ветки не создавались.",
+    "Три явно смешанных авторских concept вручную разделены в replacements: тендерная документация и коммерческие предложения; интеграции, архитектура, CI/CD, тестирование; бэклог, сроки, зависимости, риски.",
+    "Первый проход просмотрел все 347 проектных и 319 коммерческих групп и пересчитал частоты по всем принятым records, а не по ограниченным examples каталога. После согласованных исправлений финальная карта принята: 348 проектных и 323 коммерческих группы; все 2187 + 1422 ключа покрыты ровно один раз, отраслевые категории согласованы с группами в обе стороны, ошибки примеров отсутствуют.",
+    "Повторная приёмка финансовых групп подтвердила 9 вакансий с финансовым моделированием, из них 1 nice. Общие финансовые расчёты не считаются моделированием. People management после отделения общей лидерской компетенции: 26 project, 15 commercial.",
+    "Последняя приёмка подтвердила domain для партнёрской практики с блогерами и знания банковских продуктов/процессов, industry для прямого банковского опыта. Устойчивые индексы 264, 610 и 612 сохранены; дублирующий 1407 и пустая группа commercial_320 удалены. Другие принятые records не изменялись."
+  ],
+  "change_reasons": [
+    {
+      "id": "avito_8167",
+      "reasons": [
+        "Основная деятельность содержит прямую реализацию проектов и мероприятий, допустимых по контракту. Требования PR-опыта не отменяют эти обязанности; отсутствие сроков в кратком тексте не даёт самостоятельного основания исключить роль."
+      ]
+    },
+    {
+      "id": "avito_8126",
+      "reasons": [
+        "Сохранённая альтернатива допускает функциональный или бизнес-модельный опыт вне конкретной отрасли. Всё требование обязательно, но отраслевой gate нельзя подтвердить."
+      ]
+    },
+    {
+      "id": "avito_8276",
+      "reasons": [
+        "Сохранённая альтернатива допускает функциональный или бизнес-модельный опыт вне конкретной отрасли. Всё требование обязательно, но отраслевой gate нельзя подтвердить.",
+        "Финальная карта выявила независимые смыслы в составном AND-пункте. Разделено вручную с сохранением required и точных непрерывных цитат."
+      ]
+    },
+    {
+      "id": "ya_47792",
+      "reasons": [
+        "Полный текст доступен по исходной публичной ссылке. Данных теперь достаточно для содержательного exclude/other."
+      ]
+    },
+    {
+      "id": "ya_48347",
+      "reasons": [
+        "Коммерческий результат — кросс-сервисное привлечение; эксперименты на пользовательских поверхностях сами по себе не доказывают самостоятельное product management."
+      ]
+    },
+    {
+      "id": "sber_4568026",
+      "reasons": [
+        "В тексте после основных требований указан раздел «дополнительные навыки:»; три пункта относятся к пожеланиям.",
+        "Интеграции, архитектура, CI/CD и тестирование не имеют одного согласованного смысла; четыре ожидания разделены по точной исходной цитате.",
+        "Бэклог, сроки, зависимости и риски — независимые аспекты проектного управления; они разделены до назначения каталожных групп."
+      ]
+    },
+    {
+      "id": "mtslink_4327951",
+      "reasons": [
+        "По фактическим задачам менеджер организует событийные проекты и техническую поставку подрядчиками; это допустимый project, а не чистый автор или оператор производства."
+      ]
+    },
+    {
+      "id": "ozon_137680238",
+      "reasons": [
+        "Доминирует организация производства, запуска и результатов рекламного проекта; критерии совпадают с включёнными проектными спецпроектами avito_8182."
+      ]
+    },
+    {
+      "id": "sber_4578746",
+      "reasons": [
+        "Вводная и все обязанности совпадают с sber_4563930 и sber_4565167. Различие в ожидаемой прошлой должности не меняет основной результат роли; межбатчевая классификация приведена к одному смыслу.",
+        "Это предметная продуктовая или процессная компетенция, а не отдельный gate опыта или знания делового сектора. Статус и исходное требование сохранены."
+      ]
+    },
+    {
+      "id": "sber_4574674",
+      "reasons": [
+        "В точной альтернативе допустим прошлый опыт без конкретной отрасли: «крупные экосистемы» или «на стороне бренда». Обязателен полный опыт по альтернативе, а отдельный отраслевой gate не подтверждён."
+      ]
+    },
+    {
+      "id": "tbank_6625fb68-eba7-48bc-abf7-fa02193a8de8",
+      "reasons": [
+        "В точной альтернативе допустим прошлый опыт без конкретной отрасли: «крупные экосистемы» или «на стороне бренда». Обязателен полный опыт по альтернативе, а отдельный отраслевой gate не подтверждён."
+      ]
+    },
+    {
+      "id": "vk_54825",
+      "reasons": [
+        "Работа на стороне бренда не задаёт конкретный сектор. Полная альтернатива сохраняется как функциональный опыт.",
+        "Прямое обязательное знание делового рынка инфлюенс-маркетинга соответствует industry; оно подтверждает отрасль независимо от альтернативы работодателей."
+      ]
+    },
+    {
+      "id": "sber_4575286",
+      "reasons": [
+        "Основная работа и профессиональные требования относятся к специалисту по методологии ИБ, а самостоятельное проектное исполнение не раскрыто."
+      ]
+    },
+    {
+      "id": "tbank_dff54014-1b4f-4f54-97be-d15d58af174a",
+      "reasons": [
+        "Полное профессиональное описание восстановлено по публичному переходу. Основной результат — реализация образовательных и карьерных событий. «Идеально, если» и «Будет плюсом, если» имеют статус nice."
+      ]
+    },
+    {
+      "id": "sber_4351924",
+      "reasons": [
+        "Это предметная продуктовая или процессная компетенция, а не отдельный gate опыта или знания делового сектора. Статус и исходное требование сохранены."
+      ]
+    },
+    {
+      "id": "sber_4548835",
+      "reasons": [
+        "Это предметная продуктовая или процессная компетенция, а не отдельный gate опыта или знания делового сектора. Статус и исходное требование сохранены."
+      ]
+    },
+    {
+      "id": "sber_4551551",
+      "reasons": [
+        "Прямой управленческий опыт в банковской сфере сохранён industry required. Понимание конкретных банковских продуктов и процессов перенесено industry→domain required; итоговая карта выявила и исправила ошибочный выбор первого industry-пункта при первоначальной сборке."
+      ]
+    },
+    {
+      "id": "sber_4563930",
+      "reasons": [
+        "Это предметная продуктовая или процессная компетенция, а не отдельный gate опыта или знания делового сектора. Статус и исходное требование сохранены."
+      ]
+    },
+    {
+      "id": "sber_4565167",
+      "reasons": [
+        "Это предметная продуктовая или процессная компетенция, а не отдельный gate опыта или знания делового сектора. Статус и исходное требование сохранены."
+      ]
+    },
+    {
+      "id": "sber_4536799",
+      "reasons": [
+        "Это предметная продуктовая или процессная компетенция, а не отдельный gate опыта или знания делового сектора. Статус и исходное требование сохранены.",
+        "Финальная карта выявила независимые смыслы в составном AND-пункте. Разделено вручную с сохранением required и точных непрерывных цитат."
+      ]
+    },
+    {
+      "id": "sber_4569655",
+      "reasons": [
+        "Это предметная продуктовая или процессная компетенция, а не отдельный gate опыта или знания делового сектора. Статус и исходное требование сохранены."
+      ]
+    },
+    {
+      "id": "ozon_137633682",
+      "reasons": [
+        "Это предметная продуктовая или процессная компетенция, а не отдельный gate опыта или знания делового сектора. Статус и исходное требование сохранены."
+      ]
+    },
+    {
+      "id": "ozon_137804555",
+      "reasons": [
+        "Цитата описывает складскую операционную практику. Она уже сохранена отдельным required domain «Складские процессы и FIFO/FEFO», поэтому отраслевой дубль удалён."
+      ]
+    },
+    {
+      "id": "sber_4532202",
+      "reasons": [
+        "Консалтинг — самостоятельный обязательный секторный опыт до знака «+». Последующая альтернатива допускает tech-driven бизнес без конкретного сектора; полный required опыт сохранён."
+      ]
+    },
+    {
+      "id": "alfa_37110",
+      "reasons": [
+        "Пожелание касается функциональной банковской специализации, конкретных продуктов или процессов. Сохранено как domain nice для отдельного счётчика пожеланий."
+      ]
+    },
+    {
+      "id": "alfa_38728",
+      "reasons": [
+        "Пожелание касается функциональной банковской специализации, конкретных продуктов или процессов. Сохранено как domain nice для отдельного счётчика пожеланий."
+      ]
+    },
+    {
+      "id": "alfa_39133",
+      "reasons": [
+        "Пожелание касается функциональной банковской специализации, конкретных продуктов или процессов. Сохранено как domain nice для отдельного счётчика пожеланий."
+      ]
+    },
+    {
+      "id": "alfa_39105",
+      "reasons": [
+        "Пожелание касается функциональной банковской специализации, конкретных продуктов или процессов. Сохранено как domain nice для отдельного счётчика пожеланий."
+      ]
+    },
+    {
+      "id": "ozon_137520477",
+      "reasons": [
+        "Пожелание касается функциональной банковской специализации, конкретных продуктов или процессов. Сохранено как domain nice для отдельного счётчика пожеланий."
+      ]
+    },
+    {
+      "id": "sber_4566318",
+      "reasons": [
+        "Пожелание касается функциональной банковской специализации, конкретных продуктов или процессов. Сохранено как domain nice для отдельного счётчика пожеланий."
+      ]
+    },
+    {
+      "id": "tbank_68869650-7937-426e-890f-248de8cd641e",
+      "reasons": [
+        "Пожелание касается функциональной банковской специализации, конкретных продуктов или процессов. Сохранено как domain nice для отдельного счётчика пожеланий."
+      ]
+    },
+    {
+      "id": "alfa_36548",
+      "reasons": [
+        "Создание и оптимизация банковских процессов — предметная практика, которую отделяем от самостоятельного секторного gate. Required сохранён."
+      ]
+    },
+    {
+      "id": "alfa_38811",
+      "reasons": [
+        "Создание и оптимизация банковских процессов — предметная практика, которую отделяем от самостоятельного секторного gate. Required сохранён."
+      ]
+    },
+    {
+      "id": "kontur_5655",
+      "reasons": [
+        "Тендерная документация и подготовка коммерческих предложений — самостоятельные навыки для разных групп."
+      ]
+    },
+    {
+      "id": "ozon_137585501",
+      "reasons": [
+        "Прямое required «Знание рынка складской недвижимости» — знание делового сектора. Перенесено domain→industry; два подтверждения одной вакансии в группе дают частоту 1."
+      ]
+    },
+    {
+      "id": "avito_8182",
+      "reasons": [
+        "Работа с блогерами и выстраивание партнёрств — предметная практика domain required. Цитата не задаёт самостоятельный опыт или знание делового сектора; категория согласована с project_088."
+      ]
+    }
+  ],
+  "map_findings": {
+    "status": "ACCEPT",
+    "financial_group": {
+      "id": "commercial_061",
+      "current_label": "Финансовое моделирование и расчёт экономики бизнеса",
+      "current_frequency": 50,
+      "current_nice_subset": 1,
+      "partition": {
+        "financial_modeling": [
+          133,
+          317,
+          442,
+          560,
+          802
+        ],
+        "roi_unit_economics_business_cases": [
+          20,
+          116,
+          125,
+          132,
+          179,
+          215,
+          250,
+          316,
+          496,
+          547,
+          621,
+          713,
+          809,
+          832,
+          853,
+          1042,
+          1224,
+          1234,
+          1254,
+          1267,
+          1273,
+          1286,
+          1293,
+          1327,
+          1381
+        ],
+        "financial_client_portfolio_analysis": [
+          545,
+          899,
+          908,
+          951,
+          985,
+          1227,
+          1270,
+          1310
+        ],
+        "general_business_effect": [
+          90,
+          1126,
+          1141,
+          1304,
+          1416
+        ],
+        "cost_capex_calculations": [
+          267,
+          383
+        ],
+        "asset_valuation": [
+          652
+        ],
+        "move_to_commercial_054": [
+          534
+        ],
+        "move_to_commercial_176": [
+          533
+        ],
+        "move_to_commercial_188": [
+          661
+        ],
+        "move_to_commercial_025": [
+          919,
+          1208
+        ],
+        "split_source_record": [
+          530
+        ]
+      },
+      "status": "ACCEPT",
+      "final_frequencies": {
+        "financial_modeling": {
+          "count": 9,
+          "nice": 1
+        },
+        "roi_unit_economics_business_cases": {
+          "count": 30,
+          "nice": 0
+        },
+        "financial_client_portfolio_analysis": {
+          "count": 11,
+          "nice": 0
+        },
+        "general_business_effect": {
+          "count": 5,
+          "nice": 0
+        },
+        "cost_capex_calculations": {
+          "count": 2,
+          "nice": 0
+        },
+        "asset_valuation": {
+          "count": 1,
+          "nice": 0
+        }
+      }
+    },
+    "people_management": [
+      {
+        "track": "project",
+        "group_id": "project_034",
+        "index": 1398,
+        "problem": "«лидерские качества» не доказывает руководства сотрудниками",
+        "quote": "лидерские качества",
+        "suggestion": "Отдельная skill-группа «Лидерские качества»",
+        "status": "ACCEPT"
+      },
+      {
+        "track": "commercial",
+        "group_id": "commercial_012",
+        "index": 1305,
+        "problem": "Руководство бизнесом/продуктом/программой с финансовым результатом не равно руководству сотрудниками",
+        "quote": "Руководили сложным кросс-функциональным бизнесом, продуктом или программой и отвечали за коммерческий и финансовый результат",
+        "suggestion": "commercial_064: опыт коммерческого управления",
+        "status": "ACCEPT"
+      }
+    ],
+    "category_fixes": {
+      "status": "ACCEPT",
+      "sber_4551551": "Банковский опыт industry required; знание банковских продуктов/процессов domain required",
+      "avito_8182": "Партнёрская практика с блогерами domain required",
+      "final_frequencies": {
+        "banking_sector": {
+          "group_id": "commercial_016",
+          "count": 14,
+          "nice": 0
+        },
+        "banking_products_processes": {
+          "group_id": "commercial_312",
+          "count": 12,
+          "nice": 1
+        },
+        "influencer_partner_practice": {
+          "group_id": "project_088",
+          "count": 1,
+          "nice": 0
+        }
+      }
+    }
+  }
+}

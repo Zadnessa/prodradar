@@ -1,6 +1,7 @@
 """Сборка Excel из принятого ручного разбора; смысловые решения здесь не принимаются."""
 import json
 import hashlib
+from html import unescape
 from pathlib import Path
 from collections import Counter
 from openpyxl import Workbook, load_workbook
@@ -223,7 +224,7 @@ for track, color in [("project", NAVY), ("commercial", GREEN)]:
         examples = []
         for ex in group["examples"]:
             job = by_id[str(ex["id"])]
-            examples.append(f'«{ex["quote"]}» — {job["company"]}')
+            examples.append(f'«{unescape(ex["quote"])}» — {job["company"]}')
         values = [group["label"], "\n\n".join(examples), group["count"],
                   f"=C{r}/$C$3", group["nice"], None, None, None,
                   category_names.get(group["category"], group["category"]), group["active"]]
@@ -265,7 +266,7 @@ for r, e in enumerate(all_evidence, 5):
     job = by_id[e["id"]]
     group = next((g for g in groups if g["id"] == e["group_id"]), None)
     values = [track_names[e["track"]], group["label"] if group else e["concept"],
-              status_names[e["status"]], e["quote"], job["company"], job["title"],
+              status_names[e["status"]], unescape(e["quote"]), job["company"], job["title"],
               job["url"], "Да" if eligible(e) else "Нет", category_names[e["category"]]]
     for c, value in enumerate(values, 1):
         put(evidence_ws, r, c, value, LIGHT if r % 2 else None)

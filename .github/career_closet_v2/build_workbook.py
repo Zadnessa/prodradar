@@ -37,16 +37,17 @@ DEGREE_IDS = {
 HEADER, FIRST, FLAG, WEIGHT, VALID, ID_COL = 9, 10, 10, 11, 12, 13
 HEADERS = [
     "Навык", "Что оценить", "Примеры из вакансий", "Вакансий", "Доля",
-    "Самооценка", "Вклад", "Комментарий", "Действия",
+    "Оценка 1-5", "Вклад", "Комментарий", "Действия",
     "В общей оценке", "Вес", "Оценка заполнена", "ID навыка",
 ]
 GUIDE = [
     "Частота учитывает задачи, требования и общие пожелания. Для отраслей учтены только обязательные условия.",
     "Шкала 1-5. 1 - нет опыта; 2 - нужна помощь; 3 - работаю самостоятельно; 4 - решаю сложные задачи; 5 - могу обучать.",
-    "Вклад зависит от оценки и частоты навыка. Оценка 1 даёт нулевой вклад, 3 - половину веса, 5 - полный вес.",
+    "Чем чаще навык встречается в вакансиях, тем больше его вес в итоговой оценке. "
+    "1 даёт нулевой вклад, 3 - половину веса, 5 - полный вес.",
     "В итог входят 20 самых частых общих навыков. Специализации и отраслевые требования оцените отдельно.",
-    "Заполните светло-жёлтые ячейки. В комментарии приведите свой пример, в действиях запишите следующий шаг. "
-    "Строки с цветной полосой у оценки входят в итог. Для общей оценки нужны все 20 оценок.",
+    "Впишите оценки в светло-жёлтые ячейки. Строки с цветной полосой входят в итог. "
+    "В комментариях опишите свой опыт, в действиях запишите следующий шаг.",
 ]
 EVIDENCE_HEADERS = [
     "Трек", "Навык", "Статус", "Цитата", "Компания", "Вакансия", "Ссылка",
@@ -198,12 +199,23 @@ def load_data(original, maps):
             require(source_ids and len(source_ids) == len(set(source_ids)),
                     "Пустой или повторный состав нового навыка", group["id"])
             require(set(source_ids) <= set(cat_by_id), "Чужая или исключённая группа", group["id"])
-            is_industry = [old_by_id[old_id]["category"] == "industry" for old_id in source_ids]
+            # Ручная проверка приняла только этот перенос опыта ИБ или банков в отраслевое условие.
+            manual_industry = (track == "project" and group["id"] == "project_v2_73"
+                               and group["band"] == "industry" and source_ids == ["project_176"])
+            is_industry = [old_by_id[old_id]["category"] == "industry"
+                           or (manual_industry and old_id == "project_176") for old_id in source_ids]
             require(all(is_industry) if group["band"] == "industry" else not any(is_industry),
                     "Отраслевое условие смешано с практикой", group["id"])
+            if manual_industry:
+                require(all(item["status"] == "required" for item in old_evidence["project_176"]),
+                        "Ручной перенос project_176 допускает только обязательные факты", group["id"])
             covered.extend(source_ids)
             local_evidence = [item for old_id in source_ids for item in old_evidence[old_id]]
-            counted = [item for item in local_evidence if eligible(item)]
+            counted = [item for item in local_evidence if eligible(item)
+                       and (group["band"] != "industry" or item["status"] == "required")]
+            if group["band"] == "industry":
+                require(all(item["status"] == "required" for item in counted),
+                        "В отраслевой частоте допускаются только обязательные факты", group["id"])
             ids = {item["id"] for item in counted}
             require(ids, "Навык без учитываемых вакансий", group["id"])
             known = {signature(item) for item in counted}
@@ -233,7 +245,9 @@ def load_data(original, maps):
             continue
         new_id = old_to_new.get(item["old_id"])
         exported.append({**item, "new_id": new_id,
-                         "counted": bool(new_id and eligible(item))})
+                         "counted": bool(new_id and eligible(item)
+                                         and (new_by_id[new_id]["band"] != "industry"
+                                              or item["status"] == "required"))})
     ordered = {}
     for track in TRACKS:
         ordered[track] = sorted(
@@ -322,7 +336,7 @@ def build_workbook(data, output):
         ws.row_dimensions[2].height = 34
         for row, message in [(3, GUIDE[1]), (4, GUIDE[2]), (5, GUIDE[3]), (7, GUIDE[4])]:
             merged(ws, f"A{row}:I{row}", message)
-            ws.row_dimensions[row].height = 31
+            ws.row_dimensions[row].height = 26
         merged(ws, "A6:B6", "Оценено навыков", STRIPE, True, 12)
         formula(ws, 6, 3, f"=SUMPRODUCT(J{FIRST}:J{last},L{FIRST}:L{last})", "0")
         merged(ws, "D6:E6", "из 20", STRIPE, True, 12)
@@ -334,10 +348,8 @@ def build_workbook(data, output):
             ws.cell(6, col).fill = PatternFill("solid", fgColor="E8F0F3")
         ws.row_dimensions[6].height = 43
         merged(ws, "A8:I8",
-               "Сначала общие навыки, затем специализации и отраслевые требования. "
-               "Первые 20 общих навыков входят в общую оценку; остальные строки помогают спланировать развитие.",
-               bold=True)
-        ws.row_dimensions[8].height = 30
+               "Карта требований: общие навыки, специализации и отраслевые условия.", bold=True)
+        ws.row_dimensions[8].height = 26
         for col, value in enumerate(HEADERS, 1):
             put(ws, HEADER, col, value, COLORS[track], True, WHITE)
         ws.row_dimensions[HEADER].height = 34
@@ -436,6 +448,29 @@ def build_workbook(data, output):
     verify_workbook(output, data)
 
 
+def verify_main_compatibility(ws, track):
+    # После Calc скрытые столбцы могут храниться одним диапазоном J:M.
+    dimensions = list(ws.column_dimensions.values())
+    for col in range(FLAG, ID_COL + 1):
+        require(any(dimension.hidden and dimension.min <= col <= dimension.max
+                    for dimension in dimensions), "Служебный столбец стал видимым", (ws.title, col))
+    color = ws.sheet_properties.tabColor
+    require(color is not None and color.type == "rgb" and color.rgb[-6:].upper() == COLORS[track],
+            "Изменился цвет вкладки", ws.title)
+    expected_filter = f"A{HEADER}:M{ws.max_row}"
+    filter_refs = [ws.auto_filter.ref]
+    filter_refs.extend(table.autoFilter.ref for table in ws.tables.values() if table.autoFilter is not None)
+    require(any(ref and ref.replace("$", "") == expected_filter for ref in filter_refs),
+            "Фильтр не включает служебные столбцы", ws.title)
+    validations = ws.data_validations.dataValidation
+    require(any(validation.type == "whole" and validation.operator == "between"
+                and str(validation.formula1).strip() == "1" and str(validation.formula2).strip() == "5"
+                and validation.errorStyle == "stop" and validation.showErrorMessage and validation.allow_blank
+                and all(f"F{row}" in validation.sqref for row in range(FIRST, ws.max_row + 1))
+                for validation in validations),
+            "Не сохранена проверка целых оценок от 1 до 5", ws.title)
+
+
 def verify_workbook(path, data, cached=False):
     wb = load_workbook(path, data_only=False)
     require(wb.sheetnames == [*TRACKS.values(), "Цитаты", "Вакансии"], "Неверные листы Excel")
@@ -445,6 +480,7 @@ def verify_workbook(path, data, cached=False):
         ws = wb[title]
         groups = data["groups"][track]
         require(ws.max_row - HEADER == len(groups), "Потеря навыков в Excel", track)
+        verify_main_compatibility(ws, track)
         scored_ids, expected_ids = set(), {group["id"] for group in groups}
         for row in range(FIRST, ws.max_row + 1):
             group = data["by_group"][ws.cell(row, ID_COL).value]
@@ -642,8 +678,7 @@ def own_text(data):
              "Входит в общую оценку.", "Для плана развития.",
              "Все сохранённые цитаты и статусы. Пустой навык означает, что требование не участвует в карте.",
              "342 вакансии, включая 41 исключённую. Названия и формулировки роли сохранены из источников.",
-             "Сначала общие навыки, затем специализации и отраслевые требования. "
-             "Первые 20 общих навыков входят в общую оценку; остальные строки помогают спланировать развитие."]
+             "Карта требований: общие навыки, специализации и отраслевые условия.", "Самооценка"]
     texts.extend(track_caption(data, track) for track in TRACKS)
     texts.extend(("Карьерный шкаф", "Проектный и коммерческий треки по срезу 14 октября 2026", "Да", "Нет"))
     texts.extend(band + suffix for band in BANDS.values()

@@ -317,7 +317,8 @@ def row_formulas(ws, row):
 
 
 def track_caption(data, track):
-    return (f'Срез 14 октября 2026 · {data["counts"][track]} вакансий в сохранённом пуле, включая архивные. '
+    vacancy_form = {"project": "вакансии", "commercial": "вакансий"}[track]
+    return (f'Срез 14 октября 2026 · {data["counts"][track]} {vacancy_form} в сохранённом пуле, включая архивные. '
             + GUIDE[0])
 
 

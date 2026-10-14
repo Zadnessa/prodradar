@@ -463,6 +463,8 @@ def verify_workbook(path, data, cached=False):
                         "Формула не сохранена", (title, row, col))
         require(len(scored_ids) == 20 and scored_ids == {group["id"] for group in groups if group["scored"]},
                 "Неверный набор 20 навыков", track)
+        require(math.isclose(sum(ws.cell(row, WEIGHT).value for row in range(FIRST, ws.max_row + 1)),
+                             1.0, abs_tol=1e-12), "Сумма весов отличается от единицы", track)
         require({ws.cell(row, ID_COL).value for row in range(FIRST, ws.max_row + 1)} == expected_ids,
                 "ID навыков не совпадают")
     for row, item in enumerate(data["evidence"], 5):
@@ -528,6 +530,10 @@ def formula_qa(path):
                             new_cell.value = Translator(old_cell.value, origin=old_cell.coordinate).translate_formula(new_cell.coordinate)
                         new_cell._style = copy(old_cell._style)
                 scored = [row for row in range(FIRST, ws.max_row + 1) if ws.cell(row, FLAG).value == 1]
+            require(math.isclose(sum(ws.cell(row, WEIGHT).value for row in scored),
+                                 1.0, abs_tol=1e-12), "QA: сумма весов отличается от единицы", ws.title)
+            count_total = sum(ws.cell(row, 4).value for row in scored)
+            reference_weights = {row: ws.cell(row, 4).value / count_total for row in scored}
             ratings, invalid_rows = {}, set()
             if scenario in ("all1", "all3", "all5"):
                 ratings = {row: int(scenario[-1]) for row in scored}
@@ -550,11 +556,13 @@ def formula_qa(path):
             for row, rating in ratings.items():
                 ws.cell(row, 6, rating)
             progress = sum(row in ratings and row not in invalid_rows for row in scored)
-            expected = sum((ratings[row] - 1) / 4 * ws.cell(row, WEIGHT).value
-                           for row in scored if row in ratings) if progress == 20 else None
+            canonical = {"all1": 0.0, "all3": 0.5, "all5": 1.0, "unscored": 0.5}
+            expected = canonical.get(scenario)
+            if progress == 20 and scenario not in canonical:
+                expected = sum((ratings[row] - 1) / 4 * reference_weights[row] for row in scored)
             checks.append({"sheet": ws.title, "progress": progress, "expected": expected,
                            "ratings": ratings, "invalid_rows": invalid_rows, "scored": scored,
-                           "weights": {row: ws.cell(row, WEIGHT).value for row in scored}})
+                           "weights": reference_weights})
     for title in [*TRACKS.values(), "Цитаты", "Вакансии"]:
         wb.remove(wb[title])
     with tempfile.TemporaryDirectory(prefix="career-formula-qa-") as temporary:

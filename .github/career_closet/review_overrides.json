@@ -1,5 +1,5 @@
 {
-  "status": "REVISE",
+  "status": "ACCEPT",
   "applies_to": "Авторские analysis_batch_1…5 после применения replacements; финальная карта проходит отдельную проверку в рамках этого же этапа.",
   "coverage": {
     "decision_records_read": 342,
@@ -181,7 +181,25 @@
       "exclude": 41
     },
     "result_requirement_entries": 5307,
-    "map_review_status": "category_key_synchronization_pending"
+    "map_review_status": "accepted",
+    "final_taxonomy_commit": "4e832a78b15c5f57f3e60161c9be4f2069c1442c",
+    "final_map_groups": {
+      "project": 348,
+      "commercial": 323,
+      "total": 671
+    },
+    "final_map_keys": {
+      "project": 2187,
+      "commercial": 1422,
+      "total": 3609
+    },
+    "final_map_key_coverage_errors": 0,
+    "final_industry_group_category_errors": 0,
+    "final_map_example_errors": 0,
+    "final_frequency_denominators": {
+      "project": 183,
+      "commercial": 118
+    }
   },
   "replacements": [
     {
@@ -4729,8 +4747,9 @@
     "Для редкой группы достаточно одной доступной цитаты. Недостающие 2–3 примера не выдумывать и не получать смешением разных навыков.",
     "Исходники, авторские батчи, БД, бот, Telegram, резюме и контакты не изменялись. Собственные PR и ветки не создавались.",
     "Три явно смешанных авторских concept вручную разделены в replacements: тендерная документация и коммерческие предложения; интеграции, архитектура, CI/CD, тестирование; бэклог, сроки, зависимости, риски.",
-    "Финальная проверка просмотрела все 347 проектных и 319 коммерческих групп и пересчитала частоты по всем принятым records, а не по ограниченным examples каталога. Каталог+delta покрывает каждый индекс ровно один раз. REVISE ограничен конкретными финансовыми и people-management группами.",
-    "Повторная приёмка финансовых групп подтвердила 9 вакансий с финансовым моделированием, из них 1 nice. Общие финансовые расчёты не считаются моделированием. People management после отделения общей лидерской компетенции: 26 project, 15 commercial."
+    "Первый проход просмотрел все 347 проектных и 319 коммерческих групп и пересчитал частоты по всем принятым records, а не по ограниченным examples каталога. После согласованных исправлений финальная карта принята: 348 проектных и 323 коммерческих группы; все 2187 + 1422 ключа покрыты ровно один раз, отраслевые категории согласованы с группами в обе стороны, ошибки примеров отсутствуют.",
+    "Повторная приёмка финансовых групп подтвердила 9 вакансий с финансовым моделированием, из них 1 nice. Общие финансовые расчёты не считаются моделированием. People management после отделения общей лидерской компетенции: 26 project, 15 commercial.",
+    "Последняя приёмка подтвердила domain для партнёрской практики с блогерами и знания банковских продуктов/процессов, industry для прямого банковского опыта. Устойчивые индексы 264, 610 и 612 сохранены; дублирующий 1407 и пустая группа commercial_320 удалены. Другие принятые records не изменялись."
   ],
   "change_reasons": [
     {
@@ -4957,7 +4976,7 @@
     }
   ],
   "map_findings": {
-    "status": "REVISE",
+    "status": "ACCEPT",
     "financial_group": {
       "id": "commercial_061",
       "current_label": "Финансовое моделирование и расчёт экономики бизнеса",
@@ -5088,9 +5107,26 @@
       }
     ],
     "category_fixes": {
-      "status": "pending_key_synchronization",
+      "status": "ACCEPT",
       "sber_4551551": "Банковский опыт industry required; знание банковских продуктов/процессов domain required",
-      "avito_8182": "Партнёрская практика с блогерами domain required"
+      "avito_8182": "Партнёрская практика с блогерами domain required",
+      "final_frequencies": {
+        "banking_sector": {
+          "group_id": "commercial_016",
+          "count": 14,
+          "nice": 0
+        },
+        "banking_products_processes": {
+          "group_id": "commercial_312",
+          "count": 12,
+          "nice": 1
+        },
+        "influencer_partner_practice": {
+          "group_id": "project_088",
+          "count": 1,
+          "nice": 0
+        }
+      }
     }
   }
 }

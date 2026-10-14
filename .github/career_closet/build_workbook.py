@@ -1,5 +1,6 @@
 """Сборка Excel из принятого ручного разбора; смысловые решения здесь не принимаются."""
 import json
+import hashlib
 from pathlib import Path
 from collections import Counter
 from openpyxl import Workbook, load_workbook
@@ -10,6 +11,10 @@ from openpyxl.workbook.properties import CalcProperties
 
 ROOT = Path(".github/career_closet")
 manifest = json.loads((ROOT / "accepted.json").read_text(encoding="utf-8"))
+for filename, expected_blob in manifest["data_blobs"].items():
+    payload = (ROOT / filename).read_bytes()
+    actual_blob = hashlib.sha1(f"blob {len(payload)}\0".encode() + payload).hexdigest()
+    assert actual_blob == expected_blob, ("Исходник изменился после принятия", filename)
 taxonomy = json.loads((ROOT / "taxonomy.json").read_text(encoding="utf-8"))
 source = {"meta": manifest["meta"]}
 rows = []
@@ -51,6 +56,9 @@ def quoted_text(row, scope):
 all_evidence = []
 for decision in decisions:
     assert decision["reason"].strip()
+    row = by_id[str(decision["id"])]
+    bodies = [row["description"] or "", *(row.get("native_sections") or {}).values()]
+    assert any(decision["role_evidence"] in body for body in bodies if isinstance(body, str)), (decision["id"], "Доказательство роли")
     if decision["track"] == "exclude":
         assert not decision["requirements"]
         continue

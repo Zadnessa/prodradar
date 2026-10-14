@@ -1,0 +1,7123 @@
+{
+  "groups": [
+    {
+      "id": "commercial_001",
+      "track": "commercial",
+      "label": "Проектирование и улучшение клиентского опыта",
+      "category": "skill",
+      "member_indices": [
+        1,
+        3,
+        8,
+        78,
+        79,
+        80,
+        81,
+        86,
+        766,
+        835,
+        836,
+        839,
+        898,
+        1003,
+        1250,
+        1320
+      ],
+      "examples": [
+        {
+          "id": "153",
+          "quote": "исследованием всего клиентского пути для выявления ключевых проблем, влияющих на бизнес-результаты",
+          "scope": "description"
+        },
+        {
+          "id": "alfa_39116",
+          "quote": "Разрабатывать и внедрять инициативы, улучшающие клиентский путь",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_d70b749c-5fd9-48b5-9941-34ee70455a2f",
+          "quote": "Удерживать высокий стандарт качества обслуживания",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_002",
+      "track": "commercial",
+      "label": "Сбор и анализ клиентской обратной связи",
+      "category": "skill",
+      "member_indices": [
+        2,
+        69,
+        497,
+        774,
+        834
+      ],
+      "examples": [
+        {
+          "id": "153",
+          "quote": "созданием единой системы сбора и анализа обратной связи",
+          "scope": "description"
+        },
+        {
+          "id": "alfa_37850",
+          "quote": "собирать обратную связь",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_003",
+      "track": "commercial",
+      "label": "Координация смежных команд",
+      "category": "skill",
+      "member_indices": [
+        5,
+        32,
+        50,
+        63,
+        124,
+        138,
+        163,
+        172,
+        181,
+        237,
+        270,
+        282,
+        303,
+        338,
+        404,
+        458,
+        465,
+        551,
+        596,
+        684,
+        928,
+        974,
+        999,
+        1011,
+        1023,
+        1047,
+        1065,
+        1109,
+        1142,
+        1196,
+        1200,
+        1242,
+        1253,
+        1306,
+        1309,
+        1374
+      ],
+      "examples": [
+        {
+          "id": "153",
+          "quote": "через координацию кросс-функциональных команд",
+          "scope": "description"
+        },
+        {
+          "id": "alfa_37478",
+          "quote": "Уменение организовывать кросс-командное взаимодействие (маркетинг, продукт/сервис, CRM, каналы, аналитика), быстро переключать контекст",
+          "scope": "description"
+        },
+        {
+          "id": "ya_48205",
+          "quote": "Умеете координировать команды без формального подчинения",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_004",
+      "track": "commercial",
+      "label": "Разбор инцидентов и устранение проблем",
+      "category": "skill",
+      "member_indices": [
+        6,
+        10,
+        453,
+        475,
+        506,
+        515,
+        609,
+        1067,
+        1069,
+        1103,
+        1363
+      ],
+      "examples": [
+        {
+          "id": "153",
+          "quote": "глубинным анализом инцидентов и внедрением решений для предотвращения их повторения",
+          "scope": "description"
+        },
+        {
+          "id": "ozon_138271915",
+          "quote": "Помощь партнёрам в решении нестандартных вопросов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_005",
+      "track": "commercial",
+      "label": "Предиктивные модели клиентского опыта",
+      "category": "domain",
+      "member_indices": [
+        7
+      ],
+      "examples": [
+        {
+          "id": "153",
+          "quote": "внедрением предиктивных моделей для раннего выявления рисков и проактивного управления опытом",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_006",
+      "track": "commercial",
+      "label": "Опыт в ипотечном кредитовании",
+      "category": "industry",
+      "member_indices": [
+        9
+      ],
+      "examples": [
+        {
+          "id": "153",
+          "quote": "опыт улучшения клиентского опыта, процессов или продуктовой разработки в ипотечном кредитовании от 1 года",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_007",
+      "track": "commercial",
+      "label": "Разработка и оптимизация бизнес-процессов",
+      "category": "skill",
+      "member_indices": [
+        11,
+        34,
+        94,
+        136,
+        152,
+        238,
+        289,
+        419,
+        443,
+        472,
+        474,
+        517,
+        544,
+        562,
+        568,
+        601,
+        615,
+        617,
+        668,
+        692,
+        698,
+        706,
+        735,
+        817,
+        965,
+        1046,
+        1197,
+        1199,
+        1225,
+        1259,
+        1266,
+        1269,
+        1338
+      ],
+      "examples": [
+        {
+          "id": "alfa_39133",
+          "quote": "Прорисовывать и оптимизировать бизнес-процессы (включая BPMN-схемы), находить узкие места и предлагать решения",
+          "scope": "description"
+        },
+        {
+          "id": "ozon_137537708",
+          "quote": "Опыт описания и оптимизации бизнес-процессов / клиентских или операционных workflow",
+          "scope": "description"
+        },
+        {
+          "id": "ya_47482",
+          "quote": "Умеете выстраивать новые процессы",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_008",
+      "track": "commercial",
+      "label": "LLM и генеративный ИИ",
+      "category": "domain",
+      "member_indices": [
+        12,
+        158,
+        546
+      ],
+      "examples": [
+        {
+          "id": "153",
+          "quote": "понимаете возможности применения LLM и Generative AI в цифровых продуктах",
+          "scope": "description"
+        },
+        {
+          "id": "avito_8108",
+          "quote": "используете LLM и понимаете базовые принципы современных AI-интеграций, включая MCP",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_009",
+      "track": "commercial",
+      "label": "Excel и Google Sheets",
+      "category": "tool",
+      "member_indices": [
+        13,
+        39,
+        503,
+        874,
+        1019
+      ],
+      "examples": [
+        {
+          "id": "153",
+          "quote": "уверенное владение Excel (сводные таблицы, ВПР, статистика)",
+          "scope": "description"
+        },
+        {
+          "id": "vk_51868",
+          "quote": "Уверенный уровень владения Excel и Google Sheets",
+          "scope": "description"
+        },
+        {
+          "id": "sberhealth_4349801",
+          "quote": "Google-таблицах",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_010",
+      "track": "commercial",
+      "label": "PowerPoint",
+      "category": "tool",
+      "member_indices": [
+        14,
+        787
+      ],
+      "examples": [
+        {
+          "id": "153",
+          "quote": "PowerPoint для аналитики и презентаций результатов руководству",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4570706",
+          "quote": "навыки работы в графических редакторах (например, Power Point)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_011",
+      "track": "commercial",
+      "label": "Презентация и защита решений",
+      "category": "skill",
+      "member_indices": [
+        15,
+        41,
+        57,
+        104,
+        265,
+        298,
+        308,
+        371,
+        401,
+        429,
+        597,
+        647,
+        783,
+        976,
+        1007,
+        1122,
+        1149,
+        1237,
+        1240,
+        1384
+      ],
+      "examples": [
+        {
+          "id": "alfa_37110",
+          "quote": "Создание структурированных, визуально понятных, красивых презентаций для стратегических сессий и отчетов",
+          "scope": "description"
+        },
+        {
+          "id": "mts_673794763631100344",
+          "quote": "умение доступно и легко презентовать продукты и услуги лицам, принимающим решения в компаниях",
+          "scope": "description"
+        },
+        {
+          "id": "ya_49209",
+          "quote": "подготовить презентацию для стейкхолдеров и защитить ресурсы",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_012",
+      "track": "commercial",
+      "label": "Руководство, подбор и развитие команды",
+      "category": "skill",
+      "member_indices": [
+        16,
+        108,
+        115,
+        118,
+        196,
+        218,
+        296,
+        300,
+        627,
+        638,
+        733,
+        734,
+        750,
+        894,
+        990,
+        994,
+        996,
+        997,
+        1000,
+        1128,
+        1151,
+        1275,
+        1279,
+        1280,
+        1305
+      ],
+      "examples": [
+        {
+          "id": "aviasales_4325346",
+          "quote": "управлять командой — ставить цели, растить людей, нанимать и держать планку",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4569367",
+          "quote": "навыки управления командами",
+          "scope": "description"
+        },
+        {
+          "id": "ya_47671",
+          "quote": "Управляли командой",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_013",
+      "track": "commercial",
+      "label": "Постановка бизнес-задач для ML-моделей",
+      "category": "skill",
+      "member_indices": [
+        17
+      ],
+      "examples": [
+        {
+          "id": "alfa_36415",
+          "quote": "Формировать бизнес‑требования к ML‑моделям, уточнять задачи, контролировать их реализацию и проверять соответствие результатов бизнес‑целям",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_014",
+      "track": "commercial",
+      "label": "Проверка гипотез, пилоты и A/B-тесты",
+      "category": "method",
+      "member_indices": [
+        18,
+        56,
+        244,
+        326,
+        396,
+        463,
+        467,
+        513,
+        567,
+        587,
+        678,
+        718,
+        767,
+        851,
+        971,
+        972,
+        1140,
+        1238,
+        1278
+      ],
+      "examples": [
+        {
+          "id": "alfa_37478",
+          "quote": "проводить и оценивать A/B-тесты",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4567566",
+          "quote": "A/B тестирование гипотез",
+          "scope": "description"
+        },
+        {
+          "id": "ya_14525",
+          "quote": "формулировать бизнес-гипотезы и проверять их",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_015",
+      "track": "commercial",
+      "label": "Анализ воронки и конверсии",
+      "category": "skill",
+      "member_indices": [
+        19,
+        103,
+        165,
+        193,
+        214,
+        235,
+        239,
+        249,
+        291,
+        393,
+        395,
+        830,
+        1044,
+        1281,
+        1312,
+        1352
+      ],
+      "examples": [
+        {
+          "id": "alfa_36415",
+          "quote": "Анализировать эффективность коммуникаций и офферов: воронки, конверсии, принимать решения на основе полученных выводов",
+          "scope": "description"
+        },
+        {
+          "id": "mts_673794763631100344",
+          "quote": "отслеживать ключевые метрики воронки продаж регионов и технического пресейла, готовить рекомендации по её улучшению",
+          "scope": "description"
+        },
+        {
+          "id": "ya_48963",
+          "quote": "анализ воронок активации",
+          "scope": "native:short_summary"
+        }
+      ]
+    },
+    {
+      "id": "commercial_016",
+      "track": "commercial",
+      "label": "Опыт и знание банковской сферы",
+      "category": "industry",
+      "member_indices": [
+        25,
+        38,
+        535,
+        610,
+        719,
+        799,
+        801,
+        896
+      ],
+      "examples": [
+        {
+          "id": "alfa_37110",
+          "quote": "Опыт в банковской сфере",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4536799",
+          "quote": "не менее 8–10 лет в банковской сфере",
+          "scope": "description"
+        },
+        {
+          "id": "alfa_36415",
+          "quote": "опыт работы в банковской сфере от 3 лет",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_017",
+      "track": "commercial",
+      "label": "Основы ML и внедрение моделей",
+      "category": "domain",
+      "member_indices": [
+        26
+      ],
+      "examples": [
+        {
+          "id": "alfa_36415",
+          "quote": "Понимание основ ML-моделирования, опыт внедрения моделей и оценка эффекта от внедрения",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_018",
+      "track": "commercial",
+      "label": "Подготовка и запуск CRM-кампаний",
+      "category": "skill",
+      "member_indices": [
+        27,
+        45,
+        46,
+        47,
+        60,
+        427,
+        434,
+        715,
+        720,
+        1171,
+        1173,
+        1175,
+        1176
+      ],
+      "examples": [
+        {
+          "id": "alfa_36415",
+          "quote": "Опыт в подготовке и запусках crm-кампаний: весь цикл от бизнес-идеи до фактического запуска",
+          "scope": "description"
+        },
+        {
+          "id": "wb_36757",
+          "quote": "Имеете практический опыт запуска CRM-механик для привлечения клиентов и увеличения продаж",
+          "scope": "description"
+        },
+        {
+          "id": "alfa_37478",
+          "quote": "Вести проекты развития процессов CRM привлечения клиентов ММБ полного цикла — от генерации идеи и проработки гипотезы до вывода решения в прод и масштабирования в регулярный процесс",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_019",
+      "track": "commercial",
+      "label": "Jira, Confluence и Miro",
+      "category": "tool",
+      "member_indices": [
+        29
+      ],
+      "examples": [
+        {
+          "id": "alfa_36415",
+          "quote": "Опыт работы с backlog инструментами (Jira, Confluence, miro)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_020",
+      "track": "commercial",
+      "label": "Объяснение технических решений бизнесу",
+      "category": "skill",
+      "member_indices": [
+        30,
+        191
+      ],
+      "examples": [
+        {
+          "id": "alfa_36415",
+          "quote": "Способность переводить технические детали в понятные бизнес термины",
+          "scope": "description"
+        },
+        {
+          "id": "avito_8126",
+          "quote": "умеете работать на стыке бизнеса и технологий",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_021",
+      "track": "commercial",
+      "label": "Развитие и оптимизация процессов продаж",
+      "category": "skill",
+      "member_indices": [
+        31,
+        93,
+        102,
+        106,
+        194,
+        195,
+        197,
+        201,
+        258,
+        304,
+        334,
+        335,
+        357,
+        358,
+        514,
+        591,
+        693,
+        717,
+        722,
+        725,
+        863,
+        881,
+        883,
+        890,
+        964,
+        1037,
+        1039,
+        1125,
+        1127,
+        1139,
+        1150
+      ],
+      "examples": [
+        {
+          "id": "alfa_37110",
+          "quote": "Разрабатывать и запускать проекты по развитию и оптимизации процессов продаж зарплатных карт для юридических лиц в сегменте ММБ",
+          "scope": "description"
+        },
+        {
+          "id": "avito_8220",
+          "quote": "оптимизировать процессы продаж, чтобы повышать эффективность направления Acquisition",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_a45d3c85-b00e-46c7-9076-f12d884865ef",
+          "quote": "искать новые инструменты продаж",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_022",
+      "track": "commercial",
+      "label": "Достижение плана продаж и коммерческих KPI",
+      "category": "skill",
+      "member_indices": [
+        35,
+        146,
+        516,
+        603,
+        730,
+        827,
+        900,
+        998,
+        1063
+      ],
+      "examples": [
+        {
+          "id": "alfa_37110",
+          "quote": "Обеспечивать достижение KPI по количеству проданных и открытых зарплатных карт юридическими клиентами",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4573787",
+          "quote": "контролем выполнения планов продаж",
+          "scope": "description"
+        },
+        {
+          "id": "avito_8108",
+          "quote": "обеспечивать рост продаж и доли компании в целевых сегментах, выполнять индивидуальный план продаж",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_023",
+      "track": "commercial",
+      "label": "Высшее образование",
+      "category": "education",
+      "member_indices": [
+        24,
+        37,
+        58,
+        82,
+        277,
+        518,
+        557,
+        570,
+        592,
+        629,
+        695,
+        708,
+        743,
+        765,
+        776,
+        785,
+        825,
+        1194
+      ],
+      "examples": [
+        {
+          "id": "alfa_37110",
+          "quote": "Высшее образование",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4351924",
+          "quote": "высшее экономическое образование",
+          "scope": "description"
+        },
+        {
+          "id": "alfa_37478",
+          "quote": "Высшее образование в области экономики, информатики, математики или смежных дисциплин",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_024",
+      "track": "commercial",
+      "label": "VBA и макросы",
+      "category": "tool",
+      "member_indices": [
+        40
+      ],
+      "examples": [
+        {
+          "id": "alfa_37110",
+          "quote": "Написание макросов (VBA) для автоматизации отчетов и обработки данных",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_025",
+      "track": "commercial",
+      "label": "Анализ данных и бизнес-показателей",
+      "category": "skill",
+      "member_indices": [
+        33,
+        42,
+        55,
+        64,
+        89,
+        92,
+        157,
+        199,
+        248,
+        351,
+        388,
+        394,
+        441,
+        444,
+        456,
+        473,
+        511,
+        569,
+        573,
+        575,
+        624,
+        667,
+        677,
+        712,
+        763,
+        775,
+        798,
+        810,
+        824,
+        840,
+        842,
+        843,
+        876,
+        882,
+        943,
+        980,
+        984,
+        1033,
+        1040,
+        1045,
+        1072,
+        1120,
+        1219,
+        1301,
+        1313,
+        1317,
+        1343,
+        1369
+      ],
+      "examples": [
+        {
+          "id": "alfa_37110",
+          "quote": "Работа с большими массивами данных, выявление закономерностей, формулирование выводов",
+          "scope": "description"
+        },
+        {
+          "id": "ozon_137537708",
+          "quote": "Умение работать с метриками и данными: находить отклонения, формулировать проблему и делать выводы",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_68869650-7937-426e-890f-248de8cd641e",
+          "quote": "собирать, структурировать и интерпретировать данные",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_026",
+      "track": "commercial",
+      "label": "Внедрение ИИ в CRM-процессы",
+      "category": "domain",
+      "member_indices": [
+        48
+      ],
+      "examples": [
+        {
+          "id": "alfa_37478",
+          "quote": "Пактический опыт внедрения ИИ-моделей и инструментов в CRM-процессы",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_027",
+      "track": "commercial",
+      "label": "Сбор требований и подготовка технических заданий",
+      "category": "skill",
+      "member_indices": [
+        49,
+        98,
+        150,
+        200,
+        202,
+        280,
+        399,
+        565,
+        673,
+        700,
+        784,
+        791,
+        1152,
+        1243,
+        1353
+      ],
+      "examples": [
+        {
+          "id": "alfa_37478",
+          "quote": "Собирать и систематизировать бизнес-требования, формировать технические задания",
+          "scope": "description"
+        },
+        {
+          "id": "alfa_39133",
+          "quote": "писать технические требования",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4563993",
+          "quote": "сбор, анализ и структурирование бизнес требований от клиентов и внутренних стейкхолдеров",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_028",
+      "track": "commercial",
+      "label": "API и интеграция информационных систем",
+      "category": "domain",
+      "member_indices": [
+        51,
+        99,
+        674,
+        675,
+        680,
+        924
+      ],
+      "examples": [
+        {
+          "id": "alfa_37478",
+          "quote": "Обеспечивать техническую реализацию и интеграцию проектов (API, вебхуки)",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4562667",
+          "quote": "Понимание принципов работы API",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_4c718061-83f3-4d5a-8d8f-8518b0aec7ca",
+          "quote": "API-интеграции",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_029",
+      "track": "commercial",
+      "label": "Контроль качества внедрений и сервисов",
+      "category": "skill",
+      "member_indices": [
+        52,
+        339,
+        343,
+        344,
+        345,
+        346,
+        347,
+        348,
+        349,
+        350,
+        354,
+        361,
+        672,
+        1181,
+        1212,
+        1241,
+        1332
+      ],
+      "examples": [
+        {
+          "id": "alfa_37478",
+          "quote": "контролировать качество внедрений и работоспособность сервисов",
+          "scope": "description"
+        },
+        {
+          "id": "wb_38500",
+          "quote": "Установка и контроль выполнения SLA",
+          "scope": "description"
+        },
+        {
+          "id": "mts_696334248075854089",
+          "quote": "анализировать качество продуктов и сервисов, выявлять точки роста и возможности для улучшения",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_030",
+      "track": "commercial",
+      "label": "Campaigning и RTDM: SAS, Unica",
+      "category": "tool",
+      "member_indices": [
+        53
+      ],
+      "examples": [
+        {
+          "id": "alfa_37478",
+          "quote": "знаете системы campaigning / RTDM (SAS, Unica и др.)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_031",
+      "track": "commercial",
+      "label": "Контроль качества данных",
+      "category": "skill",
+      "member_indices": [
+        54
+      ],
+      "examples": [
+        {
+          "id": "alfa_37478",
+          "quote": "участвовать в решении проблем с качеством данных",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_032",
+      "track": "commercial",
+      "label": "Управление проектами полного цикла",
+      "category": "skill",
+      "member_indices": [
+        59,
+        111,
+        153,
+        190,
+        203,
+        204,
+        222,
+        245,
+        247,
+        269,
+        279,
+        299,
+        337,
+        359,
+        360,
+        420,
+        435,
+        464,
+        470,
+        501,
+        522,
+        536,
+        572,
+        595,
+        602,
+        619,
+        833,
+        844,
+        858,
+        1021,
+        1138,
+        1283,
+        1303,
+        1382
+      ],
+      "examples": [
+        {
+          "id": "alfa_37478",
+          "quote": "Опыт управления проектами: планирование, контроль сроков и качества, управление рисками, работа с бэклогом и приоритетами",
+          "scope": "description"
+        },
+        {
+          "id": "avito_8276",
+          "quote": "управляли полным циклом проектов: от запуска до анализа результата",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54847",
+          "quote": "Опыт реализации проектов end-to-end: от диагностики и разработки концепции до внедрения, управления roadmap и оценки бизнес-эффекта",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_033",
+      "track": "commercial",
+      "label": "Подтверждённые результаты улучшений и роста",
+      "category": "experience",
+      "member_indices": [
+        61,
+        537,
+        628
+      ],
+      "examples": [
+        {
+          "id": "alfa_37478",
+          "quote": "Можете привести конкретные кейсы спасения сроков проекта или инициативы по существенному росту KPI",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4558138",
+          "quote": "Опыт реализации не менее 10–15 завершенных проектов по оптимизации процессов с измеримым эффектом",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4536799",
+          "quote": "подтвержденные кейсы внедрения проектов в банковском секторе с зафиксированным положительным финансовым результатом",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_034",
+      "track": "commercial",
+      "label": "Методологии проектов: Agile, Scrum и Waterfall",
+      "category": "method",
+      "member_indices": [
+        43,
+        62,
+        422,
+        554
+      ],
+      "examples": [
+        {
+          "id": "alfa_37110",
+          "quote": "Опыт использования методологий (Agile, Waterfall)",
+          "scope": "description"
+        },
+        {
+          "id": "mts_710121344334823693",
+          "quote": "понимание Agile/Scrum-процессов",
+          "scope": "description"
+        },
+        {
+          "id": "alfa_37478",
+          "quote": "ведение проектов в agile-структуре",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_035",
+      "track": "commercial",
+      "label": "Коммерческие переговоры",
+      "category": "skill",
+      "member_indices": [
+        66,
+        148,
+        167,
+        180,
+        230,
+        253,
+        255,
+        256,
+        275,
+        287,
+        307,
+        320,
+        336,
+        341,
+        384,
+        484,
+        548,
+        549,
+        550,
+        577,
+        669,
+        686,
+        755,
+        778,
+        917,
+        940,
+        949,
+        1058,
+        1084,
+        1205,
+        1300
+      ],
+      "examples": [
+        {
+          "id": "alfa_37850",
+          "quote": "Проводить переговоры, согласовывать условия",
+          "scope": "description"
+        },
+        {
+          "id": "mts_696270302316858602",
+          "quote": "навыки ведения деловых переговоров различного уровня",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_68869650-7937-426e-890f-248de8cd641e",
+          "quote": "Умеете вести переговоры на уровне\nC-level",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_036",
+      "track": "commercial",
+      "label": "Согласование, заключение и сопровождение договоров",
+      "category": "skill",
+      "member_indices": [
+        67,
+        210,
+        321,
+        381,
+        485,
+        756,
+        857,
+        865,
+        873,
+        929,
+        930,
+        931,
+        982,
+        1059,
+        1162,
+        1356,
+        1364,
+        1378,
+        1389
+      ],
+      "examples": [
+        {
+          "id": "alfa_37850",
+          "quote": "оформлять коммерческие договоры, контролировать их исполнение",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4569573",
+          "quote": "заключение договоров и соглашений",
+          "scope": "description"
+        },
+        {
+          "id": "ya_49217",
+          "quote": "Работали с договорами и сложными сделками",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_037",
+      "track": "commercial",
+      "label": "Внедрение и интеграция решений у клиентов и партнёров",
+      "category": "skill",
+      "member_indices": [
+        68,
+        131,
+        140,
+        166,
+        188,
+        283,
+        413,
+        691,
+        705,
+        1062,
+        1258,
+        1351
+      ],
+      "examples": [
+        {
+          "id": "alfa_37850",
+          "quote": "внедрять банковские продукты",
+          "scope": "description"
+        },
+        {
+          "id": "mts_673435529504620946",
+          "quote": "внедрять и пилотировать решения",
+          "scope": "description"
+        },
+        {
+          "id": "ya_46689",
+          "quote": "реализовывать продуктовые интеграции",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_038",
+      "track": "commercial",
+      "label": "Анализ рынка, конкурентов и спроса",
+      "category": "skill",
+      "member_indices": [
+        70,
+        159,
+        183,
+        243,
+        377,
+        438,
+        528,
+        660,
+        685,
+        789,
+        837,
+        988,
+        1049,
+        1133,
+        1380
+      ],
+      "examples": [
+        {
+          "id": "mts_699534272972721372",
+          "quote": "опыт анализа рынка",
+          "scope": "description"
+        },
+        {
+          "id": "ozon_136978677",
+          "quote": "анализ и тестирование спроса",
+          "scope": "description"
+        },
+        {
+          "id": "ya_49209",
+          "quote": "Способны анализировать рынки",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_039",
+      "track": "commercial",
+      "label": "Выявление потребностей и консультирование клиентов",
+      "category": "skill",
+      "member_indices": [
+        72,
+        178,
+        288,
+        365,
+        366,
+        543,
+        585,
+        586,
+        701,
+        885,
+        1006,
+        1008,
+        1159,
+        1218
+      ],
+      "examples": [
+        {
+          "id": "alfa_37850",
+          "quote": "предлагать варианты их интеграции партнёрам и консультировать по продуктам компании",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4546799",
+          "quote": "выявления потребности и проведения экспертных интервью",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4549034",
+          "quote": "Консультирование предпринимателей по интеграции продуктов Сбера, привлечению инвестиций и получению поддержки",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_040",
+      "track": "commercial",
+      "label": "Запуск совместных проектов с партнёрами",
+      "category": "skill",
+      "member_indices": [
+        73,
+        161,
+        177,
+        398,
+        581,
+        727,
+        759,
+        856,
+        987,
+        1257,
+        1262,
+        1346
+      ],
+      "examples": [
+        {
+          "id": "alfa_37850",
+          "quote": "Запускать проекты совместно с партнерами для увеличения продаж",
+          "scope": "description"
+        },
+        {
+          "id": "mts_703630231977591046",
+          "quote": "сопровождать партнёрские и ко-промо-проекты",
+          "scope": "description"
+        },
+        {
+          "id": "sberhealth_4314569",
+          "quote": "совместные запуски и интеграции",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_041",
+      "track": "commercial",
+      "label": "Опыт в банке или в работе с партнёрами",
+      "category": "experience",
+      "member_indices": [
+        74
+      ],
+      "examples": [
+        {
+          "id": "alfa_37850",
+          "quote": "Опыт работы более 3-х лет в банковской сфере или сфере работы с партнерами",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_042",
+      "track": "commercial",
+      "label": "Процессы онлайн-продаж",
+      "category": "domain",
+      "member_indices": [
+        75
+      ],
+      "examples": [
+        {
+          "id": "alfa_37850",
+          "quote": "Глубокое понимание процессов в онлайн-продажах",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_043",
+      "track": "commercial",
+      "label": "CRM-системы",
+      "category": "tool",
+      "member_indices": [
+        76
+      ],
+      "examples": [
+        {
+          "id": "alfa_37850",
+          "quote": "CRM-системой",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_044",
+      "track": "commercial",
+      "label": "Анализ метрик клиентского опыта",
+      "category": "skill",
+      "member_indices": [
+        77,
+        88,
+        205,
+        808,
+        912,
+        1329
+      ],
+      "examples": [
+        {
+          "id": "alfa_39116",
+          "quote": "Анализировать продуктовые и клиентские метрики (Contact Rate, CSI, CES, NPS, FCR и пр.)",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4573739",
+          "quote": "глубокое понимание NPS, CSI, CES, Churn Rate",
+          "scope": "description"
+        },
+        {
+          "id": "ya_48515",
+          "quote": "Знакомы с SLA, CSAT, NPS",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_045",
+      "track": "commercial",
+      "label": "Опыт работы по специальности",
+      "category": "experience",
+      "member_indices": [
+        83,
+        285,
+        1195
+      ],
+      "examples": [
+        {
+          "id": "alfa_39116",
+          "quote": "Опыт работы по специальности: 1 - 3 года",
+          "scope": "description"
+        },
+        {
+          "id": "mts_673435529504620946",
+          "quote": "опыт работы на аналогичной позиции от 2 лет",
+          "scope": "description"
+        },
+        {
+          "id": "wb_38528",
+          "quote": "Опыт работы: 3+ года",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_046",
+      "track": "commercial",
+      "label": "CJM и Customer Journey Experience",
+      "category": "method",
+      "member_indices": [
+        84,
+        353
+      ],
+      "examples": [
+        {
+          "id": "alfa_39116",
+          "quote": "Знание методологии построения CJM",
+          "scope": "description"
+        },
+        {
+          "id": "mts_696334248075854089",
+          "quote": "опыт построения CJE",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_047",
+      "track": "commercial",
+      "label": "Customer Development и дизайн-мышление",
+      "category": "method",
+      "member_indices": [
+        85,
+        772
+      ],
+      "examples": [
+        {
+          "id": "alfa_39116",
+          "quote": "методологии дизайн-мышления",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4570623",
+          "quote": "навыки продуктовых исследований (Customer Development, дизайн мышление, UX исследования)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_048",
+      "track": "commercial",
+      "label": "Качественные и количественные исследования",
+      "category": "method",
+      "member_indices": [
+        87,
+        139,
+        773,
+        841
+      ],
+      "examples": [
+        {
+          "id": "alfa_39116",
+          "quote": "Знание методов качественных и количественных исследований",
+          "scope": "description"
+        },
+        {
+          "id": "avito_8022",
+          "quote": "проводить количественные и качественные исследования пользователей",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4575157",
+          "quote": "навык проведения исследований и составления подробной отчетности",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_049",
+      "track": "commercial",
+      "label": "Баланс интересов клиентов и компании",
+      "category": "skill",
+      "member_indices": [
+        220,
+        1207,
+        1294
+      ],
+      "examples": [
+        {
+          "id": "avito_8241",
+          "quote": "умеете сохранять баланс интересов пользователей и компании",
+          "scope": "description"
+        },
+        {
+          "id": "wb_39541",
+          "quote": "Умеете балансировать интересы клиента и компании",
+          "scope": "description"
+        },
+        {
+          "id": "ya_47726",
+          "quote": "учитывать интересы всех сторон: пользователей, рекламодателей, рекламной площадки и системы",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_050",
+      "track": "commercial",
+      "label": "Моделирование процессов: BPMN и Service Blueprint",
+      "category": "method",
+      "member_indices": [
+        91,
+        95,
+        807
+      ],
+      "examples": [
+        {
+          "id": "alfa_39133",
+          "quote": "включая BPMN-схемы",
+          "scope": "description"
+        },
+        {
+          "id": "alfa_39116",
+          "quote": "Опыт построения бизнес-процессов (service blueprint)",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4573739",
+          "quote": "Service Blueprint",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_051",
+      "track": "commercial",
+      "label": "Планирование, приоритизация и контроль задач",
+      "category": "skill",
+      "member_indices": [
+        4,
+        21,
+        22,
+        36,
+        96,
+        97,
+        105,
+        113,
+        126,
+        211,
+        236,
+        403,
+        405,
+        415,
+        416,
+        428,
+        457,
+        469,
+        498,
+        566,
+        687,
+        689,
+        704,
+        794,
+        815,
+        816,
+        845,
+        927,
+        966,
+        973,
+        1001,
+        1010,
+        1012,
+        1026,
+        1060,
+        1061,
+        1070,
+        1143,
+        1217,
+        1239,
+        1247,
+        1248,
+        1249,
+        1282,
+        1296,
+        1299,
+        1316,
+        1370
+      ],
+      "examples": [
+        {
+          "id": "alfa_39133",
+          "quote": "назначать ответственных и контролировать выполнение",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_d65dc446-64bc-4fea-9a83-595d716f4616",
+          "quote": "Умеете декомпозировать задачи и выстраивать системный подход к их реализации",
+          "scope": "description"
+        },
+        {
+          "id": "ya_45527",
+          "quote": "Приоритизация задач и управление целями",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_052",
+      "track": "commercial",
+      "label": "Управление рисками и зависимостями проектов",
+      "category": "skill",
+      "member_indices": [
+        100,
+        483,
+        1144,
+        1145,
+        1244
+      ],
+      "examples": [
+        {
+          "id": "alfa_39133",
+          "quote": "контролировать сроки, эскалировать риски",
+          "scope": "description"
+        },
+        {
+          "id": "ya_45527",
+          "quote": "Способны оценить риски",
+          "scope": "native:key_qualifications"
+        },
+        {
+          "id": "vk_54847",
+          "quote": "управлять сроками, зависимостями, рисками и результатом",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_053",
+      "track": "commercial",
+      "label": "Координация и развитие каналов продаж",
+      "category": "skill",
+      "member_indices": [
+        101,
+        382,
+        390,
+        391,
+        392,
+        409,
+        461,
+        729,
+        732,
+        762,
+        795,
+        850,
+        935,
+        962,
+        995,
+        1285,
+        1319,
+        1344,
+        1367
+      ],
+      "examples": [
+        {
+          "id": "alfa_39133",
+          "quote": "Координировать работу каналов менеджерских и цифровых продаж",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4569573",
+          "quote": "опыт организации продаж в партнерском канале",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_a45d3c85-b00e-46c7-9076-f12d884865ef",
+          "quote": "Подключать новые каналы агентских продаж",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_054",
+      "track": "commercial",
+      "label": "Коммерческое бюджетирование и финансовое планирование",
+      "category": "skill",
+      "member_indices": [
+        107,
+        117,
+        292,
+        318,
+        655,
+        739,
+        854,
+        1099,
+        1131,
+        1223,
+        1226,
+        1292,
+        1335
+      ],
+      "examples": [
+        {
+          "id": "aviasales_4325346",
+          "quote": "собирать план, декомпозировать его и держать форкаст, которому можно верить",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4559848",
+          "quote": "формирование бюджета расходов, прогнозирование затрат и контроль исполнения смет по закрепленным статьям",
+          "scope": "description"
+        },
+        {
+          "id": "x5_6a3a31b3fe7224dc92f1bdc7",
+          "quote": "Основы бюджетирования",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_055",
+      "track": "commercial",
+      "label": "Ценообразование и согласование коммерческих условий",
+      "category": "skill",
+      "member_indices": [
+        110,
+        147,
+        240,
+        502,
+        653,
+        758,
+        821,
+        852,
+        1009,
+        1231
+      ],
+      "examples": [
+        {
+          "id": "ozon_137960971",
+          "quote": "Понимание принципов ценообразования, опыт формирования и согласования ценовых условий",
+          "scope": "description"
+        },
+        {
+          "id": "sberhealth_4314569",
+          "quote": "расчёт и согласование тарифов",
+          "scope": "description"
+        },
+        {
+          "id": "x5_6a3a31b3fe7224dc92f1bdc7",
+          "quote": "Согласование тарифов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_056",
+      "track": "commercial",
+      "label": "Работа с международными клиентами и сделки",
+      "category": "experience",
+      "member_indices": [
+        114,
+        130,
+        527,
+        539,
+        1158,
+        1183,
+        1287,
+        1314,
+        1331
+      ],
+      "examples": [
+        {
+          "id": "aviasales_4325346",
+          "quote": "опыт работы с международными партнерами и клиентами",
+          "scope": "description"
+        },
+        {
+          "id": "aviasales_4331056",
+          "quote": "опыт международных сделок — с компаниями за пределами одного рынка",
+          "scope": "description"
+        },
+        {
+          "id": "ya_47671",
+          "quote": "Работали с международными рынками",
+          "scope": "native:additional_requirements"
+        }
+      ]
+    },
+    {
+      "id": "commercial_057",
+      "track": "commercial",
+      "label": "Работа в неопределённости и адаптация к изменениям",
+      "category": "skill",
+      "member_indices": [
+        119,
+        468,
+        978,
+        1066,
+        1102,
+        1245,
+        1252,
+        1291,
+        1336
+      ],
+      "examples": [
+        {
+          "id": "aviasales_4325346",
+          "quote": "умение выбрать направление без готового процесса и превратить его в конкретные шаги для команды",
+          "scope": "description"
+        },
+        {
+          "id": "ya_45527",
+          "quote": "найти оптимальное решение при неопределённости",
+          "scope": "native:key_qualifications"
+        },
+        {
+          "id": "ya_47726",
+          "quote": "Гибко мыслите и адаптируетесь к изменениям",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_058",
+      "track": "commercial",
+      "label": "Английский язык",
+      "category": "language",
+      "member_indices": [
+        120,
+        127,
+        144,
+        447,
+        541,
+        921,
+        1053,
+        1192,
+        1206,
+        1284,
+        1330,
+        1393
+      ],
+      "examples": [
+        {
+          "id": "aviasales_4325346",
+          "quote": "английский на уровне переговоров (C1+)",
+          "scope": "description"
+        },
+        {
+          "id": "avito_8022",
+          "quote": "владеете английским языком на уровне не ниже Upper-Intermediate",
+          "scope": "description"
+        },
+        {
+          "id": "ya_47671",
+          "quote": "Хорошо знаете английский язык",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_059",
+      "track": "commercial",
+      "label": "Управление отношениями со стейкхолдерами",
+      "category": "skill",
+      "member_indices": [
+        121,
+        531,
+        625,
+        639,
+        831,
+        906,
+        1121,
+        1147
+      ],
+      "examples": [
+        {
+          "id": "aviasales_4331056",
+          "quote": "строить карту стейкхолдеров, находить чемпиона внутри компании, вести несколько линий параллельно",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4558138",
+          "quote": "Развитые навыки коммуникации и влияния на стейкхолдеров любого уровня, включая топ менеджмент",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54836",
+          "quote": "умение договариваться со стейкхолдерами разного уровня",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_060",
+      "track": "commercial",
+      "label": "Account-based marketing",
+      "category": "method",
+      "member_indices": [
+        122
+      ],
+      "examples": [
+        {
+          "id": "aviasales_4331056",
+          "quote": "умение работать по ABM: не один питч на всех, а отдельный заход под каждый аккаунт",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_061",
+      "track": "commercial",
+      "label": "Финансовое моделирование и расчёт экономики бизнеса",
+      "category": "skill",
+      "member_indices": [
+        20,
+        90,
+        116,
+        125,
+        132,
+        133,
+        179,
+        215,
+        250,
+        267,
+        316,
+        317,
+        383,
+        442,
+        496,
+        530,
+        533,
+        534,
+        545,
+        547,
+        560,
+        621,
+        652,
+        661,
+        713,
+        802,
+        809,
+        832,
+        853,
+        899,
+        908,
+        919,
+        951,
+        985,
+        1042,
+        1126,
+        1141,
+        1208,
+        1224,
+        1227,
+        1234,
+        1254,
+        1267,
+        1270,
+        1273,
+        1286,
+        1293,
+        1304,
+        1310,
+        1327,
+        1381
+      ],
+      "examples": [
+        {
+          "id": "avito_8022",
+          "quote": "умеете строить финансовые модели",
+          "scope": "description"
+        },
+        {
+          "id": "mts_693741414042832103",
+          "quote": "умение считать / обосновывать юнит-экономику и защищать решения опираясь на цифры",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4570848",
+          "quote": "Владение финансовыми моделями для расчёта окупаемости стратегических инициатив",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_062",
+      "track": "commercial",
+      "label": "Разработка и реализация бизнес-стратегии",
+      "category": "skill",
+      "member_indices": [
+        134,
+        135,
+        145,
+        281,
+        790,
+        793,
+        796,
+        797,
+        920,
+        970,
+        1036,
+        1201,
+        1232,
+        1311,
+        1326
+      ],
+      "examples": [
+        {
+          "id": "avito_8022",
+          "quote": "имеете опыт подготовки и внедрения стратегии",
+          "scope": "description"
+        },
+        {
+          "id": "avito_8108",
+          "quote": "умеете формировать стратегию развития нового направления и превращать её в конкретный план действий и измеримые бизнес-результаты",
+          "scope": "description"
+        },
+        {
+          "id": "vk_52738",
+          "quote": "Разрабатывать коммерческие стратегии и модели",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_063",
+      "track": "commercial",
+      "label": "Монетизация и поиск точек роста бизнеса",
+      "category": "skill",
+      "member_indices": [
+        137,
+        175,
+        182,
+        466,
+        923,
+        1064,
+        1136,
+        1360,
+        1385
+      ],
+      "examples": [
+        {
+          "id": "avito_8022",
+          "quote": "искать новые точки роста бизнеса и повышать эффективность текущих монетизационных механик",
+          "scope": "description"
+        },
+        {
+          "id": "vk_52773",
+          "quote": "находить новые возможности для развития бизнеса",
+          "scope": "description"
+        },
+        {
+          "id": "ya_49209",
+          "quote": "придумать, как монетизировать существующий трафик по-новому",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_064",
+      "track": "commercial",
+      "label": "Опыт развития бизнеса и коммерческого управления",
+      "category": "experience",
+      "member_indices": [
+        141,
+        156,
+        169,
+        436,
+        512,
+        611,
+        938,
+        1264,
+        1354,
+        1375
+      ],
+      "examples": [
+        {
+          "id": "avito_8022",
+          "quote": "не менее шести лет работали в направлении развития бизнеса",
+          "scope": "description"
+        },
+        {
+          "id": "avito_8108",
+          "quote": "имеете опыт в развитии бизнеса, коммерческом развитии, операционном управлении продажами или управлении проектами продаж от 3 лет",
+          "scope": "description"
+        },
+        {
+          "id": "ya_47482",
+          "quote": "Работали более 5 лет на стыке бизнеса и операций",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_065",
+      "track": "commercial",
+      "label": "Опыт в электронной коммерции или цифровом продукте",
+      "category": "domain",
+      "member_indices": [
+        142
+      ],
+      "examples": [
+        {
+          "id": "avito_8022",
+          "quote": "имеете опыт работы в электронной коммерции или с диджитал-продуктом",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_066",
+      "track": "commercial",
+      "label": "Запуск новых бизнес-направлений",
+      "category": "experience",
+      "member_indices": [
+        143,
+        329,
+        333,
+        977,
+        1263,
+        1307
+      ],
+      "examples": [
+        {
+          "id": "avito_8022",
+          "quote": "с нуля запускали бизнесы или крупные проекты, повлиявшие на рост выручки компании",
+          "scope": "description"
+        },
+        {
+          "id": "mts_693741414042832103",
+          "quote": "опыт запуска нового направления или канала с нуля в крупных компаниях",
+          "scope": "description"
+        },
+        {
+          "id": "ya_48205",
+          "quote": "Запускали новый бизнес, бренд, продукт или направление в условиях высокой неопределённости",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_067",
+      "track": "commercial",
+      "label": "Запуск и развитие решений с продуктовой командой",
+      "category": "skill",
+      "member_indices": [
+        151,
+        198,
+        305,
+        526
+      ],
+      "examples": [
+        {
+          "id": "avito_8108",
+          "quote": "вместе с продуктовыми командами запускать новые решения и развивать существующие",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4536799",
+          "quote": "опыт запуска банковского продукта с нуля",
+          "scope": "description"
+        },
+        {
+          "id": "avito_8220",
+          "quote": "масштабировали новые продукты в командах с большой целевой аудиторией",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_068",
+      "track": "commercial",
+      "label": "Публичные выступления",
+      "category": "skill",
+      "member_indices": [
+        155,
+        227,
+        888,
+        889
+      ],
+      "examples": [
+        {
+          "id": "avito_8108",
+          "quote": "имеете опыт публичных выступлений в качестве спикера на крупных деловых или отраслевых мероприятиях",
+          "scope": "description"
+        },
+        {
+          "id": "avito_8252",
+          "quote": "выступать на профильных отраслевых мероприятиях в роли спикера",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_01a11ca3-4204-7ab9-a849-b7161e12538b",
+          "quote": "опыт проведения мероприятий в качестве спикера",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_069",
+      "track": "commercial",
+      "label": "Опыт в кредитном финтехе",
+      "category": "industry",
+      "member_indices": [
+        168
+      ],
+      "examples": [
+        {
+          "id": "avito_8124",
+          "quote": "работали менеджером проектов или менеджером по развитию стратегических партнёрств в финтехе с кредитными продуктами не менее 3 лет",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_070",
+      "track": "commercial",
+      "label": "Кредитование физических лиц и кредитная воронка",
+      "category": "domain",
+      "member_indices": [
+        170
+      ],
+      "examples": [
+        {
+          "id": "avito_8124",
+          "quote": "глубоко понимаете кредитную воронку и процесс кредитования физических лиц",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_071",
+      "track": "commercial",
+      "label": "Регулирование кредитования Банком России",
+      "category": "domain",
+      "member_indices": [
+        173
+      ],
+      "examples": [
+        {
+          "id": "avito_8124",
+          "quote": "знаете регуляторные нормы и правила ЦБ РФ в области кредитования",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_072",
+      "track": "commercial",
+      "label": "Бизнес-модели кредитования",
+      "category": "domain",
+      "member_indices": [
+        174
+      ],
+      "examples": [
+        {
+          "id": "avito_8124",
+          "quote": "понимаете бизнес-модели кредитования с торгово-сервисными предприятиями: ОФП, брокер, лидогенерация, транзакция с лимитом",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_073",
+      "track": "commercial",
+      "label": "Коммерциализация решений на данных, ML и ИИ",
+      "category": "domain",
+      "member_indices": [
+        185,
+        192
+      ],
+      "examples": [
+        {
+          "id": "avito_8126",
+          "quote": "имеете опыт коммерциализации решений на данных, ML и AI",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_074",
+      "track": "commercial",
+      "label": "Скоринг, обогащение данных и модели склонности",
+      "category": "domain",
+      "member_indices": [
+        186
+      ],
+      "examples": [
+        {
+          "id": "avito_8126",
+          "quote": "понимаете как работают risk-скоринг, обогащение данных и модели склонности",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_075",
+      "track": "commercial",
+      "label": "Опыт в банках, страховании, финтехе, рекламе или компаниях на данных",
+      "category": "industry",
+      "member_indices": [
+        187
+      ],
+      "examples": [
+        {
+          "id": "avito_8126",
+          "quote": "работали с банками, страховыми компаниями, финтехом, рекламой или другими компаниями, где данные играют ключевую роль",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_076",
+      "track": "commercial",
+      "label": "BI и дашборды: Power BI, Tableau",
+      "category": "tool",
+      "member_indices": [
+        206,
+        406,
+        637,
+        811,
+        1193,
+        1318
+      ],
+      "examples": [
+        {
+          "id": "mts_703630231977591046",
+          "quote": "Опыт работы с BI-системами",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4573739",
+          "quote": "готовых дашбордах (Tableau, Power BI)",
+          "scope": "description"
+        },
+        {
+          "id": "wb_38500",
+          "quote": "PowerBI и их облачными аналогами",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_077",
+      "track": "commercial",
+      "label": "Ведение и развитие клиентского и партнёрского портфеля",
+      "category": "skill",
+      "member_indices": [
+        71,
+        109,
+        112,
+        160,
+        164,
+        207,
+        208,
+        225,
+        233,
+        449,
+        460,
+        462,
+        476,
+        493,
+        500,
+        504,
+        505,
+        520,
+        582,
+        724,
+        757,
+        764,
+        769,
+        819,
+        820,
+        864,
+        871,
+        884,
+        897,
+        918,
+        932,
+        947,
+        953,
+        954,
+        983,
+        986,
+        993,
+        1005,
+        1016,
+        1020,
+        1031,
+        1055,
+        1076,
+        1077,
+        1078,
+        1079,
+        1081,
+        1095,
+        1228,
+        1350
+      ],
+      "examples": [
+        {
+          "id": "avito_8241",
+          "quote": "развивать портфель продавцов сегмента Small",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_01a11ca3-4204-7ab9-a849-b7161e12538b",
+          "quote": "Поддерживать и развивать долгосрочные взаимовыгодные отношения с клиентами",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_6d3a18c4-7cf2-434b-baa7-52dc1e35bb03",
+          "quote": "Развивать портфель клиентов: выстраивать долгосрочные отношения с ЛПР и поддерживать высокий уровень сервиса",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_078",
+      "track": "commercial",
+      "label": "Управление аутсорсинговыми контакт-центрами",
+      "category": "experience",
+      "member_indices": [
+        209,
+        217
+      ],
+      "examples": [
+        {
+          "id": "avito_8241",
+          "quote": "управлять работой аутсорсинговых контакт-центров: договорами, SLA, моделью оплаты, загрузкой и ёмкостью",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_079",
+      "track": "commercial",
+      "label": "Обучение продуктам и передача экспертизы",
+      "category": "skill",
+      "member_indices": [
+        154,
+        212,
+        228,
+        271,
+        290,
+        297,
+        375,
+        454,
+        552,
+        590,
+        622,
+        760,
+        822,
+        886,
+        1221
+      ],
+      "examples": [
+        {
+          "id": "mts_668813062752436789",
+          "quote": "обучать их продуктам в зоне ответственности",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4549034",
+          "quote": "обучение сотрудников банка",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4573787",
+          "quote": "обучение и консультирование партнеров",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_080",
+      "track": "commercial",
+      "label": "Контроль качества продаж",
+      "category": "skill",
+      "member_indices": [
+        213
+      ],
+      "examples": [
+        {
+          "id": "avito_8241",
+          "quote": "систему контроля качества",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_081",
+      "track": "commercial",
+      "label": "Управление телепродажами",
+      "category": "experience",
+      "member_indices": [
+        216
+      ],
+      "examples": [
+        {
+          "id": "avito_8241",
+          "quote": "имеете опыт управления телепродажами от 2 лет",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_082",
+      "track": "commercial",
+      "label": "Построение отдела холодных продаж",
+      "category": "experience",
+      "member_indices": [
+        219
+      ],
+      "examples": [
+        {
+          "id": "avito_8241",
+          "quote": "строили отделы холодных продаж",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_083",
+      "track": "commercial",
+      "label": "Подготовка коммерческих предложений и клиентских решений",
+      "category": "skill",
+      "member_indices": [
+        224,
+        266,
+        268,
+        302,
+        670,
+        1075
+      ],
+      "examples": [
+        {
+          "id": "mts_668813062752436789",
+          "quote": "опыт подготовки технических решений и коммерческих предложений",
+          "scope": "description"
+        },
+        {
+          "id": "mts_684026696399063040",
+          "quote": "участвовать в создании технико-коммерческих предложений для клиентов В2В",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54659",
+          "quote": "Помогать упаковывать коммерческий продукт для брендов и ретейлеров: механики, кейсы, аргументацию ценности, логику повторных запусков",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_084",
+      "track": "commercial",
+      "label": "Клиентские встречи и мероприятия",
+      "category": "skill",
+      "member_indices": [
+        226,
+        694,
+        777,
+        781,
+        782,
+        788,
+        891,
+        902,
+        907,
+        933,
+        948,
+        963
+      ],
+      "examples": [
+        {
+          "id": "avito_8252",
+          "quote": "проводить онлайн- и офлайн-встречи с клиентами и организовывать клиентские мероприятия",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_1e1ed87c-121d-4575-a9e8-00aa7e8bc969",
+          "quote": "Назначать и проводить очные и онлайн встречи с клиентами",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_68869650-7937-426e-890f-248de8cd641e",
+          "quote": "Участвовать в проведении бизнес-мероприятий",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_085",
+      "track": "commercial",
+      "label": "Знание специфики бизнеса клиентов",
+      "category": "domain",
+      "member_indices": [
+        229,
+        904
+      ],
+      "examples": [
+        {
+          "id": "avito_8252",
+          "quote": "обладаете отраслевой экспертизой: понимаете продукт индустрии, знаете локальные и глобальные тренды индустрии",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_0d615133-313b-42fe-8d4d-fc4f59b38e16",
+          "quote": "Обладаете отраслевой экспертизой",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_086",
+      "track": "commercial",
+      "label": "Опыт в медийной рекламе и digital-маркетинге",
+      "category": "industry",
+      "member_indices": [
+        231
+      ],
+      "examples": [
+        {
+          "id": "avito_8252",
+          "quote": "обладаете экспертизой медийного рынка: понимаете тренды диджитал-маркетинга и программатик-технологий",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_087",
+      "track": "commercial",
+      "label": "Programmatic-реклама",
+      "category": "domain",
+      "member_indices": [
+        232
+      ],
+      "examples": [
+        {
+          "id": "avito_8252",
+          "quote": "понимаете тренды диджитал-маркетинга и программатик-технологий",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_088",
+      "track": "commercial",
+      "label": "Оценка и повышение эффективности рекламных кампаний",
+      "category": "skill",
+      "member_indices": [
+        234,
+        293,
+        792,
+        1013,
+        1015,
+        1027,
+        1087,
+        1108,
+        1114,
+        1132,
+        1163
+      ],
+      "examples": [
+        {
+          "id": "avito_8252",
+          "quote": "анализировали и повышали эффективность рекламных кампаний",
+          "scope": "description"
+        },
+        {
+          "id": "vk_51868",
+          "quote": "Собирать, анализировать результаты рекламных кампаний",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54825",
+          "quote": "формирование рекомендаций по оптимизации размещений",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_089",
+      "track": "commercial",
+      "label": "Маршрутизация заявок",
+      "category": "skill",
+      "member_indices": [
+        241
+      ],
+      "examples": [
+        {
+          "id": "avito_8276",
+          "quote": "настроить маршрутизацию заявок",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_090",
+      "track": "commercial",
+      "label": "Опыт в такси, доставке, e-grocery или транзакционном big tech",
+      "category": "industry",
+      "member_indices": [
+        246
+      ],
+      "examples": [
+        {
+          "id": "avito_8276",
+          "quote": "имеете опыт запуска проектов в такси, доставке, e-grocery или транзакционной бизнес-модели в big tech-компании от 4 лет",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_091",
+      "track": "commercial",
+      "label": "ИИ-инструменты и GenAI-платформы",
+      "category": "tool",
+      "member_indices": [
+        251,
+        525,
+        556,
+        681,
+        714,
+        753,
+        826
+      ],
+      "examples": [
+        {
+          "id": "avito_8276",
+          "quote": "уверенно используете AI-инструменты в ежедневной работе",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4546799",
+          "quote": "Умение применять нейросети в повседневной работе",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4563993",
+          "quote": "опыт работы с популярными GenAI‑платформами и API",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_092",
+      "track": "commercial",
+      "label": "Опыт в телекоме",
+      "category": "industry",
+      "member_indices": [
+        252,
+        295,
+        340
+      ],
+      "examples": [
+        {
+          "id": "mts_673794763631100344",
+          "quote": "опыт работы в пресейл и/или внедрении комплексных телеком решений от 3 лет",
+          "scope": "description"
+        },
+        {
+          "id": "mts_696270302316858602",
+          "quote": "опыт работы в телекоммуникационных компаниях от двух лет",
+          "scope": "description"
+        },
+        {
+          "id": "avito_8280",
+          "quote": "обладаете отраслевой экспертизой: понимаете продукт индустрии, знаете локальные и глобальные тренды индустрии",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_093",
+      "track": "commercial",
+      "label": "Цифровой водоканал и учёт энергоресурсов",
+      "category": "domain",
+      "member_indices": [
+        254,
+        261
+      ],
+      "examples": [
+        {
+          "id": "mts_643420306303618373",
+          "quote": "подтвержденный опыт реализации комплексных интеграционных проектов в области учета энергоресурсов (водоснабжения, водоотведения), телеметрии и диспетчеризации",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_094",
+      "track": "commercial",
+      "label": "Тендеры и конкурсные процедуры",
+      "category": "skill",
+      "member_indices": [
+        257,
+        367,
+        368,
+        657,
+        1180
+      ],
+      "examples": [
+        {
+          "id": "mts_643420306303618373",
+          "quote": "участвовать в тендерных процедурах от заказчиков",
+          "scope": "description"
+        },
+        {
+          "id": "wb_38500",
+          "quote": "Проведение тендеров и получение наилучших условий среди контрагентов",
+          "scope": "description"
+        },
+        {
+          "id": "mts_698902108975399222",
+          "quote": "разрабатывать технические задания для участия в закупочных процедурах",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_095",
+      "track": "commercial",
+      "label": "Опыт у производителей приборов учёта или интеграторов",
+      "category": "industry",
+      "member_indices": [
+        260
+      ],
+      "examples": [
+        {
+          "id": "mts_643420306303618373",
+          "quote": "опыт работы в основных вендорах рынка производителей приборов учёта ХВС и ГВС или топ 10 интеграторов по направлению",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_096",
+      "track": "commercial",
+      "label": "Знание рынка цифровизации водоканалов и теплосетей",
+      "category": "industry",
+      "member_indices": [
+        262
+      ],
+      "examples": [
+        {
+          "id": "mts_643420306303618373",
+          "quote": "знание и понимание рынка решений цифровизации водоканалов и тепловых сетей",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_097",
+      "track": "commercial",
+      "label": "Контрольно-измерительная техника и метрология",
+      "category": "domain",
+      "member_indices": [
+        263
+      ],
+      "examples": [
+        {
+          "id": "mts_643420306303618373",
+          "quote": "контрольно-измерительной техники в области расходометрии, измерения давления, основ автоматического управления и/или основ метрологии",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_098",
+      "track": "commercial",
+      "label": "Умный город и цифровизация ЖКХ",
+      "category": "domain",
+      "member_indices": [
+        264
+      ],
+      "examples": [
+        {
+          "id": "mts_643420306303618373",
+          "quote": "опыт работы с проектами \"Умный город\" или «Цифровизация ЖКХ» как преимущество",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_099",
+      "track": "commercial",
+      "label": "Работа с подрядчиками и поставщиками",
+      "category": "skill",
+      "member_indices": [
+        272,
+        284,
+        455,
+        658,
+        915,
+        916,
+        1025,
+        1179,
+        1211,
+        1220,
+        1397
+      ],
+      "examples": [
+        {
+          "id": "mts_668813062752436789",
+          "quote": "взаимодействовать с субподрядчиками, подразделениями – соисполнителями, поставщиками и заказчиком",
+          "scope": "description"
+        },
+        {
+          "id": "vk_52247",
+          "quote": "координации подрядчиков",
+          "scope": "description"
+        },
+        {
+          "id": "ya_49217",
+          "quote": "самостоятельно находить подрядчиков и выстраивать с ними работу",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_100",
+      "track": "commercial",
+      "label": "Поиск и привлечение клиентов и партнёров",
+      "category": "skill",
+      "member_indices": [
+        65,
+        149,
+        176,
+        273,
+        278,
+        301,
+        369,
+        373,
+        380,
+        439,
+        494,
+        584,
+        707,
+        723,
+        754,
+        818,
+        828,
+        887,
+        901,
+        926,
+        981,
+        1080,
+        1091,
+        1157,
+        1210,
+        1229
+      ],
+      "examples": [
+        {
+          "id": "mts_668813062752436789",
+          "quote": "навыки привлечения корпоративных клиентов",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_01a11ca3-4204-7ab9-a849-b7161e12538b",
+          "quote": "помогать им в привлечении новых клиентов",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54805",
+          "quote": "Привлекать новых партнёров",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_101",
+      "track": "commercial",
+      "label": "Управление IT- и телеком-проектами",
+      "category": "experience",
+      "member_indices": [
+        274,
+        1170
+      ],
+      "examples": [
+        {
+          "id": "mts_668813062752436789",
+          "quote": "опыт ведения IT/телеком проектов",
+          "scope": "description"
+        },
+        {
+          "id": "wb_36757",
+          "quote": "Имеете опыт работы управления проектами ИТ от 1 года",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_102",
+      "track": "commercial",
+      "label": "Системное и логическое мышление",
+      "category": "skill",
+      "member_indices": [
+        276,
+        313,
+        523,
+        642,
+        1041,
+        1204,
+        1359
+      ],
+      "examples": [
+        {
+          "id": "mts_668813062752436789",
+          "quote": "системное и логическое мышление",
+          "scope": "description"
+        },
+        {
+          "id": "mts_684026696399063040",
+          "quote": "структурное мышление.",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4351924",
+          "quote": "системное и аналитическое мышление",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_103",
+      "track": "commercial",
+      "label": "Опыт в видеонаблюдении и безопасности",
+      "category": "industry",
+      "member_indices": [
+        286
+      ],
+      "examples": [
+        {
+          "id": "mts_673435529504620946",
+          "quote": "подтвержденный опыт работы с технологическими проектами в сфере видеонаблюдения и безопасности",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_104",
+      "track": "commercial",
+      "label": "Построение и анализ бизнес-моделей",
+      "category": "skill",
+      "member_indices": [
+        189,
+        440,
+        688,
+        703
+      ],
+      "examples": [
+        {
+          "id": "avito_8126",
+          "quote": "умеете разбираться в сложных бизнес-моделях и находить взаимную ценность",
+          "scope": "description"
+        },
+        {
+          "id": "ozon_136978677",
+          "quote": "Построение бизнес-модели, влияние на PnL/EBITDA.",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4563993",
+          "quote": "описание и диагностику бизнес модели и бизнес процессов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_105",
+      "track": "commercial",
+      "label": "Знание рынка видеонаблюдения, телекома, облаков и безопасности",
+      "category": "industry",
+      "member_indices": [
+        306
+      ],
+      "examples": [
+        {
+          "id": "mts_684026696399063040",
+          "quote": "знание рынка IT-видеонаблюдения, телекома, облачных сервисов, систем безопасности",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_106",
+      "track": "commercial",
+      "label": "Продажи сложных технических решений B2B/B2G",
+      "category": "experience",
+      "member_indices": [
+        259,
+        294,
+        309,
+        709,
+        1339
+      ],
+      "examples": [
+        {
+          "id": "mts_643420306303618373",
+          "quote": "опыт работы в сфере реализации и/или продаж комплексных ИТ и инфраструктурных проектов в сегментах B2B/B2G",
+          "scope": "description"
+        },
+        {
+          "id": "mts_673794763631100344",
+          "quote": "опыт работы в пресейл и/или внедрении комплексных телеком решений от 3 лет",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4563993",
+          "quote": "опыт продаж GenAI‑решений или комплексных IT‑решений",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_107",
+      "track": "commercial",
+      "label": "Опыт в видеонаблюдении, облаках, IT-инфраструктуре и охране",
+      "category": "industry",
+      "member_indices": [
+        310
+      ],
+      "examples": [
+        {
+          "id": "mts_684026696399063040",
+          "quote": "опыт продаж в сфере видеонаблюдения, серверов облачного хранения, IT-инфраструктуры, системы охраны и СКУД",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_108",
+      "track": "commercial",
+      "label": "Onvif, RTSP и RTMP",
+      "category": "domain",
+      "member_indices": [
+        311
+      ],
+      "examples": [
+        {
+          "id": "mts_684026696399063040",
+          "quote": "знание протоколов Onvif, RTSP, RTMP",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_109",
+      "track": "commercial",
+      "label": "Деловое общение и установление контакта",
+      "category": "skill",
+      "member_indices": [
+        312,
+        424,
+        445,
+        446,
+        508,
+        524,
+        576,
+        690,
+        702,
+        855,
+        878,
+        941,
+        956,
+        969,
+        1104,
+        1135,
+        1209,
+        1213,
+        1298,
+        1358,
+        1392
+      ],
+      "examples": [
+        {
+          "id": "mts_684026696399063040",
+          "quote": "умение устанавливать контакт с людьми",
+          "scope": "description"
+        },
+        {
+          "id": "sberhealth_4349801",
+          "quote": "Навыки делового общения, грамотная устная и письменная речь",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54825",
+          "quote": "Развитые коммуникативные навыки, грамотная устная и письменная речь",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_110",
+      "track": "commercial",
+      "label": "Управление ассортиментом и товарными категориями",
+      "category": "skill",
+      "member_indices": [
+        314,
+        495
+      ],
+      "examples": [
+        {
+          "id": "mts_693741414042832103",
+          "quote": "ассортимент/каталог предложений, ценообразование, контент, управление продвижением",
+          "scope": "description"
+        },
+        {
+          "id": "ozon_137960971",
+          "quote": "анализировать ассортимент, запускать новые позиции, работать с селлерами",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_111",
+      "track": "commercial",
+      "label": "Карточки товаров и продвижение на маркетплейсах",
+      "category": "skill",
+      "member_indices": [
+        315
+      ],
+      "examples": [
+        {
+          "id": "mts_693741414042832103",
+          "quote": "контент, управление продвижением",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_112",
+      "track": "commercial",
+      "label": "FBO и FBS",
+      "category": "domain",
+      "member_indices": [
+        319,
+        328
+      ],
+      "examples": [
+        {
+          "id": "mts_693741414042832103",
+          "quote": "включая практический опыт в схемах FBO и FBS",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_113",
+      "track": "commercial",
+      "label": "Взаиморасчёты, оплаты и финансовый документооборот",
+      "category": "skill",
+      "member_indices": [
+        322,
+        410,
+        412,
+        452,
+        726,
+        866,
+        867,
+        868,
+        872,
+        934,
+        1029,
+        1233
+      ],
+      "examples": [
+        {
+          "id": "sber_4568445",
+          "quote": "контроль взаиморасчетов",
+          "scope": "description"
+        },
+        {
+          "id": "sberhealth_4349801",
+          "quote": "Проведением еженедельных и ежемесячных сверок с клиентами и партнерами",
+          "scope": "description"
+        },
+        {
+          "id": "mts_710121344334823693",
+          "quote": "работы с финансовой документацией (счета, акты, контроль оплат)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_114",
+      "track": "commercial",
+      "label": "Планирование товарных запасов",
+      "category": "skill",
+      "member_indices": [
+        323
+      ],
+      "examples": [
+        {
+          "id": "mts_693741414042832103",
+          "quote": "формировать потребность в товаре и своевременное пополнение остатков",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_115",
+      "track": "commercial",
+      "label": "Поисковая оптимизация",
+      "category": "skill",
+      "member_indices": [
+        324,
+        1093
+      ],
+      "examples": [
+        {
+          "id": "mts_693741414042832103",
+          "quote": "поисковую оптимизацию",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54805",
+          "quote": "продвигать события на ключевых витринах сервиса, формировать единый стандарт оформления, оптимизировать поисковую выдачу",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_116",
+      "track": "commercial",
+      "label": "Кросс-продажи и допродажи",
+      "category": "skill",
+      "member_indices": [
+        325,
+        671,
+        770,
+        1337
+      ],
+      "examples": [
+        {
+          "id": "mts_693741414042832103",
+          "quote": "кросс-продажи в связанных категориях",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4570623",
+          "quote": "продавать сопутствующие банковские продукты к ипотечному кредиту",
+          "scope": "description"
+        },
+        {
+          "id": "ya_48793",
+          "quote": "заниматься апсейлом существующих продуктов для улучшения показателей компании и региона",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_117",
+      "track": "commercial",
+      "label": "Опыт на маркетплейсах со стороны продавца или бренда",
+      "category": "industry",
+      "member_indices": [
+        327
+      ],
+      "examples": [
+        {
+          "id": "mts_693741414042832103",
+          "quote": "опыт работы с маркетплейсами 3-6 лет на стороне продавца или бренда",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_118",
+      "track": "commercial",
+      "label": "Ozon Seller и WB Partners",
+      "category": "tool",
+      "member_indices": [
+        330
+      ],
+      "examples": [
+        {
+          "id": "mts_693741414042832103",
+          "quote": "свободная работа в кабинетах Ozon Seller и WB Partners: остатки, кластеры, карточки, акции, аналитические инструменты",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_119",
+      "track": "commercial",
+      "label": "Онлайн-продажи с офлайн-обслуживанием",
+      "category": "experience",
+      "member_indices": [
+        331
+      ],
+      "examples": [
+        {
+          "id": "mts_693741414042832103",
+          "quote": "будет преимуществом опыт запуска проектов, объединяющих онлайн-продажи и офлайн-сеть обслуживания или выдачи заказов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_120",
+      "track": "commercial",
+      "label": "Продажи товаров с активацией, установкой или подпиской",
+      "category": "domain",
+      "member_indices": [
+        332
+      ],
+      "examples": [
+        {
+          "id": "mts_693741414042832103",
+          "quote": "опыт продаж товаров, покупка которых предполагает дальнейшую активацию, установку или подписку",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_121",
+      "track": "commercial",
+      "label": "Опыт работы с продуктами",
+      "category": "experience",
+      "member_indices": [
+        352,
+        430,
+        1153,
+        1277
+      ],
+      "examples": [
+        {
+          "id": "mts_696334248075854089",
+          "quote": "опыт работы с продуктами",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54847",
+          "quote": "Опыт работы с продуктом в технологической компании или опыт Product Manager — сильный плюс",
+          "scope": "description"
+        },
+        {
+          "id": "ya_47671",
+          "quote": "Работали в проектном или продуктовом управлении",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_122",
+      "track": "commercial",
+      "label": "B2B-продажи и ведение полного цикла сделки",
+      "category": "skill",
+      "member_indices": [
+        123,
+        128,
+        129,
+        355,
+        364,
+        372,
+        542,
+        553,
+        710,
+        786,
+        859,
+        895,
+        905,
+        910,
+        936,
+        946,
+        950,
+        952,
+        1002,
+        1004,
+        1051,
+        1160,
+        1161,
+        1215,
+        1342
+      ],
+      "examples": [
+        {
+          "id": "mts_696360580830724415",
+          "quote": "наличие опыта в B2B-продажах и реализации VAS-услуг продолжительностью от 1-2 лет",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4546799",
+          "quote": "Не менее 2 лет в сфере B2B продаж",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_1e1ed87c-121d-4575-a9e8-00aa7e8bc969",
+          "quote": "Умеете вести сделки самостоятельно и принимать решения на каждом этапе",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_123",
+      "track": "commercial",
+      "label": "VAS-услуги",
+      "category": "domain",
+      "member_indices": [
+        356
+      ],
+      "examples": [
+        {
+          "id": "mts_696360580830724415",
+          "quote": "наличие опыта в B2B-продажах и реализации VAS-услуг продолжительностью от 1-2 лет",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_124",
+      "track": "commercial",
+      "label": "Основы мобильных и фиксированных сетей связи",
+      "category": "domain",
+      "member_indices": [
+        362
+      ],
+      "examples": [
+        {
+          "id": "mts_696360580830724415",
+          "quote": "знание технических основ работы сетей мобильной и фиксированной связи",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_125",
+      "track": "commercial",
+      "label": "IoT-технологии и проекты",
+      "category": "domain",
+      "member_indices": [
+        363
+      ],
+      "examples": [
+        {
+          "id": "mts_696360580830724415",
+          "quote": "опыт реализации проектов с применением технологий IoT",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_126",
+      "track": "commercial",
+      "label": "Знание вендоров и интеграторов",
+      "category": "domain",
+      "member_indices": [
+        370
+      ],
+      "examples": [
+        {
+          "id": "mts_698902108975399222",
+          "quote": "знание рынка вендоров и интеграторов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_127",
+      "track": "commercial",
+      "label": "Опыт в IT или телекоме",
+      "category": "industry",
+      "member_indices": [
+        374
+      ],
+      "examples": [
+        {
+          "id": "mts_698902108975399222",
+          "quote": "опыт работы с партнерами в сфере IT/телеком",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_128",
+      "track": "commercial",
+      "label": "Техническая экспертиза оборудования и ПО",
+      "category": "domain",
+      "member_indices": [
+        376,
+        378
+      ],
+      "examples": [
+        {
+          "id": "mts_699534272972721372",
+          "quote": "понимание принципов работы оборудования и ПО",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_129",
+      "track": "commercial",
+      "label": "Подготовка и ведение проектной документации",
+      "category": "skill",
+      "member_indices": [
+        379
+      ],
+      "examples": [
+        {
+          "id": "mts_699534272972721372",
+          "quote": "умение работать с проектной документацией",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_130",
+      "track": "commercial",
+      "label": "Работа с застройщиками, управляющими компаниями и администрациями",
+      "category": "experience",
+      "member_indices": [
+        385
+      ],
+      "examples": [
+        {
+          "id": "mts_701046610922048739",
+          "quote": "опыт взаимодействия с управляющими компаниями, администрациями и застройщиками",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_131",
+      "track": "commercial",
+      "label": "Работа с возражениями и претензионными клиентами",
+      "category": "skill",
+      "member_indices": [
+        386,
+        911,
+        1216
+      ],
+      "examples": [
+        {
+          "id": "mts_701046610922048739",
+          "quote": "навык решения претензионных вопросов",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_1e1ed87c-121d-4575-a9e8-00aa7e8bc969",
+          "quote": "Умеете применять soft навыки при общении с претензионными клиентами и работе с возражениями",
+          "scope": "description"
+        },
+        {
+          "id": "x5_692ea312a152f1b4ad5b941f",
+          "quote": "умение работать с возражениями",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_132",
+      "track": "commercial",
+      "label": "Опыт продаж, маркетинга или коммерческих процессов",
+      "category": "experience",
+      "member_indices": [
+        389,
+        823,
+        961
+      ],
+      "examples": [
+        {
+          "id": "mts_703630231977591046",
+          "quote": "Опыт от 1 года в маркетинге, привлечении клиентов, развитии продаж, коммерческой аналитике или управлении проектами",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4573787",
+          "quote": "опыт работы в сфере продаж или маркетинга",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_a45d3c85-b00e-46c7-9076-f12d884865ef",
+          "quote": "опыт работы в продажах или построении процессов от 1 года",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_133",
+      "track": "commercial",
+      "label": "Самоорганизация и ведение параллельных задач",
+      "category": "skill",
+      "member_indices": [
+        342,
+        387,
+        402,
+        423,
+        510,
+        578,
+        731,
+        879,
+        922,
+        1018,
+        1024,
+        1050,
+        1054,
+        1146,
+        1156,
+        1189,
+        1191,
+        1297,
+        1361,
+        1383
+      ],
+      "examples": [
+        {
+          "id": "mts_703630231977591046",
+          "quote": "Умение самостоятельно структурировать задачу и организовать её выполнение",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4548835",
+          "quote": "высокий уровень самостоятельности и самоорганизованност",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4568445",
+          "quote": "высокая самоорганизация",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_134",
+      "track": "commercial",
+      "label": "SQL",
+      "category": "tool",
+      "member_indices": [
+        407
+      ],
+      "examples": [
+        {
+          "id": "mts_703630231977591046",
+          "quote": "знание SQL на базовом уровне",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_135",
+      "track": "commercial",
+      "label": "CVM, реферальные и партнёрские механики",
+      "category": "domain",
+      "member_indices": [
+        408
+      ],
+      "examples": [
+        {
+          "id": "mts_703630231977591046",
+          "quote": "Опыт работы с CVM-коммуникациями, реферальными или партнёрскими механиками",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_136",
+      "track": "commercial",
+      "label": "Контроль дебиторской задолженности",
+      "category": "skill",
+      "member_indices": [
+        411
+      ],
+      "examples": [
+        {
+          "id": "mts_710121344334823693",
+          "quote": "контроль дебиторской задолженности и эскалация проблем",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_137",
+      "track": "commercial",
+      "label": "Фасилитация встреч",
+      "category": "method",
+      "member_indices": [
+        414,
+        641,
+        814,
+        1148
+      ],
+      "examples": [
+        {
+          "id": "mts_710121344334823693",
+          "quote": "навыки фасилитации встреч",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4558138",
+          "quote": "Навыки фасилитации рабочих групп и воркшопов (Kaizen events, Rapid Improvement Events)",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54847",
+          "quote": "фасилитировать обсуждения",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_138",
+      "track": "commercial",
+      "label": "Организация внутренних мероприятий",
+      "category": "skill",
+      "member_indices": [
+        417,
+        418
+      ],
+      "examples": [
+        {
+          "id": "mts_710121344334823693",
+          "quote": "проведение внутренних мероприятий продуктов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_139",
+      "track": "commercial",
+      "label": "IT, продуктовая среда или реклама",
+      "category": "domain",
+      "member_indices": [
+        421
+      ],
+      "examples": [
+        {
+          "id": "mts_710121344334823693",
+          "quote": "опыт в управлении проектами или операционными процессами от 1 года (IT, продукты, реклама)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_140",
+      "track": "commercial",
+      "label": "Внутренние и межфункциональные коммуникации",
+      "category": "skill",
+      "member_indices": [
+        425,
+        614,
+        849,
+        955,
+        1190,
+        1276,
+        1386
+      ],
+      "examples": [
+        {
+          "id": "mts_710121344334823693",
+          "quote": "умение находить общий язык с клиентами, юристами, финансистами и инженерами",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4551551",
+          "quote": "уверенно ведёте операционные коммуникации, эффективно взаимодействуете с топ менеджментом, умеете выстраивать диалог между различными подразделениями",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4577268",
+          "quote": "выстраивание эффективной контактной политики со смежными блоками и внутри команды",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_141",
+      "track": "commercial",
+      "label": "Работа с документами и внимание к деталям",
+      "category": "skill",
+      "member_indices": [
+        426,
+        870,
+        877,
+        1290,
+        1368,
+        1372
+      ],
+      "examples": [
+        {
+          "id": "mts_710121344334823693",
+          "quote": "внимательность к деталям при работе с документами",
+          "scope": "description"
+        },
+        {
+          "id": "ya_49086",
+          "quote": "Любите порядок в цифрах и документах",
+          "scope": "native:key_qualifications"
+        },
+        {
+          "id": "ya_47726",
+          "quote": "внимательны к деталям",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_142",
+      "track": "commercial",
+      "label": "Трекеры задач и проектов: Jira, Trello, MS Project",
+      "category": "tool",
+      "member_indices": [
+        44,
+        431,
+        635,
+        1028,
+        1260,
+        1376
+      ],
+      "examples": [
+        {
+          "id": "alfa_37110",
+          "quote": "инструментов (Jira, Trello)",
+          "scope": "description"
+        },
+        {
+          "id": "mts_711171089803247718",
+          "quote": "владение Jira и Confluence на уровне уверенного пользователя",
+          "scope": "description"
+        },
+        {
+          "id": "vk_52247",
+          "quote": "инструментами для ведения проектов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_143",
+      "track": "commercial",
+      "label": "Confluence",
+      "category": "tool",
+      "member_indices": [
+        432
+      ],
+      "examples": [
+        {
+          "id": "mts_711171089803247718",
+          "quote": "владение Jira и Confluence на уровне уверенного пользователя",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_144",
+      "track": "commercial",
+      "label": "Опыт в банковской или финансовой сфере",
+      "category": "industry",
+      "member_indices": [
+        433
+      ],
+      "examples": [
+        {
+          "id": "mts_711171089803247718",
+          "quote": "опыт в банковской или финансовой сфере",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_145",
+      "track": "commercial",
+      "label": "Опыт в электронной коммерции и на маркетплейсах",
+      "category": "industry",
+      "member_indices": [
+        507,
+        1295,
+        1366
+      ],
+      "examples": [
+        {
+          "id": "ozon_138271915",
+          "quote": "Понимание принципов работы рынка e-commerce",
+          "scope": "description"
+        },
+        {
+          "id": "ya_48036",
+          "quote": "Работали в e-commerce",
+          "scope": "native:key_qualifications"
+        },
+        {
+          "id": "ya_49076",
+          "quote": "Понимаете, как работают маркетплейсы и рынок электронной коммерции",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_146",
+      "track": "commercial",
+      "label": "Китайский язык",
+      "category": "language",
+      "member_indices": [
+        448,
+        1169
+      ],
+      "examples": [
+        {
+          "id": "ozon_136978677",
+          "quote": "китайский будет преимуществом",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54996",
+          "quote": "Китайский язык\n— HSK5 и выше",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_147",
+      "track": "commercial",
+      "label": "Медиапланирование и запуск рекламных кампаний",
+      "category": "skill",
+      "member_indices": [
+        223,
+        397,
+        450,
+        1030,
+        1086,
+        1088,
+        1094,
+        1106,
+        1107,
+        1130
+      ],
+      "examples": [
+        {
+          "id": "mts_703630231977591046",
+          "quote": "Участвовать в подготовке промоакций, рекламных кампаний и специальных проектов",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54825",
+          "quote": "формирование медиапланов",
+          "scope": "description"
+        },
+        {
+          "id": "ozon_137494460",
+          "quote": "Создание и ведение календаря размещений",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_148",
+      "track": "commercial",
+      "label": "Управление претензионным обслуживанием",
+      "category": "domain",
+      "member_indices": [
+        471
+      ],
+      "examples": [
+        {
+          "id": "ozon_137537708",
+          "quote": "Развивать и совершенствовать претензионный процесс в ПВЗ",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_149",
+      "track": "commercial",
+      "label": "Поиск и оценка объектов недвижимости",
+      "category": "skill",
+      "member_indices": [
+        477,
+        479,
+        480,
+        481,
+        482,
+        486
+      ],
+      "examples": [
+        {
+          "id": "ozon_137585501",
+          "quote": "Осуществлять поиск объектов недвижимости и земельных участков для размещения инфраструктурных объектов Компании",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_150",
+      "track": "commercial",
+      "label": "Работа с собственниками и брокерами недвижимости",
+      "category": "skill",
+      "member_indices": [
+        478
+      ],
+      "examples": [
+        {
+          "id": "ozon_137585501",
+          "quote": "Взаимодействовать с брокерами, агентами, консультантами, собственниками объектов недвижимости и земельных участков",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_151",
+      "track": "commercial",
+      "label": "Опыт в складской недвижимости",
+      "category": "industry",
+      "member_indices": [
+        487,
+        491
+      ],
+      "examples": [
+        {
+          "id": "ozon_137585501",
+          "quote": "Опыт работы в сфере складской недвижимости от 3 лет",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_152",
+      "track": "commercial",
+      "label": "Сделки со складской и индустриальной недвижимостью",
+      "category": "experience",
+      "member_indices": [
+        488,
+        650,
+        665
+      ],
+      "examples": [
+        {
+          "id": "ozon_137585501",
+          "quote": "Наличие опыта сделок по складской/индустриальной недвижимости",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4559848",
+          "quote": "организация согласования, совершения сделок с недвижимостью, оформление прав собственности",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_153",
+      "track": "commercial",
+      "label": "Законодательство в области недвижимости",
+      "category": "domain",
+      "member_indices": [
+        489
+      ],
+      "examples": [
+        {
+          "id": "ozon_137585501",
+          "quote": "Знание законодательства, регулирующего гражданские правоотношения в области недвижимости",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_154",
+      "track": "commercial",
+      "label": "Технические требования к складам и земельным участкам",
+      "category": "domain",
+      "member_indices": [
+        490,
+        492,
+        741,
+        747
+      ],
+      "examples": [
+        {
+          "id": "ozon_137585501",
+          "quote": "Знание основных стандартов складской недвижимости, технических требований, предъявляемый к объектам соответствующего класса.",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4569367",
+          "quote": "знание принципов подбора объектов недвижимости и технических требований к ним",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_155",
+      "track": "commercial",
+      "label": "Обучаемость",
+      "category": "skill",
+      "member_indices": [
+        509,
+        968
+      ],
+      "examples": [
+        {
+          "id": "ozon_138271915",
+          "quote": "Быстрая обучаемость",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_a45d3c85-b00e-46c7-9076-f12d884865ef",
+          "quote": "Умеешь работать с новыми системами и процессами, доводишь задачи до результата",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_156",
+      "track": "commercial",
+      "label": "Внешнеэкономическая деятельность",
+      "category": "domain",
+      "member_indices": [
+        521
+      ],
+      "examples": [
+        {
+          "id": "sber_4351924",
+          "quote": "понимание ВЭД",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_157",
+      "track": "commercial",
+      "label": "Преодоление барьеров выхода на новый рынок",
+      "category": "skill",
+      "member_indices": [
+        529
+      ],
+      "examples": [
+        {
+          "id": "sber_4536799",
+          "quote": "способность выявлять барьеры входа (регуляторные, налоговые, инфраструктурные) и предлагать пути их преодоления",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_158",
+      "track": "commercial",
+      "label": "Работа с регуляторами и финансово-правовыми консультантами",
+      "category": "skill",
+      "member_indices": [
+        532
+      ],
+      "examples": [
+        {
+          "id": "sber_4536799",
+          "quote": "взаимодействия с регуляторами или консультантами по финансовому праву",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_159",
+      "track": "commercial",
+      "label": "Торговое финансирование",
+      "category": "industry",
+      "member_indices": [
+        538
+      ],
+      "examples": [
+        {
+          "id": "sber_4536799",
+          "quote": "понимание механизмов и продуктов торгового финансирования (эскроу счета в недвижимости, аккредитивы физических лиц)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_160",
+      "track": "commercial",
+      "label": "Учёт, риски и обеспечение трансграничных сделок",
+      "category": "domain",
+      "member_indices": [
+        540
+      ],
+      "examples": [
+        {
+          "id": "sber_4536799",
+          "quote": "знание особенностей учета, рисков и обеспечения в трансграничных сделках",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_161",
+      "track": "commercial",
+      "label": "AI, облачные решения, API и цифровая трансформация",
+      "category": "domain",
+      "member_indices": [
+        555,
+        559,
+        604,
+        697
+      ],
+      "examples": [
+        {
+          "id": "sber_4546799",
+          "quote": "Базовое понимание современных технологий (AI агенты, LLM, облачные решения, API) и принципов цифровой трансформации",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4563930",
+          "quote": "базовое понимание архитектуры ИИ трансформации и ключевых технологий (Cloud, Fintech, Data Science, IoT)",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4551551",
+          "quote": "инициировать и продвигать проекты цифровой трансформации регионов (включая Russia AI transformation RAIT) в сотрудничестве с органами власти",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_162",
+      "track": "commercial",
+      "label": "Сертификация в управлении проектами",
+      "category": "education",
+      "member_indices": [
+        558,
+        645
+      ],
+      "examples": [
+        {
+          "id": "sber_4546799",
+          "quote": "Наличие сертификации в области управления проектами",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4558138",
+          "quote": "PMP / PRINCE2 сертификация",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_163",
+      "track": "commercial",
+      "label": "Программирование и создание ИИ-агентов",
+      "category": "domain",
+      "member_indices": [
+        561,
+        613
+      ],
+      "examples": [
+        {
+          "id": "sber_4546799",
+          "quote": "Навыки программирования, создания ИИ агентов",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4551551",
+          "quote": "имеете опыт участия в проектах по разработке AI агентов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_164",
+      "track": "commercial",
+      "label": "Оценка и улучшение качества ИИ-агентов",
+      "category": "domain",
+      "member_indices": [
+        563
+      ],
+      "examples": [
+        {
+          "id": "sber_4548835",
+          "quote": "анализ эффективности деятельности агентов в процессах комплаенс, улучшение качества их работы",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_165",
+      "track": "commercial",
+      "label": "Автоматизация и агентизация процессов",
+      "category": "skill",
+      "member_indices": [
+        564,
+        580,
+        1328,
+        1333,
+        1377
+      ],
+      "examples": [
+        {
+          "id": "sber_4548835",
+          "quote": "опыт в трансформации и редизайне процессов с фокусом на автоматизацию и агентизацию",
+          "scope": "description"
+        },
+        {
+          "id": "ya_48515",
+          "quote": "Применяли AI и автоматизацию для трансформации операционных процессов",
+          "scope": "native:key_qualifications"
+        },
+        {
+          "id": "ya_49086",
+          "quote": "Автоматизировали рутину с помощью ИИ-инструментов",
+          "scope": "native:additional_requirements"
+        }
+      ]
+    },
+    {
+      "id": "commercial_166",
+      "track": "commercial",
+      "label": "Пользовательские навыки работы с ПК",
+      "category": "tool",
+      "member_indices": [
+        579
+      ],
+      "examples": [
+        {
+          "id": "sber_4548835",
+          "quote": "уверенное владение ПК",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_167",
+      "track": "commercial",
+      "label": "MS Office",
+      "category": "tool",
+      "member_indices": [
+        459
+      ],
+      "examples": [
+        {
+          "id": "ozon_137494460",
+          "quote": "Уверенное знание MS Office, особенно Excel",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_168",
+      "track": "commercial",
+      "label": "GR и работа с органами власти",
+      "category": "skill",
+      "member_indices": [
+        583,
+        588,
+        593,
+        779,
+        780
+      ],
+      "examples": [
+        {
+          "id": "sber_4549034",
+          "quote": "выстраивание долгосрочных отношений с профильными Департаментами Правительства Москвы",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4570706",
+          "quote": "развитие отношений с НКО, органами власти, образовательными учреждениями",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_169",
+      "track": "commercial",
+      "label": "Документооборот в государственных структурах",
+      "category": "skill",
+      "member_indices": [
+        589
+      ],
+      "examples": [
+        {
+          "id": "sber_4549034",
+          "quote": "контроль прохождения документов в госструктурах",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_170",
+      "track": "commercial",
+      "label": "Механизмы работы Правительства Москвы",
+      "category": "domain",
+      "member_indices": [
+        594
+      ],
+      "examples": [
+        {
+          "id": "sber_4549034",
+          "quote": "понимание механизмов работы Правительства Москвы, Департамента предпринимательства и инновационного развития, Департамента инвестиционной и промышленной политики",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_171",
+      "track": "commercial",
+      "label": "Модель работы с малым и микробизнесом",
+      "category": "domain",
+      "member_indices": [
+        598
+      ],
+      "examples": [
+        {
+          "id": "sber_4549034",
+          "quote": "экспертиза в модели работы с сегментом ММБ",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_172",
+      "track": "commercial",
+      "label": "Знание технологических стартапов, промышленности и R&D",
+      "category": "industry",
+      "member_indices": [
+        599
+      ],
+      "examples": [
+        {
+          "id": "sber_4549034",
+          "quote": "глубокое понимание потребностей технологических стартапов, промышленных предприятий и R&D центров (DeepTech, MedTech, FinTech)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_173",
+      "track": "commercial",
+      "label": "Меры государственной поддержки бизнеса",
+      "category": "domain",
+      "member_indices": [
+        600
+      ],
+      "examples": [
+        {
+          "id": "sber_4549034",
+          "quote": "экспертное знание ландшафта мер поддержки бизнеса на федеральном уровне (Минэкономразвития, Минпромторг, Корпорация МСП) и на уровне Правительства Москвы",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_174",
+      "track": "commercial",
+      "label": "ESG-проекты и отчётность",
+      "category": "domain",
+      "member_indices": [
+        605
+      ],
+      "examples": [
+        {
+          "id": "sber_4551551",
+          "quote": "координировать ESG повестки: отслеживать достижение целей, реализовывать проекты и формировать ESG отчетность для руководства",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_175",
+      "track": "commercial",
+      "label": "Управление портфелем проектов и инициатив",
+      "category": "skill",
+      "member_indices": [
+        606,
+        1124,
+        1256
+      ],
+      "examples": [
+        {
+          "id": "sber_4551551",
+          "quote": "управлять портфелем бизнес экспериментов ТБ: инициировать проекты, распределять финансирование, контролировать эффективность и достижение целей",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54836",
+          "quote": "формировать и приоритизировать портфель инициатив",
+          "scope": "description"
+        },
+        {
+          "id": "ya_46689",
+          "quote": "Готовы брать ответственность за результаты портфеля проектов",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_176",
+      "track": "commercial",
+      "label": "Планирование и контроль бюджета проектов",
+      "category": "skill",
+      "member_indices": [
+        607,
+        620
+      ],
+      "examples": [
+        {
+          "id": "sber_4551551",
+          "quote": "распределять финансирование",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4558138",
+          "quote": "контроль сроков, бюджета и эффекта",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_177",
+      "track": "commercial",
+      "label": "Организация встреч руководителей",
+      "category": "skill",
+      "member_indices": [
+        608
+      ],
+      "examples": [
+        {
+          "id": "sber_4551551",
+          "quote": "обеспечивать сопровождение гемба топ руководителей Сбера в территориальных банках, готовить программу, материалы, отчёты и протоколы поручений",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_178",
+      "track": "commercial",
+      "label": "Lean, Six Sigma и непрерывные улучшения",
+      "category": "method",
+      "member_indices": [
+        616,
+        623,
+        626,
+        631,
+        1246
+      ],
+      "examples": [
+        {
+          "id": "sber_4558138",
+          "quote": "Внедрение и масштабирование методологий Lean и Six Sigma (DMAIC, DMADV)",
+          "scope": "description"
+        },
+        {
+          "id": "ya_45527",
+          "quote": "Владеете методами анализа и улучшения бизнес-процессов (например, Lean, Six Sigma)",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_179",
+      "track": "commercial",
+      "label": "Process Mining, VSM и диагностика потерь",
+      "category": "method",
+      "member_indices": [
+        618
+      ],
+      "examples": [
+        {
+          "id": "sber_4558138",
+          "quote": "Проведение диагностики процессов (Process Mining, VSM — Value Stream Mapping, картирование потерь)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_180",
+      "track": "commercial",
+      "label": "Six Sigma Black Belt или эквивалентный опыт",
+      "category": "education",
+      "member_indices": [
+        630
+      ],
+      "examples": [
+        {
+          "id": "sber_4558138",
+          "quote": "Сертификат Six Sigma Black Belt (обязательно) или подтвержденный опыт эквивалентного уровня",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_181",
+      "track": "commercial",
+      "label": "Статистические инструменты Six Sigma",
+      "category": "method",
+      "member_indices": [
+        632
+      ],
+      "examples": [
+        {
+          "id": "sber_4558138",
+          "quote": "Владение статистическими инструментами Six Sigma: SPC, MSA, FMEA, DOE, регрессионный и корреляционный анализ",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_182",
+      "track": "commercial",
+      "label": "ПО статистического анализа и управления проектами",
+      "category": "tool",
+      "member_indices": [
+        633
+      ],
+      "examples": [
+        {
+          "id": "sber_4558138",
+          "quote": "Опыт работы с ПО для статистического анализа и управления проектами",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_183",
+      "track": "commercial",
+      "label": "Minitab",
+      "category": "tool",
+      "member_indices": [
+        634
+      ],
+      "examples": [
+        {
+          "id": "sber_4558138",
+          "quote": "Minitab, MS Project, MS Visio/Bizagi, Power BI/Tableau — как плюс",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_184",
+      "track": "commercial",
+      "label": "MS Visio или Bizagi",
+      "category": "tool",
+      "member_indices": [
+        636
+      ],
+      "examples": [
+        {
+          "id": "sber_4558138",
+          "quote": "Minitab, MS Project, MS Visio/Bizagi, Power BI/Tableau — как плюс",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_185",
+      "track": "commercial",
+      "label": "Принятие решений на основе данных",
+      "category": "method",
+      "member_indices": [
+        640,
+        1068,
+        1373
+      ],
+      "examples": [
+        {
+          "id": "sber_4558138",
+          "quote": "ориентация на результат и данные (data driven подход)",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54659",
+          "quote": "принимаешь решения на основе данных",
+          "scope": "description"
+        },
+        {
+          "id": "ya_49086",
+          "quote": "Умеете отстаивать бизнес-метрики и принимать решения на основе данных",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_186",
+      "track": "commercial",
+      "label": "Управление изменениями и сопротивлением",
+      "category": "skill",
+      "member_indices": [
+        643
+      ],
+      "examples": [
+        {
+          "id": "sber_4558138",
+          "quote": "устойчивость к изменениям и умение работать в условиях сопротивления изменениям",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_187",
+      "track": "commercial",
+      "label": "Lean Agile",
+      "category": "method",
+      "member_indices": [
+        644
+      ],
+      "examples": [
+        {
+          "id": "sber_4558138",
+          "quote": "Опыт внедрения Agile практик в связке с Lean (Lean Agile)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_188",
+      "track": "commercial",
+      "label": "Управление портфелем недвижимости и использованием площадей",
+      "category": "skill",
+      "member_indices": [
+        648,
+        649,
+        651,
+        736,
+        737
+      ],
+      "examples": [
+        {
+          "id": "sber_4559848",
+          "quote": "стратегическое управление портфелем недвижимости: формирование и реализация планов развития материально технической базы",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4569367",
+          "quote": "формирование и реализация планов развития материально технической базы",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_189",
+      "track": "commercial",
+      "label": "Страхование недвижимости",
+      "category": "domain",
+      "member_indices": [
+        654
+      ],
+      "examples": [
+        {
+          "id": "sber_4559848",
+          "quote": "страхование объектов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_190",
+      "track": "commercial",
+      "label": "Строительство и реконструкция объектов",
+      "category": "domain",
+      "member_indices": [
+        656,
+        740,
+        742
+      ],
+      "examples": [
+        {
+          "id": "sber_4559848",
+          "quote": "выполнение всех этапов реконструкции и капитального строительства в роли консолидированного исполнителя",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4569367",
+          "quote": "реализация проектов строительства, реконструкции, капитального ремонта ОН",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_191",
+      "track": "commercial",
+      "label": "Ввод объектов в эксплуатацию",
+      "category": "domain",
+      "member_indices": [
+        659
+      ],
+      "examples": [
+        {
+          "id": "sber_4559848",
+          "quote": "проведение комиссий и ввод объектов в эксплуатацию",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_192",
+      "track": "commercial",
+      "label": "Административно-хозяйственное обеспечение",
+      "category": "domain",
+      "member_indices": [
+        662,
+        738
+      ],
+      "examples": [
+        {
+          "id": "sber_4559848",
+          "quote": "размещение сотрудников банка",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4569367",
+          "quote": "организация размещения сотрудников отделения по Калининграду и области",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_193",
+      "track": "commercial",
+      "label": "Опыт управления коммерческой или банковской недвижимостью",
+      "category": "industry",
+      "member_indices": [
+        663
+      ],
+      "examples": [
+        {
+          "id": "sber_4559848",
+          "quote": "опыт управления объектами коммерческой или банковской недвижимости",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_194",
+      "track": "commercial",
+      "label": "Процессы аренды недвижимости",
+      "category": "domain",
+      "member_indices": [
+        664
+      ],
+      "examples": [
+        {
+          "id": "sber_4559848",
+          "quote": "глубокое понимание процессов аренды: анализ рынка, ставки, договоры, реализация объектов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_195",
+      "track": "commercial",
+      "label": "Страховые правила, риски и тарифы",
+      "category": "domain",
+      "member_indices": [
+        666,
+        1362
+      ],
+      "examples": [
+        {
+          "id": "sber_4562667",
+          "quote": "Понимание ключевых правил, рисков, объемов и принципов тарифообразования",
+          "scope": "description"
+        },
+        {
+          "id": "ya_48988",
+          "quote": "согласовывать параметры страховых продуктов",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_196",
+      "track": "commercial",
+      "label": "Опыт в личном страховании",
+      "category": "industry",
+      "member_indices": [
+        676
+      ],
+      "examples": [
+        {
+          "id": "sber_4562667",
+          "quote": "Подтвержденный опыт работы в личном страховании (ДМС, НСиЖ) от 3 х лет",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_197",
+      "track": "commercial",
+      "label": "Работа со страховщиками, клиниками и финтехом",
+      "category": "experience",
+      "member_indices": [
+        679
+      ],
+      "examples": [
+        {
+          "id": "sber_4562667",
+          "quote": "Успешный опыт взаимодействия со страховщиками первого эшелона, сетевыми клиниками и финтех компаниями",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_198",
+      "track": "commercial",
+      "label": "Настойчивость в достижении целей",
+      "category": "skill",
+      "member_indices": [
+        682
+      ],
+      "examples": [
+        {
+          "id": "sber_4562667",
+          "quote": "Настойчивость в достижении целей",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_199",
+      "track": "commercial",
+      "label": "Поиск нестандартных решений",
+      "category": "skill",
+      "member_indices": [
+        683
+      ],
+      "examples": [
+        {
+          "id": "sber_4562667",
+          "quote": "изобретательность. Готовность искать нестандартные пути",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_200",
+      "track": "commercial",
+      "label": "Опыт клиентского успеха, нефинансовых сервисов или проектов",
+      "category": "experience",
+      "member_indices": [
+        696
+      ],
+      "examples": [
+        {
+          "id": "sber_4563930",
+          "quote": "опыт работы на позициях: менеджер по успеху клиентов, старший менеджер по нефинансовым сервисам или руководитель проектов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_201",
+      "track": "commercial",
+      "label": "Опыт бизнес- и системного анализа",
+      "category": "experience",
+      "member_indices": [
+        711,
+        771
+      ],
+      "examples": [
+        {
+          "id": "sber_4563993",
+          "quote": "опыт работы бизнес‑аналитиком или системным аналитиком в цифровых продуктах, у интеграторов или в корпоративном ИТ",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4570623",
+          "quote": "опыт работы в роли системного аналитика или бизнес аналитика не менее 1 года",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_202",
+      "track": "commercial",
+      "label": "Сегментация клиентской базы и таргетирование",
+      "category": "skill",
+      "member_indices": [
+        716,
+        1038,
+        1043
+      ],
+      "examples": [
+        {
+          "id": "sber_4567566",
+          "quote": "сегментация клиентской базы, формирование продуктово сегментных предложений и триггерных механик коммуникации",
+          "scope": "description"
+        },
+        {
+          "id": "vk_52738",
+          "quote": "клиентская сегментация",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_203",
+      "track": "commercial",
+      "label": "Кредитный анализ и андеррайтинг",
+      "category": "experience",
+      "member_indices": [
+        721,
+        958
+      ],
+      "examples": [
+        {
+          "id": "sber_4567566",
+          "quote": "практический опыт работы кредитным аналитиком, андеррайтером или руководителем кредитного отдела",
+          "scope": "description"
+        },
+        {
+          "id": "tbank_93a0ad13-a00e-4463-a883-f9faef7f22c9",
+          "quote": "Разбираетесь в кредитном анализе",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_204",
+      "track": "commercial",
+      "label": "Среднее профессиональное образование или выше",
+      "category": "education",
+      "member_indices": [
+        728
+      ],
+      "examples": [
+        {
+          "id": "sber_4568445",
+          "quote": "среднее профессиональное образование и выше",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_205",
+      "track": "commercial",
+      "label": "Опыт в строительной отрасли",
+      "category": "industry",
+      "member_indices": [
+        744
+      ],
+      "examples": [
+        {
+          "id": "sber_4569367",
+          "quote": "опыт работы руководителем не менее 5 лет в строительной отрасли в качестве заказчика или подрядчика",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_206",
+      "track": "commercial",
+      "label": "Опыт в недвижимости",
+      "category": "industry",
+      "member_indices": [
+        745
+      ],
+      "examples": [
+        {
+          "id": "sber_4569367",
+          "quote": "опыт работы с недвижимостью",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_207",
+      "track": "commercial",
+      "label": "Градостроительное, земельное и закупочное законодательство",
+      "category": "domain",
+      "member_indices": [
+        746
+      ],
+      "examples": [
+        {
+          "id": "sber_4569367",
+          "quote": "знание законодательства Российской Федерации в градостроительной и земельно имущественной сфере, закупочной деятельности",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_208",
+      "track": "commercial",
+      "label": "Основы экономики и планирования",
+      "category": "domain",
+      "member_indices": [
+        748
+      ],
+      "examples": [
+        {
+          "id": "sber_4569367",
+          "quote": "знание основ экономики, методов планирования",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_209",
+      "track": "commercial",
+      "label": "Бухгалтерский учёт, отчётность и налогообложение",
+      "category": "domain",
+      "member_indices": [
+        749
+      ],
+      "examples": [
+        {
+          "id": "sber_4569367",
+          "quote": "правил бухгалтерского учета и отчетности, основ налогообложения",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_210",
+      "track": "commercial",
+      "label": "Сметная документация и чтение чертежей",
+      "category": "domain",
+      "member_indices": [
+        751
+      ],
+      "examples": [
+        {
+          "id": "sber_4569367",
+          "quote": "навыки работы со сметной документацией и чтение чертежей",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_211",
+      "track": "commercial",
+      "label": "AutoCAD, ArchiCAD или аналоги",
+      "category": "tool",
+      "member_indices": [
+        752
+      ],
+      "examples": [
+        {
+          "id": "sber_4569367",
+          "quote": "опыт работ с программными комплексами (AutoCAD, ArchiCAD и подобными)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_212",
+      "track": "commercial",
+      "label": "Опыт продаж недвижимости",
+      "category": "industry",
+      "member_indices": [
+        761
+      ],
+      "examples": [
+        {
+          "id": "sber_4569573",
+          "quote": "опыт работы в сфере продаж недвижимости",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_213",
+      "track": "commercial",
+      "label": "Разработка концепций и прототипов решений",
+      "category": "skill",
+      "member_indices": [
+        768
+      ],
+      "examples": [
+        {
+          "id": "sber_4570623",
+          "quote": "разрабатывать концепции и прототипы",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_214",
+      "track": "commercial",
+      "label": "Бюджетный процесс банка",
+      "category": "domain",
+      "member_indices": [
+        803
+      ],
+      "examples": [
+        {
+          "id": "sber_4570848",
+          "quote": "Знание бюджетного процесса Сбера (срок, этапы и требования к формированию расходной части бюджетов ТБ и блоков ЦА с учетом целей регионального развития)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_215",
+      "track": "commercial",
+      "label": "Федеральное софинансирование проектов",
+      "category": "domain",
+      "member_indices": [
+        804
+      ],
+      "examples": [
+        {
+          "id": "sber_4570848",
+          "quote": "Понимание механизмов софинансирования региональных проектов из федерального бюджета",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_216",
+      "track": "commercial",
+      "label": "Субсидирование инвестиционных и инфраструктурных проектов",
+      "category": "domain",
+      "member_indices": [
+        805
+      ],
+      "examples": [
+        {
+          "id": "sber_4570848",
+          "quote": "Знание порядка предоставления субсидий регионам на реализацию инвестиционных и инфраструктурных проектов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_217",
+      "track": "commercial",
+      "label": "Региональные инвестиционные и инфраструктурные программы",
+      "category": "domain",
+      "member_indices": [
+        806
+      ],
+      "examples": [
+        {
+          "id": "sber_4570848",
+          "quote": "Знание ключевых инвестиционных программ и инфраструктурных проектов, реализуемых в ТБ",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_218",
+      "track": "commercial",
+      "label": "PESTLE, SWOT и портфельные матрицы",
+      "category": "method",
+      "member_indices": [
+        800
+      ],
+      "examples": [
+        {
+          "id": "sber_4570848",
+          "quote": "Знание аналитических инструментов (в т.ч. методов PESTLE анализа, SWOT анализа для регионов, портфельных матриц (BCG, GE McKinsey)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_219",
+      "track": "commercial",
+      "label": "Miro",
+      "category": "tool",
+      "member_indices": [
+        812
+      ],
+      "examples": [
+        {
+          "id": "sber_4573739",
+          "quote": "свободное владение Miro/Figma",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_220",
+      "track": "commercial",
+      "label": "Figma",
+      "category": "tool",
+      "member_indices": [
+        813
+      ],
+      "examples": [
+        {
+          "id": "sber_4573739",
+          "quote": "свободное владение Miro/Figma",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_221",
+      "track": "commercial",
+      "label": "Опыт в банках, страховании, инвестициях, финтехе или экосистемах",
+      "category": "industry",
+      "member_indices": [
+        829
+      ],
+      "examples": [
+        {
+          "id": "sber_4574674",
+          "quote": "опыт в банках, страховании, инвестициях, финтехе или крупных экосистемах",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_222",
+      "track": "commercial",
+      "label": "Опыт в финансовом секторе или digital-компаниях",
+      "category": "industry",
+      "member_indices": [
+        838
+      ],
+      "examples": [
+        {
+          "id": "sber_4575157",
+          "quote": "опыт успешной работы в крупных компаниях финансового сектора либо digital компаниях",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_223",
+      "track": "commercial",
+      "label": "Гемба",
+      "category": "method",
+      "member_indices": [
+        846
+      ],
+      "examples": [
+        {
+          "id": "sber_4577268",
+          "quote": "организация ГЕМБА в регионах при необходимости",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_224",
+      "track": "commercial",
+      "label": "Зарплатное направление",
+      "category": "domain",
+      "member_indices": [
+        847
+      ],
+      "examples": [
+        {
+          "id": "sber_4577268",
+          "quote": "опыт работы в зарплатном направлении",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_225",
+      "track": "commercial",
+      "label": "Работа в высоком темпе и сложных ситуациях",
+      "category": "skill",
+      "member_indices": [
+        848,
+        1100,
+        1101,
+        1134
+      ],
+      "examples": [
+        {
+          "id": "sber_4577268",
+          "quote": "способность справляться со сложными ситуациями и выдерживать высокий темп работы",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54825",
+          "quote": "Высокий уровень стрессоустойчивости",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54840",
+          "quote": "Высокий уровень стрессоустойчивости, способность эффективно работать в условиях сжатых сроков, высокой нагрузки и нескольких параллельных проектов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_226",
+      "track": "commercial",
+      "label": "Специфика рыночных продаж",
+      "category": "domain",
+      "member_indices": [
+        860
+      ],
+      "examples": [
+        {
+          "id": "sberhealth_4314569",
+          "quote": "понимание специфики рыночных продаж",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_227",
+      "track": "commercial",
+      "label": "Word и Outlook",
+      "category": "tool",
+      "member_indices": [
+        221,
+        861
+      ],
+      "examples": [
+        {
+          "id": "sberhealth_4314569",
+          "quote": "Word",
+          "scope": "description"
+        },
+        {
+          "id": "avito_8241",
+          "quote": "уверенно владеете приложениями MS Office: Outlook, Word, Excel, PowerPoint",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_228",
+      "track": "commercial",
+      "label": "1С",
+      "category": "tool",
+      "member_indices": [
+        862
+      ],
+      "examples": [
+        {
+          "id": "sberhealth_4314569",
+          "quote": "1С",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_229",
+      "track": "commercial",
+      "label": "Битрикс",
+      "category": "tool",
+      "member_indices": [
+        875
+      ],
+      "examples": [
+        {
+          "id": "sberhealth_4349801",
+          "quote": "Битрикс",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_230",
+      "track": "commercial",
+      "label": "Опыт в инвестиционной сфере",
+      "category": "industry",
+      "member_indices": [
+        880
+      ],
+      "examples": [
+        {
+          "id": "tbank_01a11ca3-4204-7ab9-a849-b7161e12538b",
+          "quote": "опыт работы в инвестиционной сфере, в том числе в брокерских компаниях, от 1 года",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_231",
+      "track": "commercial",
+      "label": "Инвестиционные продукты",
+      "category": "domain",
+      "member_indices": [
+        892
+      ],
+      "examples": [
+        {
+          "id": "tbank_01a11ca3-4204-7ab9-a849-b7161e12538b",
+          "quote": "Знаете инвестиционные продукты",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_232",
+      "track": "commercial",
+      "label": "Финансовые рынки и работа юридических лиц",
+      "category": "domain",
+      "member_indices": [
+        893
+      ],
+      "examples": [
+        {
+          "id": "tbank_01a11ca3-4204-7ab9-a849-b7161e12538b",
+          "quote": "Знаете финансовые рынки и особенности работы на них юридических лиц",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_233",
+      "track": "commercial",
+      "label": "Кредитные продукты, ВЭД и инвестиции",
+      "category": "domain",
+      "member_indices": [
+        903
+      ],
+      "examples": [
+        {
+          "id": "tbank_0d615133-313b-42fe-8d4d-fc4f59b38e16",
+          "quote": "знаниями в области кредитных и рисковых продуктов, ВЭД и инвестиций",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_234",
+      "track": "commercial",
+      "label": "Опыт международной дистрибуции отелей",
+      "category": "industry",
+      "member_indices": [
+        913
+      ],
+      "examples": [
+        {
+          "id": "tbank_4c718061-83f3-4d5a-8d8f-8518b0aec7ca",
+          "quote": "5+ лет опыта в международной дистрибуции отелей — в крупных bedbanks, международных OTA, гостиничных агрегаторах или других компаниях, непосредственно работающих с глобальным hotel supply",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_235",
+      "track": "commercial",
+      "label": "Международный hotel supply",
+      "category": "domain",
+      "member_indices": [
+        914
+      ],
+      "examples": [
+        {
+          "id": "tbank_4c718061-83f3-4d5a-8d8f-8518b0aec7ca",
+          "quote": "глубокую экспертизу в международном hotel supply и понимаете современное устройство рынка",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_236",
+      "track": "commercial",
+      "label": "Тарифы, доступность и гостиничный контент",
+      "category": "domain",
+      "member_indices": [
+        925
+      ],
+      "examples": [
+        {
+          "id": "tbank_4c718061-83f3-4d5a-8d8f-8518b0aec7ca",
+          "quote": "работу с тарифами, доступностью и гостиничным контентом",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_237",
+      "track": "commercial",
+      "label": "Опыт в финансовых услугах",
+      "category": "industry",
+      "member_indices": [
+        937
+      ],
+      "examples": [
+        {
+          "id": "tbank_68869650-7937-426e-890f-248de8cd641e",
+          "quote": "опыт работы в продажах финансовых продуктов B2B в крупном бизнесе от 2 лет",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_238",
+      "track": "commercial",
+      "label": "Интернет-эквайринг и его интеграция",
+      "category": "domain",
+      "member_indices": [
+        939
+      ],
+      "examples": [
+        {
+          "id": "tbank_68869650-7937-426e-890f-248de8cd641e",
+          "quote": "Знаете продукт «Интернет-эквайринг», имеете опыт участия в проектах по его интеграции в компаниях крупного бизнеса",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_239",
+      "track": "commercial",
+      "label": "Аналитические инструменты",
+      "category": "tool",
+      "member_indices": [
+        942
+      ],
+      "examples": [
+        {
+          "id": "tbank_68869650-7937-426e-890f-248de8cd641e",
+          "quote": "инструментами аналитики",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_240",
+      "track": "commercial",
+      "label": "Китайский или английский язык",
+      "category": "language",
+      "member_indices": [
+        944
+      ],
+      "examples": [
+        {
+          "id": "tbank_68869650-7937-426e-890f-248de8cd641e",
+          "quote": "Владеете китайским или английским языком",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_241",
+      "track": "commercial",
+      "label": "Деловые контакты с ЛПР крупных компаний",
+      "category": "experience",
+      "member_indices": [
+        945
+      ],
+      "examples": [
+        {
+          "id": "tbank_68869650-7937-426e-890f-248de8cd641e",
+          "quote": "наличие деловых контактов с ЛПР компаний крупного бизнеса",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_242",
+      "track": "commercial",
+      "label": "Банковское законодательство",
+      "category": "domain",
+      "member_indices": [
+        957
+      ],
+      "examples": [
+        {
+          "id": "tbank_93a0ad13-a00e-4463-a883-f9faef7f22c9",
+          "quote": "Знаете законодательство РФ, связанное с банковскими продуктами для бизнеса",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_243",
+      "track": "commercial",
+      "label": "Структурирование и заключение кредитных сделок",
+      "category": "experience",
+      "member_indices": [
+        959
+      ],
+      "examples": [
+        {
+          "id": "tbank_93a0ad13-a00e-4463-a883-f9faef7f22c9",
+          "quote": "имеете опыт заключения кредитных сделок",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_244",
+      "track": "commercial",
+      "label": "Управление остатками на счетах компаний",
+      "category": "skill",
+      "member_indices": [
+        960
+      ],
+      "examples": [
+        {
+          "id": "tbank_93a0ad13-a00e-4463-a883-f9faef7f22c9",
+          "quote": "Умеете управлять остатками на счетах компаний, чтобы приносить прибыль банку — в том числе за счет размещения в депозитах, овернайтах и инвестиционных продуктах",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_245",
+      "track": "commercial",
+      "label": "Технический или STEM-бэкграунд",
+      "category": "domain",
+      "member_indices": [
+        979
+      ],
+      "examples": [
+        {
+          "id": "tbank_ab639331-c18f-440c-8b09-f8846fbbe840",
+          "quote": "Имеете технический или\nSTEM-бэкграунд",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_246",
+      "track": "commercial",
+      "label": "Power BI, Excel или аналоги для анализа данных",
+      "category": "tool",
+      "member_indices": [
+        989
+      ],
+      "examples": [
+        {
+          "id": "tbank_b50ea19f-b511-4a02-bf14-5eb96bc85cd4",
+          "quote": "Будет преимуществом опыт работы с инструментами анализа данных (Power BI, продвинутый Excel или их аналоги)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_247",
+      "track": "commercial",
+      "label": "Опыт в лизинге",
+      "category": "industry",
+      "member_indices": [
+        991
+      ],
+      "examples": [
+        {
+          "id": "tbank_d65dc446-64bc-4fea-9a83-595d716f4616",
+          "quote": "опыт работы от 1 года в роли начальника отдела или управления в лизинговых компаниях",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_248",
+      "track": "commercial",
+      "label": "Опыт с автомобильными дилерами",
+      "category": "industry",
+      "member_indices": [
+        992
+      ],
+      "examples": [
+        {
+          "id": "tbank_d65dc446-64bc-4fea-9a83-595d716f4616",
+          "quote": "Развивали партнёрскую сеть, работали с дилерами легковых автомобилей и LCV",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_249",
+      "track": "commercial",
+      "label": "Опыт в рекламе и инфлюенс-маркетинге",
+      "category": "industry",
+      "member_indices": [
+        1017,
+        1022
+      ],
+      "examples": [
+        {
+          "id": "vk_51868",
+          "quote": "Релевантный опыт работы менеджером по работе с клиентами в сфере инфлюенс-маркетинга от трёх лет",
+          "scope": "description"
+        },
+        {
+          "id": "vk_52247",
+          "quote": "Опыт взаимодействия с инфлюенсерами, артистами, их менеджментом и кросс-функциональными командами",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_250",
+      "track": "commercial",
+      "label": "Подбор и развитие коммерческого потенциала авторов",
+      "category": "skill",
+      "member_indices": [
+        1032,
+        1071,
+        1073,
+        1074,
+        1111,
+        1115
+      ],
+      "examples": [
+        {
+          "id": "vk_52247",
+          "quote": "Подбор инфлюенсеров под задачи бизнеса, подготовка лонг-листов",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54659",
+          "quote": "Подбирать авторов под задачи брендов и ретейлеров",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54825",
+          "quote": "расширения пула инфлюенсеров",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_251",
+      "track": "commercial",
+      "label": "Управление репутационными рисками",
+      "category": "skill",
+      "member_indices": [
+        1034
+      ],
+      "examples": [
+        {
+          "id": "vk_52247",
+          "quote": "Управление репутационными рисками",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_252",
+      "track": "commercial",
+      "label": "Опыт стратегии, консалтинга и коммерческих трансформаций",
+      "category": "experience",
+      "member_indices": [
+        1035,
+        1116,
+        1119,
+        1137,
+        1236,
+        1379
+      ],
+      "examples": [
+        {
+          "id": "vk_52738",
+          "quote": "Опыт в стратегическом/управленческом консалтинге, стратегии, Commercial/Sales Excellence, business operations или аналогичных функциях",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54836",
+          "quote": "1–2+ года релевантного опыта в стратегии, трансформации, business development, commercial/sales excellence или управлении сложными кросс-функциональными проектами",
+          "scope": "description"
+        },
+        {
+          "id": "ya_49209",
+          "quote": "Работали в бизнес-девелопменте, стратегическом консалтинге, управлении проектами или смежных направлениях более трёх лет",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_253",
+      "track": "commercial",
+      "label": "Опыт в IT и технологических компаниях",
+      "category": "industry",
+      "member_indices": [
+        1052,
+        1117,
+        1155,
+        1340
+      ],
+      "examples": [
+        {
+          "id": "vk_52773",
+          "quote": "Успешный опыт B2B‑продаж в ИТ",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54836",
+          "quote": "Опыт в технологических компаниях",
+          "scope": "description"
+        },
+        {
+          "id": "ya_48825",
+          "quote": "Понимаете тенденции бизнеса IT в России и за рубежом",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_254",
+      "track": "commercial",
+      "label": "Процессы разработки IT-продуктов",
+      "category": "domain",
+      "member_indices": [
+        1056
+      ],
+      "examples": [
+        {
+          "id": "vk_52773",
+          "quote": "Понимание базовых процессов разработки ИТ-продуктов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_255",
+      "track": "commercial",
+      "label": "Командировки в Китай",
+      "category": "experience",
+      "member_indices": [
+        1057
+      ],
+      "examples": [
+        {
+          "id": "vk_52773",
+          "quote": "Готовность к командировкам (Китай)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_256",
+      "track": "commercial",
+      "label": "Опыт спортивного контента и партнёрских проектов",
+      "category": "industry",
+      "member_indices": [
+        1082
+      ],
+      "examples": [
+        {
+          "id": "vk_54805",
+          "quote": "Опыт работы со спортивным контентом в направлении маркетинга/спецпроектов/партнёрских проектов от трёх лет",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_257",
+      "track": "commercial",
+      "label": "Спортивный рынок России и СНГ",
+      "category": "domain",
+      "member_indices": [
+        1083
+      ],
+      "examples": [
+        {
+          "id": "vk_54805",
+          "quote": "Знание спортивного рынка России и СНГ",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_258",
+      "track": "commercial",
+      "label": "Контентное сотрудничество и дистрибуция",
+      "category": "domain",
+      "member_indices": [
+        1085,
+        1092
+      ],
+      "examples": [
+        {
+          "id": "vk_54805",
+          "quote": "понимание механизмов дистрибуции контента",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_259",
+      "track": "commercial",
+      "label": "Лицензирование контента и геоблокировки",
+      "category": "domain",
+      "member_indices": [
+        1089,
+        1090
+      ],
+      "examples": [
+        {
+          "id": "vk_54805",
+          "quote": "Юридическая грамотность: знание лицензионных требований",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_260",
+      "track": "commercial",
+      "label": "Опыт в рекламном агентстве или на стороне бренда",
+      "category": "industry",
+      "member_indices": [
+        1096
+      ],
+      "examples": [
+        {
+          "id": "vk_54825",
+          "quote": "в рекламном агентстве, инфлюенс-агентстве или на стороне бренда",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_261",
+      "track": "commercial",
+      "label": "Знание рынка инфлюенс-маркетинга",
+      "category": "domain",
+      "member_indices": [
+        1097
+      ],
+      "examples": [
+        {
+          "id": "vk_54825",
+          "quote": "Глубокое понимание рынка инфлюенс-маркетинга, знание ведущих агентств, менеджеров и ключевых инфлюенсеров",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_262",
+      "track": "commercial",
+      "label": "Сеть контактов блогеров, менеджеров и агентств",
+      "category": "experience",
+      "member_indices": [
+        1098
+      ],
+      "examples": [
+        {
+          "id": "vk_54825",
+          "quote": "Наличие собственной базы теплых контактов среди блогеров, менеджеров и агентств будет существенным преимуществом",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_263",
+      "track": "commercial",
+      "label": "Закупка рекламы и инфлюенсеров",
+      "category": "skill",
+      "member_indices": [
+        1105,
+        1110,
+        1112,
+        1129
+      ],
+      "examples": [
+        {
+          "id": "vk_54825",
+          "quote": "Полный цикл закупки рекламных размещений у инфлюенсеров",
+          "scope": "description"
+        },
+        {
+          "id": "vk_54840",
+          "quote": "Опыт закупки инфлюенсеров в роли медиабайера/аккаунт-менеджера или менеджера по работе с инфлюенсерами от года",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_264",
+      "track": "commercial",
+      "label": "Специфика технологического бизнеса и коммерческих моделей",
+      "category": "domain",
+      "member_indices": [
+        1118
+      ],
+      "examples": [
+        {
+          "id": "vk_54836",
+          "quote": "понимание специфики tech-бизнеса, цифровых продуктов и коммерческих моделей",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_265",
+      "track": "commercial",
+      "label": "Высшее образование в ведущем вузе",
+      "category": "education",
+      "member_indices": [
+        1123
+      ],
+      "examples": [
+        {
+          "id": "vk_54836",
+          "quote": "Высшее образование в топ российском/международном вузе",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_266",
+      "track": "commercial",
+      "label": "Продуктовый цикл, гипотезы и метрики",
+      "category": "domain",
+      "member_indices": [
+        1154
+      ],
+      "examples": [
+        {
+          "id": "vk_54847",
+          "quote": "Опыт работы с продуктом в технологической компании или опыт Product Manager — сильный плюс; понимание продуктового цикла, гипотез и метрик",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_267",
+      "track": "commercial",
+      "label": "Контакты международных игровых компаний",
+      "category": "experience",
+      "member_indices": [
+        1164
+      ],
+      "examples": [
+        {
+          "id": "vk_54996",
+          "quote": "наличие доступа к международным игровым компаниям, особенно китайским",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_268",
+      "track": "commercial",
+      "label": "Опыт в игровой индустрии, AdTech или игровых агентствах",
+      "category": "industry",
+      "member_indices": [
+        1165
+      ],
+      "examples": [
+        {
+          "id": "vk_54996",
+          "quote": "Опыт работы в игровой индустрии (GameDev, Game Publishing, Gaming Marketing, AdTech или агентства, специализирующиеся на игровых клиентах)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_269",
+      "track": "commercial",
+      "label": "Бизнес-процессы игровых компаний",
+      "category": "domain",
+      "member_indices": [
+        1166
+      ],
+      "examples": [
+        {
+          "id": "vk_54996",
+          "quote": "Глубокое понимание структуры и бизнес-процессов игровых компаний",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_270",
+      "track": "commercial",
+      "label": "Маркетинг в игровой индустрии",
+      "category": "domain",
+      "member_indices": [
+        1167
+      ],
+      "examples": [
+        {
+          "id": "vk_54996",
+          "quote": "Понимание специфики игрового маркетинга: performance marketing, user acquisition, brand marketing, медиапланирование, ключевые метрики эффективности (CPI, CPA, ROAS, LTV, Retention)",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_271",
+      "track": "commercial",
+      "label": "Знание китайского игрового рынка",
+      "category": "industry",
+      "member_indices": [
+        1168
+      ],
+      "examples": [
+        {
+          "id": "vk_54996",
+          "quote": "Знание китайского игрового рынка, его ключевых участников и особенностей ведения бизнеса",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_272",
+      "track": "commercial",
+      "label": "Принципы CRM, CDP и CRM-архитектуры",
+      "category": "domain",
+      "member_indices": [
+        1172,
+        1174
+      ],
+      "examples": [
+        {
+          "id": "wb_36757",
+          "quote": "Знаете принципы работы CRM и CDP и понимаете их влияние на клиентский путь и бизнес-метрики",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_273",
+      "track": "commercial",
+      "label": "Запуск логистики в новых странах и направлениях",
+      "category": "experience",
+      "member_indices": [
+        1177,
+        1274
+      ],
+      "examples": [
+        {
+          "id": "wb_38500",
+          "quote": "Проектная проработка запуска логистики новых стран",
+          "scope": "description"
+        },
+        {
+          "id": "ya_47482",
+          "quote": "поддерживать логистику новых направлений",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_274",
+      "track": "commercial",
+      "label": "Международная логистика и кроссбордер",
+      "category": "domain",
+      "member_indices": [
+        1178,
+        1182
+      ],
+      "examples": [
+        {
+          "id": "wb_38500",
+          "quote": "Операционное ведение и развитие логистики в новых странах: Доставка/Импортная и экспортная таможня",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_275",
+      "track": "commercial",
+      "label": "Инкотермс",
+      "category": "domain",
+      "member_indices": [
+        1184
+      ],
+      "examples": [
+        {
+          "id": "wb_38500",
+          "quote": "Инкотермс",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_276",
+      "track": "commercial",
+      "label": "Структура внешнеторговых контрактов",
+      "category": "domain",
+      "member_indices": [
+        1185
+      ],
+      "examples": [
+        {
+          "id": "wb_38500",
+          "quote": "структуры внешнеторговых контрактов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_277",
+      "track": "commercial",
+      "label": "Документы международных перевозок",
+      "category": "domain",
+      "member_indices": [
+        1186
+      ],
+      "examples": [
+        {
+          "id": "wb_38500",
+          "quote": "знание товаросопроводительных документов для всех видов международных перевозок",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_278",
+      "track": "commercial",
+      "label": "Таможенные процедуры и режимы",
+      "category": "domain",
+      "member_indices": [
+        1187
+      ],
+      "examples": [
+        {
+          "id": "wb_38500",
+          "quote": "знание различных видов таможенных процедур и режимов",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_279",
+      "track": "commercial",
+      "label": "Портфель перевозчиков, брокеров и логистических агентов",
+      "category": "experience",
+      "member_indices": [
+        1188
+      ],
+      "examples": [
+        {
+          "id": "wb_38500",
+          "quote": "Наличие портфеля контрагентов (перевозчиков, брокеров, агентов) как преимущество",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_280",
+      "track": "commercial",
+      "label": "Управление эффективностью и жизненным циклом автопарка",
+      "category": "domain",
+      "member_indices": [
+        1202,
+        1203
+      ],
+      "examples": [
+        {
+          "id": "wb_38528",
+          "quote": "Формирование и развитие системы управления эффективностью эксплуатации автопарка на основании показателей стоимости эксплуатации, технической готовности, загрузки и простоев ТС",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_281",
+      "track": "commercial",
+      "label": "Опыт в транспортной логистике",
+      "category": "industry",
+      "member_indices": [
+        1214
+      ],
+      "examples": [
+        {
+          "id": "x5_692ea312a152f1b4ad5b941f",
+          "quote": "Опыт работы в транспортной логистикой от 2-х лет",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_282",
+      "track": "commercial",
+      "label": "Анализ и оптимизация цепочек поставок",
+      "category": "skill",
+      "member_indices": [
+        1230
+      ],
+      "examples": [
+        {
+          "id": "x5_6a3a31b3fe7224dc92f1bdc7",
+          "quote": "Анализ эффективности перевода поставщика на самовывоз и оптимальности цепочек поставок",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_283",
+      "track": "commercial",
+      "label": "Опыт в консалтинге, FMCG, ритейле или tech",
+      "category": "industry",
+      "member_indices": [
+        1235
+      ],
+      "examples": [
+        {
+          "id": "ya_14525",
+          "quote": "Работали в стратегическом консалтинге, FMCG, ритейле или tech-компаниях от трёх лет",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_284",
+      "track": "commercial",
+      "label": "Автономные системы и робототехника",
+      "category": "domain",
+      "member_indices": [
+        1251
+      ],
+      "examples": [
+        {
+          "id": "ya_45527",
+          "quote": "Понимаете принципы работы автономных систем или робототехники на базовом уровне",
+          "scope": "native:additional_requirements"
+        }
+      ]
+    },
+    {
+      "id": "commercial_285",
+      "track": "commercial",
+      "label": "Баланс стратегии и операционных задач",
+      "category": "skill",
+      "member_indices": [
+        1255,
+        1308
+      ],
+      "examples": [
+        {
+          "id": "ya_46689",
+          "quote": "Способны соблюдать баланс между стратегическими целями и операционными задачами",
+          "scope": "native:key_qualifications"
+        },
+        {
+          "id": "ya_48205",
+          "quote": "сочетаете стратегическое мышление с готовностью глубоко погружаться в детали и самостоятельно решать операционные задачи",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_286",
+      "track": "commercial",
+      "label": "Опыт в e-commerce, ритейле, FMCG или консалтинге",
+      "category": "industry",
+      "member_indices": [
+        1265
+      ],
+      "examples": [
+        {
+          "id": "ya_47482",
+          "quote": "Работали в крупных компаниях: e-commerce, ритейл, FMCG или консалтинг",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_287",
+      "track": "commercial",
+      "label": "Баланс спроса и предложения на маркетплейсах",
+      "category": "domain",
+      "member_indices": [
+        1268
+      ],
+      "examples": [
+        {
+          "id": "ya_47482",
+          "quote": "Понимаете логику маркетплейсов и баланса спроса и предложения",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_288",
+      "track": "commercial",
+      "label": "Модели найма и расчёт потребности в курьерах",
+      "category": "domain",
+      "member_indices": [
+        1271,
+        1272
+      ],
+      "examples": [
+        {
+          "id": "ya_47482",
+          "quote": "улучшать и сами модели найма, и бизнес-процессы вокруг них",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_289",
+      "track": "commercial",
+      "label": "Опыт в интернет-рекламе",
+      "category": "industry",
+      "member_indices": [
+        1288
+      ],
+      "examples": [
+        {
+          "id": "ya_47726",
+          "quote": "Больше двух лет работали в сфере интернет-рекламы",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_290",
+      "track": "commercial",
+      "label": "Медийные и performance-инструменты и метрики",
+      "category": "domain",
+      "member_indices": [
+        1289
+      ],
+      "examples": [
+        {
+          "id": "ya_47726",
+          "quote": "знаете медийные и перформанс-инструменты, понимаете ключевые метрики их анализа",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_291",
+      "track": "commercial",
+      "label": "Полевое тестирование физических продуктов",
+      "category": "domain",
+      "member_indices": [
+        1315
+      ],
+      "examples": [
+        {
+          "id": "ya_48205",
+          "quote": "Готовы создавать и тестировать продукты в местах их создания и использования: в лабораториях, на производстве и на дорогах",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_292",
+      "track": "commercial",
+      "label": "Позиционирование бренда и коммуникационная стратегия",
+      "category": "skill",
+      "member_indices": [
+        1321
+      ],
+      "examples": [
+        {
+          "id": "ya_48205",
+          "quote": "доработать позиционирование, Tone of Voice, маркетинговые активности и коммуникационную стратегию",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_293",
+      "track": "commercial",
+      "label": "Вывод автомобильного или технологического бренда на рынок",
+      "category": "experience",
+      "member_indices": [
+        1322
+      ],
+      "examples": [
+        {
+          "id": "ya_48205",
+          "quote": "Выводили на рынок новый автомобильный или технологический бренд",
+          "scope": "native:additional_requirements"
+        }
+      ]
+    },
+    {
+      "id": "commercial_294",
+      "track": "commercial",
+      "label": "Работа с китайскими партнёрами",
+      "category": "experience",
+      "member_indices": [
+        1323
+      ],
+      "examples": [
+        {
+          "id": "ya_48205",
+          "quote": "Работали с китайскими компаниями и понимаете особенности деловой коммуникации с китайскими партнёрами",
+          "scope": "native:additional_requirements"
+        }
+      ]
+    },
+    {
+      "id": "commercial_295",
+      "track": "commercial",
+      "label": "Дилерская экономика",
+      "category": "domain",
+      "member_indices": [
+        1324
+      ],
+      "examples": [
+        {
+          "id": "ya_48205",
+          "quote": "Понимаете дилерскую экономику",
+          "scope": "native:additional_requirements"
+        }
+      ]
+    },
+    {
+      "id": "commercial_296",
+      "track": "commercial",
+      "label": "Автомобильная дистрибуция, сертификация и обслуживание",
+      "category": "domain",
+      "member_indices": [
+        1325
+      ],
+      "examples": [
+        {
+          "id": "ya_48205",
+          "quote": "Понимаете дилерскую экономику, дистрибуцию автомобилей, сертификацию, логистику и послепродажное обслуживание",
+          "scope": "native:additional_requirements"
+        }
+      ]
+    },
+    {
+      "id": "commercial_297",
+      "track": "commercial",
+      "label": "Антифрод",
+      "category": "domain",
+      "member_indices": [
+        1334
+      ],
+      "examples": [
+        {
+          "id": "ya_48515",
+          "quote": "полную ответственность за антифрод — от целеполагания до результата",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_298",
+      "track": "commercial",
+      "label": "Знание рынка информационной безопасности",
+      "category": "industry",
+      "member_indices": [
+        1341
+      ],
+      "examples": [
+        {
+          "id": "ya_48825",
+          "quote": "знаете рынок средств и сервисов безопасности, ключевых игроков рынка и их конкурентные отличия, бизнес-модели",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_299",
+      "track": "commercial",
+      "label": "Pipeline review и QBR",
+      "category": "method",
+      "member_indices": [
+        1345
+      ],
+      "examples": [
+        {
+          "id": "ya_48825",
+          "quote": "проводить pipeline review, QBR",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_300",
+      "track": "commercial",
+      "label": "Облачная бизнес-модель",
+      "category": "domain",
+      "member_indices": [
+        1347
+      ],
+      "examples": [
+        {
+          "id": "ya_48825",
+          "quote": "Понимаете облачную модель бизнеса",
+          "scope": "native:additional_requirements"
+        }
+      ]
+    },
+    {
+      "id": "commercial_301",
+      "track": "commercial",
+      "label": "Облачная защита данных",
+      "category": "domain",
+      "member_indices": [
+        1348
+      ],
+      "examples": [
+        {
+          "id": "ya_48825",
+          "quote": "Знаете основы облачной защиты данных",
+          "scope": "native:additional_requirements"
+        }
+      ]
+    },
+    {
+      "id": "commercial_302",
+      "track": "commercial",
+      "label": "Деловые контакты в информационной безопасности",
+      "category": "experience",
+      "member_indices": [
+        1349
+      ],
+      "examples": [
+        {
+          "id": "ya_48825",
+          "quote": "Имеете связи и контакты с партнёрами, вендорами, клиентами в индустрии ИБ РФ",
+          "scope": "native:additional_requirements"
+        }
+      ]
+    },
+    {
+      "id": "commercial_303",
+      "track": "commercial",
+      "label": "Знание страхового рынка",
+      "category": "industry",
+      "member_indices": [
+        1355
+      ],
+      "examples": [
+        {
+          "id": "ya_48988",
+          "quote": "Хорошо знаете страховой рынок и понимаете, как устроена работа страховых компаний",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_304",
+      "track": "commercial",
+      "label": "Страховое законодательство",
+      "category": "domain",
+      "member_indices": [
+        1357
+      ],
+      "examples": [
+        {
+          "id": "ya_48988",
+          "quote": "страховое законодательство",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_305",
+      "track": "commercial",
+      "label": "Профессиональные контакты на страховом рынке",
+      "category": "experience",
+      "member_indices": [
+        1365
+      ],
+      "examples": [
+        {
+          "id": "ya_48988",
+          "quote": "Обладаете развитой сетью профессиональных контактов на страховом рынке",
+          "scope": "native:additional_requirements"
+        }
+      ]
+    },
+    {
+      "id": "commercial_306",
+      "track": "commercial",
+      "label": "Оценка внешних партнёрств и возможностей поглощений",
+      "category": "skill",
+      "member_indices": [
+        1387
+      ],
+      "examples": [
+        {
+          "id": "ya_49209",
+          "quote": "поиск и оценка возможностей для внешних партнёрств и поглощений",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_307",
+      "track": "commercial",
+      "label": "Исследование новых рынков и due diligence",
+      "category": "method",
+      "member_indices": [
+        1388
+      ],
+      "examples": [
+        {
+          "id": "ya_49217",
+          "quote": "Умеете самостоятельно проводить исследование новых рынков (legal, tax, operational due diligence)",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_308",
+      "track": "commercial",
+      "label": "Налоговое планирование и оптимизация",
+      "category": "domain",
+      "member_indices": [
+        1390
+      ],
+      "examples": [
+        {
+          "id": "ya_49217",
+          "quote": "Понимаете основы налогового планирования и оптимизации",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_309",
+      "track": "commercial",
+      "label": "Платёжные потоки и настройка платёжных систем",
+      "category": "domain",
+      "member_indices": [
+        1391,
+        1396
+      ],
+      "examples": [
+        {
+          "id": "ya_49217",
+          "quote": "Разбираетесь в платёжных потоках и способах их маршрутизации",
+          "scope": "native:key_qualifications"
+        }
+      ]
+    },
+    {
+      "id": "commercial_310",
+      "track": "commercial",
+      "label": "Регуляторные требования международного запуска",
+      "category": "domain",
+      "member_indices": [
+        1394,
+        1398,
+        1399
+      ],
+      "examples": [
+        {
+          "id": "ya_49217",
+          "quote": "какие финансовые и юридические схемы возможны, нужны ли доплицензии и разрешения, какая ожидается налоговая нагрузка, есть ли трудовые нюансы",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_311",
+      "track": "commercial",
+      "label": "KYC",
+      "category": "domain",
+      "member_indices": [
+        1395
+      ],
+      "examples": [
+        {
+          "id": "ya_49217",
+          "quote": "Поддерживать процессы KYC",
+          "scope": "native:duties"
+        }
+      ]
+    },
+    {
+      "id": "commercial_312",
+      "track": "commercial",
+      "label": "Банковские продукты и операционные процессы",
+      "category": "industry",
+      "member_indices": [
+        519,
+        571,
+        612,
+        699,
+        909
+      ],
+      "examples": [
+        {
+          "id": "sber_4351924",
+          "quote": "знание корпоративных банковских продуктов и процессов",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4548835",
+          "quote": "глубокое понимание операционных процессов банка",
+          "scope": "description"
+        },
+        {
+          "id": "sber_4551551",
+          "quote": "глубоко понимаете банковские продукты, банковские процессы",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_313",
+      "track": "commercial",
+      "label": "Опыт в электронной коммерции или смежных отраслях",
+      "category": "industry",
+      "member_indices": [
+        437
+      ],
+      "examples": [
+        {
+          "id": "ozon_136978677",
+          "quote": "опыт развития направлений в e-commerce или смежных отраслях",
+          "scope": "description"
+        }
+      ]
+    },
+    {
+      "id": "commercial_314",
+      "track": "commercial",
+      "label": "Регулярная бизнес-отчётность",
+      "category": "skill",
+      "member_indices": [
+        23,
+        28,
+        162,
+        171,
+        184,
+        242,
+        400,
+        451,
+        499,
+        574,
+        646,
+        869,
+        967,
+        975,
+        1014,
+        1048,
+        1113,
+        1198,
+        1222,
+        1261,
+        1302,
+        1371
+      ],
+      "examples": [
+        {
+          "id": "alfa_36415",
+          "quote": "Информировать руководство и заинтересованные стороны о статусе проектов, рисках и достигнутых результатах",
+          "scope": "description"
+        },
+        {
+          "id": "mts_703630231977591046",
+          "quote": "Опыт подготовки отчётности и презентации результатов",
+          "scope": "description"
+        },
+        {
+          "id": "sberhealth_4349801",
+          "quote": "составление отчетов по продажам",
+          "scope": "description"
+        }
+      ]
+    }
+  ]
+}

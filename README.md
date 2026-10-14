@@ -148,3 +148,9 @@ prodradar/
 10:00 и19:00 Москва. Код берётся из codex/restore-test-bot, только test secrets;
 исходный product workflow остаётся отключённым. Контракт и ручная проверка без
 доставки: [docs/test_schedule.md](docs/test_schedule.md).
+
+## Реестр тестовых компаний
+
+Workflow `Test Company Registry` читает только `name`, `parser_name` и
+`is_enabled` из таблицы `companies` в `prodradar-test`. Он доступен в ветке
+`codex/company-registry-20261014`, не обращается к карьерным сайтам и не меняет БД.

@@ -1,0 +1,39 @@
+name: Test Company Registry
+on:
+  push:
+    branches: [codex/company-registry-20261014]
+    paths: [.github/workflows/company_registry_read.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  registry:
+    if: github.ref == 'refs/heads/codex/company-registry-20261014'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    environment: prodradar-test
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Прочитать только реестр компаний тестового профиля
+        env:
+          REGISTRY_TEST_URL: ${{ vars.SUPABASE_URL }}
+          REGISTRY_TEST_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          from datetime import datetime, timezone
+          base = os.environ["REGISTRY_TEST_URL"].rstrip("/")
+          if base != "https://jmsdxgylyjxwdwmdrmxw.supabase.co":
+              raise SystemExit("Разрешена только тестовая БД")
+          key = os.environ["REGISTRY_TEST_KEY"]
+          request = urllib.request.Request(
+              base + "/rest/v1/companies?select=name,parser_name,is_enabled&order=name.asc&limit=1000",
+              headers={"apikey":key,"Authorization":"Bearer "+key,"Accept":"application/json"})
+          with urllib.request.urlopen(request, timeout=40) as response:
+              companies = json.load(response)
+          print("COMPANY_REGISTRY=" + json.dumps({
+              "checked_at":datetime.now(timezone.utc).isoformat(),
+              "profile":"test","companies":companies},ensure_ascii=False))
+          PY

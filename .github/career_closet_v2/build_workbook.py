@@ -504,7 +504,8 @@ def recalculate(path, data):
 def formula_qa(path):
     wb = load_workbook(path)
     checks = []
-    scenarios = ("blank", "all1", "all3", "all5", "partial", "unequal", "unscored", "sorted")
+    scenarios = ("blank", "all1", "all3", "all5", "partial", "unequal", "unscored", "sorted",
+                 "invalid_decimal", "invalid_zero", "invalid_six", "invalid_text")
     for track, title in TRACKS.items():
         source = wb[title]
         for scenario in scenarios:
@@ -524,7 +525,7 @@ def formula_qa(path):
                             new_cell.value = Translator(old_cell.value, origin=old_cell.coordinate).translate_formula(new_cell.coordinate)
                         new_cell._style = copy(old_cell._style)
                 scored = [row for row in range(FIRST, ws.max_row + 1) if ws.cell(row, FLAG).value == 1]
-            ratings = {}
+            ratings, invalid_rows = {}, set()
             if scenario in ("all1", "all3", "all5"):
                 ratings = {row: int(scenario[-1]) for row in scored}
             elif scenario == "partial":
@@ -537,13 +538,19 @@ def formula_qa(path):
                 require(unscored, "QA: нет навыка вне общей оценки", title)
                 ratings = {row: 3 for row in scored}
                 ratings[unscored[0]] = 5
+            elif scenario.startswith("invalid_"):
+                ratings = {row: 3 for row in scored}
+                invalid_values = {"invalid_decimal": 2.5, "invalid_zero": 0,
+                                  "invalid_six": 6, "invalid_text": "опыт"}
+                ratings[scored[0]] = invalid_values[scenario]
+                invalid_rows.add(scored[0])
             for row, rating in ratings.items():
                 ws.cell(row, 6, rating)
-            progress = sum(row in ratings for row in scored)
+            progress = sum(row in ratings and row not in invalid_rows for row in scored)
             expected = sum((ratings[row] - 1) / 4 * ws.cell(row, WEIGHT).value
                            for row in scored if row in ratings) if progress == 20 else None
             checks.append({"sheet": ws.title, "progress": progress, "expected": expected,
-                           "ratings": ratings, "scored": scored,
+                           "ratings": ratings, "invalid_rows": invalid_rows, "scored": scored,
                            "weights": {row: ws.cell(row, WEIGHT).value for row in scored}})
     for title in [*TRACKS.values(), "Цитаты", "Вакансии"]:
         wb.remove(wb[title])
@@ -564,7 +571,10 @@ def formula_qa(path):
                 require(isinstance(actual, (int, float)) and math.isclose(actual, check["expected"], abs_tol=1e-9),
                         "QA: неверная взвешенная оценка", (check["sheet"], actual, check["expected"]))
             for row in range(FIRST, ws.max_row + 1):
-                if row in check["scored"] and row in check["ratings"]:
+                valid = row in check["ratings"] and row not in check["invalid_rows"]
+                require(ws.cell(row, VALID).value == int(valid),
+                        "QA: неверно распознана допустимая оценка", (check["sheet"], row))
+                if row in check["scored"] and valid:
                     expected = (check["ratings"][row] - 1) / 4 * check["weights"][row]
                     require(isinstance(ws.cell(row, 7).value, (int, float))
                             and math.isclose(ws.cell(row, 7).value, expected, abs_tol=1e-9),

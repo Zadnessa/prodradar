@@ -1,0 +1,45 @@
+name: Career Closet Native Sections
+on:
+  push:
+    branches: ['codex/career-closet']
+    paths: ['.github/workflows/career_closet_sections.yml']
+permissions:
+  contents: read
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+jobs:
+  sections:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Прочитать исходные секции Яндекса без секретов и записи
+        run: |
+          python - <<'PY'
+          import concurrent.futures
+          import json
+          import urllib.error
+          import urllib.request
+          
+          ids = [14525,25171,29703,32273,32553,32961,37025,37587,38862,39500,41799,42335,44575,45414,45436,45527,46689,47482,47668,47671,47726,47792,47797,47965,48036,48205,48347,48485,48515,48522,48728,48759,48793,48811,48815,48825,48875,48944,48963,48975,48988,48996,49076,49086,49105,49209,49217,49289]
+          def read_one(ident):
+              req = urllib.request.Request("https://yandex.ru/jobs/api/publications/" + str(ident),
+                  headers={"User-Agent": "Mozilla/5.0", "Accept": "application/json", "Accept-Language": "ru-RU,ru;q=0.9"})
+              try:
+                  with urllib.request.urlopen(req, timeout=25) as response:
+                      payload = json.load(response)
+                  return {"id": "ya_" + str(ident), "status": "ready",
+                          "sections": {k: payload.get(k) for k in
+                              ("short_summary", "duties", "key_qualifications", "additional_requirements", "conditions")}}
+              except urllib.error.HTTPError as exc:
+                  return {"id": "ya_" + str(ident), "status": "http_" + str(exc.code)}
+              except Exception as exc:
+                  return {"id": "ya_" + str(ident), "status": type(exc).__name__}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
+              sections = list(pool.map(read_one, ids))
+          for item in sections:
+              print("CAREER_SECTION=" + json.dumps(item, ensure_ascii=False, separators=(",", ":")))
+          print("CAREER_SECTION_TOTAL=" + str(len(sections)))
+          PY

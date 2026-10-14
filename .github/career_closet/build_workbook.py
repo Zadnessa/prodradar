@@ -9,10 +9,25 @@ from openpyxl.formatting.rule import ColorScaleRule
 from openpyxl.workbook.properties import CalcProperties
 
 ROOT = Path(".github/career_closet")
-source = json.loads((ROOT / "accepted.json").read_text(encoding="utf-8"))
+manifest = json.loads((ROOT / "accepted.json").read_text(encoding="utf-8"))
 taxonomy = json.loads((ROOT / "taxonomy.json").read_text(encoding="utf-8"))
-rows = source["rows"]
-decisions = source["decisions"]
+source = {"meta": manifest["meta"]}
+rows = []
+decisions = []
+for filename in manifest["source_files"]:
+    rows.extend(json.loads((ROOT / filename).read_text(encoding="utf-8"))["rows"])
+for filename in manifest["analysis_files"]:
+    decisions.extend(json.loads((ROOT / filename).read_text(encoding="utf-8")))
+review = json.loads((ROOT / manifest["review_file"]).read_text(encoding="utf-8"))
+assert review["status"] == "ACCEPT"
+replacements = {str(d["id"]): d for d in review["replacements"]}
+assert len(replacements) == len(review["replacements"])
+decisions = [replacements.get(str(d["id"]), d) for d in decisions]
+source_overrides = json.loads((ROOT / manifest["source_overrides_file"]).read_text(encoding="utf-8"))
+row_updates = {str(r["id"]): r["fields"] for r in source_overrides}
+assert len(row_updates) == len(source_overrides)
+for row in rows:
+    row.update(row_updates.get(str(row["id"]), {}))
 groups = taxonomy["groups"]
 by_id = {str(r["id"]): r for r in rows}
 by_decision = {str(r["id"]): r for r in decisions}
@@ -73,6 +88,7 @@ for evidence in all_evidence:
         evidence["group_id"] = None
 
 counts = Counter(d["track"] for d in decisions)
+assert dict(counts) == manifest["expected_tracks"]
 active_counts = Counter(d["track"] for d in decisions if by_id[str(d["id"])]["is_active"])
 summary = []
 for group in groups:
@@ -109,12 +125,12 @@ status_names = {"required": "Требование", "task": "Задача", "nic
 category_names = {
     "skill": "Навык", "tool": "Инструмент", "method": "Метод",
     "experience": "Опыт", "education": "Образование", "language": "Язык",
-    "domain": "Предметная область", "industry": "Отраслевой опыт"
+    "domain": "Предметная область", "industry": "Отраслевое требование"
 }
 
 def put(ws, row, column, value, fill=None, bold=False, color=INK, size=11):
     cell = ws.cell(row, column, value)
-    if isinstance(value, str) and not value.startswith("=SUM(") and not value.startswith("=C"):
+    if isinstance(value, str):
         cell.data_type = "s"
     cell.font = Font(name="Calibri", size=size, color=color, bold=bold)
     cell.alignment = Alignment(vertical="top", wrap_text=True)
@@ -207,6 +223,7 @@ for track, color in [("project", NAVY), ("commercial", GREEN)]:
         for c, value in enumerate(values, 1):
             put(ws, r, c, value, base if c not in (6, 7, 8) else "FFFBEF")
         ws.cell(r, 3).number_format = f'0" из {counts[track]}"'
+        ws.cell(r, 4).data_type = "f"
         ws.cell(r, 4).number_format = "0%"
         ws.cell(r, 5).number_format = "0"
         ws.row_dimensions[r].height = min(360, max(100, 22 * sum(

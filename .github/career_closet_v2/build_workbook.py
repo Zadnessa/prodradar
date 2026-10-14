@@ -12,6 +12,7 @@ import tempfile
 import textwrap
 from collections import Counter
 from copy import copy
+from html import unescape
 from pathlib import Path
 
 from openpyxl import Workbook, load_workbook
@@ -25,7 +26,7 @@ from openpyxl.workbook.properties import CalcProperties
 
 TRACKS = {"project": "Проектный трек", "commercial": "Коммерческий трек"}
 TRACK_NAMES = {**TRACKS, "exclude": "Исключена"}
-BANDS = {"core": "Общий навык", "specialty": "Предметная практика", "industry": "Обязательная отрасль"}
+BANDS = {"core": "Общий навык", "specialty": "Специализация", "industry": "Отраслевое требование"}
 STATUSES = {"required": "Требование", "task": "Задача", "nice": "Будет плюсом", "unclear": "Неоднозначно"}
 COLORS = {"project": "18364F", "commercial": "126D70"}
 INK, WHITE, STRIPE, WARM = "213547", "FFFFFF", "F3F6F8", "FFF1D8"
@@ -43,8 +44,8 @@ GUIDE = [
     "Частота учитывает задачи, требования и общие пожелания. Для отраслей учтены только обязательные условия.",
     "Шкала 1-5. 1 - нет опыта; 2 - нужна помощь; 3 - работаю самостоятельно; 4 - решаю сложные задачи; 5 - могу обучать.",
     "Вклад зависит от оценки и частоты навыка. Оценка 1 даёт нулевой вклад, 3 - половину веса, 5 - полный вес.",
-    "В итог входят 20 самых частых общих навыков. Специализации и отраслевые условия оцените отдельно.",
-    "Заполните тёплые ячейки. В комментарии приведите свой пример, в действиях запишите следующий шаг. "
+    "В итог входят 20 самых частых общих навыков. Специализации и отраслевые требования оцените отдельно.",
+    "Заполните светло-жёлтые ячейки. В комментарии приведите свой пример, в действиях запишите следующий шаг. "
     "Строки с цветной полосой у оценки входят в итог. Для общей оценки нужны все 20 оценок.",
 ]
 EVIDENCE_HEADERS = [
@@ -333,7 +334,7 @@ def build_workbook(data, output):
             ws.cell(6, col).fill = PatternFill("solid", fgColor="E8F0F3")
         ws.row_dimensions[6].height = 43
         merged(ws, "A8:I8",
-               "Сначала общие навыки, затем предметная практика и обязательные отрасли. "
+               "Сначала общие навыки, затем специализации и отраслевые требования. "
                "Первые 20 общих навыков входят в общую оценку; остальные строки помогают спланировать развитие.",
                bold=True)
         ws.row_dimensions[8].height = 30
@@ -341,7 +342,7 @@ def build_workbook(data, output):
             put(ws, HEADER, col, value, COLORS[track], True, WHITE)
         ws.row_dimensions[HEADER].height = 34
         for row, group in enumerate(data["groups"][track], FIRST):
-            quotes = "\n\n".join(f'{ex["company"]} - {ex["quote"]}' for ex in group["examples"])
+            quotes = "\n\n".join(f'{ex["company"]} - {unescape(ex["quote"])}' for ex in group["examples"])
             values = [group["label"], group["description"], quotes, group["count"],
                       group["count"] / data["counts"][track], None, None, None, None,
                       int(group["scored"]), group["weight"], None, group["id"]]
@@ -447,6 +448,8 @@ def verify_workbook(path, data, cached=False):
         scored_ids, expected_ids = set(), {group["id"] for group in groups}
         for row in range(FIRST, ws.max_row + 1):
             group = data["by_group"][ws.cell(row, ID_COL).value]
+            expected_quotes = "\n\n".join(f'{ex["company"]} - {unescape(ex["quote"])}' for ex in group["examples"])
+            require(ws.cell(row, 3).value == expected_quotes, "Изменился пример в Excel", group["id"])
             require(ws.cell(row, 4).value == len(group["vacancy_ids"]), "Неверный union count", group["id"])
             require(math.isclose(ws.cell(row, 5).value, group["count"] / data["counts"][track]),
                     "Неверная доля", group["id"])
@@ -631,7 +634,7 @@ def own_text(data):
              "Входит в общую оценку.", "Для плана развития.",
              "Все сохранённые цитаты и статусы. Пустой навык означает, что требование не участвует в карте.",
              "342 вакансии, включая 41 исключённую. Названия и формулировки роли сохранены из источников.",
-             "Сначала общие навыки, затем предметная практика и обязательные отрасли. "
+             "Сначала общие навыки, затем специализации и отраслевые требования. "
              "Первые 20 общих навыков входят в общую оценку; остальные строки помогают спланировать развитие."]
     texts.extend(track_caption(data, track) for track in TRACKS)
     texts.extend(("Карьерный шкаф", "Проектный и коммерческий треки по срезу 14 октября 2026", "Да", "Нет"))

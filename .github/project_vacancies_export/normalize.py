@@ -48,7 +48,7 @@ def html_lines(s):
 # Заголовки разделов работодателей, прочитанные в исходном пуле.
 LABELS = {
 "duties": ["Предстоит", "Задачи, которые могут стать твоими", "Основные обязанности", "Ваши обязанности", "Наши менеджеры строительных проектов", "Чем предстоит заниматься", "Чем нужно заниматься", "Чем заниматься", "Какие задачи вас ждут", "Что предстоит делать", "Что нужно будет делать", "Что нужно делать", "Вам предстоит", "Тебе предстоит", "Вы будете", "Задачи на этой позиции", "Ваши задачи", "Задачи", "Обязанности"],
-"requirements": ["Мы видим на этой позиции человека, который", "Что мы ждем от кандидата", "Что мы ждём от кандидата", "Мы хотим видеть у вас", "Мы ждем, что вы", "Мы ждём, что вы", "Что для нас важно", "Для нас важно", "Для нас важны", "Мы ожидаем", "Мы ожидаем от вас", "Наши ожидания", "Нам важно", "Требования к кандидату", "Требования", "Мы ждем", "Мы ждём", "Что важно для нас", "Что мы ожидаем"],
+"requirements": ["Мы ожидаем, что вы", "Мы ждем, что ты", "Мы ждём, что ты", "Мы видим на этой позиции человека, который", "Что мы ждем от кандидата", "Что мы ждём от кандидата", "Мы хотим видеть у вас", "Мы ждем, что вы", "Мы ждём, что вы", "Что для нас важно", "Для нас важно", "Для нас важны", "Мы ожидаем", "Мы ожидаем от вас", "Наши ожидания", "Нам важно", "Требования к кандидату", "Требования", "Мы ждем", "Мы ждём", "Что важно для нас", "Что мы ожидаем"],
 "nice": ["Будет вашим весомым преимуществом", "Будет большим плюсом", "Будет вашим преимуществом", "Будет преимуществом", "Будет здорово, если вы", "Будет здорово, если", "Будет плюсом, если", "Будет плюсом", "Будет здорово", "Желательно", "Плюсом будет", "Приветствуется"],
 "excluded": ["Мы готовы предложить", "Почему у нас хорошо", "Работа у нас — это", "Работа у нас - это", "Мы предлагаем", "Что мы предлагаем", "Что предлагаем", "Мы предлагаем вам", "Наши условия", "Условия", "Условия работы", "Что вас ждет", "Что вас ждёт", "Что мы предлагаем взамен"],
 }
@@ -64,6 +64,8 @@ def split_sections(s, default="intro", markers=True):
     text = html_lines(s)
     text = re.sub(r"(?m)^[ \t]*#{1,6}[ \t]+(.+?)[ \t]*$",
                   lambda m: "\n@@SUB:" + m.group(1).strip().strip("*_").strip() + "@@\n", text)
+    text = re.sub(r"(?m)^[ \t]*(\*\*|__|_|\*)([^\n]+?)\1[ \t]*$",
+                  lambda m: "\n@@SUB:" + m.group(2).strip() + "@@\n", text)
     matches = list(label_pattern.finditer(text)) if markers else []
     spans, cursor, current = [], 0, default
     for m in matches:
@@ -218,29 +220,56 @@ for row in rows:
         for section,fragment in split_sections(text,default,markers):
             if section in parts:
                 parts[section].extend(items(fragment,section))
+    def words(sections):
+        return Counter(re.findall(r"\w+", " ".join(
+            item.get("subheading","")+" "+item["text"]
+            for arr in sections.values() for item in arr).lower()))
+    before = words(parts)
+    for group in fixes.get("groups",{}).get(ident,[]):
+        arr = parts[group["section"]]
+        expected = group["expected"]
+        positions = [i for i in range(len(arr)-len(expected)+1)
+                     if [x["text"] for x in arr[i:i+len(expected)]] == expected]
+        assert len(positions) == 1, (ident,"Не найдена группа",expected)
+        pos = positions[0]
+        if group.get("heading"):
+            replacement = {"subheading":expected[0],
+                           "text":" ".join(re.sub(r"^[—–-]\s*","",s) for s in expected[1:])}
+        else:
+            replacement = {"text":" ".join(expected)}
+        arr[pos:pos+len(expected)] = [replacement]
+    decisions = fixes.get("requirements_by_text",{}).get(ident,{})
+    used = set()
+    for index in range(len(parts["requirements"])-1,-1,-1):
+        item = parts["requirements"][index]
+        original = item["text"]
+        decision = decisions.get(original)
+        if decision is None:
+            continue
+        used.add(original)
+        parts["requirements"].pop(index)
+        if decision == "nice":
+            parts["nice"].insert(0,item)
+        else:
+            assert not item.get("subheading"), (ident,"Уточнить разделение подзаголовка")
+            fragments = decision.get("requirements",[]) + decision.get("nice",[])
+            assert Counter(re.findall(r"\w+",original.lower())) == Counter(
+                re.findall(r"\w+"," ".join(fragments).lower())), (ident,"Искажён текст",original)
+            for fragment in reversed(decision.get("requirements",[])):
+                parts["requirements"].insert(index,{"text":fragment.strip().rstrip(",;")})
+            for fragment in decision.get("nice",[]):
+                parts["nice"].append({"text":fragment})
+    assert used == set(decisions), (ident,"Не применены ручные решения",set(decisions)-used)
+    assert before == words(parts), (ident,"При переносе или группировке изменились слова")
     for section in parts:
         section_counts[section] += len(parts[section])
     for index,item in enumerate(parts["requirements"]):
         text = item.get("subheading","")+" "+item["text"]
-        if re.search(r"желател|преимущ|плюс|приветству|необязател|бонусом",text,re.I):
-            candidates.append({"id":ident,"index":index,"text":text.strip()})
+        if re.search(r"желател|предпочт|преимущ|плюс|приветству|необязател|бонусом",text,re.I):
+            reviewed = item["text"] in fixes.get("keep_requirements",{}).get(ident,[])
+            candidates.append({"id":ident,"index":index,"text":text.strip(),"reviewed":reviewed})
     if not parts["duties"] or not parts["requirements"]:
         unresolved.append({"id":ident,"company":row["company"],"title":row["title"],"counts":{k:len(v) for k,v in parts.items()},"text":row["description"]})
-    for index,decision in sorted(fixes.get("requirements",{}).get(ident,{}).items(),key=lambda pair:int(pair[0]),reverse=True):
-        index=int(index)
-        item=parts["requirements"][index]
-        if decision == "nice":
-            parts["nice"].insert(0,parts["requirements"].pop(index))
-        elif isinstance(decision,dict):
-            original=item["text"]
-            for sec,fragments in decision.items():
-                for fragment in fragments:
-                    assert fragment in original, (ident,index,fragment)
-            parts["requirements"].pop(index)
-            for fragment in reversed(decision.get("requirements",[])):
-                parts["requirements"].insert(index,{"text":fragment})
-            for fragment in decision.get("nice",[]):
-                parts["nice"].append({"text":fragment})
     record = {k:row.get(k) for k in ("id","title","company","url","is_active")}
     record["sections"]=parts
     records.append(record)
@@ -267,6 +296,10 @@ assert all(all(key in record["sections"] for key in ("intro","duties","requireme
 manifest={"snapshot":read(DATA/"snapshot_meta.json"),"total":len(records),"active":sum(bool(r["is_active"]) for r in records),
           "archived":sum(not r["is_active"] for r in records),"companies":dict(Counter(r["company"] for r in records)),
           "records":[{k:r[k] for k in ("id","title","company","url","is_active")} for r in records],
+          "missing_sections":[{"id":r["id"],"sections":[k for k in ("duties","requirements") if not r["sections"][k]]}
+                              for r in records if not r["sections"]["duties"] or not r["sections"]["requirements"]],
+          "normalization":{"manually_reviewed_clauses":sum(len(v) for v in fixes.get("requirements_by_text",{}).values()),
+                           "word_conservation_check":True,"separator":"---"},
           "database_writes":0,"telegram_calls":0}
 zip_path=OUT/"project_management.zip"
 with zipfile.ZipFile(zip_path,"w",zipfile.ZIP_DEFLATED) as z:

@@ -53,7 +53,13 @@ LABELS = {
 "excluded": ["Работа у нас — это", "Работа у нас - это", "Мы предлагаем", "Что мы предлагаем", "Что предлагаем", "Мы предлагаем вам", "Наши условия", "Условия", "Условия работы", "Что вас ждет", "Что вас ждёт", "Что мы предлагаем взамен"],
 }
 lookup = {clean(v).lower(): k for k, vals in LABELS.items() for v in vals}
-label_pattern = re.compile(r"(?<!\w)(" + "|".join(re.escape(v).replace(r"\ ", r"\s+") for v in sorted(lookup, key=len, reverse=True)) + r")\s*:?", re.I)
+patterns = []
+for label in sorted(lookup, key=len, reverse=True):
+    literal = re.escape(label).replace(r"\ ", r"\s+")
+    strict = len(label.split()) < 2 or lookup[label] == "nice"
+    suffix = r"(?=\s*:|\s*(?:\n|$)|@@)" if strict else r"(?!\w)"
+    patterns.append(literal + suffix)
+label_pattern = re.compile(r"(?<!\w)(" + "|".join(patterns) + r")\s*:?", re.I)
 def split_sections(s, default="intro", markers=True):
     text = html_lines(s)
     matches = list(label_pattern.finditer(text)) if markers else []

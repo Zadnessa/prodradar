@@ -38,16 +38,29 @@ if digest(rows) != digest(read_all()):
     raise SystemExit("Пул изменился во время чтения; слепок не сохранён")
 assert len(rows) == len({str(r["id"]) for r in rows})
 inventory = []
+text_fields = {"short_summary", "duties", "key_qualifications", "additional_requirements",
+               "conditions", "description", "responsibilities", "requirements", "about", "intro",
+               "introduction", "descriptionText", "shortDescription", "subtitle", "body", "summary",
+               "tasks", "advantages", "pluses", "text", "whatWeExpect", "whatYouWillDo", "wishes"}
+containers = {"vacancy", "info", "data", "vacancycontent", "html_sections", "json_ld", "team"}
+def extract_native(value, path="", depth=0):
+    native, shape = {}, {}
+    if not isinstance(value, dict) or depth > 3:
+        return native, shape
+    for field, child in value.items():
+        child_path = path + "." + field if path else field
+        shape[child_path] = {"type": type(child).__name__, "length": len(child) if isinstance(child, (str,list,dict)) else None}
+        if isinstance(child, str) and child.strip() and (field in text_fields or path.endswith("html_sections")):
+            native[child_path] = child
+        elif isinstance(child, dict) and (field in containers or path):
+            values, child_shape = extract_native(child, child_path, depth+1)
+            native.update(values)
+            shape.update(child_shape)
+    return native, shape
 for row in rows:
     raw = row.pop("source_json", None)
-    # Сохраняем только известные публичные поля текстов, без служебных данных источника.
-    native = {}
-    if isinstance(raw, dict):
-        inventory.append({"id": row["id"], "keys": {k: {"type": type(v).__name__, "length": len(v) if isinstance(v, (str, list, dict)) else None} for k,v in raw.items()}})
-        for field in ("short_summary", "duties", "key_qualifications", "additional_requirements", "conditions", "description", "responsibilities", "requirements", "about", "intro"):
-            value = raw.get(field)
-            if isinstance(value, str) and value.strip():
-                native[field] = value
+    native, shape = extract_native(raw)
+    inventory.append({"id": row["id"], "keys": shape})
     if native:
         row["native_sections"] = native
 meta = {"snapshot_at": datetime.now(timezone.utc).isoformat(), "profile": "test",

@@ -1,12 +1,12 @@
 {
-  "snapshot_at": "2026-10-16T19:23:30.621121+00:00",
+  "snapshot_at": "2026-10-16T19:25:32.249224+00:00",
   "profile": "test",
   "total": 363,
   "active": 219,
   "profiles": [
     "project_bizdev"
   ],
-  "source_sha256": "6fc9fe8fd2802bc19e82ccb4be455b3247790814c60b1402879bde2430677036",
+  "source_sha256": "c9de6c479f5a298680e1e36f74a9cdc0086bb2903fed8fb9c4dd836011b0f436",
   "database_writes": 0,
   "telegram_calls": 0
 }

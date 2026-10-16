@@ -76,7 +76,7 @@ def split_sections(s, default="intro", markers=True):
             continue
         if text[cursor:start].strip():
             spans.append((current, text[cursor:start]))
-        current = lookup[clean(m.group(1)).lower()]
+        current = lookup[re.sub(r"\s+", " ", clean(m.group(1))).lower()]
         cursor = end
     if text[cursor:].strip():
         spans.append((current, text[cursor:]))

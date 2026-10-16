@@ -2,7 +2,7 @@ name: Project Vacancy Snapshot
 on:
   push:
     branches: [codex/export-project-vacancies]
-    paths: [.github/workflows/project_vacancies_capture.yml]
+    paths: [.github/workflows/project_vacancies_capture.yml, .github/project_vacancies_export/capture.py]
   workflow_dispatch:
 permissions:
   contents: write

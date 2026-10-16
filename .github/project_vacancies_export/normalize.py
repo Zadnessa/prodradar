@@ -47,10 +47,10 @@ def html_lines(s):
 
 # Заголовки разделов работодателей, прочитанные в исходном пуле.
 LABELS = {
-"duties": ["Основные обязанности", "Ваши обязанности", "Наши менеджеры строительных проектов", "Чем предстоит заниматься", "Чем нужно заниматься", "Чем заниматься", "Какие задачи вас ждут", "Что предстоит делать", "Что нужно будет делать", "Что нужно делать", "Вам предстоит", "Тебе предстоит", "Вы будете", "Задачи на этой позиции", "Ваши задачи", "Задачи", "Обязанности"],
-"requirements": ["Что мы ждем от кандидата", "Что мы ждём от кандидата", "Мы хотим видеть у вас", "Мы ждем, что вы", "Мы ждём, что вы", "Что для нас важно", "Для нас важно", "Для нас важны", "Мы ожидаем", "Мы ожидаем от вас", "Наши ожидания", "Нам важно", "Требования к кандидату", "Требования", "Мы ждем", "Мы ждём", "Что важно для нас", "Что мы ожидаем"],
-"nice": ["Будет большим плюсом", "Будет вашим преимуществом", "Будет преимуществом", "Будет здорово, если вы", "Будет здорово, если", "Будет плюсом, если", "Будет плюсом", "Будет здорово", "Желательно", "Плюсом будет", "Приветствуется"],
-"excluded": ["Работа у нас — это", "Работа у нас - это", "Мы предлагаем", "Что мы предлагаем", "Что предлагаем", "Мы предлагаем вам", "Наши условия", "Условия", "Условия работы", "Что вас ждет", "Что вас ждёт", "Что мы предлагаем взамен"],
+"duties": ["Предстоит", "Задачи, которые могут стать твоими", "Основные обязанности", "Ваши обязанности", "Наши менеджеры строительных проектов", "Чем предстоит заниматься", "Чем нужно заниматься", "Чем заниматься", "Какие задачи вас ждут", "Что предстоит делать", "Что нужно будет делать", "Что нужно делать", "Вам предстоит", "Тебе предстоит", "Вы будете", "Задачи на этой позиции", "Ваши задачи", "Задачи", "Обязанности"],
+"requirements": ["Мы видим на этой позиции человека, который", "Что мы ждем от кандидата", "Что мы ждём от кандидата", "Мы хотим видеть у вас", "Мы ждем, что вы", "Мы ждём, что вы", "Что для нас важно", "Для нас важно", "Для нас важны", "Мы ожидаем", "Мы ожидаем от вас", "Наши ожидания", "Нам важно", "Требования к кандидату", "Требования", "Мы ждем", "Мы ждём", "Что важно для нас", "Что мы ожидаем"],
+"nice": ["Будет вашим весомым преимуществом", "Будет большим плюсом", "Будет вашим преимуществом", "Будет преимуществом", "Будет здорово, если вы", "Будет здорово, если", "Будет плюсом, если", "Будет плюсом", "Будет здорово", "Желательно", "Плюсом будет", "Приветствуется"],
+"excluded": ["Мы готовы предложить", "Почему у нас хорошо", "Работа у нас — это", "Работа у нас - это", "Мы предлагаем", "Что мы предлагаем", "Что предлагаем", "Мы предлагаем вам", "Наши условия", "Условия", "Условия работы", "Что вас ждет", "Что вас ждёт", "Что мы предлагаем взамен"],
 }
 lookup = {clean(v).lower(): k for k, vals in LABELS.items() for v in vals}
 patterns = []
@@ -59,7 +59,7 @@ for label in sorted(lookup, key=len, reverse=True):
     strict = len(label.split()) < 2 or lookup[label] == "nice"
     suffix = r"(?=\s*:|\s*(?:\n|$)|@@)" if strict else r"(?!\w)"
     patterns.append(literal + suffix)
-label_pattern = re.compile(r"(?<!\w)(" + "|".join(patterns) + r")\s*:?", re.I)
+label_pattern = re.compile(r"(?<![\w-])(" + "|".join(patterns) + r")\s*:?", re.I)
 def split_sections(s, default="intro", markers=True):
     text = html_lines(s)
     text = re.sub(r"(?m)^[ \t]*#{1,6}[ \t]+(.+?)[ \t]*$",
@@ -69,6 +69,13 @@ def split_sections(s, default="intro", markers=True):
     for m in matches:
         # Подзаголовок с данными не должен терять обрамляющий служебный маркер.
         start, end = m.start(), m.end()
+        label = re.sub(r"\s+", " ", clean(m.group(1))).lower()
+        prefix = text[text.rfind("\n",0,start)+1:start].strip(" *_#")
+        is_standalone = prefix in ("", "@@SUB:")
+        if lookup[label] == "nice" and not is_standalone and not m.group().rstrip().endswith(":"):
+            continue
+        if len(label.split()) < 2 and not is_standalone and not m.group(1)[0].isupper():
+            continue
         pre = text[max(0,start-6):start]
         if pre.endswith("@@SUB:"):
             start -= 6
@@ -134,6 +141,11 @@ def items(text, section):
     paragraphs = [x.strip() for x in text.split("\n") if x.strip() and x.strip() not in ("**",":","@@")]
     if len(paragraphs) <= 1 and section != "intro":
         paragraphs = [x.strip() for x in re.split(r"(?:\s*[•●▪]\s*|;\s*)", text) if x.strip()]
+    if section != "intro":
+        expanded = []
+        for part in paragraphs:
+            expanded.extend(re.split(r"(?<=[.!?])\s+(?=[А-ЯЁA-Z])",part) if len(paragraphs)==1 else [part])
+        paragraphs = expanded
     output = []
     pending = None
     for line in paragraphs:
@@ -172,6 +184,37 @@ for row in rows:
         for section,text,_ in recipe:
             assert text in row["description"] or any(text in v for v in (row.get("native_sections") or {}).values()), (ident,"Неисходный текст в ручном плане")
     for default,text,markers in recipe:
+        for phrase in fixes.get("break_before",{}).get(ident,[]):
+            text = text.replace(phrase,"\n"+phrase)
+        if row["company"] == "Т-Банк" and default != "intro":
+            starts = ("У вас","Имеете","Знаете","Умеете","Следите","Интересуетесь","Будет",
+                      "Управлять","Определять","Вести","Вводить","Реализовывать","Представлять",
+                      "Презентовать","Взаимодействовать","Готовить","Выявлять","Разрабатывать",
+                      "Формировать","Координировать","Отслеживать")
+            joined=[]
+            for line in text.splitlines():
+                line=clean(line)
+                if not line:
+                    continue
+                if joined and not line.startswith(starts):
+                    joined[-1]+=" "+line
+                else:
+                    joined.append(line)
+            text="\n".join(joined)
+        elif row["company"] == "Т-Банк" and default == "intro":
+            text=" ".join(text.split())
+        elif ident == "lamoda_3080" and default == "requirements":
+            starts=("Опыт","Практический","Будет","Уверенное","Высокий")
+            joined=[]
+            for line in text.splitlines():
+                line=clean(line)
+                if not line:
+                    continue
+                if joined and not line.startswith(starts):
+                    joined[-1]+=" "+line
+                else:
+                    joined.append(line)
+            text="\n".join(joined)
         for section,fragment in split_sections(text,default,markers):
             if section in parts:
                 parts[section].extend(items(fragment,section))

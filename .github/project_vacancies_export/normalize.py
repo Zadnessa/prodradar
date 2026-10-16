@@ -62,6 +62,8 @@ for label in sorted(lookup, key=len, reverse=True):
 label_pattern = re.compile(r"(?<!\w)(" + "|".join(patterns) + r")\s*:?", re.I)
 def split_sections(s, default="intro", markers=True):
     text = html_lines(s)
+    text = re.sub(r"(?m)^[ \t]*#{1,6}[ \t]+(.+?)[ \t]*$",
+                  lambda m: "\n@@SUB:" + m.group(1).strip().strip("*_").strip() + "@@\n", text)
     matches = list(label_pattern.finditer(text)) if markers else []
     spans, cursor, current = [], 0, default
     for m in matches:
@@ -136,7 +138,7 @@ def items(text, section):
     pending = None
     for line in paragraphs:
         line = clean(re.sub(r"^\s*(?:[-*•●▪]|\d+[.)])\s+", "", line))
-        if not line:
+        if not line or re.fullmatch(r"[#*: _]+", line):
             continue
         sub = re.fullmatch(r"@@SUB:(.*?)@@",line)
         if sub:

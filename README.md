@@ -45,6 +45,7 @@ ProductRadar — Telegram-бот для мониторинга вакансий 
 ```text
 prodradar/
 ├── .github/
+│   ├── project_vacancies_export/   # слепок и нормализация проектного трека
 │   └── workflows/
 │       └── collect.yml            # cron-сбор вакансий
 ├── api/
@@ -148,3 +149,8 @@ prodradar/
 10:00 и19:00 Москва. Код берётся из codex/restore-test-bot, только test secrets;
 исходный product workflow остаётся отключённым. Контракт и ручная проверка без
 доставки: [docs/test_schedule.md](docs/test_schedule.md).
+
+
+## Слепок проектных вакансий
+
+В `.github/project_vacancies_export/` сохранён срез тестовой базы и отбор проектного трека по карьерному шкафу. Архив `output/project_management.zip` содержит общий Markdown, отдельные описания вакансий, исходные тексты и индекс. Порядок воспроизведения описан в [инструкции экспорта](.github/project_vacancies_export/README.md).

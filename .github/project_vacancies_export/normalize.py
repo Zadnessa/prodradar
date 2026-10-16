@@ -47,8 +47,8 @@ def html_lines(s):
 
 # Заголовки разделов работодателей, прочитанные в исходном пуле.
 LABELS = {
-"duties": ["Предстоит", "Задачи, которые могут стать твоими", "Основные обязанности", "Ваши обязанности", "Наши менеджеры строительных проектов", "Чем предстоит заниматься", "Чем нужно заниматься", "Чем заниматься", "Какие задачи вас ждут", "Что предстоит делать", "Что нужно будет делать", "Что нужно делать", "Вам предстоит", "Тебе предстоит", "Вы будете", "Задачи на этой позиции", "Ваши задачи", "Задачи", "Обязанности"],
-"requirements": ["Мы ожидаем, что вы", "Мы ждем, что ты", "Мы ждём, что ты", "Мы видим на этой позиции человека, который", "Что мы ждем от кандидата", "Что мы ждём от кандидата", "Мы хотим видеть у вас", "Мы ждем, что вы", "Мы ждём, что вы", "Что для нас важно", "Для нас важно", "Для нас важны", "Мы ожидаем", "Мы ожидаем от вас", "Наши ожидания", "Нам важно", "Требования к кандидату", "Требования", "Мы ждем", "Мы ждём", "Что важно для нас", "Что мы ожидаем"],
+"duties": ["Чем вам предстоит заниматься", "Твои задачи", "Предстоит", "Задачи, которые могут стать твоими", "Основные обязанности", "Ваши обязанности", "Наши менеджеры строительных проектов", "Чем предстоит заниматься", "Чем нужно заниматься", "Чем заниматься", "Какие задачи вас ждут", "Что предстоит делать", "Что нужно будет делать", "Что нужно делать", "Вам предстоит", "Тебе предстоит", "Вы будете", "Задачи на этой позиции", "Ваши задачи", "Задачи", "Обязанности"],
+"requirements": ["Мы ожидаем что вы", "Нам важно, чтобы вы", "Мы ожидаем, что у тебя есть", "Наши ожидания от кандидата", "Наши ожидания от вас", "Ждём от кандидата", "Ждем от кандидата", "Мы ожидаем, что вы", "Мы ждем, что ты", "Мы ждём, что ты", "Мы видим на этой позиции человека, который", "Что мы ждем от кандидата", "Что мы ждём от кандидата", "Мы хотим видеть у вас", "Мы ждем, что вы", "Мы ждём, что вы", "Что для нас важно", "Для нас важно", "Для нас важны", "Мы ожидаем", "Мы ожидаем от вас", "Наши ожидания", "Нам важно", "Требования к кандидату", "Требования", "Мы ждем", "Мы ждём", "Что важно для нас", "Что мы ожидаем"],
 "nice": ["Будет вашим весомым преимуществом", "Будет большим плюсом", "Будет вашим преимуществом", "Будет преимуществом", "Будет здорово, если вы", "Будет здорово, если", "Будет плюсом, если", "Будет плюсом", "Будет здорово", "Желательно", "Плюсом будет", "Приветствуется"],
 "excluded": ["Мы готовы предложить", "Почему у нас хорошо", "Работа у нас — это", "Работа у нас - это", "Мы предлагаем", "Что мы предлагаем", "Что предлагаем", "Мы предлагаем вам", "Наши условия", "Условия", "Условия работы", "Что вас ждет", "Что вас ждёт", "Что мы предлагаем взамен"],
 }
@@ -64,14 +64,21 @@ def split_sections(s, default="intro", markers=True):
     text = html_lines(s)
     text = re.sub(r"(?m)^[ \t]*#{1,6}[ \t]+(.+?)[ \t]*$",
                   lambda m: "\n@@SUB:" + m.group(1).strip().strip("*_").strip() + "@@\n", text)
-    text = re.sub(r"(?m)^[ \t]*(\*\*|__|_|\*)([^\n]+?)\1[ \t]*$",
+    text = re.sub(r"(?m)^[ \t]*(\*\*|__|_|\*)(?=\S)([^\n]*?\S)\1[ \t]*$",
                   lambda m: "\n@@SUB:" + m.group(2).strip() + "@@\n", text)
+    text = re.sub(r"@@SUB:([^@]+)@@",lambda m:"@@SUB:"+clean(m.group(1)).strip("*_")+"@@",text)
     matches = list(label_pattern.finditer(text)) if markers else []
     spans, cursor, current = [], 0, default
     for m in matches:
         # Подзаголовок с данными не должен терять обрамляющий служебный маркер.
         start, end = m.start(), m.end()
         label = re.sub(r"\s+", " ", clean(m.group(1))).lower()
+        marker_start = text.rfind("@@SUB:",0,start)
+        marker_end = text.find("@@",marker_start+6) if marker_start >= 0 else -1
+        if marker_start >= 0 and marker_start < start < marker_end:
+            heading = clean(text[marker_start+6:marker_end]).strip("*_: ").lower()
+            if heading != label:
+                continue
         prefix = text[text.rfind("\n",0,start)+1:start].strip(" *_#")
         is_standalone = prefix in ("", "@@SUB:")
         if lookup[label] == "nice" and not is_standalone and not m.group().rstrip().endswith(":"):
@@ -148,10 +155,12 @@ def items(text, section):
         for part in paragraphs:
             expanded.extend(re.split(r"(?<=[.!?])\s+(?=[А-ЯЁA-Z])",part) if len(paragraphs)==1 else [part])
         paragraphs = expanded
+    if section == "intro":
+        paragraphs = [clean(" ".join(p.splitlines())) for p in re.split(r"\n\s*\n",text) if p.strip()]
     output = []
     pending = None
     for line in paragraphs:
-        line = clean(re.sub(r"^\s*(?:[-*•●▪]|\d+[.)])\s+", "", line))
+        line = clean(re.sub(r"^\s*(?:[-•●▪]\s*|\*\s+|\d+[.)]\s+)", "", line))
         if not line or re.fullmatch(r"[#*: _]+", line):
             continue
         sub = re.fullmatch(r"@@SUB:(.*?)@@",line)
@@ -238,6 +247,11 @@ for row in rows:
         else:
             replacement = {"text":" ".join(expected)}
         arr[pos:pos+len(expected)] = [replacement]
+    for move in fixes.get("moves",{}).get(ident,[]):
+        arr = parts[move["from"]]
+        found = [i for i,item in enumerate(arr) if item.get("subheading") == move["subheading"] and not item["text"]]
+        assert len(found) == 1, (ident,"Не найден блок для переноса",move)
+        parts[move["to"]].append(arr.pop(found[0]))
     decisions = fixes.get("requirements_by_text",{}).get(ident,{})
     used = set()
     for index in range(len(parts["requirements"])-1,-1,-1):
@@ -265,14 +279,16 @@ for row in rows:
         section_counts[section] += len(parts[section])
     for index,item in enumerate(parts["requirements"]):
         text = item.get("subheading","")+" "+item["text"]
-        if re.search(r"желател|предпочт|преимущ|плюс|приветству|необязател|бонусом",text,re.I):
+        if re.search(r"желател|предпочт|преимущ|плюс|приветству|необязател|бонусом|в приоритете",text,re.I):
             reviewed = item["text"] in fixes.get("keep_requirements",{}).get(ident,[])
             candidates.append({"id":ident,"index":index,"text":text.strip(),"reviewed":reviewed})
     if not parts["duties"] or not parts["requirements"]:
         unresolved.append({"id":ident,"company":row["company"],"title":row["title"],"counts":{k:len(v) for k,v in parts.items()},"text":row["description"]})
     record = {k:row.get(k) for k in ("id","title","company","url","is_active")}
+    assert all("@@SUB:" not in item["text"] and "@@" not in item["text"] for arr in parts.values() for item in arr), (ident,"Не разобран заголовок")
     record["sections"]=parts
     records.append(record)
+assert all(c["reviewed"] for c in candidates), ("Остались неоднозначные требования", [c for c in candidates if not c["reviewed"]])
 for number,offset in enumerate(range(0,len(records),25),1):
     (OUT/("records_%02d.json"%number)).write_text(json.dumps(records[offset:offset+25],ensure_ascii=False,indent=2),encoding="utf-8")
 (OUT/"review.json").write_text(json.dumps({"total":len(records),"candidates":candidates,"unresolved":unresolved,"section_counts":dict(section_counts)},ensure_ascii=False,indent=2),encoding="utf-8")

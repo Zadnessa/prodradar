@@ -1,12 +1,13 @@
 name: Read-only Production IO Diagnostic
 
 on:
-  push:
-    branches: [codex/diagnose-production-io]
-    paths:
-      - '.github/workflows/production_io_diagnostic.yml'
-      - '.github/production_io_diagnostic.py'
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Разовая проверка без изменения базы'
+        type: choice
+        options: [metrics, events, capabilities]
+        default: metrics
 
 permissions:
   contents: read
@@ -22,12 +23,19 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Прочитать системную статистику без записей и Telegram
-        run: python .github/production_io_diagnostic.py --capabilities-only
+      - name: Прочитать выбранную статистику без записей и Telegram
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          DIAGNOSTIC_MODE: ${{ inputs.mode }}
+        run: |
+          case "$DIAGNOSTIC_MODE" in
+            metrics) python .github/production_io_diagnostic.py ;;
+            events) python .github/production_io_diagnostic.py --events-only ;;
+            capabilities) python .github/production_io_diagnostic.py --capabilities-only ;;
+            *) exit 1 ;;
+          esac
 
   management:
     runs-on: ubuntu-latest
@@ -40,7 +48,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Проверить уже настроенный Management token, только read-only SQL
+      - name: Прочитать системную SQL-статистику при наличии Management token
         run: python .github/production_io_diagnostic.py --management-only
         env:
           SUPABASE_URL: https://ykbtejjedefibdgyfgov.supabase.co

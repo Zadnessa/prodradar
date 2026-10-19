@@ -112,6 +112,9 @@ def metrics():
     return {"status":200,"series":lines}
 
 token=os.environ.get("SUPABASE_ACCESS_TOKEN","")
+if "--management-only" in sys.argv and not token:
+    emit("management_access",{"status":"not_configured","scope":"prodradar-test"})
+    raise SystemExit(0)
 if token:
     queries = {
       "database":"""select datname, numbackends, xact_commit, xact_rollback, blks_read, blks_hit,
@@ -152,6 +155,8 @@ if token:
             except Exception: result.pop("body",None)
         emit(name,result)
 
+if "--management-only" in sys.argv:
+    raise SystemExit(0)
 # Метаданные workflow и размеры таблиц; содержимое записей не выгружается.
 gh=fetch("https://api.github.com/repos/Zadnessa/prodradar/actions/workflows",{"User-Agent":"ProdRadar-IO-Diagnostic"})
 if gh.get("body"):

@@ -41,8 +41,8 @@ if "--events-only" in sys.argv:
     if configured_url != URL or not key:
         emit("event_audit",{"status":"wrong_target_or_missing_key"})
         raise SystemExit(1)
-    result=fetch(URL+"/rest/v1/user_events?select=event,created_at&order=created_at.desc&limit=1000",
-                 {"apikey":key,"Authorization":"Bearer "+key,"Range":"0-999"})
+    result=fetch(URL+"/rest/v1/user_events?select=event,created_at,chat_id,properties&order=created_at.desc&limit=500",
+                 {"apikey":key,"Authorization":"Bearer "+key,"Range":"0-499"})
     body=result.pop("body","")
     if result.get("status") in (200,206):
         rows=json.loads(body)
@@ -50,11 +50,19 @@ if "--events-only" in sys.argv:
         result["newest"]=rows[0].get("created_at") if rows else None
         result["oldest"]=rows[-1].get("created_at") if rows else None
         result["event_counts"]=dict(Counter(r.get("event") for r in rows))
-        result["hour_counts_utc"]=dict(sorted(Counter(str(r.get("created_at",""))[:13] for r in rows).items())[-48:])
-        result["today_event_counts"]=dict(Counter(r.get("event") for r in rows
-            if str(r.get("created_at","")).startswith("2026-10-19")))
-        result["near_alert_event_counts"]=dict(Counter(r.get("event") for r in rows
-            if "2026-10-19T14:30" <= str(r.get("created_at","")) < "2026-10-19T16:00"))
+        result["zero_chat_ids"]=sum(not r.get("chat_id") for r in rows)
+        result["missing_vacancy_ids"]=sum(not (r.get("properties") or {}).get("vacancy_id") for r in rows)
+        allowed_sources={"scheduled","on_demand","monitor","health","uptime","uptimerobot","ping","preview","healthcheck"}
+        def source_label(row):
+            value=(row.get("properties") or {}).get("source")
+            return value if value in allowed_sources else "missing" if not value else "other"
+        result["source_categories"]=dict(Counter(source_label(r) for r in rows))
+        result["os_categories"]=dict(Counter((r.get("properties") or {}).get("os","missing")
+                   if (r.get("properties") or {}).get("os","missing") in ("ios","android","windows","macos","unknown","missing") else "other" for r in rows))
+        stamps=[datetime.fromisoformat(r["created_at"].replace("Z","+00:00")) for r in rows]
+        gaps=[(a-b).total_seconds() for a,b in zip(stamps,stamps[1:])]
+        if gaps:
+            result["interval_seconds"]={"min":min(gaps),"max":max(gaps),"median":sorted(gaps)[len(gaps)//2]}
     emit("event_audit",result)
     raise SystemExit(0)
 

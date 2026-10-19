@@ -148,3 +148,8 @@ prodradar/
 10:00 и19:00 Москва. Код берётся из codex/restore-test-bot, только test secrets;
 исходный product workflow остаётся отключённым. Контракт и ручная проверка без
 доставки: [docs/test_schedule.md](docs/test_schedule.md).
+
+
+## Разовая проверка Disk IO
+
+Workflow `Read-only Production IO Diagnostic` читает метрики проекта `ykbtejjedefibdgyfgov`, оценки числа записей и последние даты активности. При наличии `SUPABASE_ACCESS_TOKEN` дополнительно читает системную SQL-статистику через read-only API. Запросы не изменяют таблицы и не вызывают Telegram; расписания у диагностики нет. Автоматический запуск ограничен веткой `codex/diagnose-production-io`, результаты доступны в журнале GitHub Actions. Отсутствие SQL-доступа или свежих показаний не считается подтверждением отсутствия нагрузки.

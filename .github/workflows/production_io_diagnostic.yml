@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Прочитать системную статистику без записей и Telegram
-        run: python .github/production_io_diagnostic.py --events-only
+        run: python .github/production_io_diagnostic.py --capabilities-only
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}

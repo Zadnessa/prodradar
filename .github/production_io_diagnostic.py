@@ -37,6 +37,28 @@ emit("credentials",{"project_url_matches":configured_url==URL,"service_key_prese
                     "management_token_present":bool(os.environ.get("SUPABASE_ACCESS_TOKEN"))})
 
 
+if "--capabilities-only" in sys.argv:
+    if configured_url != URL or not key:
+        emit("capabilities",{"status":"wrong_target_or_missing_key"})
+        raise SystemExit(1)
+    auth=base64.b64encode(("service_role:"+key).encode()).decode()
+    result=fetch(URL+"/customer/v1/privileged/metrics",{"Authorization":"Basic "+auth})
+    body=result.pop("body","")
+    lines=[l for l in body.splitlines() if l and not l.startswith("#")]
+    result["metric_names"]=sorted(set(l.split("{")[0].split(" ")[0] for l in lines))
+    result["statement_series_count"]=sum("stat_statements" in l.split("{")[0] for l in lines)
+    emit("metric_capabilities",result)
+    schema=fetch(URL+"/rest/v1/",{"apikey":key,"Authorization":"Bearer "+key,"Accept":"application/openapi+json"})
+    body=schema.pop("body","")
+    if schema.get("status")==200:
+        try:
+            spec=json.loads(body)
+            schema["rpc_paths"]=[p for p in spec.get("paths",{}) if p.startswith("/rpc/")]
+        except Exception:
+            schema["error"]="invalid_json"
+    emit("rest_capabilities",schema)
+    raise SystemExit(0)
+
 if "--events-only" in sys.argv:
     if configured_url != URL or not key:
         emit("event_audit",{"status":"wrong_target_or_missing_key"})

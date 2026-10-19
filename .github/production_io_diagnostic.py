@@ -14,12 +14,12 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         return None
 opener = urllib.request.build_opener(NoRedirect)
-def fetch(url, headers, payload=None):
+def fetch(url, headers, payload=None, method=None):
     req = urllib.request.Request(url, headers=headers,
-        data=json.dumps(payload).encode() if payload is not None else None)
+        data=json.dumps(payload).encode() if payload is not None else None, method=method)
     try:
         with opener.open(req, timeout=20) as response:
-            return {"status":response.status,"body":response.read(2_000_000).decode("utf-8")}
+            return {"status":response.status,"headers":{k:response.headers.get(k) for k in ("Date","Age","Last-Modified","Cache-Control","Content-Range") if response.headers.get(k)}, "body":response.read(2_000_000).decode("utf-8")}
     except urllib.error.HTTPError as exc:
         return {"status":exc.code}
     except Exception as exc:
@@ -97,6 +97,31 @@ if token:
             try: result["rows"]=json.loads(result.pop("body"))
             except Exception: result.pop("body",None)
         emit(name,result)
+
+# Метаданные workflow и размеры таблиц; содержимое записей не выгружается.
+gh=fetch("https://api.github.com/repos/Zadnessa/prodradar/actions/workflows",{"User-Agent":"ProdRadar-IO-Diagnostic"})
+if gh.get("body"):
+    try:
+        gh["workflows"]=[{"name":w["name"],"path":w["path"],"state":w["state"]}
+                         for w in json.loads(gh.pop("body")).get("workflows",[])]
+    except Exception:
+        gh.pop("body",None)
+emit("github_workflows",gh)
+if configured_url == URL and key:
+    headers={"apikey":key,"Authorization":"Bearer "+key,"Prefer":"count=estimated","Range":"0-0"}
+    for table,column in (("vacancies","id"),("user_events","id"),("user_vacancy_delivery","vacancy_id"),("users","chat_id")):
+        result=fetch(URL+"/rest/v1/"+table+"?select="+column+"&limit=1",headers,method="HEAD")
+        result.pop("body",None)
+        emit("table_count_"+table,result)
+    for table,column in (("vacancies","last_seen_at"),("user_events","created_at")):
+        result=fetch(URL+"/rest/v1/"+table+"?select="+column+"&order="+column+".desc&limit=1",
+                     {"apikey":key,"Authorization":"Bearer "+key})
+        body=result.pop("body","")
+        if body:
+            try: result["rows"]=json.loads(body)
+            except Exception: pass
+        emit("latest_"+table,result)
+
 emit("metrics_1",metrics())
-time.sleep(30)
+time.sleep(65)
 emit("metrics_2",metrics())
